@@ -3,9 +3,9 @@
 //= require gollum/gollum.placeholder
 //= require gollum/editor/gollum.editor
 //= require jquery.dataTables
-//= require codemirror
-//= require codemirror/runmode
-//= require_tree ./codemirror/modes
+//= require old-codemirror
+//= require old-codemirror/runmode
+//= require_tree ./old-codemirror/modes
 //= require cusel
 //= require bootstrap-modal
 //= require bootstrap-button

@@ -75,6 +75,7 @@ gem 'angular-i18n', '0.1.2'
 gem 'js-routes'
 gem 'soundmanager-rails'
 gem 'angular-ui-bootstrap-rails'
+gem 'angular-rails-templates'
 
 gem 'time_diff'
 
@@ -87,6 +88,8 @@ gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
 
 gem 'bootstrap-sass', '~> 3.1.1'
 gem 'font-awesome-rails'
+
+gem 'codemirror-rails'
 
 group :production do
   gem "airbrake", '~> 3.1.2'

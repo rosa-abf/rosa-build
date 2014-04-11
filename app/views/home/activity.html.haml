@@ -43,28 +43,7 @@
                     %span{ 'ng-show' => "needShowTimeLabel($index)", 'ng-cloak' => true }
                       {{item.date | amDateFormat:'ll'}}
                   / timeline item
-                  %li
-                    %i.img-circle.fa{ 'ng-class' => "getTimeLinefaClass(item)" }
-                    .timeline-item
-                      %h3.timeline-header
-                        %a{ 'ng-href' => "{{item.user.link}}" }
-                          %img{ 'ng-src' => "{{item.user.image}}" }
-                          {{item.user.uname}}
-                        %span.time{ 'ng-cloak' => true, popover: "{{item.date | amDateFormat:'ddd, LLL'}}",
-                                    "popover-trigger" => "mouseenter", 'popover-append-to-body' => 'true' }
-                          %span.glyphicon.glyphicon-time
-                          %span {{item.date | amDateFormat:'HH:mm'}}
-                        .clearfix
-                      .timeline-body
-                        -#%p{ 'ng-bind-html' => "item.title" }
-                        %p{ 'ng-bind-html' => "item.title" }
-                        %blockquote{ 'ng-if' => "isComment(item)" }
-                          {{item.body}}
-                        %p{ 'ng-if' => "!isComment(item)", 'ng-bind-html' => "item.body" }
-
-                      .timeline-footer
-                        %a.btn.btn-primary.btn-xs{ 'ng-href' => "{{item.read_more}}", 'ng-if' => "isComment(item)" }
-                          = t('layout.read_more')
+                  %li{ 'ng-include' => "getTemplate(item)" }
                   .hide{ 'ng-repeat-end' => true }
                   %li
                     %i.img-circle.bg-primary.fa.fa-clock-o

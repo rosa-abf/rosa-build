@@ -56,5 +56,7 @@ module Rosa
     config.assets.version = '1.0'
 
     config.log_redis = false
+
+    config.angular_templates.ignore_prefix = 'angular-new/templates/'
   end
 end

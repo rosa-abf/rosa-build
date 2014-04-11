@@ -7,11 +7,11 @@
 //@import "gollum/template";
 @import "gollum/editor";
 
-@import "codemirror";
-@import "codemirror/themes/eclipse";
-@import "codemirror/modes/diff";
-@import "codemirror/modes/rpm-spec";
-@import "codemirror/modes/tiddlywiki";
+@import "old-codemirror";
+@import "old-codemirror/themes/eclipse";
+@import "old-codemirror/modes/diff";
+@import "old-codemirror/modes/rpm-spec";
+@import "old-codemirror/modes/tiddlywiki";
 
 @import "old-bootstrap";
 @import "chosen.scss";

@@ -11,6 +11,7 @@ class HomeController < ApplicationController
     @activity_feeds = current_user.activity_feeds
     @activity_feeds = @activity_feeds.where(kind: "ActivityFeed::#{@filter.upcase}".constantize) unless @filter == :all
     @activity_feeds = @activity_feeds.paginate page: params[:page]
+
     respond_to do |format|
       format.html { request.xhr? ? render('_list', layout: false) : render('activity') }
       format.json {}
