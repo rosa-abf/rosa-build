@@ -78,7 +78,8 @@ ActiveAdmin.setup do |config|
   # To load a javascript file:
   #   config.register_javascript 'my_javascript.js'
 
-  config.logout_link_path = :destroy_user_session_path
+  config.logout_link_path   = :destroy_user_session_path
+  config.logout_link_method = :delete
 end
 
 # Block admin access to non-admin-users.
