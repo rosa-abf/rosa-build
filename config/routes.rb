@@ -1,5 +1,14 @@
 Rosa::Application.routes.draw do
 
+  # ActiveAdmin routes.
+  ActiveAdmin.routes(self)
+
+  namespace :admin do
+    constraints Rosa::Constraints::AdminAccess do
+      mount Resque::Server => 'resque'
+    end
+  end
+
   # Redirect sitemap1.xml.gz file on AWS S3
   match '/sitemap.xml.gz' => 'sitemap#show', via: [:get, :post, :head], as: :sitemap
   match '/robots.txt' => 'sitemap#robots', via: [:get, :post, :head], as: :robots
@@ -145,28 +154,6 @@ Rosa::Application.routes.draw do
     end
   else
     root to: 'home#activity'
-  end
-
-  namespace :admin do
-    resources :users do
-      collection do
-        get :list
-        get :system
-      end
-      put :reset_auth_token, on: :member
-    end
-    resources :register_requests, only: [:index] do
-      put :update, on: :collection
-      member do
-        get :approve
-        get :reject
-      end
-    end
-    resources :flash_notifies
-    resources :event_logs, only: :index
-    constraints Rosa::Constraints::AdminAccess do
-      mount Resque::Server => 'resque'
-    end
   end
 
   resources :advisories, only: [:index, :show, :search] do

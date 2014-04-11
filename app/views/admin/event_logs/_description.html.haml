@@ -1,8 +1,0 @@
-= surround '[', ']' do
-  = I18n.t "event_log.controllers.#{el.controller.underscore}", default: el.controller
-= I18n.t "event_log.actions.#{el.controller.underscore}.#{el.action}", default: :"event_log.actions.#{el.action}"
-- if el.eventable_id.present? and el.eventable_type.present?
-  = I18n.t "activerecord.models.#{el.eventable_type.underscore}"
-  = el.eventable_name
-  = "(id##{el.eventable_id})" # link_to "id##{el.eventable_id}", el.eventable
-= el.message
