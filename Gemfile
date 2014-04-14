@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.0.4'
 
+gem 'activeadmin', github: 'gregbell/active_admin'
 gem 'pg', '~> 0.17.1'
 gem 'schema_plus', '~> 1.4.0'
 ########
