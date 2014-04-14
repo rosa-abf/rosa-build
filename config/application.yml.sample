@@ -14,6 +14,7 @@ common: &common
       port: 6379
   keys:
     key_pair_secret_key: 'key_pair_secret_key'
+    node_instruction_secret_key: 'node_instruction_secret_key'
     airbrake_api_key: 'airbrake_api_key'
     logentries_key: 'logentries_key'
     secret_token: 'secret_token'
