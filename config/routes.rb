@@ -371,7 +371,7 @@ Rosa::Application.routes.draw do
           # Commit comments
           post '/commit/:commit_id/comments(.:format)' => "comments#create", as: :project_commit_comments
           get '/commit/:commit_id/comments/:id(.:format)' => "comments#edit", as: :edit_project_commit_comment
-          put '/commit/:commit_id/comments/:id(.:format)' => "comments#update", as: :project_commit_comment
+          patch '/commit/:commit_id/comments/:id(.:format)' => "comments#update", as: :project_commit_comment
           delete '/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
           get '/commit/:commit_id/add_line_comments(.:format)' => "comments#new_line", as: :new_line_commit_comment
           # Commit subscribes
