@@ -49,7 +49,7 @@ ActiveAdmin.register NodeInstruction do
 
   sidebar 'Actions', only: :show do
 
-    %w(disable ready restart fail).each do |state|
+    %w(disable ready restart restart_failed).each do |state|
       div do
         link_to state.humanize, force_admin_node_instruction_path(resource, state: state), method: :patch
       end if resource.send("can_#{state}?")

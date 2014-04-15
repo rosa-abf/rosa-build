@@ -109,7 +109,7 @@ class Project < ActiveRecord::Base
   end
 
   def init_mass_import
-    Project.perform_later :clone_build, :run_mass_import, url, srpms_list, visibility, owner, add_to_repository_id
+    Project.perform_later :low, :run_mass_import, url, srpms_list, visibility, owner, add_to_repository_id
   end
 
   def name_with_owner

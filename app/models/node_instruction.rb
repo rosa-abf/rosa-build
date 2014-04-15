@@ -35,7 +35,7 @@ class NodeInstruction < ActiveRecord::Base
       transition ready: :restarting
     end
 
-    event :fail do
+    event :restart_failed do
       transition restarting: :failed
     end
   end
@@ -58,7 +58,7 @@ class NodeInstruction < ActiveRecord::Base
       bl.restart_job
     end
 
-    success ? ready : fail
+    success ? ready : restart_failed
   end
   later :perform_restart, queue: :low
 
