@@ -25,3 +25,10 @@ clean_api_defender_statistics:
   class: 'CleanApiDefenderStatisticsJob'
   queue: clone_build
   description: 'Cleans ApiDefender statistics'
+
+restart_nodes:
+  every:
+    - '5m'
+  class: 'RestartNodesJob'
+  queue: hook
+  description: 'Restarts unavailable nodes'

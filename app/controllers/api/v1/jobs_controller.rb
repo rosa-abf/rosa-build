@@ -9,7 +9,9 @@ class Api::V1::JobsController < Api::V1::BaseController
   def shift
 
     @build_list = BuildList.next_build if current_user.system?
-    unless @build_list
+    if @build_list
+      set_builder
+    else
       platform_ids = Platform.where(name: params[:platforms].split(',')).pluck(:id) if params[:platforms].present?
       arch_ids = Arch.where(name: params[:arches].split(',')).pluck(:id) if params[:arches].present?
       build_lists = BuildList.for_status(BuildList::BUILD_PENDING).scoped_to_arch(arch_ids).
@@ -19,36 +21,29 @@ class Api::V1::JobsController < Api::V1::BaseController
       ActiveRecord::Base.transaction do
         if current_user.system?
           @build_list ||= build_lists.external_nodes(:everything).first
-          @build_list.touch if @build_list
         else
           @build_list = build_lists.external_nodes(:owned).for_user(current_user).first
           @build_list ||= build_lists.external_nodes(:everything).
             accessible_by(current_ability, :everything).readonly(false).first
-
-          if @build_list
-            @build_list.builder = current_user
-            @build_list.save
-          end
         end
+        set_builder
       end
     end
-
 
     job = {
       worker_queue: @build_list.worker_queue_with_priority(false),
       worker_class: @build_list.worker_queue_class,
       :worker_args  => [@build_list.abf_worker_args]
     } if @build_list
-
     render json: { job: job }.to_json
   end
 
   def statistics
     if params[:uid].present?
       RpmBuildNode.create(
-        :id           => params[:uid],
-        :user_id      => current_user.id,
-        :system       => current_user.system?,
+        id:           params[:uid],
+        user_id:      current_user.id,
+        system:       current_user.system?,
         worker_count: params[:worker_count],
         busy_workers: params[:busy_workers]
       ) rescue nil
@@ -84,6 +79,14 @@ class Api::V1::JobsController < Api::V1::BaseController
     else
       render nothing: true, status: 403
     end
+  end
+
+  protected
+
+  def set_builder
+    return unless @build_list
+    @build_list.builder = current_user
+    @build_list.save
   end
 
 end

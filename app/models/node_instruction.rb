@@ -2,7 +2,6 @@ class NodeInstruction < ActiveRecord::Base
   STATUSES = [
     DISABLED    = 'disabled',
     READY       = 'ready',
-    CHECKING    = 'checking',
     RESTARTING  = 'restarting',
     FAILED      = 'failed'
   ]
@@ -22,23 +21,19 @@ class NodeInstruction < ActiveRecord::Base
 
   state_machine :status, initial: :ready do
     event :ready do
-      transition %i(ready restarting disabled failed checking) => :ready
+      transition %i(ready restarting disabled failed) => :ready
     end
 
     event :disable do
       transition ready: :disabled
     end
 
-    event :check do
-      transition ready: :checking
-    end
-
     event :restart do
-      transition checking: :restarting
+      transition ready: :restarting
     end
 
     event :fail do
-      transition %i(restarting checking) => :failed
+      transition restarting: :failed
     end
   end
 
