@@ -167,7 +167,7 @@ GEM
       activerecord (>= 4.0.0)
     fssm (0.2.10)
     gemoji (1.2.1)
-    github-linguist (2.10.9)
+    github-linguist (2.10.11)
       charlock_holmes (~> 0.6.6)
       escape_utils (>= 0.3.1)
       mime-types (~> 1.19)

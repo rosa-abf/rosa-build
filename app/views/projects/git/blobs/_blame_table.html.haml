@@ -18,24 +18,15 @@
         = index
         - index += 1
 
-      %td.code.cm-s-default
-        %pre
-          %div= elem[1].first
+      %td.code.formatted
+        = preserve do
+          = blame_highlight @blob, elem[1].first
 
       - elem[1][1..-1].each do |line|
         %tr
           %td.lines
             = index
             - index += 1
-          %td.code.cm-s-default
-            %pre
-              %div= line
-
-:javascript
-  $(document).ready(function() {
-    var $code_rows = $('.code.cm-s-default pre div');
-    var mode = "#{File.extname(@blob.name) == '.spec' ? 'text/x-rpm-spec' : @blob.mime_type}"
-    $code_rows.each(function() {
-      CodeMirror.runMode($(this).text().replace(/&amp;/gi, '&'), mode, this.parentElement.parentElement);
-    });
-  });
+          %td.code.formatted
+            = preserve do
+              = blame_highlight @blob, line

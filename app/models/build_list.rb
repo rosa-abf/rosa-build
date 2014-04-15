@@ -472,7 +472,11 @@ class BuildList < ActiveRecord::Base
   end
 
   def log(load_lines)
-    new_core? ? abf_worker_log : I18n.t('layout.build_lists.log.not_available')
+    if new_core?
+      Pygments.highlight abf_worker_log, lexer: 'sh'
+    else
+      I18n.t('layout.build_lists.log.not_available')
+    end
   end
 
   def last_published(testing = false)

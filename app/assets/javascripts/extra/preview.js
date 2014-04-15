@@ -15,7 +15,7 @@ $(document).ready(function() {
        url: preview_url,
        data: el_dup.serialize(),
        success: function(data){
-                       preview.html(data).find('code').each(function (code) { CodeMirrorRun(this); })
+                       preview.html(data);
                 }
      });
     };
