@@ -82,17 +82,13 @@ GEM
     ancestry (2.0.0)
       activerecord (>= 3.0.0)
     angular-i18n (0.1.2)
-<<<<<<< HEAD
     angular-rails-templates (0.0.7)
       railties (>= 3.1)
       sprockets
     angular-ui-bootstrap-rails (0.10.0)
     angularjs-rails (1.2.15)
-=======
-    angularjs-rails (1.2.14)
     arbre (1.0.1)
       activesupport (>= 3.0.0)
->>>>>>> 369-remove_codemirror
     arel (4.0.2)
     atomic (1.1.16)
     attr_encrypted (1.3.2)
@@ -110,14 +106,11 @@ GEM
       daemons (~> 1.1.4)
       i18n (>= 0.5.0)
       state_machine (~> 1.1)
-<<<<<<< HEAD
     bootstrap-sass (3.1.1.0)
       sass (~> 3.2)
-=======
     bourbon (3.1.8)
       sass (>= 3.2.0)
       thor
->>>>>>> 369-remove_codemirror
     builder (3.1.4)
     callsite (0.0.11)
     cape (1.8.0)
@@ -135,8 +128,6 @@ GEM
       activesupport (>= 3.0)
     cocaine (0.5.3)
       climate_control (>= 0.0.3, < 1.0)
-    codemirror-rails (3.22)
-      railties (>= 3.0, < 5)
     coderay (1.1.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -176,13 +167,10 @@ GEM
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.3)
-<<<<<<< HEAD
     font-awesome-rails (4.0.3.1)
       railties (>= 3.2, < 5.0)
-=======
     formtastic (2.3.0.rc2)
       actionpack (>= 3.0)
->>>>>>> 369-remove_codemirror
     friendly_id (5.0.3)
       activerecord (>= 4.0.0)
     fssm (0.2.10)
@@ -546,7 +534,6 @@ DEPENDENCIES
   capistrano
   capistrano_colors
   charlock_holmes (~> 0.6.9)
-  codemirror-rails
   coffee-rails (~> 4.0.1)
   compass-rails (~> 1.1.6)
   creole
