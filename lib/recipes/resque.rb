@@ -32,9 +32,11 @@ Capistrano::Configuration.instance(:must_exist).load do
         :fork_import,
         :hook,
         :clone_build,
+        :middle,
         :notification
       ].join(',')
-      run "cd #{fetch :current_path} && COUNT=#{workers_count} QUEUE=#{queue} #{rails_env} BACKGROUND=yes bundle exec rake resque:workers"
+      run "cd #{fetch :current_path} && COUNT=#{workers_count - 1} QUEUE=#{queue} INTERVAL=0.1 #{rails_env} BACKGROUND=yes bundle exec rake resque:workers"
+      run "cd #{fetch :current_path} && COUNT=1 QUEUE=low #{rails_env} BACKGROUND=yes bundle exec rake resque:workers"
     end
 
     def remote_file_exists?(full_path)

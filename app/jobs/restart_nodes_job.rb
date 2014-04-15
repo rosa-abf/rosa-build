@@ -1,5 +1,5 @@
 class RestartNodesJob
-  @queue = :hook
+  @queue = :low
 
   def self.perform
     available_nodes = RpmBuildNode.all.map{ |n| n.user_id }.compact.uniq

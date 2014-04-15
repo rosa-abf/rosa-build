@@ -205,7 +205,7 @@ class Platform < ActiveRecord::Base
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
-  later :destroy, queue: :clone_build
+  later :destroy, queue: :low
 
   def default_host
     EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
@@ -274,7 +274,7 @@ class Platform < ActiveRecord::Base
     def fs_clone(old_name = parent.name, new_name = name)
       FileUtils.cp_r "#{parent.path}/repository", path
     end
-    later :fs_clone, queue: :clone_build
+    later :fs_clone, queue: :low
 
     def freeze_platform_and_update_repos
       if released_changed? && released == true

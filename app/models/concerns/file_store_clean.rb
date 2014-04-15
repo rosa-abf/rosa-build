@@ -6,7 +6,7 @@ module FileStoreClean
       destroy_files_from_file_store if Rails.env.production?
       super
     end
-    later :destroy, queue: :clone_build
+    later :destroy, queue: :middle
 
     def sha1_of_file_store_files
       raise NotImplementedError, "You should implement this method"
@@ -31,7 +31,7 @@ module FileStoreClean
     def later_destroy_files_from_file_store(args)
       destroy_files_from_file_store(args)
     end
-    later :later_destroy_files_from_file_store, queue: :clone_build
+    later :later_destroy_files_from_file_store, queue: :middle
   end
 
   def self.file_exist_on_file_store?(sha1)

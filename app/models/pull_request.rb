@@ -57,7 +57,7 @@ class PullRequest < ActiveRecord::Base
       system 'git', 'remote', 'set-url', 'head', from_project.path if cross_pull?
     end
   end
-  later :update_relations, queue: :clone_build
+  later :update_relations, queue: :middle
 
   def cross_pull?
     from_project_id != to_project_id
