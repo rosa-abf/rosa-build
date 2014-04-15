@@ -16,19 +16,3 @@
   = submit_tag t('layout.save'), title: t('layout.save'), data: {'disable-with' => t('layout.saving')}
   = t("layout.or")
   = link_to t("layout.cancel"), blob_path(@project, @treeish, @path), class: 'button'
-
-:javascript
-  $(function() {
-    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
-      lineNumbers: true,
-      mode: '#{@blob.raw_mime_type.content_type}'
-    });
-    $(".CodeMirror").resizable({
-      stop: function() { editor.refresh(); },
-      resize: function() {
-        $(".CodeMirror-scroll").height($(this).height());
-        $(".CodeMirror-scroll").width($(this).width());
-        editor.refresh();
-      }
-    });
-  });
