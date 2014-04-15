@@ -51,7 +51,6 @@ function initLogWrapper() {
         var onBottom = Math.abs((l.clientHeight + vScroll - l.scrollHeight)) < getLineHeight(l);
 
         $("#output").html(data.log);
-        //CodeMirror.runMode(data.log.replace(/&amp;/gi, '&'), "text/x-sh", document.getElementById("output"));
 
         $logCont.scrollLeft(hScroll);
         $logCont.scrollTop((onBottom || first_open) ? l.scrollHeight - l.clientHeight : vScroll);
