@@ -1,4 +1,18 @@
 Rosa::Application.routes.draw do
+
+  # ActiveAdmin routes.
+  ActiveAdmin.routes(self)
+
+  namespace :admin do
+    constraints Rosa::Constraints::AdminAccess do
+      mount Resque::Server => 'resque'
+    end
+  end
+
+  # Redirect sitemap1.xml.gz file on AWS S3
+  match '/sitemap.xml.gz' => 'sitemap#show', via: [:get, :post, :head], as: :sitemap
+  match '/robots.txt' => 'sitemap#robots', via: [:get, :post, :head], as: :robots
+
   resource :contact, only: [:new, :create, :sended] do
     get '/' => 'contacts#new'
     get :sended
@@ -10,7 +24,10 @@ Rosa::Application.routes.draw do
     post 'users'        => 'users/registrations#create', as: :user_registration
   end
 
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }, skip: [:registrations]
+  devise_for :users, controllers: {
+    omniauth_callbacks: 'users/omniauth_callbacks',
+    confirmations:      'users/confirmations'
+  }, skip: [:registrations]
 
   namespace :api do
     namespace :v1 do
@@ -25,8 +42,8 @@ Rosa::Application.routes.draw do
           put :publish_into_testing
         }
       end
-      resources :arches, only: [:index]
-      resources :platforms, only: [:index, :show, :update, :destroy, :create] do
+      resources :arches, only: :index
+      resources :platforms, only: %i(index show update destroy create) do
         collection {
           get :platforms_for_build
           get :allowed
@@ -139,28 +156,6 @@ Rosa::Application.routes.draw do
     root to: 'home#activity'
   end
 
-  namespace :admin do
-    resources :users do
-      collection do
-        get :list
-        get :system
-      end
-      put :reset_auth_token, on: :member
-    end
-    resources :register_requests, only: [:index] do
-      put :update, on: :collection
-      member do
-        get :approve
-        get :reject
-      end
-    end
-    resources :flash_notifies
-    resources :event_logs, only: :index
-    constraints Rosa::Constraints::AdminAccess do
-      mount Resque::Server => 'resque'
-    end
-  end
-
   resources :advisories, only: [:index, :show, :search] do
     get :search, on: :collection
   end
@@ -223,7 +218,7 @@ Rosa::Application.routes.draw do
       resources :maintainers, only: [:index]
     end
 
-    resources :product_build_lists, only: [:index, :show]
+    resources :product_build_lists, only: [:index, :show, :update]
   end
 
   resources :autocompletes, only: [] do
@@ -376,7 +371,7 @@ Rosa::Application.routes.draw do
           # Commit comments
           post '/commit/:commit_id/comments(.:format)' => "comments#create", as: :project_commit_comments
           get '/commit/:commit_id/comments/:id(.:format)' => "comments#edit", as: :edit_project_commit_comment
-          put '/commit/:commit_id/comments/:id(.:format)' => "comments#update", as: :project_commit_comment
+          patch '/commit/:commit_id/comments/:id(.:format)' => "comments#update", as: :project_commit_comment
           delete '/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
           get '/commit/:commit_id/add_line_comments(.:format)' => "comments#new_line", as: :new_line_commit_comment
           # Commit subscribes

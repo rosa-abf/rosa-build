@@ -18,3 +18,10 @@ build_lists_queues_monitoring:
   class: 'BuildListsQueuesMonitoringJob'
   queue: hook
   description: 'Monitoring for "user/mass-build" queues'
+
+clean_api_defender_statistics:
+  every:
+    - '1d'
+  class: 'CleanApiDefenderStatisticsJob'
+  queue: clone_build
+  description: 'Cleans ApiDefender statistics'

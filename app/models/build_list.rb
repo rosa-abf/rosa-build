@@ -30,8 +30,14 @@ class BuildList < ActiveRecord::Base
   AUTO_PUBLISH_STATUS_TESTING = 'testing'
   AUTO_PUBLISH_STATUSES = [AUTO_PUBLISH_STATUS_NONE, AUTO_PUBLISH_STATUS_DEFAULT, AUTO_PUBLISH_STATUS_TESTING]
 
-  validates :project_id, :project_version, :arch, :include_repos,
-            :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, presence: true
+  validates :project_id,
+            :project_version,
+            :arch,
+            :include_repos,
+            :build_for_platform_id,
+            :save_to_platform_id,
+            :save_to_repository_id,
+            presence: true
   validates_numericality_of :priority, greater_than_or_equal_to: 0
   validates :external_nodes, inclusion: { in:  EXTERNAL_NODES }, allow_blank: true
   validates :auto_publish_status, inclusion: { in: AUTO_PUBLISH_STATUSES }
@@ -64,7 +70,8 @@ class BuildList < ActiveRecord::Base
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :project_version, :auto_create_container,
                   :extra_repositories, :extra_build_lists, :extra_params, :external_nodes,
-                  :include_testing_subrepository, :auto_publish_status
+                  :include_testing_subrepository, :auto_publish_status,
+                  :use_cached_chroot
 
   LIVE_TIME     = 4.week  # for unpublished
   MAX_LIVE_TIME = 3.month # for published
@@ -465,7 +472,11 @@ class BuildList < ActiveRecord::Base
   end
 
   def log(load_lines)
-    new_core? ? abf_worker_log : I18n.t('layout.build_lists.log.not_available')
+    if new_core?
+      Pygments.highlight abf_worker_log, lexer: 'sh'
+    else
+      I18n.t('layout.build_lists.log.not_available')
+    end
   end
 
   def last_published(testing = false)
@@ -505,6 +516,7 @@ class BuildList < ActiveRecord::Base
     git_project_address = project.git_project_address user
     # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
 
+
     cmd_params = {
       'GIT_PROJECT_ADDRESS'           => git_project_address,
       'COMMIT_HASH'                   => commit_hash,
@@ -512,7 +524,12 @@ class BuildList < ActiveRecord::Base
       'EXTRA_CFG_URPM_OPTIONS'        => extra_params['cfg_urpm_options'],
       'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],
       'EXTRA_BUILD_RPM_OPTIONS'       => extra_params['build_rpm']
-    }.map{ |k, v| "#{k}='#{v}'" }.join(' ')
+    }
+    if use_cached_chroot?
+      sha1 = build_for_platform.cached_chroot(arch.name)
+      cmd_params.merge!('CACHED_CHROOT_SHA1' => sha1) if sha1.present?
+    end
+    cmd_params = cmd_params.map{ |k, v| "#{k}='#{v}'" }.join(' ')
 
     {
       id:            id,

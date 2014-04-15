@@ -7,11 +7,6 @@
 //@import "gollum/template";
 @import "gollum/editor";
 
-@import "old-codemirror";
-@import "old-codemirror/themes/eclipse";
-@import "old-codemirror/modes/diff";
-@import "old-codemirror/modes/rpm-spec";
-@import "old-codemirror/modes/tiddlywiki";
-
 @import "old-bootstrap";
 @import "chosen.scss";
+@import "pygments";

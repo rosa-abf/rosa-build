@@ -6,9 +6,9 @@ class Projects::BaseController < ApplicationController
 
   def find_collaborators
     search = "%#{params[:search_user]}%"
-    users = User.joins(groups: :projects).where(projects: {id: @project.id}).where("users.uname ILIKE ?", search)
-    users2 = @project.collaborators.where("users.uname ILIKE ?", search)
-    @users = (users + users2).uniq.sort {|x,y| x.uname <=> y.uname}.first(10)
+    @users = @project.collaborators.where("users.uname ILIKE ?", search)
+    @users |= @project.owner.members.where("users.uname ILIKE ?", search) if @project.owner.is_a?(Group)
+    @users = @users.sort_by(&:uname).first(10)
   end
 
   def find_project

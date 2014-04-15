@@ -3,18 +3,12 @@
 //= require gollum/gollum.placeholder
 //= require gollum/editor/gollum.editor
 //= require jquery.dataTables
-//= require old-codemirror
-//= require old-codemirror/runmode
-//= require_tree ./old-codemirror/modes
+
 //= require cusel
 //= require bootstrap-modal
 //= require bootstrap-button
 //= require bootstrap-dropdown
 //= require bootstrap-tab
-// require bootstrap-tooltip
-// require bootstrap-popover
 //= require bootstrap-alert
 //= require bootstrap-tab
 //= require chosen.jquery
-// require html5shiv
-// require_tree .

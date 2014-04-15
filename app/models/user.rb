@@ -1,4 +1,7 @@
 class User < Avatar
+  extend FriendlyId
+  friendly_id :uname, use: [:finders]
+
   include PersonalRepository
   include ActsLikeMember
   include Feed::User

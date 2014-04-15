@@ -33,9 +33,47 @@ describe MassBuild do
       at
       ab
     )
-    mass_build = FactoryGirl.create(:mass_build, projects_list: projects_list)
+    mass_build = FactoryGirl.build(:mass_build, projects_list: projects_list)
+    mass_build.should be_valid
     list = mass_build.projects_list.split(/[\r]*\n/)
     list.should have(2).items
     list.should include('at', 'ab')
   end
+
+  it '#generate_list' do
+    mb = FactoryGirl.build(:mass_build)
+    bl = double(:build_list)
+
+    # allow(service).to receive(:already_pulled?).with(post.identifier).and_return(true)
+    # allow(BuildList).to receive(:find_each).and_yield(bl)
+    BuildList.stub_chain(:select, :where, :joins, :find_each).and_yield(bl)
+    expect(bl).to receive(:id)
+    expect(bl).to receive(:project_name)
+    expect(bl).to receive(:arch_name)
+    mb.send(:generate_list, 0)
+  end
+
+  it '#publish' do
+    mb = FactoryGirl.build(:mass_build)
+    user = double(:user, id: 123)
+
+    bl1 = double(:build_list, can_publish?: true, has_new_packages?: true)
+    bl2 = double(:build_list, can_publish?: true, has_new_packages?: false)
+    bl3 = double(:build_list, can_publish?: false, has_new_packages?: true)
+    bl4 = double(:build_list, can_publish?: false, has_new_packages?: false)
+
+    finder = double(:finder)
+    allow(mb).to receive(:build_lists).and_return(finder)
+    allow(finder).to receive(:where).and_return(finder)
+    allow(finder).to receive(:find_each).and_yield(bl1).and_yield(bl2).and_yield(bl3).and_yield(bl4)
+
+    expect(finder).to receive(:update_all).with(publisher_id: user.id)
+    expect(bl1).to receive(:now_publish)
+    expect(bl2).to_not receive(:now_publish)
+    expect(bl3).to_not receive(:now_publish)
+    expect(bl4).to_not receive(:now_publish)
+
+    mb.send(:publish, user, [])
+  end
+
 end

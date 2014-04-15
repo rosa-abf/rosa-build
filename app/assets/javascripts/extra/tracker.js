@@ -108,7 +108,8 @@ $(document).ready(function() {
   $('#search_user').on('keyup', function() {
     path = $('#search_user_path').attr('path');
     data = $(this).serialize();
-    dom = $('#manage_issue_users_list');
+    // dom = $('#manage_issue_users_list');
+    dom = $('#assigned-popup .list');
     return search_items(path, data, dom);
   });
 
@@ -116,11 +117,11 @@ $(document).ready(function() {
     $('.users-search-popup').hide();
   });
 
-  $('#assigned-container .icon-share').on('click', function() {
+  $(document).on('click', '#assigned-container .icon-share', function() {
     $('#assigned-popup').show();
   });
 
-  $('#assigned-popup .people.selected').on('click', function() {
+  $(document).on('click', '#assigned-popup .people.selected', function() {
     var form = $('#assigned-popup .edit_assignee');
     var item = $(this);
     if (form.length == 0) {
@@ -213,7 +214,7 @@ $(document).ready(function() {
                   form.fadeOut('slow');
                   $('#edit_issue_content').fadeIn('slow');
                   $('h3.issue_title').html(form.find('#issue_title').attr('value'));
-                  $('.fulltext.view.issue_body').html(data).find('code').each(function (code) { CodeMirrorRun(this); })
+                  $('.fulltext.view.issue_body').html(data);
                 },
       error: function(data){
                form.before(data.responseText);

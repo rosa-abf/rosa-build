@@ -24,7 +24,7 @@ $(document).ready(function() {
                   var cancel_button = form.find('.cancel_edit_comment.button');
                   var id = cancel_button.attr('id').match(/\d+$/)[0];
                   cancel_button.click();
-                  $('#comment'+id+', #diff-comment'+id).find('.cm-s-default.md_and_cm').html(data).find('code').each(function (code) { CodeMirrorRun(this); })
+                  $('#comment'+id+', #diff-comment'+id).find('.cm-s-default.md_and_cm').html(data);
                 },
       error: function(data){
                form.before(data.responseText);

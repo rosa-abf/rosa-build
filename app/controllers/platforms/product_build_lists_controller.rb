@@ -3,7 +3,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show, :log] if APP_CONFIG['anonymous_access']
-  before_filter :redirect_to_full_path_if_short_url, only: :show
+  before_filter :redirect_to_full_path_if_short_url, only: [:show, :update]
   load_and_authorize_resource :platform, except: :index
   load_and_authorize_resource :product, through: :platform, except: :index
   load_and_authorize_resource :product_build_list, through: :product, except: :index
@@ -25,13 +25,8 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def update
-    if @product_build_list.update_attributes(not_delete: (params[:product_build_list] || {})[:not_delete])
-      flash[:notice] = t('flash.product_build_list.updated')
-    else
-      flash[:error] = t('flash.product_build_list.update_error')
-      flash[:warning] = @product_build_list.errors.full_messages.join('. ')
-    end
-    redirect_to platform_product_product_build_list_path(@platform, @product, @product_build_list)
+    @product_build_list.update_attributes(not_delete: (params[:product_build_list] || {})[:not_delete])
+    render :show
   end
 
   def cancel
@@ -45,7 +40,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   def log
     render json: {
-      log: @product_build_list.abf_worker_log,
+      log: Pygments.highlight(@product_build_list.abf_worker_log, lexer: 'sh'),
       building: @product_build_list.build_started?
     }
   end

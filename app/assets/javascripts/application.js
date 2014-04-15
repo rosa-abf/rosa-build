@@ -87,12 +87,6 @@ $(document).ready(function() {
     return false;
   });
 
-  window.CodeMirrorRun = function(code) {
-    CodeMirror.runMode(code.innerHTML.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>'), code.className, code);
-  }
-
-  $('.md_and_cm code').each(function (code) { CodeMirrorRun(this); });
-
   window.updateTime = function () {
     $('.datetime_moment').each(function() {
       $(this).html(moment($(this).attr('origin_datetime'), 'X').fromNow());

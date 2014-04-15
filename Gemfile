@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.0.4'
 
+gem 'activeadmin', github: 'gregbell/active_admin'
 gem 'pg', '~> 0.17.1'
 gem 'schema_plus', '~> 1.4.0'
 ########
@@ -89,7 +90,7 @@ gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
 gem 'bootstrap-sass', '~> 3.1.1'
 gem 'font-awesome-rails'
 
-gem 'codemirror-rails'
+gem 'sitemap_generator'
 
 group :production do
   gem "airbrake", '~> 3.1.2'
@@ -130,4 +131,5 @@ group :test do
   gem 'mock_redis',         '~> 0.11'
   gem 'rake'
   gem 'test_after_commit'
+  gem 'timecop'
 end
