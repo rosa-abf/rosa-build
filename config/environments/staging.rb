@@ -64,7 +64,7 @@ Rosa::Application.configure do
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   config.assets.precompile +=
     %w(login.css login.js reg_session.css tour.css tour.js gollum/editor/langs/*.js moment/ru.js
-       codemirror_editor.js codemirror_editor.css)
+       codemirror_editor.js codemirror.css)
 
   # Compress JavaScripts and CSS.
   config.assets.js_compressor = :uglifier
