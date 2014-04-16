@@ -86,6 +86,8 @@ gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
 gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
 gem 'sitemap_generator'
 
+gem 'codemirror-rails', '~> 4.0'
+
 group :production do
   gem "airbrake", '~> 3.1.2'
   gem 'bluepill', '~> 0.0.60', require: false
