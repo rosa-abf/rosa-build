@@ -57,10 +57,7 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
     };
 
     $scope.getTemplate = function(content) {
-      if(content.kind == 'new_commit_notification' || content.kind == 'git_new_push_notification' ||
-         content.kind == 'git_delete_branch_notification' || content.kind == 'new_issue_notification') {
-        return content.kind + '.html';}
-      else return 'new_comment_notification.html';
+      return content.kind + '.html';
     };
 
 }]);

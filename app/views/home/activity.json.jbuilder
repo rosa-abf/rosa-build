@@ -51,6 +51,12 @@ json.array!(@activity_feeds) do |item|
         json.link project_issue_path(project_name_with_owner, item.data[:issue_serial_id]) if item.data[:issue_serial_id].present?
       end
 
+    when 'new_user_notification'
+      json.user_name item.data[:user_name]
+
+    when 'wiki_new_commit_notification'
+      json.wiki_link history_project_wiki_index_path(project_name_with_owner)
+      json.project_link project_path(project_name_with_owner)
     end
     json.id item.id
   #end
