@@ -53,6 +53,8 @@ module Feed::Git
       project = Project.find record[:project_id]
 
       project.admins.each do |recipient|
+        next if actor && actor.id == recipient.id
+
         ActivityFeed.create!(
           user: recipient,
           kind: 'wiki_new_commit_notification',
