@@ -52,11 +52,11 @@ class NodeInstruction < ActiveRecord::Base
     restart_failed if NodeInstruction.all_locked?
 
     success = false
-    output  = ''
+    stdout  = ''
     instruction.lines.each do |command|
       next if command.blank?
       command.chomp!; command.strip!
-      output << %x[ #{command} 2>&1 ]
+      stdout << %x[ #{command} 2>&1 ]
       success = $?.success?
     end
 
@@ -68,6 +68,7 @@ class NodeInstruction < ActiveRecord::Base
       bl.restart_job
     end
 
+    update_column(:output, stdout)
     success ? ready : restart_failed
   end
   later :perform_restart, queue: :low
