@@ -10,13 +10,17 @@ class NodeInstruction < ActiveRecord::Base
 
   belongs_to :user
 
+  scope :duplicate, -> id, user_id {
+    where.not(id: id.to_i).where(user_id: user_id, status: STATUSES - [DISABLED])
+  }
+
   attr_encrypted :instruction, key: APP_CONFIG['keys']['node_instruction_secret_key']
 
   validates :user,        presence: true
   validates :instruction, presence: true, length: { maximum: 10000 }
   validates :status,      presence: true
   validate  -> {
-    errors.add(:status, 'Can be only single active instruction for each node') if !disabled? && NodeInstruction.where('id != ?', id.to_i).where(user_id: user_id, status: STATUSES - [DISABLED]).exists?
+    errors.add(:status, 'Can be only single active instruction for each node') if !disabled? && NodeInstruction.duplicate(id.to_i, user_id).exists?
   }
 
   attr_accessible :instruction, :user_id, :output, :status

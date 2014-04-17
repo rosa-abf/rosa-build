@@ -70,19 +70,19 @@ ActiveAdmin.register NodeInstruction do
 
   collection_action :lock_all, method: :post do
     NodeInstruction.lock_all
-    flash[:info] = 'Locked successfully'
+    flash[:notice] = 'Locked successfully'
     redirect_to admin_node_instructions_path
   end
 
   collection_action :unlock_all, method: :post do
     NodeInstruction.unlock_all
-    flash[:info] = 'Unlocked successfully'
+    flash[:notice] = 'Unlocked successfully'
     redirect_to admin_node_instructions_path
   end
 
   member_action :force, method: :patch do
     resource.send(params[:state])
-    flash[:info] = 'Updated successfully'
+    flash[:notice] = 'Updated successfully'
     redirect_to admin_node_instruction_path(resource)
   end
 
