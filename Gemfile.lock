@@ -128,6 +128,8 @@ GEM
       activesupport (>= 3.0)
     cocaine (0.5.3)
       climate_control (>= 0.0.3, < 1.0)
+    codemirror-rails (4.0)
+      railties (>= 3.0, < 5)
     coderay (1.1.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
@@ -534,6 +536,7 @@ DEPENDENCIES
   capistrano
   capistrano_colors
   charlock_holmes (~> 0.6.9)
+  codemirror-rails (~> 4.0)
   coffee-rails (~> 4.0.1)
   compass-rails (~> 1.1.6)
   creole
