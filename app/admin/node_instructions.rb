@@ -43,7 +43,9 @@ ActiveAdmin.register NodeInstruction do
       row :created_at
       row :updated_at
       row :instruction
-      row :output
+      row(:output) do |ni|
+        ni.output.to_s.lines.join('<br/>').html_safe
+      end
     end
   end
 
