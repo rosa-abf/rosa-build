@@ -39,7 +39,7 @@
               .col-md-12.col-sm-12
                 %ul.timeline
                   / timeline time label
-                  %li.time-label{ 'ng-repeat-start' => 'item in activity_tab.content' }
+                  %li.time-label{ 'ng-repeat-start' => 'item in getCurActivity().feed' }
                     %span{ 'ng-show' => "needShowTimeLabel($index)", 'ng-cloak' => true }
                       {{item.date | amDateFormat:'ll'}}
                   / timeline item
@@ -47,3 +47,8 @@
                   .hide{ 'ng-repeat-end' => true }
                   %li
                     %i.img-circle.bg-primary.fa.fa-clock-o
+            %hr
+            %btn.center-block.btn.btn-primary{ 'ng-show' => 'getCurActivity().next_page_link',
+                                               'ng-click' => "load_more()", 'ng-cloak' => true }
+              = t('layout.activity_feed.load_messages')
+              {{activity_tab.content.next_page_link}}
