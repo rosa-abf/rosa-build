@@ -57,11 +57,32 @@ ActiveAdmin.register NodeInstruction do
 
   end
 
-  member_action :force, method: :patch do
-    if NodeInstruction::STATUSES.include?(params[:state])
-      resource.send(params[:state])
-      flash[:info] = 'Action added to queue successfully'
+  sidebar 'Actions', only: :index do
+    locked = NodeInstruction.all_locked?
+    span(class: "status_tag #{locked ? 'red' : 'green'}") do
+      if locked
+        link_to 'Unlock instructions', unlock_all_admin_node_instructions_path, method: :post
+      else
+        link_to 'Lock instructions', lock_all_admin_node_instructions_path, method: :post
+      end
     end
+  end
+
+  collection_action :lock_all, method: :post do
+    NodeInstruction.lock_all
+    flash[:info] = 'Locked successfully'
+    redirect_to admin_node_instructions_path
+  end
+
+  collection_action :unlock_all, method: :post do
+    NodeInstruction.unlock_all
+    flash[:info] = 'Unlocked successfully'
+    redirect_to admin_node_instructions_path
+  end
+
+  member_action :force, method: :patch do
+    resource.send(params[:state])
+    flash[:info] = 'Updated successfully'
     redirect_to admin_node_instruction_path(resource)
   end
 

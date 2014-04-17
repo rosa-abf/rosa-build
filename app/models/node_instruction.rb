@@ -6,6 +6,8 @@ class NodeInstruction < ActiveRecord::Base
     FAILED      = 'failed'
   ]
 
+  LOCK_KEY = 'NodeInstruction::lock-key'
+
   belongs_to :user
 
   attr_encrypted :instruction, key: APP_CONFIG['keys']['node_instruction_secret_key']
@@ -21,7 +23,9 @@ class NodeInstruction < ActiveRecord::Base
 
   state_machine :status, initial: :ready do
 
-    after_transition on: :restart, do: :perform_restart
+    after_transition(on: :restart) do |instruction, transition|
+      instruction.perform_restart
+    end
 
     event :ready do
       transition %i(ready restarting disabled failed) => :ready
@@ -41,6 +45,8 @@ class NodeInstruction < ActiveRecord::Base
   end
 
   def perform_restart
+    restart_failed if NodeInstruction.all_locked?
+
     success = false
     output  = ''
     instruction.lines.each do |command|
@@ -61,5 +67,17 @@ class NodeInstruction < ActiveRecord::Base
     success ? ready : restart_failed
   end
   later :perform_restart, queue: :low
+
+  def self.all_locked?
+    Redis.current.get(LOCK_KEY).present?
+  end
+
+  def self.lock_all
+    Redis.current.set(LOCK_KEY, 1)
+  end
+
+  def self.unlock_all
+    Redis.current.del(LOCK_KEY)
+  end
 
 end
