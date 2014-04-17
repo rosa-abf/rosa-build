@@ -40,7 +40,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   def log
     render json: {
-      log: @product_build_list.abf_worker_log,
+      log: Pygments.highlight(@product_build_list.abf_worker_log, lexer: 'sh'),
       building: @product_build_list.build_started?
     }
   end

@@ -1,3 +1,6 @@
+= javascript_include_tag 'codemirror_editor'
+= stylesheet_link_tag    'codemirror'
+
 %h3= t("layout.projects.files_in_project")
 .files
   .l= render 'whereami'
@@ -21,7 +24,7 @@
   $(function() {
     var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
       lineNumbers: true,
-      mode: '#{@blob.raw_mime_type.content_type}'
+      mode: '#{@blob.raw_mime_type}'
     });
     $(".CodeMirror").resizable({
       stop: function() { editor.refresh(); },

@@ -8,7 +8,3 @@
   .top= render 'top'
   .data= render "render_as_#{@blob.render_as}"
 
-:javascript
-  $(document).ready(function() {
-    CodeMirror.runMode($('#code').text().replace(/&amp;/gi, '&'), "#{@blob.raw_mime_type.content_type}", document.getElementById("output"));
-  });

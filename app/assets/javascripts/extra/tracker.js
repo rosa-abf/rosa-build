@@ -214,7 +214,7 @@ $(document).ready(function() {
                   form.fadeOut('slow');
                   $('#edit_issue_content').fadeIn('slow');
                   $('h3.issue_title').html(form.find('#issue_title').attr('value'));
-                  $('.fulltext.view.issue_body').html(data).find('code').each(function (code) { CodeMirrorRun(this); })
+                  $('.fulltext.view.issue_body').html(data);
                 },
       error: function(data){
                form.before(data.responseText);
