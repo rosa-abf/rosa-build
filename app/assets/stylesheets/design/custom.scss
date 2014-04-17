@@ -217,7 +217,7 @@ table.blob td.lines pre {
 
 textarea#code {
     width: 845px;
-    resize: none;
+    resize: vertical;
     height: 30em;
 }
 
@@ -393,7 +393,6 @@ div.comment textarea { resize: none }
 #repo-wrapper div.file div.data .formatted {
     overflow-x: auto;
     overflow-y: none;
-    white-space: pre;
 }
 
 table.tablesorter tbody td a .issue_title {
@@ -474,6 +473,11 @@ div.blame_data tr td.lines {
 div.blame_data tr td.code {
     padding: 0 10px !important;
     font-size: 12px;
+    width: auto;
+    font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
+    color: #000000;
+    padding: 10px 5px 0px;
+    margin-left: 45px;
 }
 
 div.blame_data tr td.code pre {
@@ -1588,6 +1592,8 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     code {
       background-color: transparent;
       border: none;
+      margin: 0;
+      padding: 0;
     }
   }
 
@@ -1788,10 +1794,6 @@ table#myTable thead tr.search th form.button_to div input {
   margin-bottom: 10px;
   margin-top: 10px;
   max-width: 860px;
-}
-
-.CodeMirror {
-  border: 1px solid #DDDDDD;
 }
 
 .semi {

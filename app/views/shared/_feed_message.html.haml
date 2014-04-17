@@ -23,6 +23,6 @@
           .fulltext{class: "#{presenter.expandable? ? "hidden" : ''} #{presenter.caption? ? "" : "alone"}",
                     id: presenter.expandable? ? "content-expand#{item_no}" : ''}
             .md_and_cm{class: presenter.is_reference_to_issue ? '' : 'cm-s-default'}
-              =presenter.is_reference_to_issue ? presenter.content : markdown(presenter.content)
+              = preserve do
+                = presenter.is_reference_to_issue ? presenter.content : markdown(presenter.content)
           .both
-
