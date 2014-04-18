@@ -1,5 +1,5 @@
 class CleanRpmBuildNodeJob
-  @queue = :hook
+  @queue = :middle
 
   def self.perform
     RpmBuildNode.all.each do |n|

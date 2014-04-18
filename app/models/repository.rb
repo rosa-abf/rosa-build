@@ -59,8 +59,7 @@ class Repository < ActiveRecord::Base
       from.projects.find_each {|p| self.projects << p}
     end
   end
-  later :clone_relations, loner: true, queue: :clone_build
-
+  later :clone_relations, loner: true, queue: :low
   def add_projects(list, user)
     current_ability = Ability.new(user)
     list.lines.each do |line|
@@ -75,7 +74,7 @@ class Repository < ActiveRecord::Base
       end
     end
   end
-  later :add_projects, queue: :clone_build
+  later :add_projects, queue: :middle
 
   def remove_projects(list)
     list.lines.each do |name|
@@ -87,7 +86,7 @@ class Repository < ActiveRecord::Base
       end
     end
   end
-  later :remove_projects, queue: :clone_build
+  later :remove_projects, queue: :middle
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
@@ -148,7 +147,7 @@ class Repository < ActiveRecord::Base
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
-  later :destroy, queue: :clone_build
+  later :destroy, queue: :low
 
   def self.custom_sort(repos)
     repos.select{ |r| SORT.keys.include?(r.name) }.sort{ |a,b| SORT[a.name] <=>  SORT[b.name] } | repos.sort_by(&:name)

@@ -1,5 +1,5 @@
 class CleanApiDefenderStatisticsJob
-  @queue = :clone_build
+  @queue = :low
 
   def self.perform
     deadline = Date.today - 1.month

@@ -14,6 +14,7 @@ common: &common
       port: 6379
   keys:
     key_pair_secret_key: 'key_pair_secret_key'
+    node_instruction_secret_key: 'node_instruction_secret_key'
     airbrake_api_key: 'airbrake_api_key'
     devise_pepper: 'e295a79fb7966e94a6e8b184ba65791a'
     secret_token: 'e295a79fb7966e94a6e8b184ba65791a'

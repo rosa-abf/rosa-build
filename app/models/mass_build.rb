@@ -59,7 +59,7 @@ class MassBuild < ActiveRecord::Base
       end
     end
   end
-  later :build_all, queue: :clone_build
+  later :build_all, queue: :low
 
   def generate_failed_builds_list
     generate_list BuildList::BUILD_ERROR
@@ -75,17 +75,17 @@ class MassBuild < ActiveRecord::Base
       bl.cancel
     end
   end
-  later :cancel_all, queue: :clone_build
+  later :cancel_all, queue: :low
 
   def publish_success_builds(user)
     publish user, BuildList::SUCCESS, BuildList::FAILED_PUBLISH
   end
-  later :publish_success_builds, queue: :clone_build
+  later :publish_success_builds, queue: :low
 
   def publish_test_failed_builds(user)
     publish user, BuildList::TESTS_FAILED
   end
-  later :publish_test_failed_builds, queue: :clone_build
+  later :publish_test_failed_builds, queue: :low
 
   COUNT_STATUSES.each do |stat|
     stat_count = "#{stat}_count"
