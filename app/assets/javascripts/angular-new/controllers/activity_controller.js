@@ -29,7 +29,7 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
             case 'new_issue_notification':
               template = 'btn-warning fa-check-square-o';
               break;
-        }
+        };
 
         return template;
     }
