@@ -5,15 +5,12 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
     $scope.tracker_tab       = { title: 'activity_menu.tracker',       content: [] , active: false };
     $scope.pull_requests_tab = { title: 'activity_menu.pull_requests', content: [] , active: false };
 
-     $scope.getContent=function(tab){
+    $scope.getContent=function(tab){
       var cur_tab = $scope.$eval(tab+'_tab');
-      /* make request for data */
-      var path = Routes.root_path({ filter: cur_tab.filter, format: 'json' });
-      $http.get(path).then(function(res){
-        cur_tab[cur_tab.filter].feed = res.data.feed;
-        cur_tab[cur_tab.filter].next_page_link = res.data.next_page_link;
-      });
-    }
+      if (tab === 'activity') {
+        $scope.getActivityContent();
+      }
+    };
 
     $scope.getTimeLinefaClass = function(content) {
         var template = 'btn-warning fa-question';
@@ -42,14 +39,13 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
     };
 
     $scope.needShowTimeLabel = function(index) {
-      var cur_date  = $filter('amDateFormat')($scope.getCurActivity().feed[index].date, 'll');
-      var prev_date = index == 0 || $filter('amDateFormat')($scope.getCurActivity().feed[index-1].date, 'll');
+      var feed = $scope.getCurActivity().feed;
+      if (feed === undefined) {
+        return false;
+      };
+      var cur_date  = $filter('amDateFormat')(feed[index].date, 'll');
+      var prev_date = index == 0 || $filter('amDateFormat')(feed[index-1].date, 'll');
       return cur_date !== prev_date;
-    };
-
-    $scope.isComment = function(content) {
-      return content.kind === 'new_comment_notification' ||
-             content.kind === 'new_comment_commit_notification';
     };
 
     $scope.getTemplate = function(content) {
@@ -67,4 +63,18 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
         cur_tab.next_page_link = res.data.next_page_link;
       });
     };
+
+    $scope.changeActivityFilter = function(filter) {
+      $scope.activity_tab.filter = filter;
+      $scope.getActivityContent();
+    };
+
+    $scope.getActivityContent = function() {
+      var path = Routes.root_path({ filter: $scope.activity_tab.filter, format: 'json' });
+      $http.get(path).then(function(res) {
+        $scope.getCurActivity().feed = res.data.feed;
+        $scope.getCurActivity().next_page_link = res.data.next_page_link;
+      });
+    };
+
 }]);
