@@ -109,7 +109,7 @@ class Project < ActiveRecord::Base
   end
 
   def init_mass_import
-    Project.perform_later :clone_build, :run_mass_import, url, srpms_list, visibility, owner, add_to_repository_id
+    Project.perform_later :low, :run_mass_import, url, srpms_list, visibility, owner, add_to_repository_id
   end
 
   def name_with_owner
@@ -417,7 +417,7 @@ class Project < ActiveRecord::Base
     PullRequest.where(from_project_id: id).each{ |p| p.update_relations(old_name) }
     pull_requests.where('from_project_id != to_project_id').each(&:update_relations)
   end
-  later :update_path_to_project, queue: :clone_build
+  later :update_path_to_project, queue: :middle
 
   def check_default_branch
     if self.repo.branches.count > 0 && self.repo.branches.map(&:name).exclude?(self.default_branch)

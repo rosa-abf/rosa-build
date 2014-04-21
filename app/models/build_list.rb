@@ -259,8 +259,8 @@ class BuildList < ActiveRecord::Base
     end
   end
 
-  later :publish, queue: :clone_build
-  later :add_job_to_abf_worker_queue, queue: :clone_build
+  later :publish, queue: :middle
+  later :add_job_to_abf_worker_queue, queue: :middle
 
   HUMAN_CONTAINER_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_publish,
                                BUILD_PUBLISHED => :container_published,
@@ -576,7 +576,7 @@ class BuildList < ActiveRecord::Base
   def delayed_add_job_to_abf_worker_queue(*args)
     restart_job if status == BUILD_PENDING
   end
-  later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :clone_build
+  later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :middle
 
   protected
 

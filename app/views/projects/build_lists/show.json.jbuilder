@@ -31,7 +31,7 @@ json.build_list do
   json.builder do
     json.fullname @build_list.builder.try(:fullname)
     json.path user_path(@build_list.builder)
-  end if @build_list.builder
+  end if @build_list.builder && (!@build_list.builder.system? || current_user.try(:admin?))
 
   json.advisory do
     json.(@build_list.advisory, :description, :advisory_id)

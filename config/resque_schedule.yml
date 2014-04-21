@@ -2,26 +2,33 @@ clean_rpm_build_nodes:
   every:
     - '1m'
   class: 'CleanRpmBuildNodeJob'
-  queue: hook
+  queue: middle
   description: 'Cleans RPM build nodes'
 
 build_lists_publish_task_manager:
   every:
     - '3m'
   class: 'BuildListsPublishTaskManagerJob'
-  queue: hook
+  queue: middle
   description: 'Creates tasks for publishing'
 
 build_lists_queues_monitoring:
   every:
     - '1m'
   class: 'BuildListsQueuesMonitoringJob'
-  queue: hook
+  queue: middle
   description: 'Monitoring for "user/mass-build" queues'
 
 clean_api_defender_statistics:
   every:
     - '1d'
   class: 'CleanApiDefenderStatisticsJob'
-  queue: clone_build
+  queue: low
   description: 'Cleans ApiDefender statistics'
+
+restart_nodes:
+  every:
+    - '5m'
+  class: 'RestartNodesJob'
+  queue: low
+  description: 'Restarts unavailable nodes'

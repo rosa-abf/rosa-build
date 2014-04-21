@@ -1,5 +1,5 @@
 class BuildListsQueuesMonitoringJob
-  @queue = :hook
+  @queue = :middle
 
   def self.perform
     Redis.current.smembers('resque:queues').each do |key|

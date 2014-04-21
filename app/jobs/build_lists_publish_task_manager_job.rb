@@ -1,5 +1,5 @@
 class BuildListsPublishTaskManagerJob
-  @queue = :hook
+  @queue = :middle
 
   def self.perform
     AbfWorker::BuildListsPublishTaskManager.new.run
