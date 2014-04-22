@@ -68,7 +68,7 @@ Rosa::Application.configure do
        codemirror_editor.js codemirror_editor.css codemirror.css new_application.css new_application.js)
 
   # Compress JavaScripts and CSS.
-  #config.assets.js_compressor = :uglifier
+  config.assets.js_compressor = :uglifier
   config.assets.css_compressor = :sass
 
   config.eager_load = true
