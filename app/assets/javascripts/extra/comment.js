@@ -40,12 +40,11 @@ $(document).ready(function() {
 
   $('.add_line-comment').on('click', function() {
     function ProcessData(data) {
-      if(yield) {
-        var str = "<tr class='inline-comments'><td class='line_numbers' colspan='2'></td>"+"<td>"+data+"</td></tr>";
+      if (inline_comment) {
+        var str = "<tr class='inline-comments'><td class='line_numbers' colspan='2'></td><td>"+data+"</td></tr>";
         par.after(str);
         par = par.next();
-      }
-      else {
+      } else {
         par.find('td:last').append(data);
       }
       par.find('#md_tabs.nav.nav-tabs').each(function(i) {
@@ -55,19 +54,18 @@ $(document).ready(function() {
     }
     var line = $(this);
     var tmp = line.parents('tr');
-    var yield = false;
+    var inline_comment = false;
     var par = null;
 
-    if(tmp.hasClass('inline-comments')) {
+    if (tmp.hasClass('inline-comments')) {
       par = tmp;
-    }
-    else {
+    } else {
       par = tmp.next('tr.inline-comments');
     }
 
     if(par.length == 0) {
       par = tmp;
-      yield = true;
+      inline_comment = true;
     }
 
     // Hide visible new comment form
