@@ -25,7 +25,7 @@ angular.module('ajoslin.promise-tracker')
  */
 
 //angular versions before 1.1.4 use responseInterceptor format
-.factory('trackerResponseInterceptor', function($q, promiseTracker, $injector) {
+.factory('trackerResponseInterceptor', ['$q', 'promiseTracker', '$injector', function($q, promiseTracker, $injector) {
   //We use $injector get around circular dependency problem for $http
   var $http;
   return function spinnerResponseInterceptor(promise) {
@@ -37,9 +37,9 @@ angular.module('ajoslin.promise-tracker')
     }
     return promise;
   };
-})
+}])
 
-.factory('trackerHttpInterceptor', function($q, promiseTracker, $injector) {
+.factory('trackerHttpInterceptor', ['$q', 'promiseTracker', '$injector', function($q, promiseTracker, $injector) {
   return {
     request: function(config) {
       if (config.tracker) {
@@ -61,10 +61,7 @@ angular.module('ajoslin.promise-tracker')
       return $q.reject(response);
     }
   };
-})
-
-;
-
+}]);
 
 angular.module('ajoslin.promise-tracker')
 
@@ -238,5 +235,4 @@ angular.module('ajoslin.promise-tracker')
       return trackers[trackerName];
     };
   }];
-})
-;
+});
