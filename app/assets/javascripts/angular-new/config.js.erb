@@ -3,7 +3,7 @@ var RosaABF = angular.module('RosaABF', ['ui.bootstrap', 'angular-i18n', 'angula
                                          'chieffancypants.loadingBar', 'ngSanitize', 'templates',
                                          'ui.codemirror']);
 
-var LocalesHelper = function($locale) {
+RosaABF.factory("LocalesHelper", ['$locale', function($locale) {
   var locales = {
     'ru' : 'ru-ru',
     'en' : 'en-us'
@@ -13,9 +13,7 @@ var LocalesHelper = function($locale) {
       $locale.id = locales[locale];
     }
   }
-}
-
-RosaABF.factory("LocalesHelper", ['$locale', LocalesHelper]);
+}]);
 
 RosaABF.config(function(cfpLoadingBarProvider) {
   cfpLoadingBarProvider.includeSpinner = false;
