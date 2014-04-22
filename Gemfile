@@ -83,7 +83,7 @@ gem 'time_diff'
 gem 'sass-rails', '~> 4.0.1'
 gem 'coffee-rails', '~> 4.0.1'
 gem 'compass-rails', '~> 1.1.6'
-gem 'uglifier', '~> 2.4'
+gem 'uglifier', '~> 2.5'
 gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
 gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
 
