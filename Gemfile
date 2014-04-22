@@ -77,6 +77,7 @@ gem 'js-routes'
 gem 'soundmanager-rails'
 gem 'angular-ui-bootstrap-rails'
 gem 'angular-rails-templates'
+gem 'ngmin-rails'
 
 gem 'time_diff'
 
