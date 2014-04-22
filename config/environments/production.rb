@@ -72,4 +72,6 @@ Rosa::Application.configure do
   config.assets.css_compressor = :sass
 
   config.eager_load = true
+
+  config.assets.logger = Logger.new $stdout
 end
