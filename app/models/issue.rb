@@ -31,7 +31,8 @@ class Issue < ActiveRecord::Base
   # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
   scope :search, ->(q) { where("#{table_name}.title ILIKE ?", "%#{q.mb_chars.downcase}%") if q.present? }
   scope :without_pull_requests, -> {
-    where('NOT EXISTS (select null from pull_requests as pr where pr.issue_id = issues.id)')
+    where('NOT EXISTS (select null from pull_requests as pr where pr.issue_id = issues.id)').
+    references(:pull_requests)
   }
 
   def assign_uname
