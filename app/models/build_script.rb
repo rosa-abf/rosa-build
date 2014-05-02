@@ -29,7 +29,7 @@ class BuildScript < ActiveRecord::Base
   end
 
   def project_name
-    project.try(:name_with_owner) || @project_name
+    @project_name.presence || project.try(:name_with_owner)
   end
 
   def can_update_archive?
@@ -55,8 +55,8 @@ class BuildScript < ActiveRecord::Base
   end
 
   def attach_project
-    if project_name.present?
-      self.project = Project.find_by_owner_and_name(project_name)
+    if @project_name.present?
+      self.project = Project.find_by_owner_and_name(@project_name)
     end
   end
 
