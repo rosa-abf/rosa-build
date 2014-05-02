@@ -29,7 +29,7 @@ class BuildScript < ActiveRecord::Base
   end
 
   def project_name
-    project.try(:name_with_owner)
+    project.try(:name_with_owner) || @project_name
   end
 
   def can_update_archive?
