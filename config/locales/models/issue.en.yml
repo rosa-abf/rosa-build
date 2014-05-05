@@ -61,6 +61,10 @@ en:
       cancel_button: Cancel
       done: Done
 
+      created_by: 'Created by '
+      updated_at: ' updated'
+      assigned_to: 'Assigned to'
+
   flash:
     issue:
       saved: Task saved

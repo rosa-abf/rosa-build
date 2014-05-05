@@ -18,4 +18,3 @@
 
 //= require_tree ./angular-new
 //= require loading-bar
-//= require ng-table

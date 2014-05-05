@@ -55,7 +55,11 @@ class HomeController < ApplicationController
     @issues = @issues.order("issues.#{@sort}_at #{@direction}")
                      .includes(:assignee, :user, :pull_request).uniq
                      .paginate per_page: 20, page: params[:page]
-    render 'issues', layout: request.xhr? ? 'with_sidebar' : 'application'
+
+    respond_to do |format|
+      format.html { request.xhr? ? render('issues', layout: 'with_sidebar') : render('issues', layout: 'application') }
+      format.json { render 'issues' }
+    end
   end
 
   def pull_requests

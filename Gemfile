@@ -78,7 +78,6 @@ gem 'soundmanager-rails'
 gem 'angular-ui-bootstrap-rails'
 gem 'angular-rails-templates'
 gem 'ngmin-rails'
-gem 'ng-table-rails', '~> 0.0.1'
 
 gem 'time_diff'
 

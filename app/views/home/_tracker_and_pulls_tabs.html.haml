@@ -1,0 +1,42 @@
+- %w(tracker pull_requests).each do |kind|
+  %tab{ 'heading' => "{{#{kind}_tab.title | i18n}}", 'active' => "#{kind}_tab.active", 'select' => "getContent('#{kind}')" }
+    .row
+      .col-md-3.col-sm-4.offset20
+        %ul.nav.nav-pills.nav-stacked
+          - %w(all assigned created).each do |kind_filter|
+            %li{ 'ng-class' => "{ active: #{kind}_tab.filter.#{kind_filter} }" }
+              %a{ 'ng-click' => "setIssuesFilter('#{kind}', '#{kind_filter}')" }
+                %span.badge.pull-right= "{{ #{kind}_tab.filter.#{kind_filter}_count }}"
+                = "{{'#{kind}.filter.#{kind_filter}' | i18n}}"
+      .col-md-9.col-sm-8.offset20
+        %tabset.boffset10
+          - %w(open closed).each do |status|
+            %tab{ 'heading' => t("layout.issues.statuses.#{status}"), 'active' => "#{kind}_tab.status.#{status}.active",
+                  'ng-click' => "setIssuesStatus('#{kind}', '#{status}')" }
+
+          .pull-right.boffset10
+            - %w(updated submitted).each do |sort|
+              %button.btn.btn-default{ 'type' => 'button', 'ng-click' => "setIssuesSort('#{kind}', '#{sort}')" }
+                %span.fa{ 'ng-class' => "#{kind}_tab.sort.#{sort}_class" }= " #{t("layout.issues.sort.#{sort}")}"
+
+          %table.table
+            %tr{ 'ng-repeat' => "issue in #{kind}_tab.content" }
+              %td
+                %a{ 'ng-href' => "{{issue.issue_url}}" }
+                  %span.text-muted {{issue.project_name}}
+                  {{issue.title}}
+                .small
+                  = t 'layout.issues.created_by'
+                  %a{ 'ng-href' => "{{issue.user.link}}" } {{issue.user.uname}}
+                  %span.text-muted{ 'am-time-ago' => 'issue.created_at',
+                                    title: "{{issue.created_at | amDateFormat:'ddd, LLL'}}" }
+                  %span.text-muted
+                    = "(#{t 'layout.issues.updated_at'} "
+                    %span{ 'am-time-ago' => 'issue.updated_at',
+                           title: "{{issue.updated_at | amDateFormat:'ddd, LLL'}}" }
+                    )
+              %td
+                %span.text-muted {{'#' + issue.serial_id}}
+                %a{ 'ng-href' => '{{issue.assignee.link}}',
+                    'title' => "#{t('layout.issues.assigned_to')} {{issue.assignee.fullname}}" }
+                  %img{ 'ng-src' => '{{issue.assignee.image}}' }
