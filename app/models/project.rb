@@ -245,7 +245,7 @@ class Project < ActiveRecord::Base
 
     archive = archive_by_treeish_and_format tag.name, format
     sha1    = FileStoreClean.save_file_to_file_store(archive)
-    return nil in sha1.blank?
+    return nil if sha1.blank?
 
     if project_tag
       project_tag.destroy_files_from_file_store(project_tag.sha1)
