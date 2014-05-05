@@ -2,8 +2,8 @@ class BuildScript < ActiveRecord::Base
   include FileStoreClean
 
   STATUSES = [
-    active  = 'active',
-    blocked = 'blocked'
+    ACTIVE  = 'active',
+    BLOCKED = 'blocked'
   ]
   FORMAT = 'tar.gz'
 
@@ -12,7 +12,7 @@ class BuildScript < ActiveRecord::Base
   validates :treeish,     presence: true
   validates :project_id,  presence: true, uniqueness: { scope: :treeish }
 
-  scope :by_active,   -> { where(status: 'active') }
+  scope :by_active,   -> { where(status: ACTIVE) }
   scope :by_treeish,  -> treeish { where(treeish: treeish) }
 
   before_validation :attach_project
