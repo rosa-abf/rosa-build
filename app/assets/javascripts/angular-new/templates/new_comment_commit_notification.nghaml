@@ -11,7 +11,7 @@
     .clearfix
   .timeline-body
     %p
-      {{'notification.new_comment.title' | i18n}}
+      {{'notification.new_commit_comment.title' | i18n}}
 
     .row
       .col-sm-3.col-md-2

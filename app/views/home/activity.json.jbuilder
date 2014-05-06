@@ -37,7 +37,7 @@ json.feed do
           json.array! item.data[:last_commits] do |commit|
             json.hash shortest_hash_id(commit[0])
             json.message markdown(short_message(commit[1], 70))
-            json.commit_path commit_path(project_name_with_owner, commit[0])
+            json.link commit_path(project_name_with_owner, commit[0])
           end
         end
         if item.data[:other_commits].present?
@@ -62,6 +62,32 @@ json.feed do
       when 'wiki_new_commit_notification'
         json.wiki_link history_project_wiki_index_path(project_name_with_owner)
         json.project_link project_path(project_name_with_owner)
+
+      when 'build_list_notification'
+        json.project_link project_path(project_name_with_owner)
+        json.build_list do
+          json.id item.data[:build_list_id]
+          json.link build_list_path(item.data[:build_list_id])
+          json.status_message get_feed_build_list_status_message(item.data[:status])
+        end
+
+      when 'issue_assign_notification'
+        json.project_link project_path(project_name_with_owner)
+        json.issue do
+          json.title item.data[:issue_title]
+          json.link project_issue_path(project_name_with_owner, item.data[:issue_serial_id]) if item.data[:issue_serial_id].present?
+        end
+
+      when 'new_comment_commit_notification'
+        json.project_link project_path(project_name_with_owner)
+        json.commit do
+          json.link commit_path(project_name_with_owner, item.data[:commit_id]) if item.data[:commit_id].present?
+          json.hash shortest_hash_id(item.data[:commit_id])
+          json.message markdown(short_message(item.data[:commit_message], 70))
+          json.read_more item.data[:comment_id]
+        end
+        json.body markdown(short_message(item.data[:comment_body], 100))
+
       end
 
       json.id item.id

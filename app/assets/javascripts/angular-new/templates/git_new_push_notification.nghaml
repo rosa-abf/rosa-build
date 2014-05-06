@@ -19,7 +19,7 @@
     .row
       .container-fluid{ 'ng-repeat' => 'commit in item.last_commits' }
         .col-sm-3.col-md-2
-          %a{ 'ng-href' => "{{commit.commit_path}}" } {{commit.hash}}
+          %a{ 'ng-href' => "{{commit.link}}" } {{commit.hash}}
         .col-sm-8.col-md-9{ 'ng-bind-html' => "commit.message" }
         .clearfix
 

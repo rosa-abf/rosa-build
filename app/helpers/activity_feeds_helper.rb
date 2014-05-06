@@ -18,4 +18,17 @@ module ActivityFeedsHelper
   def user_link(user, user_name, full_url = false)
     user.persisted? ? link_to(user_name, full_url ? user_url(user) : user_path(user)) : user_name
   end
+
+  def get_feed_build_list_status_message(status)
+    message, error = case status
+        when BuildList::BUILD_PENDING
+          ['pending', nil]
+        when BuildList::BUILD_PUBLISHED
+          ['published', nil]
+        when BuildList::SUCCESS
+          ['success', nil]
+        else ['failed', t("layout.build_lists.statuses.#{BuildList::HUMAN_STATUSES[status]}")]
+    end
+    " #{t("notifications.bodies.build_status.#{message}", error: error)}"
+  end
 end
