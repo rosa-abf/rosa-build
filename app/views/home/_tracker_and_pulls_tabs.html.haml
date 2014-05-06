@@ -11,7 +11,9 @@
       .col-md-9.col-sm-8.offset20
         %tabset.boffset10
           - %w(open closed).each do |status|
-            %tab{ 'heading' => t("layout.issues.statuses.#{status}"), 'active' => "#{kind}_tab.status.#{status}.active",
+            - count_issues = "({{#{kind}_tab.filter.#{status}_count}})"
+            %tab{ 'heading' => "#{t "layout.issues.statuses.#{status}"} #{count_issues}",
+                  'active' => "#{kind}_tab.status.#{status}.active",
                   'ng-click' => "setIssuesStatus('#{kind}', '#{status}')" }
 
           .pull-right.boffset10
@@ -23,8 +25,11 @@
             %tr{ 'ng-repeat' => "issue in #{kind}_tab.content" }
               %td
                 %a{ 'ng-href' => "{{issue.issue_url}}" }
-                  %span.text-muted {{issue.project_name}}
+                  %span.text-info {{issue.project_name}}
                   {{issue.title}}
+                %span.label.small.loffset5{ 'ng-repeat' => "label in issue.labels",
+                                            'ng-style' => "{background: label.color}" }
+                  {{label.name}}
                 .small
                   = t 'layout.issues.created_by'
                   %a{ 'ng-href' => "{{issue.user.link}}" } {{issue.user.uname}}
@@ -40,3 +45,14 @@
                 %a{ 'ng-href' => '{{issue.assignee.link}}',
                     'title' => "#{t('layout.issues.assigned_to')} {{issue.assignee.fullname}}" }
                   %img{ 'ng-src' => '{{issue.assignee.image}}' }
+
+          %pagination.pagination-sm{ 'boundary-links' => 'true',
+            'total-items' => "#{kind}_tab.pagination.total_items",
+            'page' => "#{kind}_tab.pagination.page",
+            'previous-text' => "‹", 'next-text' => "›",
+            'first-text' => "«", "last-text" => "»",
+            'items-per-page' => Issue.per_page,
+            'max-size' => 5,
+            'rotate' => 'false',
+            'ng-show' => "#{kind}_tab.pagination.total_items > #{Issue.per_page}",
+            'on-select-page' => "selectPage('#{kind}', page)" }

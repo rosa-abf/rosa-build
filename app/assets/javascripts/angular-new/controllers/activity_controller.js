@@ -4,14 +4,14 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
                                  all: {}, code: {}, tracker: {}, build: {}, wiki: {} };
     $scope.tracker_tab       = { title: 'activity_menu.tracker',       content: [] , active: false,
                                  filter: { all: true, assigned: false, created: false, name: 'all',
-                                           all_count: 0, assigned_count: 0, created_count: 0 },
+                                           all_count: 0, assigned_count: 0, created_count: 0, closed_count: 0 },
                                  sort: { sort: 'updated', direction: 'desc', updated_class: 'fa-chevron-up' },
-                                 status: 'open' };
+                                 status: 'open', pagination: { page: 1, total_count: 0 } };
     $scope.pull_requests_tab = { title: 'activity_menu.pull_requests', content: [] , active: false,
                                  filter: { all: true, assigned: false, created: false, name: 'all',
-                                           all_count: 0, assigned_count: 0, created_count: 0 },
+                                           all_count: 0, assigned_count: 0, created_count: 0, closed_count: 0 },
                                  sort: { sort: 'updated', direction: 'desc', updated_class: 'fa-chevron-up' },
-                                 status: 'open' };
+                                 status: 'open', pagination: { page: 1, total_count: 0 } };
 
     $scope.getContent = function(tab){
       var cur_tab = $scope.$eval(tab+'_tab');
@@ -27,6 +27,15 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
         $scope.tracker_tab.active = false;
         $scope.pull_requests_tab.active = true;
         $scope.getIssuesContent();
+      };
+    };
+
+    getIssuesTab = function(kind) {
+      if(kind === 'tracker') {
+        return $scope.tracker_tab;
+      }
+      else if(kind === 'pull_requests') {
+        return $scope.pull_requests_tab;
       };
     };
 
@@ -96,12 +105,7 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
     };
 
     $scope.setIssuesFilter = function(kind, issues_filter) {
-      if(kind === 'tracker') {
-        var filter = $scope.tracker_tab.filter;
-      }
-      else if(kind === 'pull_requests') {
-        var filter = $scope.pull_requests_tab.filter;
-      };
+      var filter = getIssuesTab(kind).filter;
 
       filter.all            = false;
       filter.assigned       = false;
@@ -118,6 +122,7 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
                      sort: tab.sort.sort,
                      direction: tab.sort.direction,
                      status: tab.status,
+                     page: tab.pagination.page,
                      format: 'json' });
       }
       else if($scope.pull_requests_tab.active) {
@@ -126,24 +131,24 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
                      sort: tab.sort.sort,
                      direction: tab.sort.direction,
                      status: tab.status,
+                     page: tab.pagination.page,
                      format: 'json' });
       };
 
       $http.get(path).then(function(res) {
-        tab.content        = res.data.content;
-        tab.filter.all_count      = res.data.all_count;
-        tab.filter.assigned_count = res.data.assigned_count;
-        tab.filter.created_count  = res.data.created_count;
+        tab.content                = res.data.content;
+        tab.filter.all_count       = res.data.all_count;
+        tab.filter.assigned_count  = res.data.assigned_count;
+        tab.filter.created_count   = res.data.created_count;
+        tab.filter.closed_count    = res.data.closed_count;
+        tab.filter.open_count      = res.data.open_count;
+        tab.pagination.page        = res.data.page;
+        tab.pagination.total_items = parseInt(res.data.issues_count, 10);
       });
     };
 
     $scope.setIssuesSort = function(kind, issues_sort) {
-      if(kind === 'tracker') {
-        var tab = $scope.tracker_tab;
-      }
-      else if(kind === 'pull_requests') {
-        var tab = $scope.pull_requests_tab;
-      };
+      var tab = getIssuesTab(kind);
       if(tab.sort.direction === 'desc') {
         tab.sort = { sort: issues_sort, direction: 'asc' };
         var sort_class = 'fa-chevron-down';
@@ -157,13 +162,13 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
     };
 
     $scope.setIssuesStatus = function(kind, issues_status) {
-      if(kind === 'tracker') {
-        var tab = $scope.tracker_tab;
-      }
-      else if(kind === 'pull_requests') {
-        var tab = $scope.pull_requests_tab;
-      };
+      var tab = getIssuesTab(kind);
       tab.status = issues_status;
+      $scope.getIssuesContent();
+    };
+
+    $scope.selectPage = function(kind, page) {
+      getIssuesTab(kind).pagination.page = page;
       $scope.getIssuesContent();
     };
 }]);

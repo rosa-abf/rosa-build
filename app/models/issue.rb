@@ -1,6 +1,7 @@
 class Issue < ActiveRecord::Base
   include Feed::Issue
   STATUSES = ['open', 'closed']
+  self.per_page = 20
 
   belongs_to :project
   belongs_to :user

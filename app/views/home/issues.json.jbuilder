@@ -1,6 +1,10 @@
 json.all_count      @all_issues.not_closed_or_merged.count
+json.open_count     @opened_issues.count
+json.closed_count   @closed_issues.count
 json.assigned_count @assigned_issues.not_closed_or_merged.count
 json.created_count  @created_issues.not_closed_or_merged.count
+json.page           params[:page]
+json.issues_count   @issues.count
 
 json.content do
   json.array!(@issues) do |issue|
@@ -18,6 +22,12 @@ json.content do
       json.link user_path(issue.assignee) if issue.assignee
       json.image avatar_url(issue.assignee, :micro) if issue.assignee
       json.fullname issue.assignee.fullname if issue.assignee
+    end
+    json.labels do
+      json.array!(issue.labels) do |label|
+        json.name label.name
+        json.color "##{label.color}"
+      end
     end
   end
 end

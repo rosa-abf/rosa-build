@@ -124,4 +124,10 @@ class ApplicationController < ActionController::Base
   def not_found
     raise ActionController::RoutingError.new('Not Found')
   end
+
+  def current_page
+    params[:page] = 1 if params[:page].to_i < 1
+
+    params[:page]
+  end
 end
