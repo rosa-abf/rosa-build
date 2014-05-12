@@ -27,5 +27,6 @@ en:
         user: User
         auto_publish: Automated publishing
         increase_release_tag: Increase release tag
+        use_cached_chroot: Use cached chroot
         repositories: Repositories
         projects_list: Projects list

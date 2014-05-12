@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140512091135) do
+ActiveRecord::Schema.define(version: 20140512183926) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -323,6 +323,7 @@ ActiveRecord::Schema.define(version: 20140512091135) do
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
     t.boolean  "increase_release_tag",  default: false, null: false
+    t.boolean  "use_cached_chroot",     default: true,  null: false
   end
 
   create_table "users", force: true do |t|
