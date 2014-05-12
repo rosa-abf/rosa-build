@@ -1,5 +1,5 @@
 class AddUseCachedChrootToBuildList < ActiveRecord::Migration
-  def change
+  def up
     # Make existing build_lists 'false', but default to 'true' in the future.
     add_column    :build_lists, :use_cached_chroot, :boolean, null: false, default: false
     change_column :build_lists, :use_cached_chroot, :boolean, null: false, default: true
