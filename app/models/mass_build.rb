@@ -20,7 +20,8 @@ class MassBuild < ActiveRecord::Base
             :build_for_platform_id,
             :arch_names,
             :name,
-            :user_id,               presence: true
+            :user_id,
+            presence:               true
 
   validates :projects_list,
             presence:               true,
