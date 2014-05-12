@@ -1,0 +1,2 @@
+json.wiki_link history_project_wiki_index_path(project_name_with_owner)
+json.project_link project_path(project_name_with_owner)
