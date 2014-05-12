@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140502160112) do
+ActiveRecord::Schema.define(version: 20140512091135) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -140,7 +140,7 @@ ActiveRecord::Schema.define(version: 20140502160112) do
     t.integer  "builder_id"
     t.boolean  "include_testing_subrepository"
     t.string   "auto_publish_status",           default: "default", null: false
-    t.boolean  "use_cached_chroot",             default: true,      null: false
+    t.boolean  "use_cached_chroot",             default: false,     null: false
     t.index ["advisory_id"], :name => "index_build_lists_on_advisory_id"
     t.index ["arch_id"], :name => "index_build_lists_on_arch_id"
     t.index ["mass_build_id", "status"], :name => "index_build_lists_on_mass_build_id_and_status"
