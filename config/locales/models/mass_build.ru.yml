@@ -27,5 +27,6 @@ ru:
         user: Пользователь
         auto_publish: Автоматическая публикация
         increase_release_tag: Увеличить release тег
+        use_cached_chroot: Использовать кэшированный chroot
         repositories: Репозитории
         projects_list: Список проектов
