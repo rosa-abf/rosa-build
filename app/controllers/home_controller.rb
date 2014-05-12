@@ -13,7 +13,7 @@ class HomeController < ApplicationController
     @activity_feeds = @activity_feeds.paginate page: current_page
 
     respond_to do |format|
-      format.html { request.xhr? ? render('_list', layout: false) : render('activity') }
+      format.html { render 'activity' }
       format.json {}
       format.atom
     end
@@ -57,7 +57,7 @@ class HomeController < ApplicationController
                      .paginate page: current_page
 
     respond_to do |format|
-      format.html { request.xhr? ? render('issues', layout: 'with_sidebar') : render('issues', layout: 'application') }
+      format.html { render 'activity' }
       format.json { render 'issues' }
     end
   end

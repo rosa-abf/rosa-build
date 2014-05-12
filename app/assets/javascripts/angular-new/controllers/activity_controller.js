@@ -1,6 +1,6 @@
 RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filter',
   function($scope, $http, $timeout, $q, $filter) {
-    $scope.activity_tab      = { title: 'activity_menu.activity_feed', active: true, filter: 'all',
+    $scope.activity_tab      = { title: 'activity_menu.activity_feed', active: false, filter: 'all',
                                  all: {}, code: {}, tracker: {}, build: {}, wiki: {} };
     $scope.tracker_tab       = { title: 'activity_menu.tracker',       content: [] , active: false,
                                  filter: { all: true, assigned: false, created: false, name: 'all',
@@ -12,6 +12,18 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
                                            all_count: 0, assigned_count: 0, created_count: 0, closed_count: 0 },
                                  sort: { sort: 'updated', direction: 'desc', updated_class: 'fa-chevron-up' },
                                  status: 'open', pagination: { page: 1, total_count: 0 } };
+
+    $scope.init = function(active_tab) {
+      if(active_tab === 'activity') {
+        $scope.activity_tab.active = true;
+      }
+      else if(active_tab === 'issues') {
+        $scope.tracker_tab.active = true;
+      }
+      else if(active_tab === 'pull_requests') {
+        $scope.pull_requests_tab.active = true;
+      };
+    };
 
     $scope.getContent = function(tab){
       var cur_tab = $scope.$eval(tab+'_tab');
