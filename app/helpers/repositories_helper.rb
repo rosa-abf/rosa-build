@@ -20,7 +20,6 @@ module RepositoriesHelper
       COLUMNS,
       {
         sort_by:            "[0, 'asc']",
-        # search_label:       t('layout.search_by_name'),
         search_label:       '',
         placeholder:        t('layout.projects.placeholder.project_name'),
         processing:         t('layout.processing'),
