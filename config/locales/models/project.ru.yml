@@ -1,6 +1,9 @@
 ru:
   layout:
     projects:
+      placeholder:
+        project_name: Название проекта
+        owner_name: Владелец проекта
       build_schedule: Расписание сборок
       mass_import: Массовый импорт
       branches: Ветки

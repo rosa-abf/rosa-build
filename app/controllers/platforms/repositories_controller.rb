@@ -1,5 +1,6 @@
 class Platforms::RepositoriesController < Platforms::BaseController
   include FileStoreHelper
+  include RepositoriesHelper
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
@@ -116,7 +117,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
       ON projects.owner_id = owner.id AND projects.owner_type = owner.type"
     colName = ['projects.name']
     sort_col = params[:iSortCol_0] || 0
-    sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
+    sort_dir = params[:sSortDir_0] == 'asc' ? 'asc' : 'desc'
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
     if params[:added] == "true"
@@ -131,7 +132,8 @@ class Platforms::RepositoriesController < Platforms::BaseController
     )
 
     @total_projects = @projects.count
-    @projects = @projects.search(params[:sSearch]).order(order)
+    @projects = @projects.by_owner(params[:owner_name]).
+      search(params[:sSearch]).order(order)
 
     respond_to do |format|
       format.json {
