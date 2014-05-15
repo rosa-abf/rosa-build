@@ -17,7 +17,7 @@
   .both
 %br
 
-= form_for @user, url: reset_auth_token_settings_path, html: {class: :form} do |f|
+= form_for @user, url: reset_auth_token_settings_path, html: { class: :form, method: :put } do |f|
   .leftlist= f.label :authentication_token
   .rightlist= @user.authentication_token
   .both
