@@ -68,7 +68,8 @@ class Project < ActiveRecord::Base
     q = q.to_s.strip
     by_name("%#{q}%").search_order if q.present?
   }
-  scope :by_name, ->(name) { where('projects.name ILIKE ?', name) if name.present? }
+  scope :by_name,   ->(name) { where('projects.name ILIKE ?', name) if name.present? }
+  scope :by_owner,  ->(name) { where('projects.owner_uname ILIKE ?', "%#{name}%") if name.present? }
   scope :by_owner_and_name, ->(*params) {
     term = params.map(&:strip).join('/').downcase
     where("lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%") if term.present?

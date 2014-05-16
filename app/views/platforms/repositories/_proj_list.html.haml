@@ -1,13 +1,8 @@
-- columns = [{type: 'html'}, {type: 'html', sortable: false, searchable: false}, {type: nil, sortable: false, searchable: false, class: 'buttons'}]
-= raw datatable(columns, {sort_by: "[0, 'asc']", search_label: t("layout.search_by_name"), processing: t("layout.processing"),
-                          pagination_labels: {previous: t("datatables.previous_label"), next: t("datatables.next_label")},
-                          empty_label: t("datatables.empty_label"),
-                          info_label: t("datatables.info_label"),
-                          info_empty_label: t("datatables.info_empty_label"),
-                          filtered_label: t("datatables.filtered_label"),
-                          table_dom_id: 'datatable',
-                          auto_width: 'false',
-                          ajax_source: "#{url_for controller: :repositories, action: :projects_list, id: @repository.id, added: "#{controller.action_name.to_sym == :show}", format: :json}" })
+= raw repository_projects_datatable(@repository)
+
+#datatable-additional-filter.dataTables_filter
+  %label
+    %input{ type: "text", 'aria-controls' => 'datatable', placeholder: t('layout.projects.placeholder.owner_name') }
 
 %table#datatable.tablesorter.repo-projects{cellspacing: 0, cellpadding: 0}
   %thead
@@ -17,3 +12,19 @@
       %th.buttons &nbsp;
   %tbody
 %br
+
+:javascript
+
+  $(function() {
+    $('#datatable_filter').after($('#datatable-additional-filter'));
+    $('#datatable-additional-filter input').on('keyup', function() {
+      $('#datatable').dataTable().fnDraw();
+    });
+  });
+
+  function dataTableAdditionalFilter() {
+    return {
+      'name':   'owner_name',
+      'value':  $('#datatable-additional-filter input').val()
+    };
+  }
