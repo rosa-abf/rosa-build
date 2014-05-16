@@ -49,8 +49,11 @@ class PlatformContent
   end
 
   def download_url
-    suffix = @path.gsub(/^#{@platform.path}/, '')
-    "#{APP_CONFIG['downloads_url']}/#{@platform.name}#{suffix}"
+    "#{APP_CONFIG['downloads_url']}/#{@platform.name}#{subpath}"
+  end
+
+  def subpath
+    @subpath ||= @path.gsub(/^#{@platform.path}/, '')
   end
 
   def self.find_by_platform(platform, path, term)

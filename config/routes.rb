@@ -175,7 +175,7 @@ Rosa::Application.routes.draw do
         get    :advisories
       end
 
-      resources :contents, only: [:index]
+      resources :contents, only: %i(index destroy)
       get '/contents/*path' => 'contents#index', format: false
 
       resources :mass_builds, only: [:create, :new, :index] do

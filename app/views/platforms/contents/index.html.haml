@@ -6,9 +6,55 @@
   = t('layout.platforms.contents_of')
   = @platform.name
 
-= render 'contents'
+/ = render 'contents'
+/ #contents-container{ 'ng-controller' => 'ContentsController', 'ng-init' => "platform = '#{@platform.name}'" }
+  
+#contents{ 'ng-controller' => 'ContentsController', 'ng-init' => "init('#{@platform.name}', '#{@path}')" }
 
-:javascript
-  $(function(){
-    $('.pagination a').attr('data-remote', 'true');
-  });
+  = form_for @platform, html: { class: :form, 'ng-submit' => 'refresh(path)' } do |f|
+    / = tracker_search_field(:term, @term.present? ? @term : t('layout.platforms.search_contents'))
+    %input#term{ name: 'term', type: 'text', value: @term, placeholder: t('layout.platforms.search_contents') }
+    = f.submit t('layout.search.header'), data: {'disable-with' => t('layout.processing')}
+  %br
+
+
+
+  .path= build_content_paths(@platform, @path)
+  .both
+
+  - can_delete = can? :update, @platform
+  %table.tablesorter.project{cellpadding: 0, cellspacing: 0, 'ng-hide' => 'processing' }
+    %tbody
+
+    %tr{ 'ng-show' => 'path' }
+      %td
+        %a{'ng-href' => '{{path}}', 'ng-click' => "open(content)" } ../
+      %td
+      %td
+      - if can_delete
+        %td
+
+    %tr{'ng-repeat' => 'content in contents'}
+      %td
+        .pic{ 'ng-show' => 'content.is_folder' }= image_tag 'folder.png'
+        .pic{ 'ng-hide' => 'content.is_folder' }= image_tag 'code.png'
+        .name
+          %a.files-see{'ng-href' => '{{content.url}}', 'ng-click' => "open(content)" } {{content.name}}
+      %td
+        %a{'ng-href' => '{{content.build_list.url}}', 'ng-show' => 'content.build_list' }
+          = t('activerecord.models.build_list')
+      %td {{content.size}}
+      - if can_delete
+        %td.buttons{ 'ng-hide' => 'content.is_folder' }
+          %div{ 'ng-show' => 'content.processing' }
+            = t('layout.processing')
+          %span.delete{ 'ng-click' => "destroy(content)" } &nbsp;
+  .both
+
+  = render 'shared/angularjs_will_paginate'
+
+
+/ :javascript
+/   $(function(){
+/     $('.pagination a').attr('data-remote', 'true');
+/   });

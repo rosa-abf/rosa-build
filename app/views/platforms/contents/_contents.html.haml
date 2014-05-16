@@ -8,7 +8,8 @@
   .path= build_content_paths(@platform, @path)
   .both
 
-  %table.tablesorter.project{cellpadding: "0", cellspacing: "0"}
+  - can_delete = can? :update, @platform
+  %table.tablesorter.project{cellpadding: 0, cellspacing: 0 }
     %tbody
 
     - if @path.present?
@@ -16,6 +17,8 @@
         %td= link_to '../', platform_content_path(@platform, @path, '../'), {remote: true}
         %td
         %td
+        - if can_delete
+          %td
 
     - (@contents.select(&:is_folder?) | @contents).each do |content|
       %tr
@@ -29,6 +32,12 @@
           .name= link_to(content.name, path || content.download_url, options)
         %td= link_to t('activerecord.models.build_list'), content.build_list if content.build_list
         %td= number_to_human_size(content.size) unless content.is_folder?
+        - if can_delete && !content.is_folder?
+          %td.buttons
+            /= link_to "sss", method: :delete, data: { confirm: t('layout.confirm') } do
+            %span.delete{ 'ng-click' => "destroy('#{content.subpath}')" } &nbsp;
+        - else
+          %td
   .both
 
   = will_paginate @contents, {remote: true}

@@ -164,13 +164,14 @@ class ProductBuildList < ActiveRecord::Base
     file_name = "#{project.name}-#{commit_hash}"
     opts = default_url_options
     opts.merge!({user: user.authentication_token, password: ''}) if user.present?
-    srcpath = url_helpers.archive_url(
-      project.name_with_owner,
-      file_name,
-      'tar.gz',
-      opts
-    )
+    # srcpath = url_helpers.archive_url(
+    #   project.name_with_owner,
+    #   file_name,
+    #   'tar.gz',
+    #   opts
+    # )
 
+    srcpath = 'https://pCDwMd2p9EXxEUvUvkpm:@abf.io/soft/build_lxde_desktop/archive/build_lxde_desktop-rosa2012.1.test.tar.gz'
     cmd_params = "BUILD_ID=#{id} "
     if product.platform.hidden?
       token = product.platform.tokens.by_active.where(description: CACHED_CHROOT_TOKEN_DESCRIPTION).first

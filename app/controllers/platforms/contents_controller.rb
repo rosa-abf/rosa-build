@@ -9,9 +9,19 @@ class Platforms::ContentsController < Platforms::BaseController
   def index
     @path = params[:path].to_s
     @term = params[:term]
-    @contents = PlatformContent.find_by_platform(@platform, @path, @term)
-                               .paginate(paginate_params)
+
+    respond_to do |format|
+      format.html
+      format.json do
+        @contents = PlatformContent.find_by_platform(@platform, @path, @term)
+                                   .paginate(paginate_params)
+      end
+    end
     
+  end
+
+  def destroy
+
   end
 
 end
