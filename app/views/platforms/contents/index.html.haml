@@ -6,49 +6,52 @@
   = t('layout.platforms.contents_of')
   = @platform.name
 
-/ = render 'contents'
-/ #contents-container{ 'ng-controller' => 'ContentsController', 'ng-init' => "platform = '#{@platform.name}'" }
-  
-#contents{ 'ng-controller' => 'ContentsController', 'ng-init' => "init('#{@platform.name}', '#{@path}')" }
+#contents{ 'ng-controller' => 'ContentsController' }
 
-  = form_for @platform, html: { class: :form, 'ng-submit' => 'refresh(path)' } do |f|
-    / = tracker_search_field(:term, @term.present? ? @term : t('layout.platforms.search_contents'))
-    %input#term{ name: 'term', type: 'text', value: @term, placeholder: t('layout.platforms.search_contents') }
+  = form_for @platform, html: { class: :form, 'ng-submit' => 'search()', id: 'search_contents_form' } do |f|
+    = f.hidden_field :name
+    = hidden_field_tag 'path'
+    %input#term{ name: 'term', type: 'text', placeholder: t('layout.platforms.search_contents') }
     = f.submit t('layout.search.header'), data: {'disable-with' => t('layout.processing')}
   %br
 
-
-
-  .path= build_content_paths(@platform, @path)
+  .path
+    %a{ 'ng-repeat' => 'folder in folders' }
+      %span.text{ 'ng-click' => "open(folder.path)" } {{folder.name}}
+      %span.arrow-right
   .both
 
-  - can_delete = can? :update, @platform
+  - can_remove = can? :remove_file, @platform
   %table.tablesorter.project{cellpadding: 0, cellspacing: 0, 'ng-hide' => 'processing' }
     %tbody
 
-    %tr{ 'ng-show' => 'path' }
+    %tr{ 'ng-show' => 'back' }
       %td
-        %a{'ng-href' => '{{path}}', 'ng-click' => "open(content)" } ../
+        %a{ 'ng-click' => "open(back)" } ../
       %td
       %td
-      - if can_delete
+      - if can_remove
         %td
 
     %tr{'ng-repeat' => 'content in contents'}
-      %td
-        .pic{ 'ng-show' => 'content.is_folder' }= image_tag 'folder.png'
-        .pic{ 'ng-hide' => 'content.is_folder' }= image_tag 'code.png'
+      %td{ 'ng-show' => 'content.is_folder' }
+        .pic= image_tag 'folder.png'
         .name
-          %a.files-see{'ng-href' => '{{content.url}}', 'ng-click' => "open(content)" } {{content.name}}
+          %a.files-see{ 'ng-click' => "open(content)" } {{content.name}}
+      %td{ 'ng-hide' => 'content.is_folder' }
+        .pic= image_tag 'code.png'
+        .name
+          %a.files-see{'ng-href' => '{{content.download_url}}'} {{content.name}}
       %td
         %a{'ng-href' => '{{content.build_list.url}}', 'ng-show' => 'content.build_list' }
           = t('activerecord.models.build_list')
       %td {{content.size}}
-      - if can_delete
+      - if can_remove
+        %td{ 'ng-show' => 'content.is_folder' }
         %td.buttons{ 'ng-hide' => 'content.is_folder' }
           %div{ 'ng-show' => 'content.processing' }
             = t('layout.processing')
-          %span.delete{ 'ng-click' => "destroy(content)" } &nbsp;
+          %span.delete{ 'ng-click' => "destroy(content)", 'ng-hide' => 'content.processing' } &nbsp;
   .both
 
   = render 'shared/angularjs_will_paginate'

@@ -1,54 +1,65 @@
-RosaABF.controller 'ContentsController', ['$scope', '$http', ($scope, $http) ->
+RosaABF.controller 'ContentsController', ['$scope', '$http', '$location', ($scope, $http, $location) ->
 
-  $scope.platform   = null
-  $scope.path       = null
+  $scope.platform   = $('#platform_name').val()
   $scope.processing = true
   $scope.contents   = []
+  $scope.folders    = []
 
-  $scope.init = (platform, path)->
-    $scope.platform = platform
-    $scope.path     = path
-    $scope.platform_path = Routes.platform_contents_path($scope.platform)
-    $scope.refresh()
+  # Fixes: redirect to page after form submit
+  $("#search_contents_form").on 'submit', ->
+    false
 
-  $scope.refresh = (path) ->
+  $scope.refresh = ->
     $scope.processing = true
-    path = $scope.path unless path
+
     params  =
       platform_id:  $scope.platform
-      path:         path
+      path:         $('#path').val()
       term:         $('#term').val()
       format:       'json'
 
     $http.get(Routes.platform_contents_path(params)).success( (data) ->
+      $scope.folders    = data.folders
       $scope.contents   = data.contents
-      $scope.path       = data.path
+      $scope.back       = data.back
       $scope.processing = false
     ).error( ->
       $scope.contents   = []
       $scope.processing = false
     )
+    true
 
   $scope.open = (content) ->
-    if content.is_folder
-      $scope.refresh(content.path)
+    return if $scope.processing
+    if $.type(content) == 'string'
+      $location.search('path', content)
+    else if content.is_folder
+      $location.search('path', content.subpath)
 
   $scope.destroy  = (content) ->
     params  =
-      platform_id:  $scope.platform
-      path:         content.path
-      format:       'json'
+      path:   content.subpath
+      format: 'json'
 
     content.processing = true
-    $http.delete(Routes.platform_content_path(params)).success( ->
+    $http.delete(Routes.remove_file_platform_contents_path($scope.platform, params)).success( ->
       $scope.refresh()
     ).error( ->
       $scope.refresh()
     )
+    true
 
-    # $http.delete(
-    #   Routes.project_path($scope.name_with_owner),
-    #   {file: {autostart_status: $scope.autostart_status}, format: 'json'}
-    # );
+  $scope.search = ->
+    $location.search('term', $('#term').val())
+    false
+
+  $scope.$on '$locationChangeSuccess', (event) ->
+    $scope.updateParams()
+    $scope.refresh()
+
+  $scope.updateParams = ->
+    params = $location.search()
+    $('#path').val(params['path'])
+    $('#term').val(params['term'])
 
 ]

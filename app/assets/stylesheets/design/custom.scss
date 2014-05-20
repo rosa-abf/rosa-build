@@ -2047,29 +2047,6 @@ article .activity .top {
   margin: 2px 0;
 }
 
-#contents {
-    .path {
-        a {
-            margin-right: 20px;
-        }
-        .text {
-            padding: 5px 10px;
-            background-color: #dcecfa;
-            float: left;
-            height: 14px;
-        }
-        .arrow-right {
-            content: '';
-            width: 0;
-            height: 0;
-            border: 12px solid transparent;
-            border-left: 12px solid #dcecfa;
-            float: left;
-        }
-    }
-
-}
-
 table tbody {
     td.build-list-statuses {
         background: #FFF;

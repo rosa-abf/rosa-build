@@ -61,14 +61,7 @@ class PlatformContent
     term = (term || '').strip.gsub(/[\\\/]+/, '')
                              .gsub(/[^\w\-\+\.]/, '_')
 
-    path = path.split(File::SEPARATOR).map(&:strip).select(&:present?)
-               .map{ |p|
-                  # Strip out the non-ascii character
-                  p.gsub(/[\\\/]+/, '')
-                   .gsub(/^[\.]+/, '')
-                   .gsub(/[^\w\-\.]/, '_')
-                }
-               .join(File::SEPARATOR)
+    path = sanitize_path(path)
     results = Dir.glob(File.join(platform.path, path, "*#{term}*"))
     if term
       results = results.sort_by(&:length)
@@ -76,6 +69,21 @@ class PlatformContent
       results = results.sort
     end
     results.map{ |p| PlatformContent.new(platform, p) }
+  end
+
+  def self.remove_file(platform, path)
+    path = File.join(platform.path, sanitize_path(path))
+    FileUtils.rm_f(path) if File.exist?(path)
+  end
+
+  def self.sanitize_path(path)
+    path.split(File::SEPARATOR).map(&:strip).select(&:present?)
+        .map{ |p|
+          # Strip out the non-ascii character
+          p.gsub(/[\\\/]+/, '')
+           .gsub(/^[\.]+/, '')
+           .gsub(/[^\w\-\.]/, '_')
+        }.join(File::SEPARATOR)
   end
 
 end
