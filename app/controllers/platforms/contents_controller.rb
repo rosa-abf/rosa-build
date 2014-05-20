@@ -21,6 +21,7 @@ class Platforms::ContentsController < Platforms::BaseController
   end
 
   def remove_file
+    authorize!(:remove_file, @platform)
     PlatformContent.remove_file(@platform, params[:path])
     render nothing: true
   end
