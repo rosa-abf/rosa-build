@@ -51,7 +51,6 @@ RosaABF.controller 'ContentsController', ['$scope', '$http', '$location', ($scop
 
   $scope.search = ->
     $location.search('term', $('#term').val())
-    false
 
   $scope.$on '$locationChangeSuccess', (event) ->
     $scope.updateParams()
