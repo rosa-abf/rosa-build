@@ -34,8 +34,8 @@ module AbfWorker
       when STARTED
         subject.start_build
       when CANCELED
+        item.update_attributes({status: BuildList::BUILD_CANCELED}) unless reruninng_tests || subject.tests_failed?
         subject.build_canceled
-        item.update_attributes({status: BuildList::BUILD_CANCELED}) unless reruninng_tests
       when TESTS_FAILED
         subject.tests_failed
       end
