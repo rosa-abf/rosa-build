@@ -87,7 +87,7 @@ class Ability
         can([:read, :log, :everything, :list], BuildList, read_relations_with_projects('build_lists')) {|build_list| can? :read, build_list.project}
 
         can(:publish_into_testing, BuildList) { |build_list| can?(:create, build_list) && build_list.save_to_platform.main? }
-        can(:create, BuildList) {|build_list|
+        can([:create, :rerun_tests], BuildList) {|build_list|
           build_list.project.is_package &&
           can?(:write, build_list.project) &&
           (build_list.build_for_platform.blank? || can?(:show, build_list.build_for_platform))

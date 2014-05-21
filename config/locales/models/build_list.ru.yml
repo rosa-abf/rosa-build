@@ -80,6 +80,9 @@ ru:
       cancel: Отменить сборку
       will_be_canceled: 'Сборка будет отменена...'
       creating: 'создается...'
+      rerun_tests: Перезапустить тесты
+      rerun_tests_success: 'Сборка поставлена в очередь на перезапуск тестов'
+      rerun_tests_fail: 'При перезапуске тестов произошла ошибка!'
       create_container_success: 'Контейнер поставлен в очередь на создание'
       create_container_fail: 'При создании контейнера произошла ошибка!'
       cancel_success: 'Сборка отменена.'
@@ -142,6 +145,8 @@ ru:
 
       statuses:
         build_lists: Всего
+        rerun_tests: перезапуск тестов
+        reruninng_tests: тесты перезапускаются
         build_error: ошибка сборки
         build_published: опубликован
         tests_failed: тесты не прошли

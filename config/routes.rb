@@ -276,6 +276,7 @@ Rosa::Application.routes.draw do
       member do
         put :cancel
         put :create_container
+        put :rerun_tests
         get :log
         patch :publish
         put :reject_publish

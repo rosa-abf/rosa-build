@@ -18,6 +18,8 @@ module AbfWorker
       item = find_or_create_item
       fill_container_data if status != STARTED
 
+      reruninng_tests = subject.reruninng_tests?
+
       case status
       when COMPLETED
         subject.build_success
@@ -28,17 +30,17 @@ module AbfWorker
         end
       when FAILED
         subject.build_error
-        item.update_attributes({status: BuildList::BUILD_ERROR})
+        item.update_attributes({status: BuildList::BUILD_ERROR}) unless reruninng_tests
       when STARTED
         subject.start_build
       when CANCELED
         subject.build_canceled
-        item.update_attributes({status: BuildList::BUILD_CANCELED})
+        item.update_attributes({status: BuildList::BUILD_CANCELED}) unless reruninng_tests
       when TESTS_FAILED
         subject.tests_failed
       end
 
-      if [TESTS_FAILED, COMPLETED].include?(status)
+      if !reruninng_tests && [TESTS_FAILED, COMPLETED].include?(status)
         item.update_attributes({status: BuildList::SUCCESS})
         subject.publish_container if subject.auto_create_container?
       end

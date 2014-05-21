@@ -81,6 +81,9 @@ en:
       cancel: Cancel build
       will_be_canceled: 'Build will be canceled...'
       creating: 'creating...'
+      rerun_tests: Rerun tests
+      rerun_tests_success: 'Build is queued for rerun tests'
+      rerun_tests_fail: 'Errors during rerun tests!'
       create_container_success: 'Container is queued for creating'
       create_container_fail: 'Errors during container creating!'
       publish_success: 'Build is queued for publishing'
@@ -143,6 +146,8 @@ en:
 
       statuses:
         build_lists: All
+        rerun_tests: Rerun tests
+        reruninng_tests: Build is being rerun tests
         build_error: Build error
         build_published: Build has been published
         tests_failed: Tests failed
