@@ -146,7 +146,7 @@ ru:
       statuses:
         build_lists: Всего
         rerun_tests: перезапуск тестов
-        reruninng_tests: тесты перезапускаются
+        rerunning_tests: тесты перезапускаются
         build_error: ошибка сборки
         build_published: опубликован
         tests_failed: тесты не прошли

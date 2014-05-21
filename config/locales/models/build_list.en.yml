@@ -147,7 +147,7 @@ en:
       statuses:
         build_lists: All
         rerun_tests: Rerun tests
-        reruninng_tests: Build is being rerun tests
+        rerunning_tests: Build is being rerun tests
         build_error: Build error
         build_published: Build has been published
         tests_failed: Tests failed

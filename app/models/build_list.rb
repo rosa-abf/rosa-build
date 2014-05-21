@@ -87,7 +87,7 @@ class BuildList < ActiveRecord::Base
     %w(WAITING_FOR_RESPONSE           4000),
     %w(BUILD_PENDING                  2000),
     %w(RERUN_TESTS                    2500),
-    %w(RERUNINNG_TESTS                2550),
+    %w(RERUNNING_TESTS                2550),
     %w(BUILD_PUBLISHED                6000),
     %w(BUILD_PUBLISH                  7000),
     %w(FAILED_PUBLISH                 8000),
@@ -186,19 +186,19 @@ class BuildList < ActiveRecord::Base
 
     event :start_build do
       transition build_pending: :build_started
-      transition rerun_tests:   :reruninng_tests
+      transition rerun_tests:   :rerunning_tests
     end
 
     event :cancel do
       transition [:build_pending, :build_started] => :build_canceling
-      transition [:rerun_tests, :reruninng_tests] => :tests_failed
+      transition [:rerun_tests, :rerunning_tests] => :tests_failed
     end
 
     # build_canceling: :build_canceled - canceling from UI
     # build_started: :build_canceled - canceling from worker by time-out (time_living has been expired)
     event :build_canceled do
       transition [:build_canceling, :build_started, :build_pending] => :build_canceled
-      transition [:rerun_tests, :reruninng_tests] => :tests_failed
+      transition [:rerun_tests, :rerunning_tests] => :tests_failed
     end
 
     event :published do
@@ -255,13 +255,13 @@ class BuildList < ActiveRecord::Base
     # ===== into testing - end
 
     event :build_success do
-      transition [:build_started, :build_canceling, :build_canceled, :reruninng_tests] => :success
+      transition [:build_started, :build_canceling, :build_canceled, :rerunning_tests] => :success
     end
 
     [:build_error, :tests_failed].each do |kind|
       event kind do
         transition [:build_started, :build_canceling, :build_canceled] => kind
-        transition reruninng_tests: :tests_failed
+        transition rerunning_tests: :tests_failed
       end
     end
 
