@@ -1,3 +1,6 @@
+/ Add to controller something like:
+/ $scope.goToPage = (number) ->
+/   $location.search('page', number)
 #will_paginate{'ng-show' => 'pages'}
   .pagination
     %div{'ng-class' => "{'disabled': !page.active}", 'ng-repeat' => 'page in pages', 'ng-switch' => 'page.type'}

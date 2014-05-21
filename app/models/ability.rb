@@ -114,7 +114,7 @@ class Ability
         can [:read, :related, :members], Platform, owner_type: 'Group', owner_id: user_group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can [:read, :related], Platform, id: user.repositories.pluck(:platform_id)
-        can([:update, :destroy, :change_visibility], Platform) {|platform| owner?(platform) }
+        can([:update, :destroy, :change_visibility, :remove_file], Platform) {|platform| owner?(platform) }
         can([:local_admin_manage, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
 
         can([:create, :publish], MassBuild) {|mass_build| owner?(mass_build.save_to_platform) || local_admin?(mass_build.save_to_platform)}

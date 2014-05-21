@@ -175,8 +175,11 @@ Rosa::Application.routes.draw do
         get    :advisories
       end
 
-      resources :contents, only: [:index]
-      get '/contents/*path' => 'contents#index', format: false
+      resources :contents, only: %i(index) do
+        collection do
+          delete :remove_file
+        end
+      end
 
       resources :mass_builds, only: [:create, :new, :index] do
         member do
