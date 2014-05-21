@@ -4,6 +4,7 @@ RosaABF.controller 'ContentsController', ['$scope', '$http', '$location', ($scop
   $scope.processing = true
   $scope.contents   = []
   $scope.folders    = []
+  $scope.pages      = []
 
   # Fixes: redirect to page after form submit
   $("#search_contents_form").on 'submit', ->
@@ -16,11 +17,13 @@ RosaABF.controller 'ContentsController', ['$scope', '$http', '$location', ($scop
       platform_id:  $scope.platform
       path:         $('#path').val()
       term:         $('#term').val()
+      page:         $('#page').val()
       format:       'json'
 
     $http.get(Routes.platform_contents_path(params)).success( (data) ->
       $scope.folders    = data.folders
       $scope.contents   = data.contents
+      $scope.pages      = data.pages
       $scope.back       = data.back
       $scope.processing = false
     ).error( ->
@@ -60,5 +63,9 @@ RosaABF.controller 'ContentsController', ['$scope', '$http', '$location', ($scop
     params = $location.search()
     $('#path').val(params['path'])
     $('#term').val(params['term'])
+    $('#page').val(params['page'])
+
+  $scope.goToPage = (number) ->
+    $location.search('page', number)
 
 ]
