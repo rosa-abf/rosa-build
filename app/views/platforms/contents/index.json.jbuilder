@@ -2,6 +2,8 @@ json.contents (@contents.select(&:is_folder?) | @contents) do |content|
   json.(content, :name)
   json.is_folder content.is_folder?
 
+  json.size number_to_human_size(content.size) unless content.is_folder?
+
   json.download_url content.download_url unless content.is_folder?
   json.subpath content.subpath
 
