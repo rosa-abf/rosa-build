@@ -45,8 +45,8 @@ def http_login(user=nil, password = '123456')
 end
 
 def stub_symlink_methods
-  any_instance_of(Platform, symlink_directory: true)
-  any_instance_of(Platform, remove_symlink_directory: true)
+  allow_any_instance_of(Platform).to receive(:symlink_directory).and_return(true)
+  allow_any_instance_of(Platform).to receive(:remove_symlink_directory).and_return(true)
 end
 
 Resque.inline = true

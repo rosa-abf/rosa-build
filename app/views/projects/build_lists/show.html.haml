@@ -181,7 +181,7 @@
       data: { confirm: t("layout.publish_again_warning") },
       name: 'publish',
       'ng-show' => "build_list.can_publish && build_list.status == #{BuildList::BUILD_PUBLISHED}"
-    - if can? :rerun_tests, @build_list
+    - if (current_user.tester? || current_user.admin?) && can?(:rerun_tests, @build_list)
       = link_to t('layout.build_lists.rerun_tests'),
         rerun_tests_build_list_path(@build_list),
         method: :put,

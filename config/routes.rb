@@ -37,6 +37,7 @@ Rosa::Application.routes.draw do
         member {
           put :publish
           put :reject_publish
+          put :rerun_tests
           put :cancel
           put :create_container
           put :publish_into_testing
