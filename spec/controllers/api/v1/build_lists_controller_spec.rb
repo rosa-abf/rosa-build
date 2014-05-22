@@ -112,6 +112,10 @@ describe Api::V1::BuildListsController do
           put :rerun_tests, id: @build_list, format: :json
         end
 
+        before do
+          allow_any_instance_of(BuildList).to receive(:can_rerun_tests?).and_return(true)
+        end
+
         context 'if user is project owner' do
           before { http_login(@owner_user) }
 
@@ -125,6 +129,7 @@ describe Api::V1::BuildListsController do
           context 'returns an error if the can not rerun_tests' do
             before do
               allow_any_instance_of(BuildList).to receive(:rerun_tests).and_return(false)
+              do_rerun_tests
             end
 
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.rerun_tests_fail')
