@@ -195,8 +195,8 @@ class Project < ActiveRecord::Base
       bl.priority               = priority
       bl.mass_build_id          = mass_build.id
       bl.save_to_repository_id  = repository_id
-      bl.use_cached_chroot      = mass_build.use_cached_chroot
-      bl.use_extra_tests        = mass_build.use_extra_tests
+      bl.use_cached_chroot      = mass_build.use_cached_chroot?
+      bl.use_extra_tests        = mass_build.use_extra_tests?
     end
     build_list.save
   end
