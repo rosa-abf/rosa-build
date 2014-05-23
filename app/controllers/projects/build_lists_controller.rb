@@ -119,30 +119,29 @@ class Projects::BuildListsController < Projects::BaseController
     end
 
     @build_list.publisher = current_user
-    message = @build_list.publish ? 'success' : 'fail'
-    redirect_to :back, notice: t("layout.build_lists.publish_#{message}")
+    do_and_back(:publish, 'publish_')
   end
 
   def publish_into_testing
     @build_list.publisher = current_user
-    message = @build_list.publish_into_testing ? 'success' : 'fail'
-    redirect_to :back, notice: t("layout.build_lists.publish_#{message}")
+    do_and_back(:publish_into_testing, 'publish_')
+  end
+
+  def rerun_tests
+    do_and_back(:rerun_tests, 'rerun_tests_')
   end
 
   def reject_publish
     @build_list.publisher = current_user
-    message = @build_list.reject_publish ? 'success' : 'fail'
-    redirect_to :back, notice: t("layout.build_lists.reject_publish_#{message}")
+    do_and_back(:reject_publish, 'reject_publish_')
   end
 
   def create_container
-    message = @build_list.publish_container ? 'success' : 'fail'
-    redirect_to :back, notice: t("layout.build_lists.create_container_#{message}")
+    do_and_back(:publish_container, 'create_container_')
   end
 
   def cancel
-    message = @build_list.cancel ? 'will_be_canceled' : 'cancel_fail'
-    redirect_to :back, notice: t("layout.build_lists.#{message}")
+    do_and_back(:cancel, nil, 'will_be_canceled', 'cancel_fail')
   end
 
   def log
@@ -183,6 +182,13 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   protected
+
+  def do_and_back(action, prefix, success = 'success', fail = 'fail')
+    result  = @build_list.send(action)
+    message = result ? success : fail
+    flash[result ? :notice : :error] = t("layout.build_lists.#{prefix}#{message}")
+    redirect_to :back
+  end
 
   def find_build_list
     @build_list = BuildList.find(params[:id])

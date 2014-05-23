@@ -4,7 +4,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   skip_before_filter :authenticate_user!, only: [:show, :index] if APP_CONFIG['anonymous_access']
 
   load_resource :project, only: :index, parent: false
-  load_and_authorize_resource :build_list, only: [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing]
+  load_and_authorize_resource :build_list, only: [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing, :rerun_tests]
 
   def index
     authorize!(:show, @project) if @project
@@ -41,6 +41,10 @@ class Api::V1::BuildListsController < Api::V1::BaseController
 
   def create_container
     render_json :create_container, :publish_container
+  end
+
+  def rerun_tests
+    render_json :rerun_tests
   end
 
   def publish_into_testing

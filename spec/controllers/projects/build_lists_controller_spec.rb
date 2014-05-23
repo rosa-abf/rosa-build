@@ -80,7 +80,7 @@ describe Projects::BuildListsController do
   before { stub_symlink_methods }
 
   context 'crud' do
-    before(:each) do
+    before do
       @platform = FactoryGirl.create(:platform_with_repos)
       @create_params = {
         build_list: {
@@ -109,7 +109,7 @@ describe Projects::BuildListsController do
     end
 
     context 'for user' do
-      before(:each) do
+      before do
         any_instance_of(BuildList, current_duration: 100)
         @build_list = FactoryGirl.create(:build_list)
         @project = @build_list.project
@@ -124,15 +124,69 @@ describe Projects::BuildListsController do
         @request.env['HTTP_REFERER'] = build_list_path(@build_list)
       end
 
+      context 'do rerun_tests' do
+        def do_rerun_tests
+          put :rerun_tests, id: @build_list
+        end
+
+        context 'if user is project owner' do
+          before { set_session_for(@owner_user) }
+
+          it 'reruns tests' do
+            expect_any_instance_of(BuildList).to receive(:rerun_tests).and_return(true)
+            do_rerun_tests
+
+            expect(response).to redirect_to(build_list_path(@build_list))
+            expect(flash[:notice]).to match I18n.t('layout.build_lists.rerun_tests_success')
+          end
+
+          it 'returns an error if the can not rerun_tests' do
+            allow_any_instance_of(BuildList).to receive(:rerun_tests).and_return(false)
+            do_rerun_tests
+
+            expect(response).to redirect_to(build_list_path(@build_list))
+            expect(flash[:error]).to match I18n.t('layout.build_lists.rerun_tests_fail')
+          end
+        end
+
+        it 'returns an error if user is not project owner' do
+          expect_any_instance_of(BuildList).to_not receive(:rerun_tests)
+          do_rerun_tests
+          expect(response).to redirect_to(forbidden_url)
+        end
+
+        it 'returns an error if user is project reader' do
+          @another_user = FactoryGirl.create(:user)
+          @build_list.project.collaborators.create(actor_type: 'User', actor_id: @another_user.id, role: 'reader')
+          set_session_for(@another_user)
+
+          expect_any_instance_of(BuildList).to_not receive(:rerun_tests)
+          do_rerun_tests
+          expect(response).to redirect_to(forbidden_url)
+        end
+
+        it 'reruns tests if user is project writer' do
+          @writer_user = FactoryGirl.create(:user)
+          create_relation(@build_list.project, @writer_user, 'writer')
+          set_session_for(@writer_user)
+
+          expect_any_instance_of(BuildList).to receive(:rerun_tests).and_return(true)
+          do_rerun_tests
+          expect(response).to redirect_to(build_list_path(@build_list))
+          expect(flash[:notice]).to match I18n.t('layout.build_lists.rerun_tests_success')
+        end
+
+      end
+
       context "do reject_publish" do
-        before(:each) {@build_list.save_to_repository.update_column(:publish_without_qa, true)}
+        before {@build_list.save_to_repository.update_column(:publish_without_qa, true)}
 
         def do_reject_publish
           put :reject_publish, id: @build_list
         end
 
         context 'if user is project owner' do
-          before(:each) do
+          before do
             set_session_for(@owner_user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_platform.update_column(:released, true)
@@ -150,7 +204,7 @@ describe Projects::BuildListsController do
           end
 
           context "if it has another status" do
-            before(:each) do
+            before do
               @build_list.update_column(:status, BuildList::BUILD_ERROR)
               do_reject_publish
             end
@@ -162,7 +216,7 @@ describe Projects::BuildListsController do
         end
 
         context 'if user is not project owner' do
-          before(:each) do
+          before do
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_platform.update_column(:released, true)
             do_reject_publish
@@ -179,7 +233,7 @@ describe Projects::BuildListsController do
         end
 
         context 'if user is project reader' do
-          before(:each) do
+          before do
             @another_user = FactoryGirl.create(:user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_repository.update_column(:publish_without_qa, true)
@@ -199,7 +253,7 @@ describe Projects::BuildListsController do
         end
 
         context 'if user is project writer' do
-          before(:each) do
+          before do
             @writer_user = FactoryGirl.create(:user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_repository.update_column(:publish_without_qa, true)
@@ -219,7 +273,7 @@ describe Projects::BuildListsController do
       end
 
       context 'for all build lists' do
-        before(:each) do
+        before do
           @build_list1 = FactoryGirl.create(:build_list)
 
           @build_list2 = FactoryGirl.create(:build_list)
@@ -252,7 +306,7 @@ describe Projects::BuildListsController do
         it_should_behave_like 'not create build list'
 
         context 'if user is project owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
 
@@ -270,14 +324,14 @@ describe Projects::BuildListsController do
         end
 
         context 'if user is project read member' do
-          before(:each) {set_session_for(@member_user)}
+          before {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
         end
       end
 
       context 'for hidden project' do
-        before(:each) do
+        before do
           @project.visibility = 'hidden'
           @project.save
         end
@@ -286,13 +340,13 @@ describe Projects::BuildListsController do
         it_should_behave_like 'not create build list'
 
         context 'if user is project owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
         end
 
         context 'if user is project read member' do
-          before(:each) {set_session_for(@member_user)}
+          before {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
         end
@@ -300,7 +354,7 @@ describe Projects::BuildListsController do
     end
 
     context 'for group' do
-      before(:each) do
+      before do
 
         @user = FactoryGirl.create(:user)
         set_session_for(@user)
@@ -319,7 +373,7 @@ describe Projects::BuildListsController do
       end
 
       context 'for all build lists' do
-        before(:each) do
+        before do
           @build_list1 = FactoryGirl.create(:build_list)
 
           @build_list2 = FactoryGirl.create(:build_list)
@@ -352,20 +406,20 @@ describe Projects::BuildListsController do
         it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
         end
 
         context 'if user is group read member' do
-          before(:each) {set_session_for(@member_user)}
+          before {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
         end
       end
 
       context 'for hidden project' do
-        before(:each) do
+        before do
           @project.visibility = 'hidden'
           @project.save
         end
@@ -374,13 +428,13 @@ describe Projects::BuildListsController do
         it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
         end
 
         context 'if user is group read member' do
-          before(:each) {set_session_for(@member_user)}
+          before {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
         end
@@ -391,7 +445,7 @@ describe Projects::BuildListsController do
 
   context 'filter' do
 
-    before(:each) do
+    before do
       set_session_for FactoryGirl.create(:admin)
 
       @build_list1 = FactoryGirl.create(:build_list)

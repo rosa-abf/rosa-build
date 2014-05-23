@@ -181,6 +181,13 @@
       data: { confirm: t("layout.publish_again_warning") },
       name: 'publish',
       'ng-show' => "build_list.can_publish && build_list.status == #{BuildList::BUILD_PUBLISHED}"
+    - if (current_user.tester? || current_user.admin?) && can?(:rerun_tests, @build_list)
+      = link_to t('layout.build_lists.rerun_tests'),
+        rerun_tests_build_list_path(@build_list),
+        method: :put,
+        data:   { confirm: t("layout.confirm") },
+        class: 'button',
+        'ng-show' => "build_list.status == #{BuildList::TESTS_FAILED} || build_list.status == #{BuildList::SUCCESS}"
     = submit_tag t("layout.publish"),
       data: { confirm: t('layout.build_lists.tests_failed') }, name: 'publish',
       'ng-show' => "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status == #{BuildList::TESTS_FAILED}"
