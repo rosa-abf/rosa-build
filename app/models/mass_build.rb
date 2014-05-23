@@ -14,7 +14,7 @@ class MassBuild < ActiveRecord::Base
   attr_accessor :arches
   attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
                   :extra_repositories, :extra_build_lists, :increase_release_tag,
-                  :use_cached_chroot
+                  :use_cached_chroot, :use_extra_tests
 
   validates :save_to_platform_id,
             :build_for_platform_id,
@@ -30,6 +30,7 @@ class MassBuild < ActiveRecord::Base
   validates :auto_publish,
             :increase_release_tag,
             :use_cached_chroot,
+            :use_extra_tests,
             inclusion:              { in: [true, false] }
 
   after_commit      :build_all, on: :create
@@ -60,7 +61,7 @@ class MassBuild < ActiveRecord::Base
           increase_rt = increase_release_tag?
           arches_list.each do |arch|
             rep_id = (project.repository_ids & save_to_platform.repository_ids).first
-            project.build_for(self, rep_id, arch, 0, increase_rt, use_cached_chroot)
+            project.build_for(self, rep_id, arch, 0, increase_rt)
             increase_rt = false
           end
         rescue RuntimeError, Exception

@@ -53,7 +53,7 @@
         .toggle{id: "toggle_#{ mass_build.id }"}
           = t('activerecord.attributes.mass_build.user') + ": "
           = link_to mass_build.user.fullname, mass_build.user
-          - %i(arch_names auto_publish increase_release_tag use_cached_chroot created_at).each do |field|
+          - %i(arch_names auto_publish increase_release_tag use_cached_chroot use_extra_tests created_at).each do |field|
             .both
             = t("activerecord.attributes.mass_build.#{field}") + ": "
             = mass_build.send field

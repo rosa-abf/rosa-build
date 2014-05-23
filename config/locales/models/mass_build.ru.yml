@@ -28,5 +28,6 @@ ru:
         auto_publish: Автоматическая публикация
         increase_release_tag: Увеличить release тег
         use_cached_chroot: Использовать кэшированный chroot
+        use_extra_tests: Использовать дополнительные тесты
         repositories: Репозитории
         projects_list: Список проектов

@@ -46,7 +46,7 @@
     - selected = params[:build_list].try(:[], :auto_publish_status) ? {selected: params[:build_list][:auto_publish_status]} : {}
     = f.select :auto_publish_status, auto_publish_statuses, selected
     = f.label :auto_publish_status
-    - %i(auto_create_container include_testing_subrepository use_cached_chroot).each do |kind|
+    - %i(auto_create_container include_testing_subrepository use_cached_chroot use_extra_tests).each do |kind|
       .both
         - checked = params[:build_list].try(:[], kind)
         - checked = @build_list.send(kind) if checked.nil?
