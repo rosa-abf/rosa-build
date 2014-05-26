@@ -11,6 +11,7 @@ ru:
         extra_build_lists: Дополнительные сборки
         auto_create_container: Создать контейнер автоматически
         use_cached_chroot: Использовать кэшированный chroot
+        use_extra_tests: Использовать дополнительные тесты
         container_path: Путь до контейнера
         status: Статус
         project_id: Проект

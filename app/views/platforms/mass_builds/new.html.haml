@@ -40,7 +40,7 @@
       subject: @mass_build,
       autocomplete_path: autocomplete_extra_build_list_autocompletes_path
     %h3= t("activerecord.attributes.build_list.preferences")
-    - %i(auto_publish increase_release_tag use_cached_chroot).each do |field|
+    - %i(auto_publish increase_release_tag use_cached_chroot use_extra_tests).each do |field|
       .both
         = f.check_box field
         = f.label field

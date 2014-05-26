@@ -167,7 +167,7 @@ class Project < ActiveRecord::Base
     #path #share by NFS
   end
 
-  def build_for(mass_build, repository_id, arch =  Arch.find_by(name: 'i586'), priority = 0, increase_rt = false, use_cached_chroot = false)
+  def build_for(mass_build, repository_id, arch =  Arch.find_by(name: 'i586'), priority = 0, increase_rt = false)
     build_for_platform  = mass_build.build_for_platform
     save_to_platform    = mass_build.save_to_platform
     user                = mass_build.user
@@ -195,7 +195,8 @@ class Project < ActiveRecord::Base
       bl.priority               = priority
       bl.mass_build_id          = mass_build.id
       bl.save_to_repository_id  = repository_id
-      bl.use_cached_chroot      = use_cached_chroot
+      bl.use_cached_chroot      = mass_build.use_cached_chroot?
+      bl.use_extra_tests        = mass_build.use_extra_tests?
     end
     build_list.save
   end
