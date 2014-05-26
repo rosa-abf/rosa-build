@@ -1,4 +1,5 @@
 class Projects::BuildListsController < Projects::BaseController
+  layout 'bootstrap', only: [:index]
   include FileStoreHelper
 
   NESTED_ACTIONS = [:index, :new, :create]
@@ -23,20 +24,21 @@ class Projects::BuildListsController < Projects::BaseController
       format.html
       format.json do
         @filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
-        @bls = @filter.find.recent
-                      .paginate(
-                        :page     => (params[:page].to_i == 0 ? nil : params[:page]),
-                        per_page: BuildList::Filter::PER_PAGE.include?(params[:per_page].to_i) ? params[:per_page].to_i : 25
-                      )
+        params[:page] = params[:page].to_i == 0 ? nil : params[:page]
+        params[:per_page] = if BuildList::Filter::PER_PAGE.include? params[:per_page].to_i
+                              params[:per_page].to_i
+                            else
+                              BuildList::Filter::PER_PAGE.first
+                            end
+        @bls_count = @filter.find.count
+        @bls = @filter.find.recent.paginate(page: params[:page], per_page: params[:per_page])
         @build_lists = BuildList.where(id: @bls.pluck(:id)).recent
-                                .includes(
-                                  :save_to_platform,
-                                  :save_to_repository,
-                                  :build_for_platform,
-                                  :user,
-                                  :source_packages,
-                                  project: :project_statistics
-                                )
+                                .includes(:save_to_platform,
+                                          :save_to_repository,
+                                          :build_for_platform,
+                                          :user,
+                                          :source_packages,
+                                          project: :project_statistics)
 
         @build_server_status = AbfWorker::StatusInspector.projects_status
       end
@@ -45,7 +47,7 @@ class Projects::BuildListsController < Projects::BaseController
 
   def new
     if params[:show] == 'inline' && params[:build_list_id].present?
-      render '_new_form', layout: false, locals: {project: @project, build_list: @build_list}
+      render '_new_form', layout: false, locals: { project: @project, build_list: @build_list }
     else
       render :new
     end
@@ -70,16 +72,16 @@ class Projects::BuildListsController < Projects::BaseController
         @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
         @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
-        flash_options = {project_version: @build_list.project_version, arch: arch.name, build_for_platform: build_for_platform.name}
+        flash_options = { project_version: @build_list.project_version, arch: arch.name, build_for_platform: build_for_platform.name }
         if authorize!(:create, @build_list) && @build_list.save
           build_lists << @build_list
-          notices << t("flash.build_list.saved", flash_options)
+          notices << t('flash.build_list.saved', flash_options)
         else
-          errors << t("flash.build_list.save_error", flash_options)
+          errors << t('flash.build_list.save_error', flash_options)
         end
       end
     end
-    errors << t("flash.build_list.no_arch_or_platform_selected") if errors.blank? and notices.blank?
+    errors << t('flash.build_list.no_arch_or_platform_selected') if errors.blank? and notices.blank?
     if errors.present?
       @build_list ||= BuildList.new
       flash[:error] = errors.join('<br>').html_safe

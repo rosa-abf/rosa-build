@@ -12,7 +12,6 @@ json.build_lists @build_lists do |build_list|
 
   json.version_release get_version_release(build_list)
   json.updated_at build_list.updated_at
-  json.updated_at_utc build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
   users         |= [build_list.user]
   projects      |= [build_list.project]
   platforms     |= [build_list.build_for_platform, build_list.save_to_platform]
@@ -39,6 +38,7 @@ json.dictionary  do
   end
 end
 
-json.server_status  @build_server_status
-json.filter         @filter.try(:options)
-json.pages          angularjs_will_paginate(@bls)
+json.server_status     @build_server_status
+json.filter            @filter.try(:options)
+json.page              params[:page]
+json.build_lists_count @bls.count

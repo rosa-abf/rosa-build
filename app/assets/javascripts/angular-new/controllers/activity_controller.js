@@ -1,13 +1,13 @@
-RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filter',
-  function($scope, $http, $timeout, $q, $filter) {
-    $scope.activity_tab      = { title: 'activity_menu.activity_feed', active: false, filter: 'all',
+RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filter', '$location',
+  function($scope, $http, $timeout, $q, $filter, $location) {
+    $scope.activity_tab      = { title: 'activity_menu.activity_feed', filter: 'all',
                                  all: {}, code: {}, tracker: {}, build: {}, wiki: {} };
-    $scope.tracker_tab       = { title: 'activity_menu.tracker',       content: [] , active: false,
+    $scope.tracker_tab       = { title: 'activity_menu.tracker',       content: [] ,
                                  filter: { all: true, assigned: false, created: false, name: 'all',
                                            all_count: 0, assigned_count: 0, created_count: 0, closed_count: 0 },
                                  sort: { sort: 'updated', direction: 'desc', updated_class: 'fa-chevron-up' },
                                  status: 'open', pagination: { page: 1, total_count: 0 } };
-    $scope.pull_requests_tab = { title: 'activity_menu.pull_requests', content: [] , active: false,
+    $scope.pull_requests_tab = { title: 'activity_menu.pull_requests', content: [] ,
                                  filter: { all: true, assigned: false, created: false, name: 'all',
                                            all_count: 0, assigned_count: 0, created_count: 0, closed_count: 0 },
                                  sort: { sort: 'updated', direction: 'desc', updated_class: 'fa-chevron-up' },
@@ -27,18 +27,33 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
 
     $scope.getContent = function(tab){
       var cur_tab = $scope.$eval(tab+'_tab');
+      var tmp = $location.path();
       if (tab === 'activity') {
+        $scope.activity_tab.active      = true;
+        $scope.tracker_tab.active       = false;
+        $scope.pull_requests_tab.active = false;
         $scope.getActivityContent();
+        if($location.path() !== '/') {
+          $location.path('/').replace()
+        };
       }
       else if (tab === 'tracker') {
-        $scope.tracker_tab.active = true;
+        $scope.activity_tab.active      = false;
+        $scope.tracker_tab.active       = true;
         $scope.pull_requests_tab.active = false;
         $scope.getIssuesContent();
+        if($location.path() !== '/issues') {
+          $location.path('/issues').replace()
+        };
       }
       else if (tab === 'pull_requests') {
-        $scope.tracker_tab.active = false;
+        $scope.activity_tab.active      = false;
+        $scope.tracker_tab.active       = false;
         $scope.pull_requests_tab.active = true;
         $scope.getIssuesContent();
+        if($location.path() !== '/pull_requests') {
+          $location.path('/pull_requests').replace()
+        };
       };
     };
 

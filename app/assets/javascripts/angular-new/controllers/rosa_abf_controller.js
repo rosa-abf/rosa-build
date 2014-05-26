@@ -1,7 +1,8 @@
-RosaABF.controller('RosaABFController', ['$scope', 'LocalesHelper', function($scope, LocalesHelper) {
-
-  $scope.init = function(locale) {
+RosaABF.controller('RosaABFController', ['$scope', 'LocalesHelper', 'SoundNotificationsHelper',
+                   function($scope, LocalesHelper, SoundNotificationsHelper) {
+  $scope.init = function(locale, sound_notifications) {
   	LocalesHelper.setLocale(locale);
     moment.lang(locale);
+    SoundNotificationsHelper.enabled(sound_notifications);
   }
 }]);

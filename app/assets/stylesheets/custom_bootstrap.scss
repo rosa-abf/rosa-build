@@ -18,7 +18,7 @@ a.navbar-brand, .navbar .navbar-right .avatar {
   padding-top: ($navbar-height - $logo-mini-height) / 2;
 }
 
-.nav a {
+.nav a, .pagination a, .carousel a, .panel-title a {
   cursor: pointer;
 }
 
@@ -51,4 +51,34 @@ footer {
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
+}
+
+table tbody {
+    td.build-list-statuses {
+        background: #FFF !important;
+
+        .status {
+            float: left;
+            border: 1px solid #DDD;
+            margin: 1px 2px;
+        }
+        .nocolor { background: #FFF; }
+        .expand {
+            position: absolute;
+            margin: -9px 0 0 -23px;
+            border: 1px solid #DDD;
+            border-right-color: #FFF;
+            padding: 1px;
+            cursor: pointer;
+        }
+    }
+    td.build-list-chevrons {
+      background: #FFF !important;
+    }
+    tr.group-start td {
+        border-top: 2px solid #125687;
+    }
+    tr.group-end td {
+        border-bottom: 2px solid #125687;
+    }
 }

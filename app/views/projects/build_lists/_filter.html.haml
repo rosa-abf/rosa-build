@@ -1,106 +1,81 @@
--html_options = {class: 'sel80 medium input_cleanse', tabindex: 2}
-.top.box
-  .filter
-    = form_for :filter, html: {class: :form, id: 'monitoring_filter', 'ng-submit' => 'refresh(true)'}, authenticity_token: false do |f|
-      .column
-        = render 'server_status'
-        = hidden_field_tag :name_with_owner, @project.try(:name_with_owner)
-        .reloader
+-html_options = { class: 'form-control' }
+%accordion{ 'close-others' => 'false', 'ng-cloak' => true }
+  %accordion-group{ heading: t('layout.build_lists.build_server_status.header'), 'is-open' => 'isOpenServerStatus',
+                    'ng-click' => 'toggleServerStatus()' }
+    = render 'server_status'
+
+  %accordion-group{ heading: t('layout.build_lists.filters'), 'is-open' => 'isOpenFilters',
+                    'ng-click' => 'toggleFilters()' }
+    = form_for :filter, html: { class: :form, id: 'monitoring_filter' },
+               authenticity_token: false do |f|
+      .row
+        .col-md-4.col-sm-6
+          %h4= t 'layout.build_lists.ownership.header'
+          =f.hidden_field :ownership, value: '{{params.filter.ownership}}' if current_user
+          .btn-group.btn-group-justified
+            - ['owned', (@project ? nil : 'related'), 'everything'].compact.each do |ownership|
+              .btn-group
+                %button.btn.btn-default{ 'ng-model' => 'params.filter.ownership', 'btn-radio' => "'#{ownership}'",
+                                         type: 'button', disabled: !current_user }
+                  = t "layout.build_lists.ownership.#{ownership}"
+        .col-md-4.col-sm-6
+          %h4= t 'activerecord.models.platform'
+          = f.select :platform_id, availables_main_platforms.collect{ |pl| [pl.name, pl.id] },
+                     { include_blank: true },
+                     html_options.merge(id: 'platform', 'ng-model' => 'params.filter.platform_id')
+        -[:updated_at_start, :updated_at_end].each do |attr|
+          .col-md-2.col-sm-4
+            %h4= t attr == :updated_at_start ? '_on' : 'until'
+            = f.text_field attr, size: 10, class: 'form-control',
+              'datepicker-popup' => '{{format}}', 'ng-model' => "params.filter.#{attr}",
+              'is-opened' => 'opened', min: 'minDate', max: 'maxDate',
+              'datepicker-options' => 'dateOptions', 'date-disabled' => "disabled(date, mode)"
+        .col-md-4.col-sm-6
+          %h4= t 'number_rows'
+          =hidden_field_tag :per_page, '{{params.per_page}}'
+          =hidden_field_tag :page, '{{params.page}}'
+          .btn-group.btn-group-justified
+            -BuildList::Filter::PER_PAGE.each do |num|
+              .btn-group
+                %button.btn.btn-default{ 'ng-model' => 'params.per_page', 'btn-radio' => "'#{num}'", type: 'button' }= num
+        .col-md-4.col-sm-6
+          %h4= t 'activerecord.attributes.build_list.arch'
+          = f.select :arch_id, Arch.recent.collect{ |arch| [arch.name, arch.id] }, { include_blank: true },
+                     html_options.merge(id: 'architecture', 'ng-model' => 'params.filter.arch_id')
+        .col-md-4.col-sm-6
+          %h4.medium= t 'layout.build_lists.project_name_search'
+          %input#filter_project_name.form-control{ name: 'filter[filter_project_name]', size: '30',
+            type: 'text', value: '{{params.filter.filter_project_name}}' }
+        .col-md-4.col-sm-6
+          %h4= t 'activerecord.attributes.build_list.status'
+          = f.select :status, BuildList::STATUSES.collect{ |status| [BuildList.human_status(status), status] },
+                     { include_blank: true },
+                     html_options.merge(id: 'status', 'ng-model' => 'params.filter.status')
+        .col-md-4.col-sm-6
+          %h4= t 'activerecord.models.mass_build'
+          = f.select :mass_build_id, mass_build_options, { include_blank: true },
+                     html_options.merge(id: 'mass_build', 'ng-model' => 'params.filter.mass_build_id')
+        .col-md-4.col-sm-6
+          %h4= t 'layout.build_lists.id_search'
+          %input#filter_id.form-control{ name: 'filter{id}', size: '30', type: 'text', value: '{{params.filter.id}}' }
+        .clearfix
+        .col-md-4.col-sm-6.offset20
           = label_tag :autoreload do
             = check_box_tag :autoreload, true, true
             = t 'layout.autoreload_page'
-      .column
-        - if current_user
-          .bordered.nopadding
-            %h3.medium= t("layout.build_lists.ownership.header")
-            =f.hidden_field :ownership, value: '{{params.filter.ownership}}'
+        .col-md-4.col-sm-6.col-md-offset-4.offset20
+          .btn-group.btn-group-justified
+            .btn-group{ 'ng-show' => 'isRequest' }
+              %button.btn.btn-default{ type: 'button', disabled: true }
+                = t('layout.processing')
+            .btn-group{ 'ng-hide' => 'isRequest' }
+              %button.btn.btn-default{ type: 'button', 'ng-click' => 'refresh(true)' }
+                = t('layout.search.header')
             .btn-group
-              - ['owned', (@project ? nil : 'related'), 'everything'].compact.each do |ownership|
-                -options = {'ng-class' =>"{active: params.filter.ownership == '#{ownership}'}",value: ownership, style: (@project ? 'width:50%;' : '')}
-                %button.btn.ownership{options}= t "layout.build_lists.ownership.#{ownership}"
-        %h3.medium= t 'number_rows'
-        =hidden_field_tag :per_page, '{{params.per_page}}'
-        =hidden_field_tag :page, '{{params.page}}'
-        .btn-group
-          -BuildList::Filter::PER_PAGE.each do |num|
-            %button.btn.per_page{value: num, 'ng-class' => "{active: params.per_page == #{num}}"}=num
-        %h3.medium= t 'activerecord.attributes.build_list.status'
-        .lineForm.aside
-          = f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {include_blank: true},
-            html_options.merge(id: 'status', 'ng-model' => 'params.filter.status')
-        .both
-        %br/
-      .column
-        %h3.medium= t 'activerecord.models.platform'
-        .lineForm.aside
-          = f.select :platform_id, availables_main_platforms.collect{|pl| [pl.name, pl.id]}, {include_blank: true}, html_options.merge(id: 'platform', 'ng-model' => 'params.filter.platform_id')
-        %h3.medium= t 'activerecord.attributes.build_list.arch'
-        .lineForm.aside
-          = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {include_blank: true}, html_options.merge(id: 'architecture', 'ng-model' => 'params.filter.arch_id')
-        %h3.medium= t 'activerecord.models.mass_build'
-        .lineForm.aside
-          = f.select :mass_build_id, mass_build_options, {include_blank: true},
-            html_options.merge(id: 'mass_build', 'ng-model' => 'params.filter.mass_build_id')
-
-      .column
-        -[:updated_at_start, :updated_at_end].each do |attr|
-          -class_name, message = attr == :updated_at_start ? %w[floatleft _on] : %w[floatright until]
-          %div{class: class_name}
-            %h3.medium= t message
-            =f.text_field attr, readonly: "readonly", size: 10, class: 'mediumheight min input_cleanse', value: "{{params.filter.#{attr}}}"
-            =link_to image_tag('x.png', alt: 'x', class: 'semi'), "#filter_#{attr}", id: 'updated_at_clear'
-        .both
-        -%w[project_name id].each do |filter|
-          %h3.medium= t "layout.build_lists.#{filter}_search"
-          %input.mediumheight.input_cleanse{id: "filter_#{filter}", name: "filter[#{filter}]", size: "30", type: "text", value: "{{params.filter.#{filter}}}"}
-        %br/
-        %br/
-      .butgrp
-        = f.submit t('layout.search.header'), 'ng-hide' => 'isRequest'
-        = f.submit t('layout.processing'), disabled: true, 'ng-show' => 'isRequest'
-        = f.submit t('reset'), id: 'filter_clear'
-        -if @project and can?(:create, @project.build_lists.build)
-          %input{id: 'filter_new_build', type: 'button', onclick: "location.href='#{new_project_build_list_path(@project)}'", value: t('layout.build_lists.new_header')}
-      .both
-    .both
-  .switch
-    %a{href: "#"}= t 'layout.build_lists.hide_filter'
-:javascript
-  var MONITORING_FILTER_HIDE = "monitoring_filter_hide";
-  $(".switch").toggle(
-    function () {
-      var d = new Date();
-      d.setMonth(d.getMonth() + 1);
-      $(".filter").hide("slow");
-      $(".switch a").text("#{t 'layout.build_lists.show_filter'}");
-      setCookie(MONITORING_FILTER_HIDE, 'true', d);
-    },
-    function () {
-      $(".filter").show("slow");
-      $(".switch a").text("#{t 'layout.build_lists.hide_filter'}");
-      var d = new Date();
-      d.setMonth(d.getMonth() + 1);
-      setCookie(MONITORING_FILTER_HIDE, 'false', d);
-    }
-  );
-  #{cookies[:monitoring_filter_hide] == 'true' ? "$('.switch').click();" : ''}
-  #{if I18n.locale == :ru
-        "$.datepicker.regional['ru'] = {
-          closeText: 'Закрыть',
-          prevText: '<Пред',
-          nextText: 'След>',
-          currentText:  'Сейчас',
-          monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь',
-          'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
-          dayNames: ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'],
-          dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
-          weekHeader: 'Не',
-          dateFormat: 'dd/mm/yy',
-          firstDay: 1,
-          isRTL: false,
-          showMonthAfterYear: false,
-          yearSuffix: ''
-        };
-        $.datepicker.setDefaults($.datepicker.regional['ru']);"
-      end
-     }
+              %button.btn.btn-default{ type: 'button', 'ng-click' => 'clear()' }= t('reset')
+            -if @project and can?(:create, @project.build_lists.build)
+              .btn-group
+                %button.btn.btn-default{ id: 'filter_new_build', type: 'button',
+                  onclick: "location.href='#{new_project_build_list_path(@project)}'",
+                  value: t('layout.build_lists.new_header') }
+          = hidden_field_tag :name_with_owner, @project.try(:name_with_owner)

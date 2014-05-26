@@ -20,9 +20,9 @@
         .form-group
           = text_field_tag 'query', @query, placeholder: t('layout.search.header'), class: 'form-control'
       %ul.nav.navbar-nav.navbar-right
-        %li
-          .avatar= image_tag avatar_url(current_user), alt: 'avatar', height: "32", class: 'img-responsive'
         - if current_user
+          %li
+            .avatar= image_tag avatar_url(current_user), alt: 'avatar', height: "32", class: 'img-responsive'
           %li.dropdown
             %a.dropdown-toggle{ "data-toggle" => "dropdown", href: "#" }
               = current_user.uname

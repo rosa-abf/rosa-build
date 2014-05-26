@@ -1,43 +1,35 @@
-.bordered.nopadding
-  %h3.medium= t('layout.build_lists.build_server_status.header')
-
-  .table
-    .lefter= t("layout.build_lists.build_server_status.rpm_workers")
-  .both
-  .table
-    .lefter= t("layout.build_lists.build_server_status.amount")
-  .both
-  .table
-    .lefter= t("layout.build_lists.build_server_status.abf")
-    .righter {{server_status.rpm.workers}}
-  .both
-  .table
-    .lefter= t("layout.build_lists.build_server_status.custom")
-    .righter {{server_status.rpm.other_workers}}
-  .both
-  .table
-    .lefter= t("layout.build_lists.build_server_status.tasks")
-  .both
-  - [['custom', :default_tasks], ['mass_build_tasks', :low_tasks], ['build_tasks', :build_tasks]].each do |label, metric|
-    .table
-      .lefter= t("layout.build_lists.build_server_status.#{label}")
-      .righter= "{{server_status.rpm.#{metric}}}"
-    .both
-  %br
-
-  .table
-    .lefter= t("layout.build_lists.build_server_status.publish_workers")
-  .both
-  .table
-    .lefter= t("layout.build_lists.build_server_status.amount")
-    .righter= "{{server_status.publish.workers}}"
-  .both
-  - [:tasks, :build_tasks].each do |metric|
-    .table
-      .lefter= t("layout.build_lists.build_server_status.#{metric}")
-      .righter= "{{server_status.publish.#{metric}}}"
-    .both
-  %br
-
-
-
+.row
+  .col-md-4.col-sm-6
+    %h5= t 'layout.build_lists.build_server_status.rpm_workers'
+    %ul.list-unstyled
+      %li
+        = t 'layout.build_lists.build_server_status.amount'
+        %ul
+          %li
+            = t 'layout.build_lists.build_server_status.abf'
+            %span.bg-primary.badge.pull-right {{server_status.rpm.workers}}
+          %li
+            = t 'layout.build_lists.build_server_status.custom'
+            %span.bg-primary.badge.pull-right {{server_status.rpm.other_workers}}
+  .col-md-4.col-sm-6
+    %h5= t 'layout.build_lists.build_server_status.tasks'
+    %ul.list-unstyled
+      %li
+        %ul
+          - [['custom', :default_tasks], ['mass_build_tasks', :low_tasks]].each do |label, metric|
+            %li
+              = t "layout.build_lists.build_server_status.#{label}"
+              %span.bg-primary.badge.pull-right {{server_status.rpm.#{metric}}}
+      %li
+        = t 'layout.build_lists.build_server_status.build_tasks'
+        %span.bg-primary.badge.pull-right {{server_status.rpm.build_tasks}}
+  .col-md-4.col-sm-6
+    %h5= t 'layout.build_lists.build_server_status.publish_workers'
+    %ul.list-unstyled
+      %li
+        = t 'layout.build_lists.build_server_status.amount'
+        %span.bg-primary.badge.pull-right {{server_status.publish.workers}}
+      - [:tasks, :build_tasks].each do |metric|
+        %li
+          = t "layout.build_lists.build_server_status.#{metric}"
+          %span.bg-primary.badge.pull-right {{server_status.publish.#{metric}}}

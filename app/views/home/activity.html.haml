@@ -1,12 +1,5 @@
 -set_meta_tags title: nil
-.voffset20
 .container
-  /   =#render 'feed_tabs'
-  / =render 'list'
-
-  / - content_for :sidebar, render('sidebar')
-  / - render 'top_menu'
-
   %div{ 'ng-controller' => 'ActivityCtrl', 'cg-busy' => "'activity'", 'ng-init' => "init('#{action_name}')" }
     %tabset.offset20
       = render 'activity_tab'

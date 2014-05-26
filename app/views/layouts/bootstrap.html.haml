@@ -7,11 +7,14 @@
     - if user_signed_in?
       = auto_discovery_link_tag :atom, atom_activity_feeds_path(format: 'atom', token: current_user.authentication_token), title: t("layout.atom_link_tag_title", nickname: current_user.uname, app_name: APP_CONFIG['project_name'])
 
-  %body{ 'ng-app' => 'RosaABF', 'ng-controller' => 'RosaABFController', 'ng-init' => "init('#{I18n.locale}')" }
+  %body{ 'ng-app' => 'RosaABF', 'ng-controller' => 'RosaABFController',
+         'ng-init' => "init('#{I18n.locale}', #{!!current_user.try(:sound_notifications)})" }
     = render 'layouts/menu/new_top'
     %article.container-fluid
       .row= yield
     = render 'layouts/menu/new_bottom'
     = stylesheet_link_tag 'new_application'
     = javascript_include_tag 'new_application'
-    = javascript_include_tag 'moment/ru.js' if I18n.locale == :ru
+    - if I18n.locale == :ru
+      = javascript_include_tag 'moment/ru.js'
+      = javascript_include_tag 'angular-1.2.15-locale_ru-ru'
