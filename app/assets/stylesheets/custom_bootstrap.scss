@@ -63,17 +63,12 @@ table tbody {
             margin: 1px 2px;
         }
         .nocolor { background: #FFF; }
-        .expand {
-            position: absolute;
-            margin: -9px 0 0 -23px;
-            border: 1px solid #DDD;
-            border-right-color: #FFF;
-            padding: 1px;
-            cursor: pointer;
-        }
     }
     td.build-list-chevrons {
       background: #FFF !important;
+      a {
+        cursor: pointer;
+      }
     }
     tr.group-start td {
         border-top: 2px solid #125687;
