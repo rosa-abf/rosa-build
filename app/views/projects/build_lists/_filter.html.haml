@@ -1,11 +1,15 @@
 -html_options = { class: 'form-control' }
 %accordion{ 'close-others' => 'false', 'ng-cloak' => true }
-  %accordion-group{ heading: t('layout.build_lists.build_server_status.header'), 'is-open' => 'isOpenServerStatus',
-                    'ng-click' => 'toggleServerStatus()' }
+  %accordion-group{ 'is-open' => 'isOpenServerStatus', 'ng-click' => 'toggleServerStatus()' }
+    %accordion-heading
+      = t 'layout.build_lists.build_server_status.header'
+      %i.pull-right.glyphicon{ 'ng-class' => "{'glyphicon-chevron-down': isOpenServerStatus, 'glyphicon-chevron-right': !isOpenServerStatus}" }
     = render 'server_status'
 
-  %accordion-group{ heading: t('layout.build_lists.filters'), 'is-open' => 'isOpenFilters',
-                    'ng-click' => 'toggleFilters()' }
+  %accordion-group{ 'is-open' => 'isOpenFilters', 'ng-click' => 'toggleFilters()' }
+    %accordion-heading
+      = t 'layout.build_lists.filters'
+      %i.pull-right.glyphicon{ 'ng-class' => "{'glyphicon-chevron-down': isOpenFilters, 'glyphicon-chevron-right': !isOpenFilters}" }
     = form_for :filter, html: { class: :form, id: 'monitoring_filter' },
                authenticity_token: false do |f|
       .row
