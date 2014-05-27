@@ -558,7 +558,8 @@ class BuildList < ActiveRecord::Base
                        name: build_for_platform.name,
                        arch: arch.name
       },
-      user:          {uname: user.uname, email: user.email}
+      rerun_tests:   rerun_tests?,
+      user:          { uname: user.uname, email: user.email }
     }
   end
 
