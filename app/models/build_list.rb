@@ -609,7 +609,7 @@ class BuildList < ActiveRecord::Base
       ( project_version == save_to_platform.name ) ||
       ( save_to_platform.main? && !save_to_repository.forbid_to_publish_builds_not_from? )
 
-    p.repo.git.native(:branch, {}, '--contains', commit_hash).
+    project.repo.git.native(:branch, {}, '--contains', commit_hash).
       gsub(/\*/, '').split(/\n/).map(&:strip).include?(save_to_platform.name)
   end
 
