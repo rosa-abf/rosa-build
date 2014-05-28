@@ -1,21 +1,40 @@
-body {
-  //background: $body-bg image-url("bg.png") repeat-x;
-}
-
-.top_menu {
-  margin-bottom: 0;
-  border-radius: 0;
-  -moz-border-radius: 0;
-}
-
 article.container-fluid {
   background: #FFF;
 }
 
 $logo-mini-height: 32px;
+$mini-avatar-height: 30px;
 
-a.navbar-brand, .navbar .navbar-right .avatar {
-  padding-top: ($navbar-height - $logo-mini-height) / 2;
+.top_menu {
+  min-height: $top-menu-height;
+  margin-bottom: 0;
+
+  .navbar-brand {
+    padding: $top-menu-padding-vertical $navbar-padding-horizontal;
+    height: $top-menu-height;
+  }
+  .navbar-nav {
+    @media (min-width: $grid-float-breakpoint) {
+      > li {
+        > a {
+          padding-top:    $top-menu-padding-vertical;
+          padding-bottom: $top-menu-padding-vertical;
+        }
+      }
+    }
+  }
+  .navbar-form {
+    margin-top:    (($top-menu-height - $input-height-base) / 2);
+    margin-bottom: (($top-menu-height - $input-height-base) / 2);
+  }
+  .navbar-right .avatar {
+    margin-top:    (($top-menu-height - $mini-avatar-height) / 2);
+    margin-bottom: (($top-menu-height - $mini-avatar-height) / 2);
+  }
+  a.navbar-brand {
+    padding-top:    (($top-menu-height - $logo-mini-height) / 2);
+    padding-bottom: (($top-menu-height - $logo-mini-height) / 2);
+  }
 }
 
 .nav a, .pagination a, .carousel a, .panel-title a {

@@ -1,15 +1,15 @@
-%nav.navbar.navbar-default.top_menu{ role: "navigation" }
+%nav.navbar.navbar-inverse.top_menu{ role: "navigation" }
   .container-fluid
     / Brand and toggle get grouped for better mobile display
     .navbar-header
-      %button.navbar-toggle{ "data-target" => "#top-menu-navbar-collapse-1", "data-toggle" => "collapse", type: "button" }
+      %button.navbar-toggle{ "data-target" => "#top-menu-navbar-collapse", "data-toggle" => "collapse", type: "button" }
         %span.sr-only Toggle navigation
         %span.icon-bar
         %span.icon-bar
         %span.icon-bar
       = link_to image_tag('logo-mini.png', alt: 'ABF'), root_path, class: 'navbar-brand'
     / Collect the nav links, forms, and other content for toggling
-    #top-menu-navbar-collapse-1.collapse.navbar-collapse
+    #top-menu-navbar-collapse.collapse.navbar-collapse
       %ul.nav.navbar-nav
         - (collection = t 'top_menu').each do |base, title|
           - if can? :index, base.to_s.classify.constantize
@@ -22,7 +22,7 @@
       %ul.nav.navbar-nav.navbar-right
         - if current_user
           %li
-            .avatar= image_tag avatar_url(current_user), alt: 'avatar', height: "32", class: 'img-responsive'
+            .avatar= image_tag avatar_url(current_user), alt: 'avatar', class: 'img-responsive'
           %li.dropdown
             %a.dropdown-toggle{ "data-toggle" => "dropdown", href: "#" }
               = current_user.uname

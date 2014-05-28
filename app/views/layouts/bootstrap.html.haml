@@ -10,6 +10,7 @@
   %body{ 'ng-app' => 'RosaABF', 'ng-controller' => 'RosaABFController',
          'ng-init' => "init('#{I18n.locale}', #{!!current_user.try(:sound_notifications)})" }
     = render 'layouts/menu/new_top'
+    = yield :submenu if content_for?(:submenu)
     %article.container-fluid
       .row= yield
     = render 'layouts/menu/new_bottom'
