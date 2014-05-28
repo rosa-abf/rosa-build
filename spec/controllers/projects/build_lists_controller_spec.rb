@@ -77,10 +77,7 @@ describe Projects::BuildListsController do
     end
   end
 
-  before do
-    stub_symlink_methods
-    allow_any_instance_of(BuildList).to receive(:valid_branch_for_publish?).and_return(true)
-  end
+  before { stub_symlink_methods }
 
   context 'crud' do
     before do
@@ -130,6 +127,10 @@ describe Projects::BuildListsController do
       context 'do rerun_tests' do
         def do_rerun_tests
           put :rerun_tests, id: @build_list
+        end
+
+        before do
+          allow_any_instance_of(BuildList).to receive(:can_rerun_tests?).and_return(true)
         end
 
         context 'if user is project owner' do
