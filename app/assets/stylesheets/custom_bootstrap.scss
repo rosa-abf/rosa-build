@@ -99,8 +99,27 @@ table tbody {
 }
 
 .build-list {
+  .panel-heading {
+    .build-list-status {
+      padding: 5px 10px;
+      color: #000;
+    }
+    .build-list-time {
+      padding: 5px 10px;
+    }
+    .bg-nocolor {
+      background-color: #fff;
+    }
+  }
+
   form .row [class^=col-] {
     padding-top: 5px;
     padding-bottom: 5px;
   }
+
+  .table-borderless td,
+  .table-borderless th {
+    border: 0;
+  }
 }
+
