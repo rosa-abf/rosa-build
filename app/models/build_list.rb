@@ -392,7 +392,14 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish?
-    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED, BUILD_PUBLISHED_INTO_TESTING, FAILED_PUBLISH_INTO_TESTING].include?(status) && extra_build_lists_published? && save_to_repository.projects.exists?(id: project_id)
+    super &&
+      valid_branch_for_publish? &&
+      extra_build_lists_published? &&
+      save_to_repository.projects.exists?(id: project_id)
+  end
+
+  def can_publish_into_testing?
+    super && valid_branch_for_publish?
   end
 
   def extra_build_lists_published?
@@ -596,6 +603,16 @@ class BuildList < ActiveRecord::Base
   later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :middle
 
   protected
+
+  def valid_branch_for_publish?
+    return true if save_to_platform.personal? ||
+      ( project_version == save_to_platform.name ) ||
+      ( save_to_platform.main? && !save_to_repository.forbid_to_publish_builds_not_from? )
+
+    p.repo.git.native(:branch, {}, '--contains', commit_hash).
+      gsub(/\*/, '').split(/\n/).map(&:strip).include?(save_to_platform.name)
+  end
+
 
   def create_container
     AbfWorker::BuildListsPublishTaskManager.create_container_for self

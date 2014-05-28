@@ -71,3 +71,4 @@ en:
         updated_at: Updated
         owner: Owner
         synchronizing_publications: Publish only on success all build_lists for each arch (checking by commit hash)
+        forbid_to_publish_builds_not_from: "Forbid to publish builds not from '%{name}' branch"
