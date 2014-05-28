@@ -184,7 +184,7 @@ class Projects::BuildListsController < Projects::BaseController
   protected
 
   def do_and_back(action, prefix, success = 'success', fail = 'fail')
-    result  = @build_list.send(action)
+    result  = @build_list.send("can_#{action}?") && @build_list.send(action)
     message = result ? success : fail
     flash[result ? :notice : :error] = t("layout.build_lists.#{prefix}#{message}")
     redirect_to :back
