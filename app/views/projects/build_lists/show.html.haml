@@ -1,261 +1,263 @@
 -set_meta_tags title: [title_object(@build_list.project), t('activerecord.models.build_list')]
-.build-list{'ng-controller' => 'BuildListController'}
-  .notify.blue
-    %div{class: '{{build_list.status_color}}'}
-      %p {{build_list.human_status | i18n}}
-    %p{'am-time-ago' => 'build_list.updated_at', title: '{{build_list.updated_at_utc}}'}
-    .both
-  =form_for @build_list, url: publish_build_list_path(@build_list), html: { class: :form } do |f|
-    %h3= t("layout.build_lists.main_data")
-    .leftlist= t("activerecord.attributes.build_list.container_path")
-    .rightlist{'ng-show' => "build_list.container_status == #{BuildList::BUILD_PUBLISHED}"}
-      - url = container_url
-      = link_to url, url
-    .rightlist{'ng-show' => "build_list.container_status == #{BuildList::BUILD_PUBLISH}"}
-      = t("layout.build_lists.creating")
-    .both
+.container.build-list{ 'ng-controller' => 'BuildListController', 'ng-cloak' => true }
+  .row
+    .col-md-10.col-md-offset-1
+      .panel.panel-info
+        .panel-heading
+          .pull-left{class: '{{build_list.status_color}}'} {{build_list.human_status | i18n}}
+          .pull-right
+            %div{ 'am-time-ago' => 'build_list.updated_at',
+                  title: "{{build_list.updated_at | amDateFormat:'ddd, LLL'}}" }
+          .clearfix
+        .panel-body
+          %h3.offset0.col-md-4.text-right= t 'layout.build_lists.main_data'
+          .clearfix
+          =form_for @build_list, url: publish_build_list_path(@build_list), html: { class: :form } do |f|
+            .row
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.container_path'
+              .col-md-8{'ng-show' => "build_list.container_status == #{BuildList::BUILD_PUBLISHED}"}
+                - url = container_url
+                = link_to url, url
+              .clearfix
+              .col-md-8.col-md-offset-4{'ng-show' => "build_list.container_status == #{BuildList::BUILD_PUBLISH}"}
+                = t("layout.build_lists.creating")
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.id'
+              .col-md-8
+                = @build_list.id
+                = hidden_field_tag :build_list_id, @build_list.id
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.user'
+              .col-md-8= link_to @build_list.user.try(:fullname), @build_list.user
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.publisher'
+              .col-md-8{'ng-show' => 'build_list.publisher'}
+                %a{'ng-href' => '{{build_list.publisher.path}}' } {{build_list.publisher.fullname}}
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.build_for_platform'
+              .col-md-8
+                - if bfp = @build_list.build_for_platform
+                  = link_to(bfp.name, bfp)
+                - else
+                  = t 'layout.build_lists.platform_deleted'
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.save_to_repository'
+              .col-md-8
+                = link_to "#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}", [@build_list.save_to_platform, @build_list.save_to_repository]
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.include_testing_subrepository'
+              .col-md-8= t("layout.#{@build_list.include_testing_subrepository?}_")
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.include_repos'
+              .col-md-8= (@build_list.include_repos||[]).map{|r| Repository.where(id: r).first.try(:name)}.join(', ')
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.update_type'
+              .col-md-8
+                = f.select :update_type, options_for_select(build_list_classified_update_types,
+                  @build_list.update_type), {}, 'ng-model' => 'build_list.update_type',
+                  'ng-change' => 'updateTypeChanged()', 'ng-show' => 'build_list.can_publish'
+                %div{'ng-hide' => 'build_list.can_publish'}= @build_list.update_type
+              .ng-hide{ 'ng-show' => 'update_type_errors' }
+                .flash_notify
+                  .alert{ 'ng-class' => "{ 'alert-error': update_type_errors }" }
+                    {{ update_type_errors }}
+              .clearfix
 
-    .leftlist= t("activerecord.attributes.build_list.id")
-    .rightlist
-      = @build_list.id
-      = hidden_field_tag :build_list_id, @build_list.id
-    .both
-    .leftlist= t("activerecord.attributes.build_list.user")
-    .rightlist
-      = link_to @build_list.user.try(:fullname), @build_list.user
-    .both
-    .leftlist= t("activerecord.attributes.build_list.publisher")
-    .rightlist{'ng-show' => 'build_list.publisher'}
-      %a{'ng-href' => '{{build_list.publisher.path}}' } {{build_list.publisher.fullname}}
-    .both
-    .leftlist= t("activerecord.attributes.build_list.build_for_platform")
-    .rightlist
-      - if bfp = @build_list.build_for_platform
-        = link_to(bfp.name, bfp)
-      - else
-        = t("layout.build_lists.platform_deleted")
-    .both
-    .leftlist= t("activerecord.attributes.build_list.save_to_repository")
-    .rightlist
-      = link_to "#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}", [@build_list.save_to_platform, @build_list.save_to_repository]
-    .both
-    .leftlist= t("activerecord.attributes.build_list.include_testing_subrepository")
-    .rightlist= t("layout.#{@build_list.include_testing_subrepository?}_")
-    .both
-    .leftlist= t("activerecord.attributes.build_list.include_repos")
-    .rightlist= (@build_list.include_repos||[]).map{|r| Repository.where(id: r).first.try(:name)}.join(', ')
-    .both
-    .leftlist= t("activerecord.attributes.build_list.update_type")
-    .rightlist
-      = f.select :update_type, options_for_select(build_list_classified_update_types,
-        @build_list.update_type), {}, 'ng-model' => 'build_list.update_type',
-        'ng-change' => 'updateTypeChanged()', 'ng-show' => 'build_list.can_publish'
-      %div{'ng-hide' => 'build_list.can_publish'}= @build_list.update_type
-    .ng-hide{ 'ng-show' => 'update_type_errors' }
-      .flash_notify
-        .alert{ 'ng-class' => "{ 'alert-error': update_type_errors }" }
-          {{ update_type_errors }}
-      .both
-    .both
-    .leftlist= t("activerecord.attributes.build_list.auto_publish_status")
-    .rightlist= t("layout.build_lists.auto_publish_status.#{@build_list.auto_publish_status}")
-    .both
-    .leftlist= t("activerecord.attributes.build_list.auto_create_container")
-    .rightlist= t("layout.#{@build_list.auto_create_container?}_")
-    .both
-    .leftlist= t("activerecord.attributes.build_list.use_cached_chroot")
-    .rightlist= t("layout.#{@build_list.use_cached_chroot?}_")
-    .both
-    .leftlist= t("activerecord.attributes.build_list.project_version")
-    .rightlist= link_to @build_list.project_version, tree_path(@build_list.project, @build_list.project_version)
-    .both
-    .leftlist= t("diff")
-    .rightlist= build_list_version_link(@build_list, true)
-    .both
-    .leftlist= t("activerecord.attributes.build_list.arch")
-    .rightlist= @build_list.arch.name
-    .both
-    .leftlist= t("activerecord.attributes.build_list.updated_at")
-    .rightlist {{build_list.updated_at_utc}}
-    .both
-    - if @build_list.external_nodes.present?
-      .leftlist= t("activerecord.attributes.build_list.external_nodes")
-      .rightlist= I18n.t("layout.build_lists.external_nodes.#{@build_list.external_nodes}")
-      .both
-      .leftlist= t("activerecord.attributes.build_list.builder")
-      .rightlist{'ng-show' => 'build_list.builder'}
-        %a{'ng-href' => '{{build_list.builder.path}}' } {{build_list.builder.fullname}}
-      .both
-    .leftlist= t("activerecord.attributes.build_list.is_circle")
-    .rightlist= t("layout.#{@build_list.is_circle?}_")
-    .both
-    .leftlist= t("activerecord.attributes.build_list.new_core")
-    .rightlist= t("layout.#{@build_list.new_core?}_")
-    .both
-    - if @build_list.extra_build_lists.present? || @build_list.extra_repositories.present?
-      .leftlist= t("activerecord.attributes.build_list.extra_repositories")
-      .rightlist
-        - Repository.where(id: @build_list.extra_repositories).each do |repo|
-          %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
-        - BuildList.where(id: @build_list.extra_build_lists).each do |bl|
-          %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
-      .both
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.auto_publish_status'
+              .col-md-8= t "layout.build_lists.auto_publish_status.#{@build_list.auto_publish_status}"
+              .clearfix
+              .col-md-4.text-right= t("activerecord.attributes.build_list.auto_create_container")
+              .col-md-8= t "layout.#{@build_list.auto_create_container?}_"
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.use_cached_chroot'
+              .col-md-8= t "layout.#{@build_list.use_cached_chroot?}_"
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.project_version'
+              .col-md-8= link_to @build_list.project_version, tree_path(@build_list.project, @build_list.project_version)
+              .clearfix
+              .col-md-4.text-right= t 'diff'
+              .col-md-8= build_list_version_link(@build_list, true)
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.arch'
+              .col-md-8= @build_list.arch.name
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.updated_at'
+              .col-md-8 {{build_list.updated_at_utc}}
+              .clearfix
+              - if @build_list.external_nodes.present?
+                .col-md-4.text-right= t 'activerecord.attributes.build_list.external_nodes'
+                .col-md-8= I18n.t "layout.build_lists.external_nodes.#{@build_list.external_nodes}"
+                .clearfix
+                .col-md-4.text-right= t 'activerecord.attributes.build_list.builder'
+                .col-md-8{'ng-show' => 'build_list.builder'}
+                  %a{'ng-href' => '{{build_list.builder.path}}' } {{build_list.builder.fullname}}
+                .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.is_circle'
+              .col-md-8= t "layout.#{@build_list.is_circle?}_"
+              .clearfix
+              .col-md-4.text-right= t 'activerecord.attributes.build_list.new_core'
+              .col-md-8= t "layout.#{@build_list.new_core?}_"
+              .clearfix
+              - if @build_list.extra_build_lists.present? || @build_list.extra_repositories.present?
+                .col-md-4.text-right= t 'activerecord.attributes.build_list.extra_repositories'
+                .col-md-8
+                  - Repository.where(id: @build_list.extra_repositories).each do |repo|
+                    %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
+                  - BuildList.where(id: @build_list.extra_build_lists).each do |bl|
+                    %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
+                .clearfix
 
-    - if @build_list.extra_params.present?
-      .leftlist
-        %h4.nomargin= t('activerecord.attributes.build_list.extra_params.label')
-      .rightlist
-      .both
-      - @build_list.extra_params.each do |k, v|
-        .leftlist= t("activerecord.attributes.build_list.extra_params.#{k}")
-        .rightlist= v
-        .both
+              - if @build_list.extra_params.present?
+                .col-md-4.text-right
+                  %h4= t 'activerecord.attributes.build_list.extra_params.label'
+                .col-md-8
+                .clearfix
+                - @build_list.extra_params.each do |k, v|
+                  .col-md-4.text-right= t "activerecord.attributes.build_list.extra_params.#{k}"
+                  .col-md-8= v
+                  .clearfix
+
+              - if @build_list.mass_build_id.present?
+                .col-md-4.text-right= t 'activerecord.attributes.mass_build_id'
+                .col-md-8= link_to @build_list.mass_build.name, platform_mass_builds_path(@build_list.save_to_platform)
+                .clearfix
+
+              %div{'ng-show' => 'build_list.advisory'}
+                .col-md-4.text-right= t 'layout.build_lists.attached_advisory'
+                .col-md-8
+                  %a{'ng-href' => '{{build_list.advisory.path}}' }
+                    {{build_list.advisory.advisory_id}}
+                .clearfix
+
+              %div{'ng-show' => 'build_list.human_duration'}
+                %br
+                .col-md-4.text-right
+                .col-md-8 {{build_list.human_duration }}
+                .clearfix
+
+              - if @build_list.save_to_platform.released
+                #advisory_block{'ng-show' => 'build_list.can_publish && !build_list.advisory'}
+                  .col-md-4.text-right= label_tag :attach_advisory, t('layout.build_lists.attached_advisory')
+                  .col-md-8
+                    = select_tag :attach_advisory, advisories_select_options(@advisories), 'ng-model' => 'attach_advisory', 'ng-change' => 'attachAdvisoryChanged()'
+                    %p.hint_text= t 'layout.advisories.publication_info', update_types: BuildList::RELEASE_UPDATE_TYPES.join(', ')
+                  .clearfix
+
+                  #advisory_search_block{'ng-show' => 'attach_advisory != "no" && attach_advisory != "new"'}
+                    %h3= t 'layout.advisories.search_by_id'
+                    .col-md-4.text-right= label_tag :advisory_search, t('layout.advisories.search_hint')
+                    .col-md-8
+                      %input#advisory_search{type: 'text', 'ng-model' => 'term', 'ng-keyup' => 'search()'}
+                      %p.hint_text= t 'layout.advisories.advisory_id_info', advisory_format: advisory_id_for_hint
+                    .clearfix
+                    - I18n.t('layout.advisories.banners').keys.each do |key|
+                      .info{class: key, 'ng-show' => "search_status == '#{key}'"}
+                        %p= t("layout.advisories.banners.#{key}")
+
+                  #new_advisory_form{'ng-show' => 'attach_advisory == "new"'}
+                    = f.fields_for @build_list.build_advisory do |f|
+                      = render partial: 'advisories/form', locals: {f: f}
+
+                  #advisory_preview{'ng-show' => 'attach_advisory != "no" && attach_advisory != "new"'}
+                    %h3= t('activerecord.models.advisory') << ' {{advisory.advisory_id}}'
+
+                    .col-md-4.text-right= t 'activerecord.attributes.advisory.description'
+                    .col-md-8.descr {{advisory.description}}
+                    .clearfix
+
+                    .col-md-4.text-right= t 'activerecord.attributes.advisory.references'
+                    .col-md-8.refs {{advisory.references}}
+                    .clearfix
+
+              %div{'ng-hide' => 'build_list.extra_build_lists_published'}
+                .flash_notify
+                  .alert.alert-error= t 'layout.build_lists.publish_with_extra_fail'
+
+              %div{'ng-show' => 'build_list.can_publish && build_list.can_publish_in_future && !build_list.can_publish_into_repository'}
+                .flash_notify
+                  .alert.alert-error= t 'flash.build_list.not_all_build_lists_success'
+
+              .col-md-10
+                - if can?(:cancel, @build_list)
+                  = link_to t('layout.build_lists.cancel'), cancel_build_list_path(@build_list),
+                    method: :put, data: { confirm: t('layout.confirm') }, class: 'btn btn-primary',
+                    'ng-show' => 'build_list.can_cancel'
+                = submit_tag t('layout.publish_again'),
+                  data: { confirm: t("layout.publish_again_warning") },
+                  name: 'publish', class: 'btn btn-primary',
+                  'ng-show' => "build_list.can_publish && build_list.status == #{BuildList::BUILD_PUBLISHED}"
+                = submit_tag t('layout.publish'),
+                  data: { confirm: t('layout.build_lists.tests_failed') }, name: 'publish', class: 'btn btn-primary',
+                  'ng-show' => "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status == #{BuildList::TESTS_FAILED}"
+                = submit_tag t('layout.publish'),
+                  data: { confirm: t('layout.confirm') }, name: 'publish', class: 'btn btn-primary',
+                  'ng-show' => "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status != #{BuildList::TESTS_FAILED} && build_list.status != #{BuildList::BUILD_PUBLISHED}"
+                = link_to t('layout.publish_into_testing'), publish_into_testing_build_list_path(@build_list),
+                    method: :put, data: { confirm: t('layout.confirm') },
+                    class: 'btn btn-primary',
+                    'ng-show' => 'build_list.can_publish_into_testing'
+                - if can?(:reject_publish, @build_list)
+                  = link_to t('layout.reject_publish'), reject_publish_build_list_path(@build_list),
+                    method: :put, data: { confirm: t('layout.confirm') },
+                    class: 'btn btn-primary',
+                    'ng-show' => 'build_list.can_reject_publish'
+                - if can?(:create_container, @build_list)
+                  = link_to t('layout.build_lists.create_container'),
+                    create_container_build_list_path(@build_list),
+                    method: :put, data: { confirm: t('layout.confirm') },
+                    class: 'btn btn-primary',
+                    'ng-show' => 'build_list.can_create_container'
+                - if can? :create, @build_list
+                  = link_to t('layout.build_lists.recreate_build_list'), new_project_build_list_path(@build_list.project, build_list_id: @build_list.id), class: 'btn btn-primary'
+              .clearfix
+              %div{'ng-show' => "build_list.status == #{BuildList::BUILD_STARTED}"}
+                = render 'shared/log', { build_started: true, get_log_path: log_build_list_path(@build_list) }
+
+            %hr
+            %h3= t 'layout.build_lists.items_header'
+            %h4{'ng-hide' => 'build_list.item_groups'}
+              = t 'layout.build_lists.no_items_data'
+            %div{'ng-repeat' => 'group in build_list.item_groups'}
+              %div{'ng-repeat' => 'item in group'}
+                %h4 {{item.name + ' #' + item.level}}
+                %table.table
+                  %thead
+                    %tr
+                      %th= t 'activerecord.attributes.build_list/item.name'
+                      %th= t 'activerecord.attributes.build_list/item.version'
+                      %th= t 'activerecord.attributes.build_list/item.status'
+                  %tbody
+                    %tr{class: "{{build_list.itemStatusColor(item.status)}}"}
+                      %td {{item.name}}
+                      %td
+                        %a{'ng-href' => '{{item.path.href}}' } {{item.path.text}}
+                      %td {{build_list.humanStatus(item.status) | i18n}}
 
 
-    - if @build_list.mass_build_id.present?
-      .leftlist= t("activerecord.attributes.mass_build_id")
-      .rightlist= link_to @build_list.mass_build.name, platform_mass_builds_path(@build_list.save_to_platform)
-      .both
+            %div{'ng-show' => 'build_list.packages'}
+              .hr
+              %h3= t 'layout.build_lists.packages_header'
+              %table.table
+                %thead
+                  %tr
+                    %th= t 'activerecord.attributes.build_list/package.fullname'
+                    %th= t 'activerecord.attributes.build_list/package.name'
+                    %th= t 'activerecord.attributes.build_list/package.epoch'
+                    %th= t 'activerecord.attributes.build_list/package.version'
+                    %th= t 'activerecord.attributes.build_list/package.release'
+                %tbody
+                  %tr{'ng-repeat' => 'package in build_list.packages'}
+                    %td{'ng-show' => 'package.url'}
+                      %a{'ng-href' => "{{package.url}}" } {{package.fullname}}
+                    %td{'ng-hide' => 'package.url'} {{package.fullname}}
+                    %td {{package.name}}
+                    %td {{package.epoch}}
+                    %td {{package.version}}
+                    %td {{package.release}}
 
-    %div{'ng-show' => 'build_list.advisory'}
-      .leftlist= t("layout.build_lists.attached_advisory")
-      .rightlist
-        %a{'ng-href' => '{{build_list.advisory.path}}' }
-          {{build_list.advisory.advisory_id}}
-      .both
 
-    %div{'ng-show' => 'build_list.human_duration'}
-      %br
-      .leftlist
-      .rightlist {{build_list.human_duration }}
-      .both
-
-    - if @build_list.save_to_platform.released
-      #advisory_block{'ng-show' => 'build_list.can_publish && !build_list.advisory'}
-        .leftlist= label_tag :attach_advisory, t("layout.build_lists.attached_advisory")
-        .rightlist
-          = select_tag :attach_advisory, advisories_select_options(@advisories), 'ng-model' => 'attach_advisory', 'ng-change' => 'attachAdvisoryChanged()'
-          %p.hint_text= t("layout.advisories.publication_info", update_types: BuildList::RELEASE_UPDATE_TYPES.join(', '))
-        .both
-
-        #advisory_search_block{'ng-show' => 'attach_advisory != "no" && attach_advisory != "new"'}
-          %h3= t("layout.advisories.search_by_id")
-          .leftlist= label_tag :advisory_search, t("layout.advisories.search_hint")
-          .rightlist
-            %input#advisory_search{type: 'text', 'ng-model' => 'term', 'ng-keyup' => 'search()'}
-            %p.hint_text= t("layout.advisories.advisory_id_info", advisory_format: advisory_id_for_hint)
-          .both
-          - I18n.t('layout.advisories.banners').keys.each do |key|
-            .info{class: key, 'ng-show' => "search_status == '#{key}'"}
-              %p= t("layout.advisories.banners.#{key}")
-
-        #new_advisory_form{'ng-show' => 'attach_advisory == "new"'}
-          = f.fields_for @build_list.build_advisory do |f|
-            = render partial: 'advisories/form', locals: {f: f}
-
-        #advisory_preview{'ng-show' => 'attach_advisory != "no" && attach_advisory != "new"'}
-          %h3= t('activerecord.models.advisory') << ' {{advisory.advisory_id}}'
-
-          .leftlist= t('activerecord.attributes.advisory.description')
-          .rightlist.descr {{advisory.description}}
-          .both
-
-          .leftlist= t('activerecord.attributes.advisory.references')
-          .rightlist.refs {{advisory.references}}
-          .both
-
-    %div{'ng-hide' => 'build_list.extra_build_lists_published'}
-      .flash_notify
-        .alert.alert-error= t('layout.build_lists.publish_with_extra_fail')
-      .both
-    %div{'ng-show' => 'build_list.can_publish && build_list.can_publish_in_future && !build_list.can_publish_into_repository'}
-      .flash_notify
-        .alert.alert-error= t('flash.build_list.not_all_build_lists_success')
-      .both
-
-    - if can?(:cancel, @build_list)
-      = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
-        method: :put, data: { confirm: t("layout.confirm") }, class: 'button',
-        'ng-show' => 'build_list.can_cancel'
-    = submit_tag t('layout.publish_again'),
-      data: { confirm: t("layout.publish_again_warning") },
-      name: 'publish',
-      'ng-show' => "build_list.can_publish && build_list.status == #{BuildList::BUILD_PUBLISHED}"
-    = submit_tag t("layout.publish"),
-      data: { confirm: t('layout.build_lists.tests_failed') }, name: 'publish',
-      'ng-show' => "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status == #{BuildList::TESTS_FAILED}"
-    = submit_tag t("layout.publish"),
-      data: { confirm: t('layout.confirm') }, name: 'publish',
-      'ng-show' => "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status != #{BuildList::TESTS_FAILED} && build_list.status != #{BuildList::BUILD_PUBLISHED}"
-    = link_to t('layout.publish_into_testing'), publish_into_testing_build_list_path(@build_list),
-        method: :put, data: { confirm: t("layout.confirm") },
-        class: 'button',
-        'ng-show' => 'build_list.can_publish_into_testing'
-    - if can?(:reject_publish, @build_list)
-      = link_to t('layout.reject_publish'), reject_publish_build_list_path(@build_list),
-        method: :put, data: { confirm: t("layout.confirm") },
-        class: 'button',
-        'ng-show' => 'build_list.can_reject_publish'
-    - if can?(:create_container, @build_list)
-      = link_to t("layout.build_lists.create_container"),
-        create_container_build_list_path(@build_list),
-        method: :put, data: { confirm: t("layout.confirm") },
-        class: 'button',
-        'ng-show' => 'build_list.can_create_container'
-    - if can? :create, @build_list
-      = link_to t('layout.build_lists.recreate_build_list'), new_project_build_list_path(@build_list.project, build_list_id: @build_list.id), class: 'button'
-
-    %div{'ng-show' => "build_list.status == #{BuildList::BUILD_STARTED}"}
-      = render 'shared/log', { build_started: true, get_log_path: log_build_list_path(@build_list) }
-
-  .hr
-  %h3= t("layout.build_lists.items_header")
-  %h4.nomargin{'ng-hide' => 'build_list.item_groups'}
-    = t("layout.build_lists.no_items_data")
-  %div{'ng-repeat' => 'group in build_list.item_groups'}
-    %div{'ng-repeat' => 'item in group'}
-      %h4.nomargin {{item.name + ' #' + item.level}}
-      %table.tablesorter.width565{cellpadding: "0", cellspacing: "0"}
-        %thead
-          %tr
-            %th= t("activerecord.attributes.build_list/item.name")
-            %th= t("activerecord.attributes.build_list/item.version")
-            %th= t("activerecord.attributes.build_list/item.status")
-        %tbody
-          %tr{class: "{{build_list.itemStatusColor(item.status)}}"}
-            %td {{item.name}}
-            %td
-              %a{'ng-href' => '{{item.path.href}}' } {{item.path.text}}
-            %td {{build_list.humanStatus(item.status) | i18n}}
-  .both
-
-  %div{'ng-show' => 'build_list.packages'}
-    .hr
-    %h3= t("layout.build_lists.packages_header")
-    %table.tablesorter.width565{cellpadding: "0", cellspacing: "0"}
-      %thead
-        %tr
-          %th= t("activerecord.attributes.build_list/package.fullname")
-          %th= t("activerecord.attributes.build_list/package.name")
-          %th= t("activerecord.attributes.build_list/package.epoch")
-          %th= t("activerecord.attributes.build_list/package.version")
-          %th= t("activerecord.attributes.build_list/package.release")
-      %tbody
-        %tr{'ng-repeat' => 'package in build_list.packages'}
-          %td{'ng-show' => 'package.url'}
-            %a{'ng-href' => "{{package.url}}" } {{package.fullname}}
-          %td{'ng-hide' => 'package.url'} {{package.fullname}}
-          %td {{package.name}}
-          %td {{package.epoch}}
-          %td {{package.version}}
-          %td {{package.release}}
-    .both
-
-  - if @build_list.new_core?
-    .hr
-    = render 'shared/build_results', subject: @build_list
-
-:javascript
-  $('article .all').addClass('bigpadding');
+              - if @build_list.new_core?
+                .hr
+                = render 'shared/build_results', subject: @build_list
 
 = render 'submenu'

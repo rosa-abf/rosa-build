@@ -64,6 +64,7 @@ footer {
 }
 
 .offset20 { margin-top: 20px; }
+.offset0 { margin-top: 0; }
 .boffset20 { margin-bottom: 20px; }
 .boffset10 { margin-bottom: 10px; }
 .loffset5 { margin-left: 5px; }
@@ -95,4 +96,11 @@ table tbody {
     tr.group-end td {
         border-bottom: 2px solid #125687;
     }
+}
+
+.build-list {
+  form .row [class^=col-] {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
 }
