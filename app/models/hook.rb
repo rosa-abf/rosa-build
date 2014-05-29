@@ -57,8 +57,8 @@ class Hook < ActiveRecord::Base
 
   def receive_push(git_hook)
     default_url_options
-    project = Project.find(git_hook['project']['project']['id'])
-    user    = User.find(git_hook['user']['user']['id'])
+    project = Project.find(git_hook['project']['id'])
+    user    = User.find(git_hook['user']['id'])
     payload = meta(project, user)
     oldrev, newrev, change_type = git_hook.values_at *%w(oldrev newrev change_type)
 
