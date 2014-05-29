@@ -51,6 +51,7 @@ en:
         file_name: File name
         sha1: SHA1
         size: Size (MB)
+        created_at: Created on
 
   flash:
     product_build_list:

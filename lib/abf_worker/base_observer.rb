@@ -10,9 +10,9 @@ module AbfWorker
     attr_accessor :status, :options
 
     def initialize(options, subject_class)
-      @status   = options['status'].to_i
-      @options  = options
-      @subject_class = subject_class
+      @status         = options['status'].to_i
+      @options        = options
+      @subject_class  = subject_class
     end
 
     def perform
@@ -22,16 +22,19 @@ module AbfWorker
     protected
 
     def subject
-      @subject ||= @subject_class.find options['id']
+      @subject ||= @subject_class.find(options['id'])
     end
 
     def update_results
-      results = (subject.results || []) + (options['results'] || [])
-      sort_results_and_save results
+      now     = Time.zone.now.to_i
+      results = options['results'] || []
+      results.each{ |r| r['timestamp'] = now }
+      results += subject.results || []
+      sort_results_and_save(results)
     end
 
     def sort_results_and_save(results, item = subject)
-      item.results = results.sort_by{ |r| r['file_name'] }
+      item.results = results.sort_by{ |r| [r['timestamp'], r['file_name']] }
       item.save(validate: false)
     end
 

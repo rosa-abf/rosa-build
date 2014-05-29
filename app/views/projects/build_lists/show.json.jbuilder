@@ -42,6 +42,10 @@ json.build_list do
     json.file_name result['file_name']
     json.sha1 result['sha1']
     json.size result['size']
+
+    timestamp = result['timestamp']
+    json.created_at Time.zone.at(result['timestamp']).to_s if timestamp
+
     json.url file_store_results_url(result['sha1'], result['file_name'])
   end if @build_list.new_core? && @build_list.results.present?
 

@@ -51,6 +51,7 @@ ru:
         file_name: Имя файла
         sha1: SHA1
         size: Размер (МБ)
+        created_at: Создан
 
   flash:
     product_build_list:
