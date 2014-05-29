@@ -34,7 +34,7 @@ module AbfWorker
     end
 
     def sort_results_and_save(results, item = subject)
-      item.results = results.sort_by{ |r| [r['timestamp'], r['file_name']] }
+      item.results = results.sort_by{ |r| [r['timestamp'].to_s, r['file_name'].to_s] }
       item.save(validate: false)
     end
 
