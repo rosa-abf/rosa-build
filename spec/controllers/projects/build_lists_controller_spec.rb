@@ -129,6 +129,10 @@ describe Projects::BuildListsController do
           put :rerun_tests, id: @build_list
         end
 
+        before do
+          allow_any_instance_of(BuildList).to receive(:can_rerun_tests?).and_return(true)
+        end
+
         context 'if user is project owner' do
           before { set_session_for(@owner_user) }
 

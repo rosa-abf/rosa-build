@@ -32,6 +32,7 @@ shared_examples_for 'mass_build platform owner' do
   end
 
   it 'should change build_publish on publish' do
+    allow_any_instance_of(BuildList).to receive(:valid_branch_for_publish?).and_return(true)
     post :publish, platform_id: @platform, id: @mass_build
     @mass_build.reload.build_publish_count.should == 1
   end

@@ -82,7 +82,10 @@ shared_examples_for 'validation error via build list api' do |message|
 end
 
 describe Api::V1::BuildListsController do
-  before { stub_symlink_methods }
+  before do
+    stub_symlink_methods
+    allow_any_instance_of(BuildList).to receive(:valid_branch_for_publish?).and_return(true)
+  end
 
   context 'create and update abilities' do
     context 'for user' do
