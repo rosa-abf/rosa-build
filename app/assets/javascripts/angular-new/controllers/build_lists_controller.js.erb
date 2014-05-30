@@ -73,15 +73,13 @@ RosaABF.controller('BuildListsController',
     $scope.isOpenFilters      = $cookies.isOpenFilters === 'true' ? true : false;
   };
 
-  $scope.toggleServerStatus = function() {
-    $scope.isOpenServerStatus   = !$scope.isOpenServerStatus;
-    $cookies.isOpenServerStatus =  $scope.isOpenServerStatus.toString();
-  };
+  $scope.$watch('isOpenServerStatus', function(){
+      $cookies.isOpenServerStatus =  $scope.isOpenServerStatus.toString();
+  }, true);
 
-  $scope.toggleFilters = function() {
-    $scope.isOpenFilters   = !$scope.isOpenFilters;
-    $cookies.isOpenFilters =  $scope.isOpenFilters.toString();
-  };
+  $scope.$watch('isOpenFilters', function(){
+      $cookies.isOpenFilters =  $scope.isOpenFilters.toString();
+  }, true);
 
   $scope.getBuildLists = function() {
     // Disable 'Search' button

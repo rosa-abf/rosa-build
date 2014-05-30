@@ -1,12 +1,12 @@
 -html_options = { class: 'form-control' }
 %accordion{ 'close-others' => 'false', 'ng-cloak' => true }
-  %accordion-group{ 'is-open' => 'isOpenServerStatus', 'ng-click' => 'toggleServerStatus()' }
+  %accordion-group{ 'is-open' => '$parent.isOpenServerStatus' }
     %accordion-heading
       = t 'layout.build_lists.build_server_status.header'
       %i.pull-right.glyphicon{ 'ng-class' => "{'glyphicon-chevron-down': isOpenServerStatus, 'glyphicon-chevron-right': !isOpenServerStatus}" }
     = render 'server_status'
 
-  %accordion-group{ 'is-open' => 'isOpenFilters', 'ng-click' => 'toggleFilters()' }
+  %accordion-group{ 'is-open' => '$parent.isOpenFilters' }
     %accordion-heading
       = t 'layout.build_lists.filters'
       %i.pull-right.glyphicon{ 'ng-class' => "{'glyphicon-chevron-down': isOpenFilters, 'glyphicon-chevron-right': !isOpenFilters}" }
