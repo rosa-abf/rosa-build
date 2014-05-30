@@ -22,7 +22,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def update
-    if @repository.update_attributes params[:repository].slice(:description, :synchronizing_publications).merge(publish_without_qa: (params[:repository][:publish_without_qa] || @repository.publish_without_qa))
+    if @repository.update_attributes params[:repository].slice(:description, :synchronizing_publications, :forbid_to_publish_builds_not_from).merge(publish_without_qa: (params[:repository][:publish_without_qa] || @repository.publish_without_qa))
       flash[:notice] = I18n.t("flash.repository.updated")
       redirect_to platform_repository_path(@platform, @repository)
     else
