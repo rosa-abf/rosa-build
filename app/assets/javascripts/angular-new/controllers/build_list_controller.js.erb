@@ -2,15 +2,21 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', 'Sound
 
   $scope.advisoriable_types = <%=BuildList::RELEASE_UPDATE_TYPES%>;
 
-  $scope.id                 = $('#build_list_id').val();
-  $scope.build_list         = null;
-  $scope.subject            = {}; // See: shared/build_results
-  $scope.attach_advisory    = 'no';
+  $scope.id                  = $('#build_list_id').val();
+  $scope.build_list          = null;
+  $scope.subject             = {}; // See: shared/build_results
+  $scope.attach_advisory     = 'no';
   // Statuses: advisory_not_found, server_error, continue_input
-  $scope.search_status      = 'continue_input';
-  $scope.term               = '';
-  $scope.advisory           = null;
-  $scope.update_type_errors = null;
+  $scope.search_status       = 'continue_input';
+  $scope.term                = '';
+  $scope.advisory            = null;
+  $scope.update_type_errors  = null;
+  $scope.isOpenLog           = false;
+  $scope.log_reload_interval = 10000;
+  $scope.log_autoreload      = true;
+  $scope.log_refresh_fn      = null;
+  $scope.build_log           = null;
+  var log_path               = Routes.log_build_list_path($scope.id, {format: 'json'});
 
   $scope.getBuildList = function() {
     $http.get(Routes.build_list_path($scope.id, {format: 'json'})).success(function(results) {
@@ -84,5 +90,34 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', 'Sound
       }).error(function(data, status, headers, config) {
         $scope.update_type_errors = data.message;
       });
+  }
+
+  $scope.getLog = function() {
+    $http.get(log_path).success(function(results) {
+      $scope.build_log = results.log;
+      if(!results.building) { $scope.log_autoreload = false }
+    });
+  }
+
+  $scope.updateLogRefresh = function() {
+    $timeout.cancel($scope.log_refresh_fn);
+    if($scope.isOpenLog && $scope.log_autoreload) {
+      $scope.log_refresh_fn = $timeout($scope.getLog, $scope.log_reload_interval);
+      $scope.getLog();
+    };
+  }
+
+  $scope.$watch('isOpenLog', function(){
+      $scope.updateLogRefresh();
+  }, true);
+
+  $scope.change_log_autoreload = function($event) {
+    $scope.log_autoreload = $event;
+    $scope.updateLogRefresh();
+  }
+
+  $scope.change_log_interval = function($event) {
+    $scope.log_reload_interval = $event;
+    $scope.updateLogRefresh();
   }
 }]);

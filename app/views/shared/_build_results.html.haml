@@ -1,6 +1,6 @@
 %h3= subject.class.human_attribute_name(subject.is_a?(BuildList) ? 'logs' : 'results')
 %h4{'ng-hide' => 'subject.results'}= t('layout.no_')
-%table.table{ 'ng-show' => 'subject.results' }
+%table.table.table-hover{ 'ng-show' => 'subject.results' }
   %thead
     %tr
       %th= t 'activerecord.attributes.product_build_list/results.file_name'
