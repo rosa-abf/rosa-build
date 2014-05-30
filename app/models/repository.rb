@@ -23,6 +23,7 @@ class Repository < ActiveRecord::Base
   validates :description, presence: true
   validates :name, uniqueness: { scope: :platform_id, case_sensitive: false }, presence: true,
             format: { with: /\A[a-z0-9_\-]+\z/ }
+  validates :forbid_to_publish_builds_not_from, length: { maximum: 255 }
 
   scope :recent, -> { order(:name) }
   scope :main,   -> { where(name: %w(main base)) }
