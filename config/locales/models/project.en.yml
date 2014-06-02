@@ -1,6 +1,9 @@
 en:
   layout:
     projects:
+      placeholder:
+        project_name: Project name
+        owner_name: Owner name
       build_schedule: Build schedule
       mass_import: Mass import
       branches: Branches

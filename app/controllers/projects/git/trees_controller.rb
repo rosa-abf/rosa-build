@@ -17,14 +17,19 @@ class Projects::Git::TreesController < Projects::Git::BaseController
 
   def archive
     format, @treeish = params[:format], params[:treeish]
-    if (@treeish =~ /^#{@project.name}-/) && !(@treeish =~ /[\s]+/) && (format =~ /^(zip|tar\.gz)$/)
-      @treeish = @treeish.gsub(/^#{@project.name}-/, '')
+    raise Grit::NoSuchPathError unless  @treeish =~ /^#{@project.name}-/ && 
+                                        @treeish !~ /[\s]+/ &&
+                                        format =~ /^(zip|tar\.gz)$/
+    @treeish.gsub!(/^#{@project.name}-/, '')
+    sha1 = @project.build_scripts.by_active.by_treeish(@treeish).first.try(:sha1)
+    unless sha1
       @commit = @project.repo.commits(@treeish, 1).first
+      raise Grit::NoSuchPathError unless @commit
+      tag     = @project.repo.tags.find{ |t| t.name == @treeish }
+      sha1    = @project.get_project_tag_sha1(tag, format) if tag
     end
-    raise Grit::NoSuchPathError unless @commit
-    tag   = @project.repo.tags.find{ |t| t.name == @treeish }
-    sha1  = @project.get_project_tag_sha1(tag, format) if tag
-    if sha1
+
+    if sha1.present?
       redirect_to "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}"
     else
       archive = @project.archive_by_treeish_and_format @treeish, format

@@ -37,6 +37,7 @@ Rosa::Application.routes.draw do
         member {
           put :publish
           put :reject_publish
+          put :rerun_tests
           put :cancel
           put :create_container
           put :publish_into_testing
@@ -175,8 +176,11 @@ Rosa::Application.routes.draw do
         get    :advisories
       end
 
-      resources :contents, only: [:index]
-      get '/contents/*path' => 'contents#index', format: false
+      resources :contents, only: %i(index) do
+        collection do
+          delete :remove_file
+        end
+      end
 
       resources :mass_builds, only: [:create, :new, :index] do
         member do
@@ -273,6 +277,7 @@ Rosa::Application.routes.draw do
       member do
         put :cancel
         put :create_container
+        put :rerun_tests
         get :log
         patch :publish
         put :reject_publish

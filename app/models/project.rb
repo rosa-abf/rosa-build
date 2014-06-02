@@ -16,9 +16,10 @@ class Project < ActiveRecord::Base
   belongs_to :owner, polymorphic: true, counter_cache: :own_projects_count
   belongs_to :maintainer, class_name: 'User'
 
-  has_many :issues, dependent: :destroy
-  has_many :pull_requests, dependent: :destroy, foreign_key: 'to_project_id'
-  has_many :labels, dependent: :destroy
+  has_many :issues,         dependent: :destroy
+  has_many :pull_requests,  dependent: :destroy, foreign_key: 'to_project_id'
+  has_many :labels,         dependent: :destroy
+  has_many :build_scripts,  dependent: :destroy
 
   has_many :project_imports, dependent: :destroy
   has_many :project_to_repositories, dependent: :destroy
@@ -67,7 +68,8 @@ class Project < ActiveRecord::Base
     q = q.to_s.strip
     by_name("%#{q}%").search_order if q.present?
   }
-  scope :by_name, ->(name) { where('projects.name ILIKE ?', name) if name.present? }
+  scope :by_name,   ->(name) { where('projects.name ILIKE ?', name) if name.present? }
+  scope :by_owner,  ->(name) { where('projects.owner_uname ILIKE ?', "%#{name}%") if name.present? }
   scope :by_owner_and_name, ->(*params) {
     term = params.map(&:strip).join('/').downcase
     where("lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%") if term.present?
@@ -193,6 +195,8 @@ class Project < ActiveRecord::Base
       bl.priority               = priority
       bl.mass_build_id          = mass_build.id
       bl.save_to_repository_id  = repository_id
+      bl.use_cached_chroot      = mass_build.use_cached_chroot?
+      bl.use_extra_tests        = mass_build.use_extra_tests?
     end
     build_list.save
   end
@@ -243,16 +247,9 @@ class Project < ActiveRecord::Base
     return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && FileStoreClean.file_exist_on_file_store?(project_tag.sha1)
 
     archive = archive_by_treeish_and_format tag.name, format
-    sha1    = Digest::SHA1.file(archive[:path]).hexdigest
-    unless FileStoreClean.file_exist_on_file_store? sha1
-      token = User.find_by(uname: 'rosa_system').authentication_token
-      begin
-        resp = JSON `curl --user #{token}: -POST -F 'file_store[file]=@#{archive[:path]};filename=#{name}-#{tag.name}.#{tag_file_format(format)}' #{APP_CONFIG['file_store_url']}/api/v1/upload`
-      rescue # Dont care about it
-        resp = {}
-      end
-      return nil if resp['sha1_hash'].nil?
-    end
+    sha1    = FileStoreClean.save_file_to_file_store(archive)
+    return nil if sha1.blank?
+
     if project_tag
       project_tag.destroy_files_from_file_store(project_tag.sha1)
       project_tag.update_attributes(sha1: sha1)

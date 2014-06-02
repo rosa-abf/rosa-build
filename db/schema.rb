@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140414195426) do
+ActiveRecord::Schema.define(version: 20140530193652) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -140,12 +140,51 @@ ActiveRecord::Schema.define(version: 20140414195426) do
     t.integer  "builder_id"
     t.boolean  "include_testing_subrepository"
     t.string   "auto_publish_status",           default: "default", null: false
-    t.boolean  "use_cached_chroot",             default: true,      null: false
+    t.boolean  "use_cached_chroot",             default: false,     null: false
+    t.boolean  "use_extra_tests",               default: true,      null: false
     t.index ["advisory_id"], :name => "index_build_lists_on_advisory_id"
     t.index ["arch_id"], :name => "index_build_lists_on_arch_id"
     t.index ["mass_build_id", "status"], :name => "index_build_lists_on_mass_build_id_and_status"
     t.index ["project_id", "save_to_repository_id", "build_for_platform_id", "arch_id"], :name => "maintainer_search_index"
     t.index ["project_id"], :name => "index_build_lists_on_project_id"
+  end
+
+  create_table "projects", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "visibility",               default: "open"
+    t.text     "description"
+    t.string   "ancestry"
+    t.boolean  "has_issues",               default: true
+    t.string   "srpm_file_name"
+    t.integer  "srpm_file_size"
+    t.datetime "srpm_updated_at"
+    t.string   "srpm_content_type"
+    t.boolean  "has_wiki",                 default: false
+    t.string   "default_branch",           default: "master"
+    t.boolean  "is_package",               default: true,     null: false
+    t.integer  "maintainer_id"
+    t.boolean  "publish_i686_into_x86_64", default: false
+    t.string   "owner_uname",                                 null: false
+    t.boolean  "architecture_dependent",   default: false,    null: false
+    t.integer  "autostart_status"
+    t.index ["name", "owner_id", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
+  end
+
+  create_table "build_scripts", force: true do |t|
+    t.integer  "project_id", null: false
+    t.string   "treeish",    null: false
+    t.string   "commit"
+    t.string   "sha1"
+    t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["project_id", "treeish"], :name => "index_build_scripts_on_project_id_and_treeish", :unique => true
+    t.index ["project_id"], :name => "fk__build_scripts_project_id"
+    t.foreign_key ["project_id"], "projects", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_build_scripts_project_id"
   end
 
   create_table "comments", force: true do |t|
@@ -285,6 +324,8 @@ ActiveRecord::Schema.define(version: 20140414195426) do
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
     t.boolean  "increase_release_tag",  default: false, null: false
+    t.boolean  "use_cached_chroot",     default: true,  null: false
+    t.boolean  "use_extra_tests",       default: false, null: false
   end
 
   create_table "users", force: true do |t|
@@ -440,31 +481,6 @@ ActiveRecord::Schema.define(version: 20140414195426) do
     t.index ["repository_id", "project_id"], :name => "index_project_to_repositories_on_repository_id_and_project_id", :unique => true
   end
 
-  create_table "projects", force: true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "owner_id"
-    t.string   "owner_type"
-    t.string   "visibility",               default: "open"
-    t.text     "description"
-    t.string   "ancestry"
-    t.boolean  "has_issues",               default: true
-    t.string   "srpm_file_name"
-    t.integer  "srpm_file_size"
-    t.datetime "srpm_updated_at"
-    t.string   "srpm_content_type"
-    t.boolean  "has_wiki",                 default: false
-    t.string   "default_branch",           default: "master"
-    t.boolean  "is_package",               default: true,     null: false
-    t.integer  "maintainer_id"
-    t.boolean  "publish_i686_into_x86_64", default: false
-    t.string   "owner_uname",                                 null: false
-    t.boolean  "architecture_dependent",   default: false,    null: false
-    t.integer  "autostart_status"
-    t.index ["name", "owner_id", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
-  end
-
   create_table "pull_requests", force: true do |t|
     t.integer "issue_id",                 null: false
     t.integer "to_project_id",            null: false
@@ -506,13 +522,14 @@ ActiveRecord::Schema.define(version: 20140414195426) do
   end
 
   create_table "repositories", force: true do |t|
-    t.string   "description",                                null: false
-    t.integer  "platform_id",                                null: false
+    t.string   "description",                                       null: false
+    t.integer  "platform_id",                                       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",                                       null: false
-    t.boolean  "publish_without_qa",         default: true
-    t.boolean  "synchronizing_publications", default: false, null: false
+    t.string   "name",                                              null: false
+    t.boolean  "publish_without_qa",                default: true
+    t.boolean  "synchronizing_publications",        default: false, null: false
+    t.string   "forbid_to_publish_builds_not_from"
     t.index ["platform_id"], :name => "index_repositories_on_platform_id"
   end
 

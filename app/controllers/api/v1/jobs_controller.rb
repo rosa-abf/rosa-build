@@ -14,7 +14,9 @@ class Api::V1::JobsController < Api::V1::BaseController
     else
       platform_ids = Platform.where(name: params[:platforms].split(',')).pluck(:id) if params[:platforms].present?
       arch_ids = Arch.where(name: params[:arches].split(',')).pluck(:id) if params[:arches].present?
-      build_lists = BuildList.for_status(BuildList::BUILD_PENDING).scoped_to_arch(arch_ids).
+      build_lists = BuildList.scoped_to_arch(arch_ids).
+        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
+        scoped_to_arch(arch_ids).
         oldest.order(:created_at)
       build_lists = build_lists.for_platform(platform_ids) if platform_ids.present?
 

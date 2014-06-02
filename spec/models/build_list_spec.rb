@@ -239,4 +239,50 @@ describe BuildList do
 
   end
 
+  describe '#can_publish?' do
+    let(:build_list) { FactoryGirl.create(:build_list) }
+
+    before do
+      build_list.update_attributes({ status: BuildList::SUCCESS }, without_protection: true)
+      allow(build_list).to receive(:valid_branch_for_publish?).and_return(true)
+    end
+
+    it 'returns true for eligible build' do
+      expect(build_list.can_publish?).to be_true
+    end
+
+    it 'returns false if branch invalid' do
+      allow(build_list).to receive(:valid_branch_for_publish?).and_return(false)
+      expect(build_list.can_publish?).to be_false
+    end
+
+    it 'returns false if extra builds not published' do
+      allow(build_list).to receive(:extra_build_lists_published?).and_return(false)
+      expect(build_list.can_publish?).to be_false
+    end
+
+    it 'returns false if project does not exist in repository' do
+      build_list.stub_chain(:save_to_repository, :projects, :exists?).and_return(false)
+      expect(build_list.can_publish?).to be_false
+    end
+  end
+
+  describe '#can_publish_into_testing?' do
+    let(:build_list) { FactoryGirl.create(:build_list) }
+
+    before do
+      build_list.update_attributes({ status: BuildList::SUCCESS }, without_protection: true)
+    end
+
+    it 'returns true for eligible build' do
+      allow(build_list).to receive(:valid_branch_for_publish?).and_return(true)
+      expect(build_list.can_publish_into_testing?).to be_true
+    end
+
+    it 'returns false if branch invalid' do
+      allow(build_list).to receive(:valid_branch_for_publish?).and_return(false)
+      expect(build_list.can_publish_into_testing?).to be_false
+    end
+  end
+
 end

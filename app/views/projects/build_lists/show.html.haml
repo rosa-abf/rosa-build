@@ -76,6 +76,9 @@
             %td= t 'activerecord.attributes.build_list.use_cached_chroot'
             %td= t "layout.#{@build_list.use_cached_chroot?}_"
           %tr
+            %td= t 'activerecord.attributes.build_list.use_extra_tests'
+            %td= t "layout.#{@build_list.use_extra_tests?}_"
+          %tr
             %td= t 'activerecord.attributes.build_list.project_version'
             %td= link_to @build_list.project_version, tree_path(@build_list.project, @build_list.project_version)
           %tr
@@ -218,7 +221,6 @@
         .clearfix
         %div{'ng-show' => "build_list.status == #{BuildList::BUILD_STARTED}"}
           =# render 'shared/log', { build_started: true, get_log_path: log_build_list_path(@build_list) }
-
           %hr
           %accordion
             %accordion-group{ 'is-open' => '$parent.isOpenLog' }

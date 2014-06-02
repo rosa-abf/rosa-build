@@ -11,6 +11,11 @@
 .leftlist= f.label :synchronizing_publications
 .rightlist= f.check_box :synchronizing_publications
 
+- if @platform.main?
+  .both
+  .leftlist= f.label :forbid_to_publish_builds_not_from
+  .rightlist= f.text_field :forbid_to_publish_builds_not_from
+
 .both
 
 .hr

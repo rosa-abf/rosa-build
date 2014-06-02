@@ -47,10 +47,19 @@ ActiveAdmin.register User do
       data:         { confirm: 'Are you sure you want to reset token?' }
   end
 
+  action_item only: :show do
+    link_to 'Login as user', login_as_admin_user_path(resource)
+  end
+
   member_action :reset_token, :method => :put do
     resource.reset_authentication_token!
     flash[:info] = 'User token reseted successfully'
     redirect_to admin_user_path(resource)
+  end
+
+  member_action :login_as do
+    sign_in(resource, bypass: true)
+    redirect_to root_path
   end
 
 end

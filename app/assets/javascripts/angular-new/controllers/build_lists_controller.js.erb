@@ -11,11 +11,13 @@ RosaABF.controller('BuildListsController',
 
   $scope.opened         = {};
   $scope.map_priorities = {
-    <%=BuildList::WAITING_FOR_RESPONSE%>: 11,
-    <%=BuildList::BUILD_PENDING%>: 10,
-    <%=BuildList::BUILD_CANCELING%>: 9,
-    <%=BuildList::BUILD_CANCELED%>: 8,
-    <%=BuildList::BUILD_STARTED%>: 7,
+    <%=BuildList::WAITING_FOR_RESPONSE%>: 13,
+    <%=BuildList::BUILD_PENDING%>: 12,
+    <%=BuildList::RERUN_TESTS%>: 11,
+    <%=BuildList::BUILD_CANCELING%>: 10,
+    <%=BuildList::BUILD_CANCELED%>: 9,
+    <%=BuildList::BUILD_STARTED%>: 8,
+    <%=BuildList::RERUNNING_TESTS%>: 7,
     <%=BuildList::BUILD_PUBLISH%>: 6,
     <%=BuildList::BUILD_PUBLISHED%>: 5,
     <%=BuildList::BUILD_ERROR%>: 4,

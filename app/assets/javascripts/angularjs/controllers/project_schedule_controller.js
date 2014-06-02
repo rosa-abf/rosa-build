@@ -9,10 +9,11 @@ RosaABF.controller('ProjectScheduleController', ['$scope', '$http', function($sc
   $scope.items    = [];
 
   $scope.updateStatus = function() {
-    $http.put(
-      Routes.project_path($scope.name_with_owner),
-      {project: {autostart_status: $scope.autostart_status}, format: 'json'}
-    );
+    $http({
+      method: 'PATCH',
+      url:    Routes.project_path($scope.name_with_owner),
+      data:   { project: {autostart_status: $scope.autostart_status} }
+    });
   }
 
   $scope.updateSchedule = function(obj) {

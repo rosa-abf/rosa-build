@@ -1,5 +1,6 @@
 class Platforms::RepositoriesController < Platforms::BaseController
   include FileStoreHelper
+  include RepositoriesHelper
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
@@ -21,7 +22,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def update
-    if @repository.update_attributes params[:repository].slice(:description, :synchronizing_publications).merge(publish_without_qa: (params[:repository][:publish_without_qa] || @repository.publish_without_qa))
+    if @repository.update_attributes params[:repository].slice(:description, :synchronizing_publications, :forbid_to_publish_builds_not_from).merge(publish_without_qa: (params[:repository][:publish_without_qa] || @repository.publish_without_qa))
       flash[:notice] = I18n.t("flash.repository.updated")
       redirect_to platform_repository_path(@platform, @repository)
     else
@@ -116,7 +117,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
       ON projects.owner_id = owner.id AND projects.owner_type = owner.type"
     colName = ['projects.name']
     sort_col = params[:iSortCol_0] || 0
-    sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
+    sort_dir = params[:sSortDir_0] == 'asc' ? 'asc' : 'desc'
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
     if params[:added] == "true"
@@ -131,7 +132,8 @@ class Platforms::RepositoriesController < Platforms::BaseController
     )
 
     @total_projects = @projects.count
-    @projects = @projects.search(params[:sSearch]).order(order)
+    @projects = @projects.by_owner(params[:owner_name]).
+      search(params[:sSearch]).order(order)
 
     respond_to do |format|
       format.json {

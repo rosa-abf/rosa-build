@@ -2,36 +2,50 @@ class MassBuild < ActiveRecord::Base
   belongs_to :build_for_platform, -> { where(platform_type: 'main') }, class_name: 'Platform'
   belongs_to :save_to_platform, class_name: 'Platform'
   belongs_to :user
-  has_many :build_lists, dependent: :destroy
+  has_many   :build_lists, dependent: :destroy
 
   serialize :extra_repositories,  Array
   serialize :extra_build_lists,   Array
 
-  scope :recent, -> { order(created_at: :desc) }
-  scope :by_platform, ->(platform) { where(save_to_platform_id: platform.id) }
-  scope :outdated, -> { where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME) }
+  scope :recent,      ->            { order(created_at: :desc) }
+  scope :by_platform, -> (platform) { where(save_to_platform_id: platform.id) }
+  scope :outdated,    ->            { where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME) }
 
   attr_accessor :arches
   attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
-                  :extra_repositories, :extra_build_lists, :increase_release_tag
+                  :extra_repositories, :extra_build_lists, :increase_release_tag,
+                  :use_cached_chroot, :use_extra_tests
 
-  validates :save_to_platform_id, :build_for_platform_id, :arch_names, :name, :user_id, presence: true
-  validates :projects_list, length: {maximum: 500_000}, presence: true
-  validates_inclusion_of :auto_publish, :increase_release_tag, in: [true, false]
+  validates :save_to_platform_id,
+            :build_for_platform_id,
+            :arch_names,
+            :name,
+            :user_id,
+            presence:               true
+
+  validates :projects_list,
+            presence:               true,
+            length:                 { maximum: 500_000 }
+
+  validates :auto_publish,
+            :increase_release_tag,
+            :use_cached_chroot,
+            :use_extra_tests,
+            inclusion:              { in: [true, false] }
 
   after_commit      :build_all, on: :create
   before_validation :set_data,  on: :create
 
-  COUNT_STATUSES = [
-    :build_lists,
-    :build_published,
-    :build_pending,
-    :build_started,
-    :build_publish,
-    :build_error,
-    :success,
-    :build_canceled
-  ]
+  COUNT_STATUSES = %i(
+    build_lists
+    build_published
+    build_pending
+    build_started
+    build_publish
+    build_error
+    success
+    build_canceled
+  )
 
   def build_all
     # later with resque
@@ -47,7 +61,7 @@ class MassBuild < ActiveRecord::Base
           increase_rt = increase_release_tag?
           arches_list.each do |arch|
             rep_id = (project.repository_ids & save_to_platform.repository_ids).first
-            project.build_for self, rep_id, arch, 0, increase_rt
+            project.build_for(self, rep_id, arch, 0, increase_rt)
             increase_rt = false
           end
         rescue RuntimeError, Exception

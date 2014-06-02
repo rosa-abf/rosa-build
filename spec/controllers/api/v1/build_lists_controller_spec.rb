@@ -25,10 +25,6 @@ shared_examples_for 'not show build list via api' do
 end
 
 shared_examples_for 'create build list via api' do
-  before {
-    #@project.update_attributes({repositories: @platform.repositories})
-    #test_git_commit(@project)
-  }
 
   it 'should create one more build list' do
     lambda { post :create, @create_params }.should change{ BuildList.count }.by(1)
@@ -79,31 +75,27 @@ shared_examples_for 'not create build list via api' do
 end
 
 shared_examples_for 'validation error via build list api' do |message|
-  it 'should return 422 response code' do
-    response.status.should == 422
-  end
-
-  it "should return correct json error message" do
-    response.body.should == { build_list: {id: nil, message: message} }.to_json
+  it 'should return 422 response code and correct json error message' do
+    expect(response.status).to eq(422)
+    expect(response.body).to eq({ build_list: {id: nil, message: message} }.to_json)
   end
 end
 
 describe Api::V1::BuildListsController do
-  before(:each) { stub_symlink_methods }
+  before do
+    stub_symlink_methods
+    allow_any_instance_of(BuildList).to receive(:valid_branch_for_publish?).and_return(true)
+  end
 
   context 'create and update abilities' do
     context 'for user' do
-      before(:each) do
-        Arch.destroy_all
-        User.destroy_all
-
+      before do
         @build_list = FactoryGirl.create(:build_list)
         @params = @build_list.attributes.symbolize_keys
         @project = @build_list.project
         @platform = @build_list.save_to_platform
         #@platform = FactoryGirl.create(:platform_with_repos)
 
-        stub_symlink_methods
         @user = FactoryGirl.create(:user)
         @owner_user = @project.owner
         @member_user = FactoryGirl.create(:user)
@@ -113,9 +105,45 @@ describe Api::V1::BuildListsController do
         # Create and show params:
         @create_params = {build_list: @build_list.attributes.symbolize_keys.merge(:qwerty=>'!')} # wrong parameter
         @create_params = @create_params.merge(arches: [@params[:arch_id]], build_for_platform_id: @platform.id, format: :json)
-        any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+        allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 
         http_login(@user)
+      end
+
+      context 'do rerun_tests' do
+        def do_rerun_tests
+          put :rerun_tests, id: @build_list, format: :json
+        end
+
+        before do
+          allow_any_instance_of(BuildList).to receive(:can_rerun_tests?).and_return(true)
+        end
+
+        context 'if user is project owner' do
+          before { http_login(@owner_user) }
+
+          it 'reruns tests' do
+            expect_any_instance_of(BuildList).to receive(:rerun_tests).and_return(true)
+            do_rerun_tests
+            expect(response.body).to eq({ build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.rerun_tests_success')} }.to_json)
+            expect(response).to be_success
+          end
+
+          context 'returns an error if the can not rerun_tests' do
+            before do
+              allow_any_instance_of(BuildList).to receive(:rerun_tests).and_return(false)
+              do_rerun_tests
+            end
+
+            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.rerun_tests_fail')
+          end
+        end
+
+        it 'returns an error if user is not project owner' do
+          expect_any_instance_of(BuildList).to_not receive(:rerun_tests)
+          do_rerun_tests
+          expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
+        end
       end
 
       context "do cancel" do
@@ -124,54 +152,29 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is project owner' do
-          before(:each) {http_login(@owner_user)}
+          before {http_login(@owner_user)}
 
-          context "if it has :build_pending status" do
-            before do
-              @build_list.update_column(:status, BuildList::BUILD_PENDING)
-              do_cancel
-            end
-
-            it "should return correct json message" do
-              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.cancel_success')} }.to_json
-            end
-
-            it 'should return 200 response code' do
-              response.should be_success
-            end
-
-            it "should cancel build list" do
-              @build_list.reload.status.should == BuildList::BUILD_CANCELING
-            end
+          it 'cancels build' do
+            expect_any_instance_of(BuildList).to receive(:cancel).and_return(true)
+            do_cancel
+            expect(response.body).to eq({ build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.cancel_success')} }.to_json)
+            expect(response).to be_success
           end
 
-          context "if it has another status" do
+          context 'returns an error if the can not cancel' do
             before do
-              @build_list.update_column(:status, BuildList::SUCCESS)
+              allow_any_instance_of(BuildList).to receive(:cancel).and_return(false)
               do_cancel
             end
 
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.cancel_fail')
-
-            it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::SUCCESS
-            end
           end
         end
 
-        context 'if user is not project owner' do
-          before(:each) do
-            @build_list.update_column(:status, BuildList::BUILD_PENDING)
-            do_cancel
-          end
-
-          it "should return access violation message" do
-            response.body.should == {"message" => "Access violation to this page!"}.to_json
-          end
-
-          it "should not change status of build list" do
-            @build_list.reload.status.should == BuildList::BUILD_PENDING
-          end
+        it 'returns an error if user is not project owner' do
+          expect_any_instance_of(BuildList).to_not receive(:cancel)
+          do_cancel
+          expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
         end
       end
 
@@ -204,7 +207,7 @@ describe Api::V1::BuildListsController do
           end
 
           context "if it has another status" do
-            before(:each) do
+            before do
               @build_list.update_column(:status, BuildList::BUILD_ERROR)
               do_create_container
             end
@@ -218,7 +221,7 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is not project owner' do
-          before(:each) do
+          before do
             @build_list.update_column(:status, BuildList::SUCCESS)
             do_create_container
           end
@@ -239,7 +242,7 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is project && platform owner' do
-          before(:each) do
+          before do
             http_login(@owner_user)
           end
 
@@ -281,7 +284,7 @@ describe Api::V1::BuildListsController do
           end
 
           context "if it has another status" do
-            before(:each) do
+            before do
               @build_list.update_column(:status, BuildList::BUILD_CANCELED)
               do_publish_into_testing
             end
@@ -340,7 +343,7 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is project && platform owner' do
-          before(:each) do
+          before do
             http_login(@owner_user)
           end
 
@@ -382,7 +385,7 @@ describe Api::V1::BuildListsController do
           end
 
           context "if it has another status" do
-            before(:each) do
+            before do
               @build_list.update_column(:status, BuildList::BUILD_CANCELED)
               do_publish
             end
@@ -450,7 +453,7 @@ describe Api::V1::BuildListsController do
       end
 
       context "do reject_publish" do
-        before(:each) do
+        before do
           any_instance_of(BuildList, current_duration: 100)
           @build_list.save_to_repository.update_column(:publish_without_qa, false)
         end
@@ -460,7 +463,7 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is project owner' do
-          before(:each) do
+          before do
             http_login(@owner_user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_platform.update_column(:released, true)
@@ -482,7 +485,7 @@ describe Api::V1::BuildListsController do
           end
 
           context "if it has another status" do
-            before(:each) do
+            before do
               @build_list.update_column(:status, BuildList::BUILD_CANCELED)
               do_reject_publish
             end
@@ -496,7 +499,7 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is not project owner' do
-          before(:each) do
+          before do
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_platform.update_column(:released, true)
             do_reject_publish
@@ -513,7 +516,7 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is project reader' do
-          before(:each) do
+          before do
             @another_user = FactoryGirl.create(:user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_repository.update_column(:publish_without_qa, true)
@@ -533,7 +536,7 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is project writer' do
-          before(:each) do
+          before do
             @another_user = FactoryGirl.create(:user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_repository.update_column(:publish_without_qa, true)
@@ -560,7 +563,7 @@ describe Api::V1::BuildListsController do
         it_should_behave_like 'not create build list via api'
 
         context 'if user is project owner' do
-          before(:each) {http_login(@owner_user)}
+          before {http_login(@owner_user)}
           it_should_behave_like 'create build list via api'
 
           context 'no ability to read build_for_platform' do
@@ -579,36 +582,33 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is project read member' do
-          before(:each) {http_login(@member_user)}
+          before {http_login(@member_user)}
           it_should_behave_like 'not create build list via api'
         end
       end
 
       context 'for hidden project' do
-        before(:each) do
+        before do
           @project.update_column(:visibility, 'hidden')
         end
 
         it_should_behave_like 'not create build list via api'
 
         context 'if user is project owner' do
-          before(:each) {http_login(@owner_user)}
+          before {http_login(@owner_user)}
 
           it_should_behave_like 'create build list via api'
         end
 
         context 'if user is project read member' do
-          before(:each) {http_login(@member_user)}
+          before {http_login(@member_user)}
           it_should_behave_like 'not create build list via api'
         end
       end
     end
 
     context 'for group' do
-      before(:each) do
-        Arch.destroy_all
-        User.destroy_all
-
+      before do
         @build_list = FactoryGirl.create(:build_list)
         @params = @build_list.attributes.symbolize_keys
         @project = @build_list.project
@@ -651,30 +651,30 @@ describe Api::V1::BuildListsController do
         it_should_behave_like 'not create build list via api'
 
         context 'if user is group owner' do
-          before(:each) {http_login(@owner_user)}
+          before {http_login(@owner_user)}
           it_should_behave_like 'create build list via api'
         end
 
         context 'if user is group read member' do
-          before(:each) {http_login(@member_user)}
+          before {http_login(@member_user)}
           it_should_behave_like 'not create build list via api'
         end
       end
 
       context 'for hidden project' do
-        before(:each) do
+        before do
           @build_list.project.update_column(:visibility, 'hidden')
         end
 
         it_should_behave_like 'not create build list via api'
 
         context 'if user is group owner' do
-          before(:each) {http_login(@owner_user)}
+          before {http_login(@owner_user)}
           it_should_behave_like 'create build list via api'
         end
 
         context 'if user is group read member' do
-          before(:each) {http_login(@member_user)}
+          before {http_login(@member_user)}
           it_should_behave_like 'not create build list via api'
         end
       end
@@ -683,10 +683,7 @@ describe Api::V1::BuildListsController do
   end
 
   context 'read and accessible abilities' do
-    before(:each) do
-      Arch.destroy_all
-      User.destroy_all
-
+    before do
       @user = FactoryGirl.create(:user)
 
       # Build Lists:
@@ -723,7 +720,7 @@ describe Api::V1::BuildListsController do
     end
 
     context 'for all build lists' do
-      before(:each) {
+      before {
         http_login(@user)
       }
 
@@ -743,7 +740,7 @@ describe Api::V1::BuildListsController do
     end
 
     context 'filter' do
-      before(:each) do
+      before do
         http_login FactoryGirl.create(:admin)
       end
 
@@ -775,7 +772,7 @@ describe Api::V1::BuildListsController do
     end
 
     context "for user" do
-      before(:each) do
+      before do
         @build_list = FactoryGirl.create(:build_list)
         @params = @build_list.attributes.symbolize_keys
         @project = @build_list.project
@@ -792,45 +789,45 @@ describe Api::V1::BuildListsController do
 
       context 'for open project' do
         context 'for simple user' do
-          before(:each) {http_login(@user)}
+          before {http_login(@user)}
           it_should_behave_like 'show build list via api'
         end
 
         context 'if user is project owner' do
-          before(:each) {http_login(@owner_user)}
+          before {http_login(@owner_user)}
           it_should_behave_like 'show build list via api'
         end
 
         context 'if user is project read member' do
-          before(:each) {http_login(@member_user)}
+          before {http_login(@member_user)}
           it_should_behave_like 'show build list via api'
         end
       end
 
       context 'for hidden project' do
-        before(:each) do
+        before do
           @project.update_column(:visibility, 'hidden')
         end
 
         context 'for simple user' do
-          before(:each) {http_login(@user)}
+          before {http_login(@user)}
           it_should_behave_like 'not show build list via api'
         end
 
         context 'if user is project owner' do
-          before(:each) {http_login(@owner_user)}
+          before {http_login(@owner_user)}
           it_should_behave_like 'show build list via api'
         end
 
         context 'if user is project read member' do
-          before(:each) {http_login(@member_user)}
+          before {http_login(@member_user)}
           it_should_behave_like 'show build list via api'
         end
       end
     end
 
     context "for group" do
-      before(:each) do
+      before do
         @platform = FactoryGirl.create(:platform_with_repos)
         @build_list = FactoryGirl.create(:build_list, save_to_platform: @platform)
         @project = @build_list.project
@@ -854,38 +851,38 @@ describe Api::V1::BuildListsController do
 
       context 'for open project' do
         context 'for simple user' do
-          before(:each) {http_login(@user)}
+          before {http_login(@user)}
           it_should_behave_like 'show build list via api'
         end
 
         context 'if user is group owner' do
-          before(:each) {http_login(@owner_user)}
+          before {http_login(@owner_user)}
           it_should_behave_like 'show build list via api'
         end
 
         context 'if user is group read member' do
-          before(:each) {http_login(@member_user)}
+          before {http_login(@member_user)}
           it_should_behave_like 'show build list via api'
         end
       end
 
       context 'for hidden project' do
-        before(:each) do
+        before do
           @build_list.project.update_column(:visibility, 'hidden')
         end
 
         context 'for simple user' do
-          before(:each) {http_login(@user)}
+          before {http_login(@user)}
           it_should_behave_like 'not show build list via api'
         end
 
         context 'if user is group owner' do
-          before(:each) { http_login(@owner_user) }
+          before { http_login(@owner_user) }
           it_should_behave_like 'show build list via api'
         end
 
         context 'if user is group read member' do
-          before(:each) {http_login(@member_user)}
+          before {http_login(@member_user)}
           it_should_behave_like 'show build list via api'
         end
       end

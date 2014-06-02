@@ -71,7 +71,7 @@ class BuildList < ActiveRecord::Base
                   :save_to_platform_id, :project_version, :auto_create_container,
                   :extra_repositories, :extra_build_lists, :extra_params, :external_nodes,
                   :include_testing_subrepository, :auto_publish_status,
-                  :use_cached_chroot
+                  :use_cached_chroot, :use_extra_tests
 
   LIVE_TIME     = 4.week  # for unpublished
   MAX_LIVE_TIME = 3.month # for published
@@ -86,6 +86,8 @@ class BuildList < ActiveRecord::Base
     %w(BUILD_CANCELED                 5000),
     %w(WAITING_FOR_RESPONSE           4000),
     %w(BUILD_PENDING                  2000),
+    %w(RERUN_TESTS                    2500),
+    %w(RERUNNING_TESTS                2550),
     %w(BUILD_PUBLISHED                6000),
     %w(BUILD_PUBLISH                  7000),
     %w(FAILED_PUBLISH                 8000),
@@ -156,9 +158,10 @@ class BuildList < ActiveRecord::Base
 
   state_machine :status, initial: :waiting_for_response do
 
-    after_transition(on: :place_build) do |build_list, transition|
+    after_transition(on: [:place_build, :rerun_tests]) do |build_list, transition|
       build_list.add_job_to_abf_worker_queue if build_list.external_nodes.blank?
     end
+
     after_transition on: :published,
       do: [:set_version_and_tag, :actualize_packages]
     after_transition on: :publish, do: :set_publisher
@@ -177,18 +180,25 @@ class BuildList < ActiveRecord::Base
       transition waiting_for_response: :build_pending
     end
 
+    event :rerun_tests do
+      transition %i(success tests_failed) => :rerun_tests
+    end
+
     event :start_build do
       transition build_pending: :build_started
+      transition rerun_tests:   :rerunning_tests
     end
 
     event :cancel do
       transition [:build_pending, :build_started] => :build_canceling
+      transition [:rerun_tests, :rerunning_tests] => :tests_failed
     end
 
     # build_canceling: :build_canceled - canceling from UI
     # build_started: :build_canceled - canceling from worker by time-out (time_living has been expired)
     event :build_canceled do
       transition [:build_canceling, :build_started, :build_pending] => :build_canceled
+      transition [:rerun_tests, :rerunning_tests] => :tests_failed
     end
 
     event :published do
@@ -245,12 +255,13 @@ class BuildList < ActiveRecord::Base
     # ===== into testing - end
 
     event :build_success do
-      transition [:build_started, :build_canceling, :build_canceled] => :success
+      transition [:build_started, :build_canceling, :build_canceled, :rerunning_tests] => :success
     end
 
     [:build_error, :tests_failed].each do |kind|
       event kind do
         transition [:build_started, :build_canceling, :build_canceled] => kind
+        transition rerunning_tests: :tests_failed
       end
     end
 
@@ -381,7 +392,14 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish?
-    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED, BUILD_PUBLISHED_INTO_TESTING, FAILED_PUBLISH_INTO_TESTING].include?(status) && extra_build_lists_published? && save_to_repository.projects.exists?(id: project_id)
+    super &&
+      valid_branch_for_publish? &&
+      extra_build_lists_published? &&
+      save_to_repository.projects.exists?(id: project_id)
+  end
+
+  def can_publish_into_testing?
+    super && valid_branch_for_publish?
   end
 
   def extra_build_lists_published?
@@ -520,11 +538,16 @@ class BuildList < ActiveRecord::Base
     cmd_params = {
       'GIT_PROJECT_ADDRESS'           => git_project_address,
       'COMMIT_HASH'                   => commit_hash,
+      'USE_EXTRA_TESTS'               => use_extra_tests?,
       'EXTRA_CFG_OPTIONS'             => extra_params['cfg_options'],
       'EXTRA_CFG_URPM_OPTIONS'        => extra_params['cfg_urpm_options'],
       'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],
       'EXTRA_BUILD_RPM_OPTIONS'       => extra_params['build_rpm']
     }
+    cmd_params.merge!(
+      'RERUN_TESTS' => true,
+      'PACKAGES'    => packages.pluck(:sha1).compact * ' '
+    ) if rerun_tests?
     if use_cached_chroot?
       sha1 = build_for_platform.cached_chroot(arch.name)
       cmd_params.merge!('CACHED_CHROOT_SHA1' => sha1) if sha1.present?
@@ -542,7 +565,8 @@ class BuildList < ActiveRecord::Base
                        name: build_for_platform.name,
                        arch: arch.name
       },
-      user:          {uname: user.uname, email: user.email}
+      rerun_tests:   rerun_tests?,
+      user:          { uname: user.uname, email: user.email }
     }
   end
 
@@ -579,6 +603,17 @@ class BuildList < ActiveRecord::Base
   later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :middle
 
   protected
+
+  def valid_branch_for_publish?
+    return true if save_to_platform.personal? ||
+      save_to_repository.forbid_to_publish_builds_not_from.blank? ||
+      ( project_version == save_to_repository.forbid_to_publish_builds_not_from )
+
+    project.repo.git.native(:branch, {}, '--contains', commit_hash).
+      gsub(/\*/, '').split(/\n/).map(&:strip).
+      include?(save_to_repository.forbid_to_publish_builds_not_from)
+  end
+
 
   def create_container
     AbfWorker::BuildListsPublishTaskManager.create_container_for self

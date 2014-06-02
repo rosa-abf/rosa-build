@@ -4,6 +4,7 @@ module RailsDatatables
     additional_data = opts[:additional_data] || {}
     search = opts[:search].present? ? opts[:search].to_s : "true"
     search_label = opts[:search_label] || "Search"
+    placeholder  = opts[:placeholder]
     processing = opts[:processing] || "Processing"
     persist_state = opts[:persist_state].present? ? opts[:persist_state].to_s : "true"
     table_dom_id = opts[:table_dom_id] ? "##{opts[:table_dom_id]}" : ".datatable"
@@ -76,6 +77,9 @@ module RailsDatatables
           #{"'fnRowCallback': function( nRow, aData, iDisplayIndex ) { #{row_callback} }," if row_callback}
           #{"'fnServerData': function ( sSource, aoData, fnCallback ) {
             aoData.push( #{additional_data_string} );
+            if (typeof dataTableAdditionalFilter == 'function') {
+              aoData.push(dataTableAdditionalFilter());
+            }
             $.getJSON( sSource, aoData, function (json) {
               fnCallback(json);
             } );
@@ -84,6 +88,7 @@ module RailsDatatables
         })#{append};
 
         $('#datatable_wrapper').append("<div class='both'></div>");
+        #{ "$('#datatable_wrapper .dataTables_filter input').attr('placeholder', '#{placeholder}');" if placeholder }
     });
     </script>
     }
