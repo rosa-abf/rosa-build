@@ -60,12 +60,10 @@
                 @build_list.update_type), {}, 'ng-model' => 'build_list.update_type',
                 'ng-change' => 'updateTypeChanged()', 'ng-show' => 'build_list.can_publish'
               %div{'ng-hide' => 'build_list.can_publish'}= @build_list.update_type
-          %tr
-            %td
-              .ng-hide{ 'ng-show' => 'update_type_errors' }
-                .flash_notify
-                  .alert{ 'ng-class' => "{ 'alert-error': update_type_errors }" }
-                    {{ update_type_errors }}
+          %tr.ng-hide{ 'ng-show' => 'update_type_errors' }
+            %td{ colspan: 2 }
+              .alert{ 'ng-class' => "{ 'alert-danger': update_type_errors }" }
+                {{ update_type_errors }}
           %tr
             %td= t 'activerecord.attributes.build_list.auto_publish_status'
             %td= t "layout.build_lists.auto_publish_status.#{@build_list.auto_publish_status}"
@@ -187,14 +185,12 @@
                 {{advisory.references}}
 
           %tr{ 'ng-hide' => 'build_list.extra_build_lists_published' }
-            %td
-              .flash_notify
-                .alert.alert-error= t 'layout.build_lists.publish_with_extra_fail'
+            %td{ colspan: 2 }
+              .alert.alert-danger= t 'layout.build_lists.publish_with_extra_fail'
 
           %tr{ 'ng-show' => 'build_list.can_publish && build_list.can_publish_in_future && !build_list.can_publish_into_repository' }
-            %td
-              .flash_notify
-                .alert.alert-error= t 'flash.build_list.not_all_build_lists_success'
+            %td{ colspan: 2 }
+              .alert.alert-danger= t 'flash.build_list.not_all_build_lists_success'
 
         - if can?(:cancel, @build_list)
           = link_to t('layout.build_lists.cancel'), cancel_build_list_path(@build_list),
