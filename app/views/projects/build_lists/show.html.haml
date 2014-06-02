@@ -135,7 +135,7 @@
             %td
             %td {{build_list.human_duration }}
 
-          - if @build_list.save_to_platform.released
+          - if @build_list.save_to_platform.released?
             %tr#advisory_block{'ng-show' => 'build_list.can_publish && !build_list.advisory'}
               %td= label_tag :attach_advisory, t('layout.build_lists.attached_advisory')
               %td
@@ -200,6 +200,13 @@
             method: :put, data: { confirm: t('layout.confirm') },
             class: 'btn btn-primary',
             'ng-show' => 'build_list.can_reject_publish'
+        - if can?(:rerun_tests, @build_list) && (current_user.tester? || current_user.admin?)
+          = link_to t('layout.build_lists.rerun_tests'),
+            rerun_tests_build_list_path(@build_list),
+            method: :put,
+            data:   { confirm: t("layout.confirm") },
+            class: 'button',
+            'ng-show' => "build_list.status == #{BuildList::TESTS_FAILED} || build_list.status == #{BuildList::SUCCESS}"
         - if can?(:create_container, @build_list)
           = link_to t('layout.build_lists.create_container'),
             create_container_build_list_path(@build_list),
