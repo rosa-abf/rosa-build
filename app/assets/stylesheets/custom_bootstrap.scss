@@ -122,5 +122,20 @@ table tbody {
   .table-borderless th {
     border: 0;
   }
+  .advisory_preview {
+    td {
+      padding-top: 0;
+      padding-bottom: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+    h4 {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+  .advisory-description {
+    margin-top: 0;
+  }
 }
 
