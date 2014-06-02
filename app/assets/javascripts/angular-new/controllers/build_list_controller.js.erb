@@ -97,12 +97,15 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', 'Sound
       $scope.build_log = results.log;
       if(!results.building) { $scope.log_autoreload = false }
     });
+    $scope.log_refresh_fn = $timeout($scope.getLog, $scope.log_reload_interval);
   }
 
   $scope.updateLogRefresh = function() {
-    $timeout.cancel($scope.log_refresh_fn);
+    if($scope.log_refresh_fn) {
+      $timeout.cancel($scope.log_refresh_fn);
+    }
+
     if($scope.isOpenLog && $scope.log_autoreload) {
-      $scope.log_refresh_fn = $timeout($scope.getLog, $scope.log_reload_interval);
       $scope.getLog();
     };
   }
