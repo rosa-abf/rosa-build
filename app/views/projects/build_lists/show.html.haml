@@ -220,7 +220,7 @@
             rerun_tests_build_list_path(@build_list),
             method: :put,
             data:   { confirm: t("layout.confirm") },
-            class: 'button',
+            class: 'btn btn-primary',
             'ng-show' => "build_list.status == #{BuildList::TESTS_FAILED} || build_list.status == #{BuildList::SUCCESS}"
         - if can?(:create_container, @build_list)
           = link_to t('layout.build_lists.create_container'),
@@ -256,7 +256,7 @@
         %div{'ng-repeat' => 'group in build_list.item_groups'}
           %div{'ng-repeat' => 'item in group'}
             %h4 {{item.name + ' #' + item.level}}
-            %table.table.table-hover
+            %table.table
               %thead
                 %tr
                   %th= t 'activerecord.attributes.build_list/item.name'
@@ -292,8 +292,8 @@
                 %td {{package.release}}
 
 
-          - if @build_list.new_core?
-            .hr
-            = render 'shared/build_results', subject: @build_list
+        - if @build_list.new_core?
+          .hr
+          = render 'shared/build_results', subject: @build_list
 
 = render 'submenu'

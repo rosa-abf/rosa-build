@@ -80,9 +80,9 @@ var BuildList = function(atts, dictionary) {
 
   self.itemStatusColor = function(status) {
     if (status == <%=BuildList::SUCCESS%>)
-      return 'success';
+      return 'bg-success';
     else if (status == <%=BuildList::BUILD_ERROR%>)
-      return 'error';
+      return 'bg-danger';
     else
       return '';
   }
