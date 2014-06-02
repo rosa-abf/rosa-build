@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140530193652) do
+ActiveRecord::Schema.define(version: 20140602164337) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -522,14 +522,14 @@ ActiveRecord::Schema.define(version: 20140530193652) do
   end
 
   create_table "repositories", force: true do |t|
-    t.string   "description",                                       null: false
-    t.integer  "platform_id",                                       null: false
+    t.string   "description",                                     null: false
+    t.integer  "platform_id",                                     null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",                                              null: false
-    t.boolean  "publish_without_qa",                default: true
-    t.boolean  "synchronizing_publications",        default: false, null: false
-    t.string   "forbid_to_publish_builds_not_from"
+    t.string   "name",                                            null: false
+    t.boolean  "publish_without_qa",              default: true
+    t.boolean  "synchronizing_publications",      default: false, null: false
+    t.string   "publish_builds_only_from_branch"
     t.index ["platform_id"], :name => "index_repositories_on_platform_id"
   end
 
