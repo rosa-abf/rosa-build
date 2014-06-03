@@ -10,6 +10,15 @@
   %body{ 'ng-app' => 'RosaABF', 'ng-controller' => 'RosaABFController',
          'ng-init' => "init('#{I18n.locale}', #{!!current_user.try(:sound_notifications)})" }
     = render 'layouts/menu/new_top'
+
+    - if current_user || APP_CONFIG['anonymous_access']
+      - if (flash_notify = FlashNotify.published.first) && flash_notify.should_show?(cookies[:flash_notify_hash])
+        :javascript
+          var FLASH_HASH_ID = "#{flash_notify.hash_id}";
+        .alert.alert-dismissable.text-center{ class: flash_notify.alert_class }
+          %button.close{ type: 'button', 'data-dismiss' => 'alert', 'aria-hidden' => true } &times;
+          = flash_notify.body(I18n.locale).html_safe
+
     = yield :submenu if content_for?(:submenu)
     %article.container-fluid
       = yield
