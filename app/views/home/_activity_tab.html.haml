@@ -11,8 +11,7 @@
         - current_user.projects.order(updated_at: :desc).limit(5).each do |project|
           %li
             = link_to project_path(project) do
-              - image, color = project.public? ? ['unlock-alt', 'text-success fa-fw'] : ['lock', 'text-danger fa-fw']
-              = fa_icon(image, class: color)
+              = fa_visibility_icon project
               = project.name_with_owner
         %li
           = link_to t('layout.activity_feed.all_my_projects'), projects_path

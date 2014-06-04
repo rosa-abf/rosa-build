@@ -23,7 +23,7 @@ $mini-avatar-height: 30px;
       }
     }
   }
-  .navbar-form {
+  .navbar-form, .navbar-toggle {
     margin-top:    (($top-menu-height - $input-height-base) / 2);
     margin-bottom: (($top-menu-height - $input-height-base) / 2);
   }
@@ -141,4 +141,8 @@ table tbody {
 
 .submenu {
   margin-bottom: 0;
+}
+
+ul.nav.navbar-nav.left-border {
+  border-left: 1px solid #dcdcdc;
 }

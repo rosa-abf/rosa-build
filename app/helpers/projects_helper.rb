@@ -82,4 +82,10 @@ module ProjectsHelper
   def participant_path(participant)
     participant.kind_of?(User) ? user_path(participant) : group_path(participant)
   end
+
+  def fa_visibility_icon(project)
+    return nil unless project
+    image, color = project.public? ? ['unlock-alt', 'text-success fa-fw'] : ['lock', 'text-danger fa-fw']
+    fa_icon(image, class: color)
+  end
 end
