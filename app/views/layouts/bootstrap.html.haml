@@ -10,6 +10,7 @@
   %body{ 'ng-app' => 'RosaABF', 'ng-controller' => 'RosaABFController',
          'ng-init' => "init('#{I18n.locale}', #{!!current_user.try(:sound_notifications)})" }
     = render 'layouts/menu/new_top'
+    = yield :submenu if content_for?(:submenu)
 
     - if current_user || APP_CONFIG['anonymous_access']
       - if (flash_notify = FlashNotify.published.first) && flash_notify.should_show?(cookies[:flash_notify_hash])
@@ -19,8 +20,7 @@
           %button.close{ type: 'button', 'data-dismiss' => 'alert', 'aria-hidden' => true } &times;
           = flash_notify.body(I18n.locale).html_safe
 
-    = yield :submenu if content_for?(:submenu)
-    %article.container-fluid
+    %article.container-fluid.offset20
       = yield
     = render 'layouts/menu/new_bottom'
     = stylesheet_link_tag 'new_application'

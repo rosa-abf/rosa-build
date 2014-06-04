@@ -1,12 +1,12 @@
 - content_for :submenu do
-  %nav.navbar.navbar-default{role: "navigation"}
+  %nav.navbar.navbar-default.submenu{role: "navigation"}
     .container-fluid
-      / Brand and toggle get grouped for better mobile display
-      %ul.nav.navbar-nav
-        - if @build_list
-          %li= link_to @build_list.project.name, @build_list.project
-        - else
-          %li{ class: ('active' if controller_name == 'build_lists') }
-            = link_to t('layout.projects.list_header'), build_lists_path
-          %li{ class: ('active' if controller_name == 'product_build_lists') }
-            = link_to t('layout.products.list_header'), product_build_lists_path
+      .navbar-header
+        %ul.nav.navbar-nav
+          - if @build_list
+            %li= link_to @build_list.project.name, @build_list.project
+          - else
+            %li{ class: ('active' if controller_name == 'build_lists') }
+              = link_to t('layout.projects.list_header'), build_lists_path
+            %li{ class: ('active' if controller_name == 'product_build_lists') }
+              = link_to t('layout.products.list_header'), product_build_lists_path
