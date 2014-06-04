@@ -141,7 +141,7 @@
               %td= label_tag :attach_advisory, t('layout.build_lists.attached_advisory')
               %td
                 = select_tag :attach_advisory, advisories_select_options(@advisories), 'ng-model' => 'attach_advisory', 'ng-change' => 'attachAdvisoryChanged()'
-                %p.text-muted= t 'layout.advisories.publication_info', update_types: BuildList::RELEASE_UPDATE_TYPES.join(', ')
+                %span.help-block= t 'layout.advisories.publication_info', update_types: BuildList::RELEASE_UPDATE_TYPES.join(', ')
 
             %tr#advisory_search_block{'ng-show' => 'attach_advisory != "no" && attach_advisory != "new"'}
               %td
@@ -149,7 +149,7 @@
               %td
                 = label_tag :advisory_search, t('layout.advisories.search_hint')
                 %input#advisory_search{type: 'text', 'ng-model' => 'term', 'ng-keyup' => 'search()'}
-                %p.text-muted= t 'layout.advisories.advisory_id_info', advisory_format: advisory_id_for_hint
+                %span.help-block= t 'layout.advisories.advisory_id_info', advisory_format: advisory_id_for_hint
                 %p.bg-warning.text-center{ 'ng-show' => "search_status === 'advisory_not_found'" }
                   = t 'layout.advisories.banners.advisory_not_found'
                 %p.bg-danger.text-center{ 'ng-show' => "search_status === 'server_error'" }
