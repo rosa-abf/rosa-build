@@ -598,7 +598,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def delayed_add_job_to_abf_worker_queue(*args)
-    restart_job if status == BUILD_PENDING
+    restart_job if valid? && status == BUILD_PENDING
   end
   later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :middle
 
