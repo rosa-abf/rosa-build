@@ -1,11 +1,14 @@
 class BuildList::Package < ActiveRecord::Base
   PACKAGE_TYPES = %w(source binary)
 
-  belongs_to :build_list
+  belongs_to :build_list, touch: true
   belongs_to :project
   belongs_to :platform
 
-  attr_accessible :fullname, :name, :release, :version, :sha1, :epoch
+  serialize :dependent_packages, Array
+  serialize :dependent_projects, Array
+
+  attr_accessible :fullname, :name, :release, :version, :sha1, :epoch, :dependent_packages
 
   validates :build_list_id, :project_id, :platform_id, :fullname,
             :package_type, :name, :release, :version,
@@ -23,6 +26,8 @@ class BuildList::Package < ActiveRecord::Base
   scope :like_name,       ->(name)     { where("#{table_name}.name ILIKE ?", "%#{name}%") if name.present? }
 
   before_create :set_epoch
+  before_create :normalize_dependent_packages
+  after_commit(on: :create) { |p| p.find_dependent_projects if p.dependent_packages.present? } # later with resque
 
   def assignee
     project.maintainer
@@ -45,7 +50,16 @@ class BuildList::Package < ActiveRecord::Base
     end
   end
 
+  def find_dependent_projects
+    # TODO
+  end
+  later :find_dependent_projects, queue: :middle
+
   protected
+
+  def normalize_dependent_packages
+    self.dependent_packages = dependent_packages.split(/\s/).select(&:present?) if dependent_packages.present?
+  end
 
   def set_epoch
     self.epoch = nil if epoch.blank? || epoch == 0
