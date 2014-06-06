@@ -37,7 +37,8 @@ $mini-avatar-height: 30px;
   }
 }
 
-.nav a, .pagination a, .carousel a, .panel-title a {
+.nav a, .pagination a, .carousel a, .panel-title a, i.fa-question-circle[data-toggle='modal'],
+span.fa.fa-times {
   cursor: pointer;
 }
 
@@ -99,6 +100,11 @@ table tbody {
     }
 }
 
+table.table-borderless > tbody > tr > td,
+table.table-borderless > thead > tr > th {
+  border: 0;
+}
+
 .build-list {
   .panel-heading {
     .build-list-status {
@@ -118,10 +124,6 @@ table tbody {
     padding-bottom: 5px;
   }
 
-  .table-borderless td,
-  .table-borderless th {
-    border: 0;
-  }
   .advisory_preview {
     td {
       padding-top: 0;

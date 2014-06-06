@@ -88,8 +88,8 @@ module GitHelper
 
   def versions_for_group_select(project)
     return [] unless project
-    [ ['Branches', project.repo.branches.map(&:name)],
-      ['Tags', project.repo.tags.map(&:name)] ]
+    [ [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&:name)],
+      [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name)] ]
   end
 
   def split_commits_by_date(commits)

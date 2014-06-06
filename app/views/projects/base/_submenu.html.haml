@@ -1,18 +1,37 @@
 - content_for :submenu do
   - act = action_name.to_sym; contr = controller_name.to_sym; treeish = @project.default_head(params[:treeish])
-  .left
-    .table-sort-left=image_tag visibility_icon(@project.visibility)
-    .table-sort-right=@project.name
-  %nav
-    %ul
-      %li= link_to t("project_menu.code"), tree_path(@project, treeish), class: (act.in?([:show, :edit, :branches, :tags]) && contr.in?([:trees, :blobs]) || contr == :commits ? 'active' : nil)
-      - if @project.is_package and can?(:read, @project => BuildList)
-        %li= link_to t("project_menu.builds"), project_build_lists_path(@project), class: (contr == :build_lists ? 'active' : nil)
-      - if @project.has_issues
-        %li= link_to t("project_menu.tracker", count: @opened_issues_count), project_issues_path(@project), class: (contr == :issues ? 'active' : nil)
-      %li=link_to t("project_menu.pull_requests", count: @opened_pull_requests_count), project_pull_requests_path(@project), class: (contr == :pull_requests ? 'active' : nil)
-      - if @project.has_wiki
-        %li= link_to t("project_menu.wiki"), project_wiki_index_path(@project), class: (contr == :wiki ? 'active' : nil)
-      %li=# link_to t("project_menu.readme"), "#" #pending
-      - if can? :update, @project
-        %li= link_to t("project_menu.settings"), edit_project_path(@project), class: (act == :edit && contr == :projects ? 'active' : nil)
+  %nav.navbar.navbar-default{ role: 'navigation' }
+    .container-fluid
+      / Brand and toggle get grouped for better mobile display
+      .navbar-header
+        %button.navbar-toggle{ 'data-target' => '#submenu-navbar-collapse', 'data-toggle' => 'collapse', type: 'button' }
+          %span.sr-only Toggle navigation
+          %span.icon-bar
+          %span.icon-bar
+          %span.icon-bar
+        = link_to project_path(@project), class: 'navbar-brand' do
+          = fa_visibility_icon @project
+          = @project.name_with_owner
+      / Collect the nav links, forms, and other content for toggling
+      #submenu-navbar-collapse.collapse.navbar-collapse
+        %ul.nav.navbar-nav.left-border
+          %li{ class: ('active' if act.in?([:show, :edit, :branches, :tags]) && contr.in?([:trees, :blobs]) || contr == :commits) }
+            = link_to t('project_menu.code'), tree_path(@project, treeish)
+          - if @project.is_package and can?(:read, @project => BuildList)
+            %li{ class: ('active' if contr == :build_lists) }
+              = link_to t('project_menu.builds'), project_build_lists_path(@project)
+
+          - if @project.has_issues
+            %li{ class: ('active' if contr == :issues) }
+              = link_to t('project_menu.tracker', count: @opened_issues_count), project_issues_path(@project)
+          %li{ class: ('active' if contr == :pull_requests) }
+            =link_to t('project_menu.pull_requests', count: @opened_pull_requests_count), project_pull_requests_path(@project)
+          - if @project.has_wiki
+            %li{ class: ('active' if contr == :wiki) }
+              = link_to t('project_menu.wiki'), project_wiki_index_path(@project)
+          %li=# link_to t('project_menu.readme'), '#' #pending
+          - if can? :update, @project
+            %li{ class: ('active' if act == :edit && contr == :projects) }
+              = link_to t('project_menu.settings'), edit_project_path(@project)
+      / /.navbar-collapse
+    / /.container-fluid

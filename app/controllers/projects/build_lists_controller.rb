@@ -1,5 +1,5 @@
 class Projects::BuildListsController < Projects::BaseController
-  layout 'bootstrap', only: [:index, :show]
+  layout 'bootstrap', only: [:index, :show, :new]
   include FileStoreHelper
 
   NESTED_ACTIONS = [:index, :new, :create]
