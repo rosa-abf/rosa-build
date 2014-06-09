@@ -72,9 +72,9 @@ module AbfWorker
     def fill_container_data
       (options['packages'] || []).each do |package|
         package = subject.packages.build(package)
-        package.package_type = package['fullname'] =~ /.*\.src\.rpm$/ ? 'source' : 'binary'
-        package.project_id = subject.project_id
-        package.platform_id = subject.save_to_platform_id
+        package.package_type  = package['fullname'] =~ /.*\.src\.rpm$/ ? 'source' : 'binary'
+        package.project_id    = subject.project_id
+        package.platform_id   = subject.save_to_platform_id
         package.save!
       end
       update_results

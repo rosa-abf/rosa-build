@@ -58,7 +58,7 @@ class BuildList::Package < ActiveRecord::Base
   protected
 
   def normalize_dependent_packages
-    self.dependent_packages = dependent_packages.split(/\s/).select(&:present?) if dependent_packages.present?
+    self.dependent_packages = dependent_packages.to_s.split(/\s/).select(&:present?)
   end
 
   def set_epoch
