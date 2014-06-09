@@ -5,7 +5,7 @@ json.build_list do
     json.human_duration "#{@build_list.human_current_duration} / #{@build_list.human_average_build_time}"
   end
   
-  json.cache! @build_list, expires_in: 1.minute do
+  json.cache! [@build_list, current_user], expires_in: 1.minute do
     json.(@build_list, :id, :container_status, :status)
     json.(@build_list, :update_type)
     json.updated_at @build_list.updated_at
