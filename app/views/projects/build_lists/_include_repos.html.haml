@@ -1,4 +1,3 @@
-- build_for_platform = params[:build_list].try :[], :build_for_platform
 - Repository.custom_sort(platform.repositories).each do |repo|
   - if params[:build_list].try(:[], :include_repos).present?
     - checked = (params[:build_list].try(:[], :include_repos).map(&:to_s) || []).include?(repo.id.to_s)

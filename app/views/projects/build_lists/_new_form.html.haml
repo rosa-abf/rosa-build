@@ -2,15 +2,20 @@
   .row
     .col-md-4.col-md-offset-2
       %h3= t 'activerecord.attributes.build_list.build_for_platform'
-      .all_platforms
+      - build_for_platform = params[:build_list].try :[], :build_for_platform
+      - build_for_platform_id = build_for_platform.try(:id).presence || 'null'
+      .all_platforms{ 'ng-init' => "build_for_platform = #{build_for_platform_id}" }
         - availables_main_platforms.each do |pl|
           .clearfix
-            %h4{id: "build_for_pl_#{pl.id}", class: 'build_for_pl'}= pl.name
-            = render 'include_repos', platform: pl
+            %h4{ id: "build_for_pl_#{pl.id}", class: 'build_for_pl',
+                 'ng-class' => "{text-muted: }" }= pl.name
+            = render 'include_repos', platform: pl, build_for_platform: build_for_platform
     .col-md-5
       %h3= t 'activerecord.attributes.build_list.save_to_repository'
-      - selected = params[:build_list].try(:[], :save_to_repository_id) ? {selected: params[:build_list][:save_to_repository_id]} : {}
-      = f.select :save_to_repository_id, save_to_repositories(project), selected, class: 'form-control'
+      - selected = params[:build_list].try(:[], :save_to_repository_id).presence || 'null'
+      = f.select :save_to_repository_id, save_to_repositories(project), {}, class: 'form-control',
+        'ng-model' => 'save_to_repository', 'ng-change' => 'change_save_to_repository()',
+        'ng-init' => ""
       %h3= t 'activerecord.attributes.build_list.project_version'
       = f.select :project_version, versions_for_group_select(project), {selected: params[:build_list].try(:[], :project_version) || project.default_branch}, class: 'form-control'
       %h3= t 'activerecord.attributes.build_list.arch'
