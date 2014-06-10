@@ -187,7 +187,7 @@ class Ability
       cannot(:cancel, MassBuild) {|mass_build| mass_build.stop_build}
 
       if @user.system?
-        can :key_pair, Repository
+        can %i(key_pair add_repo_lock_file remove_repo_lock_file), Repository
       else
         cannot :key_pair, Repository
       end

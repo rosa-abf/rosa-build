@@ -4,7 +4,7 @@
 - if owner.own_projects.exists? name: name
   %p.center
     =t 'layout.projects.already_exists'
-    =link_to full_name, project_path(@project)
+    =link_to full_name, project_path("#{owner.uname}/#{name}")
 - else
   = form_for @project, url: fork_project_path(@project), html: { class: :form, multipart: true, method: :post } do |f|
     = hidden_field_tag :group, owner.id if owner.class == Group

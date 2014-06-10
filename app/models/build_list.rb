@@ -598,7 +598,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def delayed_add_job_to_abf_worker_queue(*args)
-    restart_job if status == BUILD_PENDING
+    restart_job if valid? && status == BUILD_PENDING
   end
   later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :middle
 
@@ -606,12 +606,12 @@ class BuildList < ActiveRecord::Base
 
   def valid_branch_for_publish?
     return true if save_to_platform.personal? ||
-      save_to_repository.forbid_to_publish_builds_not_from.blank? ||
-      ( project_version == save_to_repository.forbid_to_publish_builds_not_from )
+      save_to_repository.publish_builds_only_from_branch.blank? ||
+      ( project_version == save_to_repository.publish_builds_only_from_branch )
 
     project.repo.git.native(:branch, {}, '--contains', commit_hash).
       gsub(/\*/, '').split(/\n/).map(&:strip).
-      include?(save_to_repository.forbid_to_publish_builds_not_from)
+      include?(save_to_repository.publish_builds_only_from_branch)
   end
 
 

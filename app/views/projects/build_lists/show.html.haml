@@ -215,7 +215,7 @@
             method: :put, data: { confirm: t('layout.confirm') },
             class: 'btn btn-primary',
             'ng-show' => 'build_list.can_reject_publish'
-        - if can?(:rerun_tests, @build_list) && (current_user.tester? || current_user.admin?)
+        - if can?(:rerun_tests, @build_list)
           = link_to t('layout.build_lists.rerun_tests'),
             rerun_tests_build_list_path(@build_list),
             method: :put,

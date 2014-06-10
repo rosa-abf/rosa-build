@@ -1,65 +1,74 @@
 json.build_list do
-  json.(@build_list, :id, :container_status, :status)
-  json.(@build_list, :update_type)
-  json.updated_at @build_list.updated_at
-
   if !@build_list.in_work? && @build_list.started_at
     json.human_duration @build_list.human_duration
   elsif @build_list.in_work?
     json.human_duration "#{@build_list.human_current_duration} / #{@build_list.human_average_build_time}"
   end
 
-  json.can_publish can?(:publish, @build_list)
-  json.can_publish_into_testing can?(:publish_into_testing, @build_list) && @build_list.can_publish_into_testing?
-  json.can_cancel @build_list.can_cancel?
-  json.can_create_container @build_list.can_create_container?
-  json.can_reject_publish @build_list.can_reject_publish?
-
-  json.extra_build_lists_published @build_list.extra_build_lists_published?
-  json.can_publish_in_future can_publish_in_future?(@build_list)
-  json.can_publish_into_repository @build_list.can_publish_into_repository?
+  json.cache! [@build_list, current_user], expires_in: 1.minute do
+    json.(@build_list, :id, :container_status, :status)
+    json.(@build_list, :update_type)
+    json.updated_at @build_list.updated_at
+    json.updated_at_utc @build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
 
 
-  json.container_path container_url if @build_list.container_published?
+    json.can_publish can?(:publish, @build_list)
+    json.can_publish_into_testing can?(:publish_into_testing, @build_list) && @build_list.can_publish_into_testing?
+    json.can_cancel @build_list.can_cancel?
+    json.can_create_container @build_list.can_create_container?
+    json.can_reject_publish @build_list.can_reject_publish?
 
-  json.publisher do
-    json.fullname @build_list.publisher.try(:fullname)
-    json.path user_path(@build_list.publisher)
-  end if @build_list.publisher
+    json.extra_build_lists_published @build_list.extra_build_lists_published?
+    json.can_publish_in_future can_publish_in_future?(@build_list)
+    json.can_publish_into_repository @build_list.can_publish_into_repository?
 
-  json.builder do
-    json.fullname @build_list.builder.try(:fullname)
-    json.path user_path(@build_list.builder)
-  end if @build_list.builder && (!@build_list.builder.system? || current_user.try(:admin?))
 
-  json.advisory do
-    json.(@build_list.advisory, :description, :advisory_id)
-    json.path advisory_path(@build_list.advisory)
-  end if @build_list.advisory
+    json.container_path container_url if @build_list.container_published?
 
-  json.results @build_list.results do |result|
-    json.file_name result['file_name']
-    json.sha1 result['sha1']
-    json.size result['size']
+    json.publisher do
+      json.fullname @build_list.publisher.try(:fullname)
+      json.path user_path(@build_list.publisher)
+    end if @build_list.publisher
 
-    json.created_at Time.zone.at(result['timestamp']).to_s if result['timestamp']
+    json.builder do
+      json.fullname @build_list.builder.try(:fullname)
+      json.path user_path(@build_list.builder)
+    end if @build_list.builder && (!@build_list.builder.system? || current_user.try(:admin?))
 
-    json.url file_store_results_url(result['sha1'], result['file_name'])
-  end if @build_list.new_core? && @build_list.results.present?
+    json.advisory do
+      json.(@build_list.advisory, :description, :advisory_id)
+      json.path advisory_path(@build_list.advisory)
+    end if @build_list.advisory
 
-  json.packages @build_list.packages do |package|
-    json.(package, :id, :name, :fullname, :release, :version, :sha1, :epoch)
-    json.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{package.sha1}" if package.sha1
-  end if @build_list.packages.present?
+    json.results @build_list.results do |result|
+      json.file_name result['file_name']
+      json.sha1 result['sha1']
+      json.size result['size']
 
-  json.item_groups do |group|
-    @item_groups.each_with_index do |group, level|
-      json.group group do |item|
-        json.(item, :name, :status)
-        json.path build_list_item_version_link item
-        json.level level
+      json.created_at Time.zone.at(result['timestamp']).to_s if result['timestamp']
+
+      json.url file_store_results_url(result['sha1'], result['file_name'])
+    end if @build_list.new_core? && @build_list.results.present?
+
+    json.packages @build_list.packages do |package|
+      json.(package, :id, :name, :fullname, :release, :version, :sha1, :epoch)
+      json.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{package.sha1}" if package.sha1
+
+      json.dependent_projects Project.where(id: package.dependent_projects).to_a do |project|
+        json.project_path project_path(project)
+        json.new_project_build_list_path new_project_build_list_path(@project)
       end
-    end
-  end if @item_groups.present?
+    end if @build_list.packages.present?
+
+    json.item_groups do |group|
+      @item_groups.each_with_index do |group, level|
+        json.group group do |item|
+          json.(item, :name, :status)
+          json.path build_list_item_version_link item
+          json.level level
+        end
+      end
+    end if @item_groups.present?
+  end
 
 end
