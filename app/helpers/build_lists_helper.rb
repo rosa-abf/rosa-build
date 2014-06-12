@@ -18,6 +18,29 @@ module BuildListsHelper
     Platform.availables_main_platforms current_user, current_ability
   end
 
+  def dependent_projects(package)
+    return [] if package.dependent_packages.blank?
+
+    packages = BuildList::Package.
+      select('build_list_packages.project_id, build_list_packages.name').
+      joins(:build_list).
+      where(
+        platform_id:  package.platform,
+        name:         package.dependent_packages,
+        package_type: package.package_type,
+        build_lists:  { status: BuildList::BUILD_PUBLISHED }
+      ).
+      group('build_list_packages.project_id, build_list_packages.name').
+      reorder(:project_id).group_by(&:project_id)
+
+    Project.where(id: packages.keys).recent.map do |project|
+      [
+        project,
+        packages[project.id].map(&:name).sort
+      ]
+    end
+  end
+
   def save_to_repositories(project)
     project.repositories.collect do |r|
       [

@@ -82,7 +82,7 @@ GEM
     ancestry (2.0.0)
       activerecord (>= 3.0.0)
     angular-i18n (0.1.2)
-    angularjs-rails (1.2.14)
+    angularjs-rails (1.2.16)
     arbre (1.0.1)
       activesupport (>= 3.0.0)
     arel (4.0.2)

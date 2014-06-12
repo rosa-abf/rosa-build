@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140606193047) do
+ActiveRecord::Schema.define(version: 20140612213342) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,7 +96,6 @@ ActiveRecord::Schema.define(version: 20140606193047) do
     t.string   "sha1"
     t.integer  "epoch"
     t.text     "dependent_packages"
-    t.text     "dependent_projects"
     t.index ["actual", "platform_id"], :name => "index_build_list_packages_on_actual_and_platform_id"
     t.index ["build_list_id"], :name => "index_build_list_packages_on_build_list_id"
     t.index ["name", "project_id"], :name => "index_build_list_packages_on_name_and_project_id"

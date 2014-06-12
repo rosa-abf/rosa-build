@@ -66,6 +66,8 @@ en:
   layout:
     build_lists:
       create_container: Create container
+      create_build_list: Create Build List
+      run_build_list: Run Build List
       platform_deleted: platform has been deleted
       filter_header: Filter
       current: Curent

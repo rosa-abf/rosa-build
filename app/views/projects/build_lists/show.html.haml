@@ -241,7 +241,7 @@
 
   %div{'ng-show' => 'build_list.packages'}
     .hr
-    %h3= t("layout.build_lists.packages_header")
+    %h3= t('layout.build_lists.packages_header')
     %table.tablesorter.width565{cellpadding: "0", cellspacing: "0"}
       %thead
         %tr
@@ -251,14 +251,38 @@
           %th= t("activerecord.attributes.build_list/package.version")
           %th= t("activerecord.attributes.build_list/package.release")
       %tbody
-        %tr{'ng-repeat' => 'package in build_list.packages'}
-          %td{'ng-show' => 'package.url'}
-            %a{'ng-href' => "{{package.url}}" } {{package.fullname}}
-          %td{'ng-hide' => 'package.url'} {{package.fullname}}
+        %tr{'ng-repeat-start' => 'package in build_list.packages'}
+          %td.package
+            %a.expand{'ng-show' => 'package.dependent_projects' }
+              %span.icon-chevron-down{'ng-show' => 'package.show_dependent_projects',
+                'ng-click' => 'package.show_dependent_projects = false' }
+              %span.icon-chevron-up{'ng-hide' => 'package.show_dependent_projects',
+                'ng-click' => 'package.show_dependent_projects = true' }
+            %div{'ng-if' => '!package.url'} {{package.fullname}}
+            %a{ 'ng-if'   => 'package.url',
+                'ng-href' => "{{package.url}}" }
+              {{package.fullname}}
+
           %td {{package.name}}
           %td {{package.epoch}}
           %td {{package.version}}
           %td {{package.release}}
+
+        %tr{'ng-repeat-end' => '',
+            'ng-show'       => 'package.show_dependent_projects',
+            'ng-repeat'     => 'project in package.dependent_projects' }
+          %td
+            %a{'ng-href' => "{{project.url}}" } {{project.name}}
+          %td
+            %p{'ng-repeat' => 'package in project.dependent_packages'}
+              {{package}}
+          %td{ colspan: 3 }
+            %a{'ng-href' => '{{project.new_url}}' }
+              = t('layout.build_lists.create_build_list')
+            / .both
+            / %a{'ng-href' => '{{project.new_url}}' }
+            /   = t('layout.build_lists.run_build_list')
+
     .both
 
   - if @build_list.new_core?

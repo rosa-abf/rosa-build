@@ -55,11 +55,15 @@ json.build_list do
       json.(package, :id, :name, :fullname, :release, :version, :sha1, :epoch)
       json.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{package.sha1}" if package.sha1
 
-      json.dependent_projects Project.where(id: package.dependent_projects).to_a do |project|
-        json.project_path project_path(project)
-        json.new_project_build_list_path new_project_build_list_path(@project)
+      json.dependent_projects dependent_projects(package) do |project, packages|
+        json.url project_path(project.name_with_owner)
+        json.name project.name_with_owner
+        json.dependent_packages packages
+        json.new_url new_project_build_list_path(project)
       end
+
     end if @build_list.packages.present?
+
 
     json.item_groups do |group|
       @item_groups.each_with_index do |group, level|
