@@ -65,6 +65,8 @@ ru:
   layout:
     build_lists:
       create_container: Создать контейнер
+      create_build_list: Создать сборку
+      run_build_list: Запустить сборку
       platform_deleted: платформа была удалена
       filter_header: Фильтр
       current: Текущие

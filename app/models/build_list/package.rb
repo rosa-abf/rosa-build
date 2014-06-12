@@ -6,7 +6,6 @@ class BuildList::Package < ActiveRecord::Base
   belongs_to :platform
 
   serialize :dependent_packages, Array
-  serialize :dependent_projects, Array
 
   attr_accessible :fullname, :name, :release, :version, :sha1, :epoch, :dependent_packages
 
@@ -27,7 +26,6 @@ class BuildList::Package < ActiveRecord::Base
 
   before_create :set_epoch
   before_create :normalize_dependent_packages
-  after_commit(on: :create) { |p| p.find_dependent_projects if p.dependent_packages.present? } # later with resque
 
   def assignee
     project.maintainer
@@ -49,11 +47,6 @@ class BuildList::Package < ActiveRecord::Base
       yield package
     end
   end
-
-  def find_dependent_projects
-    # TODO
-  end
-  later :find_dependent_projects, queue: :middle
 
   protected
 
