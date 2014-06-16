@@ -54,40 +54,53 @@ class Projects::BuildListsController < Projects::BaseController
   def create
     notices, errors = [], []
 
-    @repository = Repository.find params[:build_list][:save_to_repository_id]
-    @platform = @repository.platform
+    if params[:origin].present?
+      build_list = BuildList.find(params[:origin])
+      if build_list.save_to_platform.personal?
+        raise CanCan::AccessDenied
+      else
+        Resque.enqueue(RunBuildListsJob, build_list.id, current_user.id, params[:project_id])
 
-    params[:build_list][:save_to_platform_id] = @platform.id
+        flash[:notice] = t('flash.build_list.run_build_lists_job_added_to_queue')
+        redirect_to build_list_path(build_list)
+      end
+    else
 
-    build_for_platforms = Repository.select(:platform_id).
-      where(id: params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
+      @repository = Repository.find params[:build_list][:save_to_repository_id]
+      @platform = @repository.platform
 
-    build_lists = []
-    Arch.where(id: params[:arches]).each do |arch|
-      Platform.main.where(id: build_for_platforms).each do |build_for_platform|
-        @build_list = @project.build_lists.build(params[:build_list])
-        @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
-        @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
-        @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
+      params[:build_list][:save_to_platform_id] = @platform.id
 
-        flash_options = {project_version: @build_list.project_version, arch: arch.name, build_for_platform: build_for_platform.name}
-        if authorize!(:create, @build_list) && @build_list.save
-          build_lists << @build_list
-          notices << t("flash.build_list.saved", flash_options)
-        else
-          errors << t("flash.build_list.save_error", flash_options)
+      build_for_platforms = Repository.select(:platform_id).
+        where(id: params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
+
+      build_lists = []
+      Arch.where(id: params[:arches]).each do |arch|
+        Platform.main.where(id: build_for_platforms).each do |build_for_platform|
+          @build_list = @project.build_lists.build(params[:build_list])
+          @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
+          @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
+          @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
+
+          flash_options = {project_version: @build_list.project_version, arch: arch.name, build_for_platform: build_for_platform.name}
+          if authorize!(:create, @build_list) && @build_list.save
+            build_lists << @build_list
+            notices << t("flash.build_list.saved", flash_options)
+          else
+            errors << t("flash.build_list.save_error", flash_options)
+          end
         end
       end
-    end
-    errors << t("flash.build_list.no_arch_or_platform_selected") if errors.blank? and notices.blank?
-    if errors.present?
-      @build_list ||= BuildList.new
-      flash[:error] = errors.join('<br>').html_safe
-      render action: :new
-    else
-      BuildList.where(id: build_lists.map(&:id)).update_all(group_id: build_lists[0].id) if build_lists.size > 1
-      flash[:notice] = notices.join('<br>').html_safe
-      redirect_to project_build_lists_path(@project)
+      errors << t("flash.build_list.no_arch_or_platform_selected") if errors.blank? and notices.blank?
+      if errors.present?
+        @build_list ||= BuildList.new
+        flash[:error] = errors.join('<br>').html_safe
+        render action: :new
+      else
+        BuildList.where(id: build_lists.map(&:id)).update_all(group_id: build_lists[0].id) if build_lists.size > 1
+        flash[:notice] = notices.join('<br>').html_safe
+        redirect_to project_build_lists_path(@project)
+      end
     end
   end
 
