@@ -687,6 +687,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def prepare_extra_build_lists
+    return if extra_build_lists.blank?
     bls = BuildList.for_extra_build_lists(extra_build_lists, current_ability, save_to_platform)
     if save_to_platform
       if save_to_platform.distrib_type == 'rhel'

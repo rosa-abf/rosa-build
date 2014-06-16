@@ -9,7 +9,7 @@ class RunBuildListsJob
 
     return unless ability.can?(:show, build_list)
     project     = Project.find(project_id) if project_id.present?
-    return if project && !ability.can?(:show, project)
+    return if project && !ability.can?(:write, project)
 
     dependent_packages = build_list.packages.pluck(:dependent_packages).flatten.uniq
     project_ids = BuildList::Package.
