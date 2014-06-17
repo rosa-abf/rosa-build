@@ -1,40 +1,58 @@
-RosaABF.controller('NewBuildListController', ['$scope', '$http', '$timeout',
-                   function($scope, $http, $timeout) {
+RosaABF.controller('NewBuildListController', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
-  $scope.save_to_repository  = null;
-  $scope.build_for_platform  = null;
+  $scope.save_to_repository_id = null;
 
-  var save_to_repository_id  = $('#build_list_save_to_repository_id');
+  var save_to_repository     = $('#build_list_save_to_repository_id');
   var all_repositories       = $('.all_platforms input');
   var auto_create_container  = $('#build_list_auto_create_container');
   var extra_repos            = $('.autocomplete-form.extra_repositories');
   var build_list_auto_publish_status = $('#build_list_auto_publish_status');
   var bl_version_sel         = $('#build_list_project_version');
   var all_platforms_name     = $('h4.build_for_pl');
+  var build_for_platform_id  = null;
+  var build_platform         = null;
+
+  $scope.init = function(pl_id, save_to_repository_id) {
+    build_for_platform_id        = pl_id;
+    build_platform = $('#build_for_pl_' + pl_id);
+    $scope.save_to_repository_id = save_to_repository_id;
+  }
+
+  $scope.getPlatformClass = function(pl_id) {
+    if (build_platform.size() > 0 && build_for_platform_id !== pl_id) {
+      return 'text-muted';
+    }
+  }
+
+  $scope.needHidePlatform = function(pl_id) {
+    if (build_platform.size() > 0 && build_for_platform_id !== pl_id) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
   $scope.change_save_to_repository = function() {
 
-    var selected_option = save_to_repository_id.find("option:selected");
-    var platform_id = selected_option.attr('platform_id');
+    var selected_option = save_to_repository.find('option:selected');
     var rep_name = selected_option.text().match(/[\w-]+\/([\w-]+)/)[1];
 
-    var build_platform = $('#build_for_pl_' + platform_id);
+    build_for_platform_id = selected_option.attr('platform_id');
+    build_platform = $('#build_for_pl_' + build_for_platform_id);
 
     all_repositories.removeAttr('checked');
 
-    updateExtraReposAndBuildLists(platform_id);
+    updateExtraReposAndBuildLists(build_for_platform_id);
     updatedDefaultArches(selected_option);
     $('.autocomplete-form table tbody').empty();
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
-      all_platforms_name.removeClass('text-muted');
       auto_create_container.removeAttr('checked');
       addPersonalPlatformToExtraRepos(selected_option, extra_repos);
       extra_repos.show();
     } else {
       all_repositories.attr('disabled', 'disabled');
-      all_platforms_name.addClass('text-muted');
-      build_platform.removeClass('text-muted');
       extra_repos.hide();
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');

@@ -4,20 +4,22 @@
       %h3= t 'activerecord.attributes.build_list.build_for_platform'
       - build_for_platform = params[:build_list].try :[], :build_for_platform
       - build_for_platform_id = build_for_platform.try(:id).presence || 'null'
-      .all_platforms{ 'ng-init' => "build_for_platform = #{build_for_platform_id}" }
+      - save_to_repository_id = params[:build_list].try(:[], :save_to_repository_id).presence || 'null'
+      .all_platforms{ 'ng-init' => "init('#{build_for_platform_id}', #{save_to_repository_id})" }
         - availables_main_platforms.each do |pl|
-          .clearfix
-            %h4{ id: "build_for_pl_#{pl.id}", class: 'build_for_pl',
-                 'ng-class' => "{text-muted: }" }= pl.name
+          %div{ 'ng-hide' => "needHidePlatform('#{pl.id}')" }
+            %h4{ id: "build_for_pl_#{pl.id}", class: 'build_for_pl', 'ng-class' => "getPlatformClass('#{pl.id}')" }= pl.name
             = render 'include_repos', platform: pl, build_for_platform: build_for_platform
     .col-md-5
       %h3= t 'activerecord.attributes.build_list.save_to_repository'
-      - selected = params[:build_list].try(:[], :save_to_repository_id).presence || 'null'
-      = f.select :save_to_repository_id, save_to_repositories(project), {}, class: 'form-control',
-        'ng-model' => 'save_to_repository', 'ng-change' => 'change_save_to_repository()',
-        'ng-init' => ""
+      = f.select :save_to_repository_id, save_to_repositories(project),
+        { selected: params[:build_list].try(:[], :save_to_repository_id) },
+        class: 'form-control', 'ng-change' => 'change_save_to_repository()',
+        'ng-model' => 'save_to_repository_id'
       %h3= t 'activerecord.attributes.build_list.project_version'
-      = f.select :project_version, versions_for_group_select(project), {selected: params[:build_list].try(:[], :project_version) || project.default_branch}, class: 'form-control'
+      = f.select :project_version, versions_for_group_select(project),
+        { selected: params[:build_list].try(:[], :project_version) || project.default_branch },
+        class: 'form-control'
       %h3= t 'activerecord.attributes.build_list.arch'
       - Arch.recent.each do |arch|
         - checked = (params[:arches]||[]).include?(arch.id.to_s) || (params[:arches].blank? && controller.action_name == 'new' && Arch::DEFAULT.include?(arch.name))
