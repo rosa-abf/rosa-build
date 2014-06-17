@@ -18,12 +18,6 @@ RosaABF.controller('NewBuildListController', ['$scope', '$http', '$timeout', fun
     $scope.save_to_repository_id = save_to_repository_id;
   }
 
-  $scope.getPlatformClass = function(pl_id) {
-    if (build_platform.size() > 0 && build_for_platform_id !== pl_id) {
-      return 'text-muted';
-    }
-  }
-
   $scope.needHidePlatform = function(pl_id) {
     if (build_platform.size() > 0 && build_for_platform_id !== pl_id) {
       return true;
