@@ -69,6 +69,7 @@ en:
       create_build_list: Create Build List
       run_build_list: Run Build List
       run_build_lists: Run Build Lists of dependent projects
+      are_you_sure_to_run_build_lists: Are you sure what would like to run build lists? Release tag will be increased automatically.
       platform_deleted: platform has been deleted
       filter_header: Filter
       current: Curent

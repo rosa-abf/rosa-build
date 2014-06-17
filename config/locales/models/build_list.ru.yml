@@ -68,6 +68,7 @@ ru:
       create_build_list: Создать сборку
       run_build_list: Запустить сборку
       run_build_lists: Запустить сборку зависимых проектов
+      are_you_sure_to_run_build_lists: Вы уверены что хотите запустить сборку? Release тег будет увеличен автоматически.
       platform_deleted: платформа была удалена
       filter_header: Фильтр
       current: Текущие
