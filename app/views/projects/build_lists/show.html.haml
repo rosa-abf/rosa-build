@@ -171,6 +171,12 @@
       .flash_notify
         .alert.alert-error= t('layout.build_lists.publish_with_extra_fail')
       .both
+
+    - unless @build_list.valid_branch_for_publish?
+      .flash_notify
+        .alert.alert-error= t('layout.build_lists.wrong_branch_for_publish_html', branch: @build_list.save_to_repository.publish_builds_only_from_branch)
+      .both
+
     %div{'ng-show' => 'build_list.can_publish && build_list.can_publish_in_future && !build_list.can_publish_into_repository'}
       .flash_notify
         .alert.alert-error= t('flash.build_list.not_all_build_lists_success')

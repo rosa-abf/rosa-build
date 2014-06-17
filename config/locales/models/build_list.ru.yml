@@ -104,6 +104,7 @@ ru:
       new_header: Новая сборка
       main_data: Основные данные
       tests_failed: Некоторые тесты провалились. Будьте осторожны!
+      wrong_branch_for_publish_html: Публикация разрешена только для сборок из <b>%{branch}</b> ветки
 
       human_current_duration: Сборка длится уже %{hours} ч. %{minutes} мин.
       human_duration: Собрано за %{hours} ч. %{minutes} мин.

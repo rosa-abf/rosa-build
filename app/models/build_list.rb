@@ -609,18 +609,18 @@ class BuildList < ActiveRecord::Base
   end
   later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :middle
 
-  protected
-
   def valid_branch_for_publish?
-    return true if save_to_platform.personal? ||
-      save_to_repository.publish_builds_only_from_branch.blank? ||
-      ( project_version == save_to_repository.publish_builds_only_from_branch )
-
-    project.repo.git.native(:branch, {}, '--contains', commit_hash).
-      gsub(/\*/, '').split(/\n/).map(&:strip).
-      include?(save_to_repository.publish_builds_only_from_branch)
+    @valid_branch_for_publish ||= begin
+      save_to_platform.personal?                                                ||
+      save_to_repository.publish_builds_only_from_branch.blank?                 ||
+      ( project_version == save_to_repository.publish_builds_only_from_branch ) ||
+      project.repo.git.native(:branch, {}, '--contains', commit_hash).
+        gsub(/\*/, '').split(/\n/).map(&:strip).
+        include?(save_to_repository.publish_builds_only_from_branch)
+    end
   end
 
+  protected
 
   def create_container
     AbfWorker::BuildListsPublishTaskManager.create_container_for self
