@@ -68,6 +68,8 @@ en:
       create_container: Create container
       create_build_list: Create Build List
       run_build_list: Run Build List
+      run_build_lists: Run Build Lists of dependent projects
+      are_you_sure_to_run_build_lists: Are you sure what would like to run build lists? Release tag will be increased automatically.
       platform_deleted: platform has been deleted
       filter_header: Filter
       current: Curent
@@ -209,3 +211,4 @@ en:
       wrong_include_repos: Include repos have to belongs to build for platform
       wrong_commit_hash: "Unable find commit '%{commit_hash}' in project"
       not_all_build_lists_success: 'Project has been builded successfully not for all default arches'
+      run_build_lists_job_added_to_queue: Task for creation of build lists has been added to queue.

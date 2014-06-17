@@ -20,8 +20,15 @@ class BuildList < ActiveRecord::Base
   has_many :packages, class_name: '::BuildList::Package', dependent: :destroy
   has_many :source_packages, -> { where(package_type: 'source') }, class_name: '::BuildList::Package'
 
-  UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
-  RELEASE_UPDATE_TYPES = %w[bugfix security]
+  UPDATE_TYPES = [
+    UPDATE_TYPE_BUGFIX      = 'bugfix',
+    UPDATE_TYPE_SECURITY    = 'security',
+    UPDATE_TYPE_ENHANCEMENT = 'enhancement',
+    UPDATE_TYPE_RECOMMENDED = 'recommended',
+    UPDATE_TYPE_NEWPACKAGE  = 'newpackage'
+  ]
+
+  RELEASE_UPDATE_TYPES = [UPDATE_TYPE_BUGFIX, UPDATE_TYPE_SECURITY]
   EXTRA_PARAMS = %w[cfg_options cfg_urpm_options build_src_rpm build_rpm]
   EXTERNAL_NODES = %w[owned everything]
 
@@ -680,6 +687,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def prepare_extra_build_lists
+    return if extra_build_lists.blank?
     bls = BuildList.for_extra_build_lists(extra_build_lists, current_ability, save_to_platform)
     if save_to_platform
       if save_to_platform.distrib_type == 'rhel'

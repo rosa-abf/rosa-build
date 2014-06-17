@@ -318,7 +318,7 @@ class Project < ActiveRecord::Base
             build_list = p.build_lists.build do |bl|
               bl.save_to_platform       = repository.platform
               bl.build_for_platform     = platform
-              bl.update_type            = 'newpackage'
+              bl.update_type            = BuildList::UPDATE_TYPE_NEWPACKAGE
               bl.arch_id                = arch_id
               bl.project_version        = p.project_version_for(repository.platform, platform)
               bl.user                   = user
@@ -338,8 +338,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  protected
-
   def increase_release_tag(project_version, user, message)
     blob = repo.tree(project_version).contents.find{ |n| n.is_a?(Grit::Blob) && n.name =~ /.spec$/ }
     return unless blob
@@ -355,6 +353,7 @@ class Project < ActiveRecord::Base
     )
   end
 
+  protected
 
   def create_archive(treeish, format)
     file_name = "#{name}-#{treeish}"

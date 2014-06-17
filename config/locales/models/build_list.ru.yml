@@ -67,6 +67,8 @@ ru:
       create_container: Создать контейнер
       create_build_list: Создать сборку
       run_build_list: Запустить сборку
+      run_build_lists: Запустить сборку зависимых проектов
+      are_you_sure_to_run_build_lists: Вы уверены что хотите запустить сборку? Release тег будет увеличен автоматически.
       platform_deleted: платформа была удалена
       filter_header: Фильтр
       current: Текущие
@@ -209,3 +211,4 @@ ru:
       wrong_include_repos: Включаемые репозитории должны принадлежать платформе для сборки
       wrong_commit_hash: "Невозможно найти коммит '%{commit_hash}' в проекте"
       not_all_build_lists_success: Проект собран успешно не для всех дефолтных архитектур
+      run_build_lists_job_added_to_queue: Задача на создание билд листов добавлена в очередь.
