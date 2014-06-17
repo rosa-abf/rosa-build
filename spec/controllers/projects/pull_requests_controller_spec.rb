@@ -151,7 +151,7 @@ shared_examples_for 'user without pull request update rights' do
     pull.issue.body.should_not =='updating'
   end
 
-  it 'should be able to perform merge action' do
+  it 'should not be able to perform merge action' do
     @pull.check
     put :merge, @update_params
     response.should_not be_success
@@ -239,7 +239,7 @@ describe Projects::PullRequestsController do
 
     it_should_behave_like 'pull request user with project guest rights'
     it_should_behave_like 'pull request user with project reader rights'
-    it_should_behave_like 'user without pull request update rights'
+    it_should_behave_like 'user with pull request update rights'
     it_should_behave_like 'pull request when project with issues turned off'
   end
 
