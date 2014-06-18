@@ -38,7 +38,7 @@ module AbfWorker
         elsif !extra['resign'] # Simple publish
           bls = extra['build_lists_for_cleanup_from_testing']
           if status != COMPLETED && bls.present?
-            AbfWorker::BuildListsPublishTaskManager.cleanup_packages_from_testing(
+            AbfWorkerHelper.cleanup_packages_from_testing(
               repository_status.platform_id,
               repository_status.repository_id,
               bls
@@ -72,14 +72,14 @@ module AbfWorker
             build_list.fail_publish_into_testing || build_list.update_column(:status, BuildList::FAILED_PUBLISH_INTO_TESTING)
           end
         end
-        AbfWorker::BuildListsPublishTaskManager.unlock_build_list build_list
+        AbfWorkerHelper.unlock_build_list build_list
       end
 
       case status
       when COMPLETED
-        AbfWorker::BuildListsPublishTaskManager.cleanup_completed options['projects_for_cleanup']
+        AbfWorkerHelper.cleanup_completed options['projects_for_cleanup']
       when FAILED, CANCELED
-        AbfWorker::BuildListsPublishTaskManager.cleanup_failed options['projects_for_cleanup']
+        AbfWorkerHelper.cleanup_failed options['projects_for_cleanup']
       end
     end
 

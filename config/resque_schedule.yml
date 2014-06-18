@@ -8,14 +8,14 @@ clean_rpm_build_nodes:
 build_lists_publish_task_manager:
   every:
     - '3m'
-  class: 'BuildListsPublishTaskManagerJob'
+  class: 'BuildLists::PublishTaskManagerJob'
   queue: middle
   description: 'Creates tasks for publishing'
 
 build_lists_queues_monitoring:
   every:
     - '1m'
-  class: 'BuildListsQueuesMonitoringJob'
+  class: 'BuildLists::QueuesMonitoringJob'
   queue: middle
   description: 'Monitoring for "user/mass-build" queues'
 

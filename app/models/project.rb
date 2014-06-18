@@ -224,10 +224,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def destroy_project_from_repository(repository)
-    AbfWorker::BuildListsPublishTaskManager.destroy_project_from_repository self, repository
-  end
-
   def default_head treeish = nil # maybe need change 'head'?
     # Attention!
     # repo.commit(nil) => <Grit::Commit "b6c0f81deb17590d22fc07ba0bbd4aa700256f61">

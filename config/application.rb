@@ -32,6 +32,7 @@ module Rosa
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += %W(#{config.root}/app/presenters)
     config.autoload_paths += %W(#{config.root}/app/jobs)
+    config.autoload_paths += %W(#{config.root}/app/jobs/concerns)
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.

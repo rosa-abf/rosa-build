@@ -578,7 +578,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def cleanup_packages_from_testing
-    AbfWorker::BuildListsPublishTaskManager.cleanup_packages_from_testing(
+    AbfWorkerHelper.cleanup_packages_from_testing(
       build_for_platform_id,
       save_to_repository_id,
       id
@@ -623,7 +623,7 @@ class BuildList < ActiveRecord::Base
   protected
 
   def create_container
-    AbfWorker::BuildListsPublishTaskManager.create_container_for self
+    Resque.enqueue(BuildLists::CreateContainerJob, id)
   end
 
   def remove_container
