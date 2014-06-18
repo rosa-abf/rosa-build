@@ -35,40 +35,42 @@ RosaABF.controller('NewBuildListController', ['$scope', '$http', '$timeout', fun
     build_for_platform_id = selected_option.attr('platform_id');
     build_platform = $('#build_for_pl_' + build_for_platform_id);
 
-    all_repositories.removeAttr('checked');
+    all_repositories.prop('checked', null);
 
     updateExtraReposAndBuildLists(build_for_platform_id);
     updatedDefaultArches(selected_option);
     $('.autocomplete-form table tbody').empty();
     if (build_platform.size() == 0) {
-      all_repositories.removeAttr('disabled');
-      auto_create_container.removeAttr('checked');
+      all_repositories.prop('disabled', null);
+      auto_create_container.prop('checked', null);
       addPersonalPlatformToExtraRepos(selected_option, extra_repos);
       extra_repos.show();
     } else {
-      all_repositories.attr('disabled', 'disabled');
+      all_repositories.prop('disabled', 'disabled');
       extra_repos.hide();
-      var parent = build_platform.parent();
-      parent.find('input').removeAttr('disabled');
-      parent.find('input[rep_name="main"]').attr('checked', 'checked');
+      //var parent = build_platform.parent();
+      build_platform.find('input').prop('disabled', null);
+      build_platform.find('input[rep_name="main"]').prop('checked', 'checked');
       if (rep_name != 'main') {
-        parent.find('input[rep_name="' + rep_name + '"]').attr('checked', 'checked');
+        build_platform.find('input[rep_name="' + rep_name + '"]').prop('checked', 'checked');
       }
       setBranchSelected(selected_option);
+      var tmp = build_platform.find('input[rep_name="main"]');
+      tmp = build_platform.find('input[rep_name="' + rep_name + '"]');
     }
 
     if (selected_option.attr('publish_without_qa') == '1') {
-      build_list_auto_publish_status.removeAttr('disabled').val('default');
+      build_list_auto_publish_status.prop('disabled', null).val('default');
     } else {
-      build_list_auto_publish_status.val('none').attr('disabled', 'disabled');
-      auto_create_container.attr('checked', 'checked');
+      build_list_auto_publish_status.val('none').prop('disabled', 'disabled');
+      auto_create_container.prop('checked', 'checked');
     }
   }
 
   function updatedDefaultArches(selected_option) {
-    $('input[name="arches[]"]').removeAttr('checked');
+    $('input[name="arches[]"]').prop('checked', null);
     _.each(selected_option.attr('default_arches').split(' '), function(id){
-      $('#arches_' + id).attr('checked', 'checked');
+      $('#arches_' + id).prop('checked', 'checked');
     });
   }
 
@@ -98,8 +100,8 @@ RosaABF.controller('NewBuildListController', ['$scope', '$http', '$timeout', fun
     var branch_pl_opt = bl_version_sel.find('option[value="' + pl_name + '"]');
     // If there is branch we need - set it selected:
     if (branch_pl_opt.size() > 0) {
-      bl_version_sel.find('option[selected]').removeAttr('selected');
-      branch_pl_opt.attr('selected', 'selected');
+      bl_version_sel.find('option[selected]').prop('selected', null);
+      branch_pl_opt.prop('selected', 'selected');
       bl_version_sel.val(branch_pl_opt);
       // hack for FF to force render of select box.
       bl_version_sel[0].innerHTML = bl_version_sel[0].innerHTML;
