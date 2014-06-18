@@ -220,7 +220,7 @@
         'ng-show' => 'build_list.can_create_container'
     - if can? :create, @build_list
       = link_to t('layout.build_lists.recreate_build_list'), new_project_build_list_path(@build_list.project, build_list_id: @build_list.id), class: 'button'
-      - if @build_list.save_to_platform.main?
+      - if can_run_dependent_build_lists?(@build_list)
         = link_to t('layout.build_lists.run_build_lists'),
             project_build_lists_path(@build_list.project, origin: @build_list.id),
             method: :post,

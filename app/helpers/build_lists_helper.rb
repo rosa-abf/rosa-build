@@ -14,6 +14,11 @@ module BuildListsHelper
     end
   end
 
+  def can_run_dependent_build_lists?(build_list)
+    build_list.save_to_platform.main? &&
+    build_list.save_to_platform.distrib_type == 'mdv'
+  end
+
   def availables_main_platforms
     Platform.availables_main_platforms current_user, current_ability
   end
