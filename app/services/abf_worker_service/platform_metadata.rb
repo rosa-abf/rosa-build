@@ -8,14 +8,14 @@ module AbfWorkerService
     end
 
     def regenerate!
-      return unless can_regenerate?(platform)
+      return unless can_regenerate?
 
       Resque.push(
         'publish_worker_default',
         'class' => 'AbfWorker::PublishWorkerDefault',
         'args' => [{
           id:              Time.now.to_i,
-          cmd_params:      cmd_params(platform),
+          cmd_params:      cmd_params,
           main_script:     'regenerate_platform_metadata.sh',
           platform:        {
             platform_path:   "#{platform.path}/repository",
