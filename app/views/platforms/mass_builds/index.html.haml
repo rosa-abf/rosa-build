@@ -15,10 +15,11 @@
   - @mass_builds.each do |mass_build|
     %tr
       %td= mass_build.id
-      %td= link_to mass_build.name, build_lists_path(filter: {mass_build_id: mass_build.id, ownership: 'everything'})
+      %td= link_to mass_build.name, build_lists_path+"#?#{{filter: {mass_build_id: mass_build.id, ownership: 'everything'}}.to_param}"
       %td.min_width_120
         - MassBuild::COUNT_STATUSES.each do |status|
-          = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(filter: {mass_build_id: mass_build.id, ownership: 'everything'}.merge(status != :build_lists ? {status: BuildList.status_by_human(status)} : {}))
+          - path = build_lists_path+"#?#{{filter: {mass_build_id: mass_build.id, ownership: 'everything'}.merge(status != :build_lists ? {status: BuildList.status_by_human(status)} : {})}.to_param}"
+          = link_to t("layout.build_lists.statuses.#{status}") + ": ", path
           = mass_build.send "#{status}_count"
           .both
         -if mass_build.projects_list.present?
