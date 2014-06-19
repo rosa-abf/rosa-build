@@ -50,7 +50,7 @@ module AbfWorkerService
         (testing && k =~ /^testing-[\d]+-#{key}$/) || (!testing && k =~ /^[\d]+-#{key}$/)
       end
 
-      prepare_build_lists(projects_for_cleanup, save_to_repository_id)
+      prepare_build_lists(projects_for_cleanup, save_to_repository_id, testing)
 
       build_lists   = find_build_lists(build_for_platform_id, save_to_repository_id, testing)
       old_packages  = packages_structure
@@ -77,7 +77,7 @@ module AbfWorkerService
       bl = build_lists.first
       return false if !bl && old_packages[:sources].empty? && old_packages[:binaries].values.flatten.empty?
 
-      save_to_repository  = Repository.find save_to_repository_id
+      save_to_repository  = ::Repository.find(save_to_repository_id)
       # Checks mirror sync status
       return false if save_to_repository.repo_lock_file_exists? || !save_to_repository.platform.ready?
 
@@ -180,7 +180,7 @@ module AbfWorkerService
       )
     end
 
-    def prepare_build_lists(projects_for_cleanup, save_to_repository_id)
+    def prepare_build_lists(projects_for_cleanup, save_to_repository_id, testing)
       # We should not to publish new builds into repository
       # if project of builds has been removed from repository.
       BuildList.where(
