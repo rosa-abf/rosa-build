@@ -1,7 +1,5 @@
-var RosaABF = angular.module('RosaABF', ['ngResource', 'ng-rails-csrf', 'angular-i18n', 'angularMoment'])
-                     .config(function($locationProvider) {
-                      $locationProvider.html5Mode(true);
-                     });;
+var RosaABF = angular.module('RosaABF', ['ngResource', 'ng-rails-csrf', 'angular-i18n', 'angularMoment']);
+RosaABF.config(['$locationProvider', function config ($locationProvider) { $locationProvider.html5Mode(true) }]);
 
 var DateTimeFormatter = function() {
 
