@@ -122,42 +122,6 @@ describe AbfWorker::BuildListsPublishTaskManager do
 
   end
 
-  context 'creates task for removing project from repository' do
-    before do
-      build_list.update_column(:status, BuildList::BUILD_PUBLISHED)
-      FactoryGirl.create(:build_list_package, build_list: build_list)
-      ProjectToRepository.where(project_id: build_list.project_id, repository_id: build_list.save_to_repository_id).destroy_all
-      2.times{ subject.new.run }
-    end
-
-    %w(LOCKED_BUILD_LISTS).each do |kind|
-      it "ensures that no '#{kind.downcase.gsub('_', ' ')}'" do
-        @redis_instance.lrange(subject.const_get(kind), 0, -1).should be_empty
-      end
-    end
-
-    it "ensures that has only 'projects for cleanup' for testing subrepo" do
-      queue = @redis_instance.lrange(subject::PROJECTS_FOR_CLEANUP, 0, -1)
-      queue.should have(1).item
-      queue.should include("testing-#{build_list.project_id}-#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}")
-    end
-
-    it "ensures that only one repository_status has status publish" do
-      RepositoryStatus.where(status: RepositoryStatus::PUBLISH).should have(1).item
-    end
-
-    it "ensures that 'locked projects for cleanup' has only one item" do
-      queue = @redis_instance.lrange(subject::LOCKED_PROJECTS_FOR_CLEANUP, 0, -1)
-      queue.should have(1).item
-      queue.should include("#{build_list.project_id}-#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}")
-    end
-
-    it "ensures that new task for publishing has been created" do
-      @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
-    end
-
-  end
-
   context 'grouping build lists for publishing and tasks for removing project from repository' do
     let(:build_list2) { FactoryGirl.create(:build_list,
       new_core: true,
@@ -204,65 +168,6 @@ describe AbfWorker::BuildListsPublishTaskManager do
       queue.should have(1).item
       queue.should include(build_list.id.to_s)
     end
-  end
-
-  context 'resign packages in repository' do
-    before do
-      build_list.update_column(:status, BuildList::BUILD_PUBLISH)
-      FactoryGirl.create(:key_pair, repository: build_list.save_to_repository)
-      2.times{ subject.new.run }
-    end
-
-    %w(PROJECTS_FOR_CLEANUP LOCKED_PROJECTS_FOR_CLEANUP LOCKED_BUILD_LISTS).each do |kind|
-      it "ensure that no '#{kind.downcase.gsub('_', ' ')}'" do
-        @redis_instance.lrange(subject.const_get(kind), 0, -1).should be_empty
-      end
-    end
-
-    it "ensures that only one repository_status has status resign" do
-      RepositoryStatus.where(status: RepositoryStatus::RESIGN).should have(1).item
-    end
-
-    it "ensure that new task for resign has been created" do
-      @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
-    end
-
-  end
-
-  context 'regenerate metadata' do
-    context 'for repository of main platform' do
-      let(:repository) { FactoryGirl.create(:repository) }
-      before do
-        repository.regenerate
-        subject.new.run
-      end
-
-      it "ensures that only one repository_status has status regenerating" do
-        RepositoryStatus.where(status: RepositoryStatus::REGENERATING).should have(1).item
-      end
-
-      it 'ensures that new task has been created' do
-        @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
-      end
-    end
-
-    context 'for repository of personal platform' do
-      let(:main_platform) { FactoryGirl.create(:platform) }
-      let(:repository) { FactoryGirl.create(:personal_repository) }
-      before do
-        repository.regenerate main_platform.id
-        subject.new.run
-      end
-
-      it "ensures that only one repository_status has status regenerating" do
-        RepositoryStatus.where(status: RepositoryStatus::REGENERATING).should have(1).item
-      end
-
-      it 'ensures that new task has been created' do
-        @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
-      end
-    end
-
   end
 
   after(:all) do

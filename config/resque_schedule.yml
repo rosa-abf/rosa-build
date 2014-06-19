@@ -8,7 +8,7 @@ clean_rpm_build_nodes:
 build_lists_publish_task_manager:
   every:
     - '3m'
-  class: 'BuildLists::PublishTaskManagerJob'
+  class: 'PublishTaskManagerJob'
   queue: middle
   description: 'Creates tasks for publishing'
 

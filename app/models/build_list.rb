@@ -578,7 +578,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def cleanup_packages_from_testing
-    AbfWorkerHelper.cleanup_packages_from_testing(
+    AbfWorkerService::Base.cleanup_packages_from_testing(
       build_for_platform_id,
       save_to_repository_id,
       id
@@ -627,7 +627,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def remove_container
-    system "rm -rf #{save_to_platform.path}/container/#{id}" if save_to_platform
+    AbfWorkerService::Container.new(self).destroy! if save_to_platform
   end
 
   def abf_worker_priority

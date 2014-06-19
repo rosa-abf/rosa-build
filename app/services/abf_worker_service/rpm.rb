@@ -1,37 +1,22 @@
-module AbfWorker
-  class BuildListsPublishTaskManager
-    REDIS_MAIN_KEY = 'abf-worker::build-lists-publish-task-manager::'
+module AbfWorkerService
+  class Rpm < Base
 
-    %w(PROJECTS_FOR_CLEANUP
-       LOCKED_PROJECTS_FOR_CLEANUP
-       LOCKED_BUILD_LISTS
-       PACKAGES_FOR_CLEANUP
-       REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING
-       BUILD_LISTS_FOR_CLEANUP_FROM_TESTING).each do |kind|
-      const_set kind, "#{REDIS_MAIN_KEY}#{kind.downcase.gsub('_', '-')}"
+    WORKERS_COUNT = APP_CONFIG['abf_worker']['publish_workers_count']
+
+    def publish!
+      build_rpms
+      build_rpms(true)
     end
 
-    def initialize
-      @workers_count = APP_CONFIG['abf_worker']['publish_workers_count']
-    end
+    protected
 
-    def run
-      # create_tasks_for_regenerate_metadata_for_software_center
-      # create_tasks_for_resign_repositories
-      # create_tasks_for_repository_regenerate_metadata
-      create_tasks_for_build_rpms
-      create_tasks_for_build_rpms true
-    end
-
-    private
-
-    def create_tasks_for_build_rpms(testing = false)
+    def build_rpms(testing = false)
       available_repos = BuildList.
         select('MIN(updated_at) as min_updated_at, save_to_repository_id, build_for_platform_id').
         where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
         group(:save_to_repository_id, :build_for_platform_id).
         order('min_updated_at ASC').
-        limit(@workers_count * 2) # because some repos may be locked
+        limit(WORKERS_COUNT * 2) # because some repos may be locked
 
       locked_rep = RepositoryStatus.not_ready.joins(:platform).
         where(platforms: {platform_type: 'main'}).pluck(:repository_id)
@@ -54,7 +39,7 @@ module AbfWorker
       available_repos = available_repos.map{ |bl| [bl.save_to_repository_id, bl.build_for_platform_id] } | for_cleanup | for_cleanup_from_testing
       available_repos.each do |save_to_repository_id, build_for_platform_id|
         next if RepositoryStatus.not_ready.where(repository_id: save_to_repository_id, platform_id: build_for_platform_id).exists?
-        break if counter > @workers_count
+        break if counter > WORKERS_COUNT
         counter += 1 if create_rpm_build_task(save_to_repository_id, build_for_platform_id, testing)
       end
     end
@@ -65,24 +50,10 @@ module AbfWorker
         (testing && k =~ /^testing-[\d]+-#{key}$/) || (!testing && k =~ /^[\d]+-#{key}$/)
       end
 
-      # We should not to publish new builds into repository
-      # if project of builds has been removed from repository.
-      BuildList.where(
-        project_id:            projects_for_cleanup.map{ |k| k.split('-')[testing ? 1 : 0] }.uniq,
-        save_to_repository_id: save_to_repository_id,
-        status:                [BuildList::BUILD_PUBLISH, BuildList::BUILD_PUBLISH_INTO_TESTING]
-      ).update_all(status: BuildList::FAILED_PUBLISH)
+      prepare_build_lists(projects_for_cleanup, save_to_repository_id)
 
-      build_lists = BuildList.
-        where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
-        where(save_to_repository_id: save_to_repository_id).
-        where(build_for_platform_id: build_for_platform_id).
-        order(:updated_at)
-      locked_ids = Redis.current.lrange(LOCKED_BUILD_LISTS, 0, -1)
-      build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
-      build_lists = build_lists.limit(150)
-
-      old_packages  = self.class.packages_structure
+      build_lists   = find_build_lists(build_for_platform_id, save_to_repository_id, testing)
+      old_packages  = packages_structure
 
       projects_for_cleanup.each do |key|
         Redis.current.lrem PROJECTS_FOR_CLEANUP, 0, key
@@ -98,7 +69,7 @@ module AbfWorker
       if testing
         build_lists_for_cleanup_from_testing = Redis.current.smembers("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}")
         BuildList.where(id: build_lists_for_cleanup_from_testing).each do |b|
-          self.class.fill_packages(b, old_packages, :fullname)
+          fill_packages(b, old_packages, :fullname)
         end if build_lists_for_cleanup_from_testing.present?
       end
       build_lists_for_cleanup_from_testing ||= []
@@ -150,39 +121,47 @@ module AbfWorker
         }
       }
 
-      packages, build_list_ids, new_sources = self.class.packages_structure, [], {}
+      packages, build_list_ids, new_sources = fill_in_packages(build_lists, testing)
+      push(options.merge({
+        packages:             packages,
+        old_packages:         old_packages,
+        build_list_ids:       build_list_ids,
+        projects_for_cleanup: projects_for_cleanup
+      }))
+      lock_projects(projects_for_cleanup)
+      cleanup(save_to_repository_id, build_for_platform_id, build_lists_for_cleanup_from_testing)
+      return true
+    end
+
+    def fill_in_packages(build_lists, testing)
+      packages, build_list_ids, new_sources = packages_structure, [], {}
       build_lists.each do |bl|
         # remove duplicates of sources for different arches
         bl.packages.by_package_type('source').each{ |s| new_sources["#{s.fullname}"] = s.sha1 }
-        self.class.fill_packages(bl, packages)
+        fill_packages(bl, packages)
         bl.last_published(testing).includes(:packages).limit(2).each{ |old_bl|
-          self.class.fill_packages(old_bl, old_packages, :fullname)
+          fill_packages(old_bl, old_packages, :fullname)
         }
         # TODO: do more flexible
         # Removes old packages which already in the main repo
         bl.last_published(false).includes(:packages).limit(3).each{ |old_bl|
-          self.class.fill_packages(old_bl, old_packages, :fullname)
+          fill_packages(old_bl, old_packages, :fullname)
         } if testing
         build_list_ids << bl.id
         Redis.current.lpush(LOCKED_BUILD_LISTS, bl.id)
       end
       packages[:sources] = new_sources.values.compact
 
-      Resque.push(
-        'publish_worker_default',
-        'class' => 'AbfWorker::PublishWorkerDefault',
-        'args'  => [options.merge({
-          packages:             packages,
-          old_packages:         old_packages,
-          build_list_ids:       build_list_ids,
-          projects_for_cleanup: projects_for_cleanup
-        })]
-      )
+      [packages, build_list_ids, new_sources]
+    end
 
+    def lock_projects(projects_for_cleanup)
       projects_for_cleanup.each do |key|
         Redis.current.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
       end
+    end
 
+    def cleanup(save_to_repository_id, build_for_platform_id, build_lists_for_cleanup_from_testing)
       rep_pl = "#{save_to_repository_id}-#{build_for_platform_id}"
       r_key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
       build_lists_for_cleanup_from_testing.each do |key|
@@ -191,8 +170,35 @@ module AbfWorker
       if Redis.current.scard(r_key) == 0
         Redis.current.srem REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
       end
+    end
 
-      return true
+    def push(options)
+      Resque.push(
+        'publish_worker_default',
+        'class' => 'AbfWorker::PublishWorkerDefault',
+        'args'  => [options]
+      )
+    end
+
+    def prepare_build_lists(projects_for_cleanup, save_to_repository_id)
+      # We should not to publish new builds into repository
+      # if project of builds has been removed from repository.
+      BuildList.where(
+        project_id:            projects_for_cleanup.map{ |k| k.split('-')[testing ? 1 : 0] }.uniq,
+        save_to_repository_id: save_to_repository_id,
+        status:                [BuildList::BUILD_PUBLISH, BuildList::BUILD_PUBLISH_INTO_TESTING]
+      ).update_all(status: BuildList::FAILED_PUBLISH)
+    end
+
+    def find_build_lists(build_for_platform_id, save_to_repository_id, testing)
+      build_lists = BuildList.
+        where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
+        where(save_to_repository_id: save_to_repository_id).
+        where(build_for_platform_id: build_for_platform_id).
+        order(:updated_at)
+      locked_ids  = Redis.current.lrange(LOCKED_BUILD_LISTS, 0, -1)
+      build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) if locked_ids.present?
+      build_lists.limit(150)
     end
 
   end
