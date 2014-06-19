@@ -33,7 +33,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
     // Disable 'Search' button
     $scope.isRequest = true;
 
-    
+
     $http.get(Routes.build_lists_path({format: 'json'}), {params: $location.search()}).success(function(results) {
       // Render Server status
       $scope.server_status  = results.server_status;
@@ -75,7 +75,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
           $scope.build_lists.push(bl);
         }
       });
-      // Shows groups which have been opened before 
+      // Shows groups which have been opened before
       _.each(to_open, function(bl){ $scope.showRelated(bl, true); });
 
       // Render pagination
