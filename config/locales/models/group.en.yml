@@ -13,7 +13,7 @@ en:
       confirm_delete: Are you sure you want to remove this group?
       edit_members: Members
       group: Group
-      description: Descripton
+      description: Description
       leave_group: Leave group
       projects_list: Projects list
       public_profile: Public profile

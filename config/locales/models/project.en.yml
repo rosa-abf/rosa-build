@@ -100,7 +100,7 @@ en:
         add_to_repository_id: Add to repository
         srpms_list: SRPMs list
         name: Name
-        description: Descripton
+        description: Description
         owner: Owner
         visibility: Visibility
         visibility_types:
