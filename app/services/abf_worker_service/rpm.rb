@@ -87,30 +87,11 @@ module AbfWorkerService
       bl = build_lists[0]
       return false if !bl && old_packages[:sources].empty? && old_packages[:binaries].values.flatten.empty?
 
-      save_to_repository  = ::Repository.find(save_to_repository_id)
       # Checks mirror sync status
       return false if save_to_repository.repo_lock_file_exists? || !save_to_repository.platform.ready?
 
       repository_status = save_to_repository.repository_statuses.find_or_create_by(platform_id: build_for_platform_id)
       return false unless repository_status.publish
-
-      save_to_platform    = save_to_repository.platform
-      build_for_platform  = Platform.find build_for_platform_id
-      platform_path = "#{save_to_platform.path}/repository"
-      if save_to_platform.personal?
-        platform_path << '/' << build_for_platform.name
-        system "mkdir -p #{platform_path}"
-      end
-
-      distrib_type  = build_for_platform.distrib_type
-      cmd_params    = {
-        'RELEASED'            => save_to_platform.released,
-        'REPOSITORY_NAME'     => save_to_repository.name,
-        'TYPE'                => distrib_type,
-        'SAVE_TO_PLATFORM'    => save_to_platform.name,
-        'BUILD_FOR_PLATFORM'  => build_for_platform.name,
-        'TESTING'             => testing
-      }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
       options   = {
         id:                (bl ? bl.id : Time.now.to_i),
@@ -144,6 +125,44 @@ module AbfWorkerService
     end
 
     protected
+
+    def platform_path
+      @platform_path ||= begin
+        path = "#{save_to_platform.path}/repository"
+        if save_to_platform.personal?
+          path << '/' << build_for_platform.name
+          system "mkdir -p #{path}"
+        end
+        path
+      end
+    end
+
+    def cmd_params
+      {
+        'RELEASED'            => save_to_platform.released,
+        'REPOSITORY_NAME'     => save_to_repository.name,
+        'TYPE'                => distrib_type,
+        'SAVE_TO_PLATFORM'    => save_to_platform.name,
+        'BUILD_FOR_PLATFORM'  => build_for_platform.name,
+        'TESTING'             => testing
+      }.map{ |k, v| "#{k}=#{v}" }.join(' ')
+    end
+
+    def save_to_repository
+      @save_to_repository ||= ::Repository.find(save_to_repository_id)
+    end
+
+    def save_to_platform
+      @save_to_platform ||= save_to_repository.platform
+    end
+
+    def build_for_platform
+      @build_for_platform ||= Platform.find(build_for_platform_id)
+    end
+
+    def distrib_type
+      @distrib_type ||= build_for_platform.distrib_type
+    end
 
     def fill_in_packages
       packages, build_list_ids, new_sources = packages_structure, [], {}
