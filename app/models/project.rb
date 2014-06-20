@@ -240,10 +240,10 @@ class Project < ActiveRecord::Base
     format_id = ProjectTag::FORMATS["#{tag_file_format(format)}"]
     project_tag = project_tags.where(tag_name: tag.name, format_id: format_id).first
 
-    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && FileStoreClean.file_exist_on_file_store?(project_tag.sha1)
+    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && FileStoreService::File.new(sha1: project_tag.sha1).exist?
 
     archive = archive_by_treeish_and_format tag.name, format
-    sha1    = FileStoreClean.save_file_to_file_store(archive)
+    sha1    = FileStoreService::File.new(data: archive).save
     return nil if sha1.blank?
 
     if project_tag

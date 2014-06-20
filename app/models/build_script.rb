@@ -40,7 +40,7 @@ class BuildScript < ActiveRecord::Base
     old_sha1, new_commit = sha1, last_commit
 
     archive   = project.archive_by_treeish_and_format(treeish, FORMAT)
-    new_sha1  = FileStoreClean.save_file_to_file_store(archive)
+    new_sha1  = FileStoreService::File.new(data: archive).save
     if new_sha1.present?
       update_attributes(sha1: new_sha1, commit: new_commit)
       destroy_files_from_file_store(old_sha1) if old_sha1.present?
