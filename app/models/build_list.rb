@@ -1,7 +1,7 @@
 class BuildList < ActiveRecord::Base
   include CommitAndVersion
   include FileStoreClean
-  include AbfWorker::ModelHelper
+  include AbfWorkerMethods
   include Feed::BuildList
   include BuildListObserver
   include EventLoggable
