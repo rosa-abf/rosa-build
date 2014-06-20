@@ -3,14 +3,14 @@ module FileStoreService
 
     URL = APP_CONFIG['file_store_url']
 
-    attr_accessor :sha1, :file
+    attr_accessor :sha1, :data
 
     # @param [String] sha1
     # @param [Hash] data:
     # - [String] path     - path to file
     # - [String] fullname - file name
     def initialize(sha1: nil, data: {})
-      @sha1, @file = sha1, file
+      @sha1, @data = sha1, data
     end
 
     def exist?
@@ -25,11 +25,11 @@ module FileStoreService
     end
 
     def save
-      sha1 = Digest::SHA1.hexdigest(File.read(data[:path]))
+      sha1 = Digest::SHA1.hexdigest(::File.read(data[:path]))
       return sha1 if exist?
 
       resource  = RestClient::Resource.new("#{URL}/api/v1/upload", user: token)
-      file      = File.new(data[:path])
+      file      = ::File.new(data[:path])
       # Hook for RestClient
       # See: [RestClient::Payload#create_file_field](https://github.com/rest-client/rest-client/blob/master/lib/restclient/payload.rb#L202-L215)
       file.define_singleton_method(:original_filename) { data[:fullname] }

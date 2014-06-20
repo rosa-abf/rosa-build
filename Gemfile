@@ -125,6 +125,7 @@ group :test do
   gem 'shoulda'
   gem 'shoulda-matchers'
   gem 'mock_redis',         '~> 0.11'
+  gem 'webmock'
   gem 'rake'
   gem 'test_after_commit'
   gem 'timecop'
