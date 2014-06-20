@@ -89,6 +89,7 @@ class BuildList < ActiveRecord::Base
     # %w(PROJECT_SOURCE_ERROR           6),
     # %w(DEPENDENCIES_ERROR             555),
     %w(BUILD_ERROR                    666),
+    %w(PACKAGES_FAIL                  777),
     %w(BUILD_STARTED                  3000),
     %w(BUILD_CANCELED                 5000),
     %w(WAITING_FOR_RESPONSE           4000),

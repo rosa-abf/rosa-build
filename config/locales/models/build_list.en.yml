@@ -161,6 +161,7 @@ en:
         build_publish: Build is being published
         failed_publish: Publishing error
         dependencies_fail: Dependences not found
+        packages_fail: Packages not found
         waiting_for_response: Waiting for response
         build_pending: Build pending
         build_canceling: Build is canceling

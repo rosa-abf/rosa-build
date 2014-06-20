@@ -16,6 +16,8 @@ describe AbfWorkerService::Rpm do
     stub_symlink_methods
   end
 
+  subject { AbfWorkerService::Rpm }
+
   context '#publish!' do
 
     before do
@@ -30,7 +32,7 @@ describe AbfWorkerService::Rpm do
 
         it "ensures that no '#{kind.downcase.gsub('_', ' ')}'" do
           subject.publish!
-          @redis_instance.lrange(AbfWorkerService::Rpm.const_get(kind), 0, -1).should be_empty
+          @redis_instance.lrange(subject.const_get(kind), 0, -1).should be_empty
         end
       end
 
@@ -48,7 +50,7 @@ describe AbfWorkerService::Rpm do
 
       %w(PROJECTS_FOR_CLEANUP LOCKED_PROJECTS_FOR_CLEANUP).each do |kind|
         it "ensure that no '#{kind.downcase.gsub('_', ' ')}'" do
-          @redis_instance.lrange(AbfWorkerService::Rpm.const_get(kind), 0, -1).should be_empty
+          @redis_instance.lrange(subject.const_get(kind), 0, -1).should be_empty
         end
       end
 
@@ -59,7 +61,7 @@ describe AbfWorkerService::Rpm do
       end
 
       it "ensures that 'locked build lists' has only one item" do
-        queue = @redis_instance.lrange(AbfWorkerService::Rpm::LOCKED_BUILD_LISTS, 0, -1)
+        queue = @redis_instance.lrange(subject::LOCKED_BUILD_LISTS, 0, -1)
         queue.should have(1).item
         queue.should include(build_list.id.to_s)
       end
@@ -91,7 +93,7 @@ describe AbfWorkerService::Rpm do
         subject.publish!
         subject.publish!
 
-        @redis_instance.lrange(AbfWorkerService::Rpm::LOCKED_BUILD_LISTS, 0, -1).should have(4).items
+        @redis_instance.lrange(subject::LOCKED_BUILD_LISTS, 0, -1).should have(4).items
       end
 
       it "ensures that new tasks for publishing has been created" do
@@ -120,7 +122,7 @@ describe AbfWorkerService::Rpm do
         it "ensures that no '#{kind.downcase.gsub('_', ' ')}'" do
           subject.publish!
           subject.publish!
-          @redis_instance.lrange(AbfWorkerService::Rpm.const_get(kind), 0, -1).should be_empty
+          @redis_instance.lrange(subject.const_get(kind), 0, -1).should be_empty
         end
       end
 
@@ -133,7 +135,7 @@ describe AbfWorkerService::Rpm do
       it "ensures that 'locked build lists' has 2 items" do
         subject.publish!
         subject.publish!
-        queue = @redis_instance.lrange(AbfWorkerService::Rpm::LOCKED_BUILD_LISTS, 0, -1)
+        queue = @redis_instance.lrange(subject::LOCKED_BUILD_LISTS, 0, -1)
         queue.should have(2).item
         queue.should include(build_list.id.to_s, build_list2.id.to_s)
       end
@@ -170,7 +172,7 @@ describe AbfWorkerService::Rpm do
         subject.publish!
         subject.publish!
 
-        queue = @redis_instance.lrange(AbfWorkerService::Rpm::PROJECTS_FOR_CLEANUP, 0, -1)
+        queue = @redis_instance.lrange(subject::PROJECTS_FOR_CLEANUP, 0, -1)
         queue.should have(1).item
         queue.should include("testing-#{build_list3.project_id}-#{build_list3.save_to_repository_id}-#{build_list3.build_for_platform_id}")
       end
@@ -186,7 +188,7 @@ describe AbfWorkerService::Rpm do
         subject.publish!
         subject.publish!
 
-        queue = @redis_instance.lrange(AbfWorkerService::Rpm::LOCKED_PROJECTS_FOR_CLEANUP, 0, -1)
+        queue = @redis_instance.lrange(subject::LOCKED_PROJECTS_FOR_CLEANUP, 0, -1)
         queue.should have(1).item
         queue.should include("#{build_list3.project_id}-#{build_list3.save_to_repository_id}-#{build_list3.build_for_platform_id}")
       end
@@ -202,7 +204,7 @@ describe AbfWorkerService::Rpm do
         subject.publish!
         subject.publish!
         
-        queue = @redis_instance.lrange(AbfWorkerService::Rpm::LOCKED_BUILD_LISTS, 0, -1)
+        queue = @redis_instance.lrange(subject::LOCKED_BUILD_LISTS, 0, -1)
         queue.should have(1).item
         queue.should include(build_list.id.to_s)
       end

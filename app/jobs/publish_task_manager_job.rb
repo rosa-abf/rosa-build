@@ -5,7 +5,7 @@ class PublishTaskManagerJob
     regenerate_metadata_for_software_center
     resign_repositories
     regenerate_metadata
-    AbfWorkerService::Rpm.new.publish!
+    AbfWorkerService::Rpm.publish!
   end
 
   protected

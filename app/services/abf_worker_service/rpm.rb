@@ -3,14 +3,20 @@ module AbfWorkerService
 
     WORKERS_COUNT = APP_CONFIG['abf_worker']['publish_workers_count']
 
-    def publish!
+    attr_accessor :save_to_repository_id, :build_for_platform_id, :testing
+
+    def initialize(save_to_repository_id, build_for_platform_id, testing)
+      @save_to_repository_id  = save_to_repository_id
+      @build_for_platform_id  = build_for_platform_id
+      @testing                = testing
+    end
+
+    def self.publish!
       build_rpms
       build_rpms(true)
     end
 
-    protected
-
-    def build_rpms(testing = false)
+    def self.build_rpms(testing = false)
       available_repos = BuildList.
         select('MIN(updated_at) as min_updated_at, save_to_repository_id, build_for_platform_id').
         where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
@@ -40,19 +46,23 @@ module AbfWorkerService
       available_repos.each do |save_to_repository_id, build_for_platform_id|
         next if RepositoryStatus.not_ready.where(repository_id: save_to_repository_id, platform_id: build_for_platform_id).exists?
         break if counter > WORKERS_COUNT
-        counter += 1 if create_rpm_build_task(save_to_repository_id, build_for_platform_id, testing)
+        service = AbfWorkerService::Rpm.new(
+          save_to_repository_id,
+          build_for_platform_id,
+          testing
+        )
+        counter += 1 if service.create
       end
     end
 
-    def create_rpm_build_task(save_to_repository_id, build_for_platform_id, testing)
+    def create
       key = "#{save_to_repository_id}-#{build_for_platform_id}"
       projects_for_cleanup = Redis.current.lrange(PROJECTS_FOR_CLEANUP, 0, -1).select do |k|
         (testing && k =~ /^testing-[\d]+-#{key}$/) || (!testing && k =~ /^[\d]+-#{key}$/)
       end
 
-      prepare_build_lists(projects_for_cleanup, save_to_repository_id, testing)
+      prepare_build_lists(projects_for_cleanup)
 
-      build_lists   = find_build_lists(build_for_platform_id, save_to_repository_id, testing)
       old_packages  = packages_structure
 
       projects_for_cleanup.each do |key|
@@ -74,7 +84,7 @@ module AbfWorkerService
       end
       build_lists_for_cleanup_from_testing ||= []
 
-      bl = build_lists.first
+      bl = build_lists[0]
       return false if !bl && old_packages[:sources].empty? && old_packages[:binaries].values.flatten.empty?
 
       save_to_repository  = ::Repository.find(save_to_repository_id)
@@ -121,7 +131,7 @@ module AbfWorkerService
         }
       }
 
-      packages, build_list_ids, new_sources = fill_in_packages(build_lists, testing)
+      packages, build_list_ids, new_sources = fill_in_packages
       push(options.merge({
         packages:             packages,
         old_packages:         old_packages,
@@ -129,11 +139,13 @@ module AbfWorkerService
         projects_for_cleanup: projects_for_cleanup
       }))
       lock_projects(projects_for_cleanup)
-      cleanup(save_to_repository_id, build_for_platform_id, build_lists_for_cleanup_from_testing)
+      cleanup(build_lists_for_cleanup_from_testing)
       return true
     end
 
-    def fill_in_packages(build_lists, testing)
+    protected
+
+    def fill_in_packages
       packages, build_list_ids, new_sources = packages_structure, [], {}
       build_lists.each do |bl|
         # remove duplicates of sources for different arches
@@ -161,7 +173,7 @@ module AbfWorkerService
       end
     end
 
-    def cleanup(save_to_repository_id, build_for_platform_id, build_lists_for_cleanup_from_testing)
+    def cleanup(build_lists_for_cleanup_from_testing)
       rep_pl = "#{save_to_repository_id}-#{build_for_platform_id}"
       r_key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
       build_lists_for_cleanup_from_testing.each do |key|
@@ -180,7 +192,7 @@ module AbfWorkerService
       )
     end
 
-    def prepare_build_lists(projects_for_cleanup, save_to_repository_id, testing)
+    def prepare_build_lists(projects_for_cleanup)
       # We should not to publish new builds into repository
       # if project of builds has been removed from repository.
       BuildList.where(
@@ -190,15 +202,37 @@ module AbfWorkerService
       ).update_all(status: BuildList::FAILED_PUBLISH)
     end
 
-    def find_build_lists(build_for_platform_id, save_to_repository_id, testing)
-      build_lists = BuildList.
-        where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
-        where(save_to_repository_id: save_to_repository_id).
-        where(build_for_platform_id: build_for_platform_id).
-        order(:updated_at)
-      locked_ids  = Redis.current.lrange(LOCKED_BUILD_LISTS, 0, -1)
-      build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) if locked_ids.present?
-      build_lists.limit(150)
+    def build_lists
+      @build_lists ||= begin
+        build_lists = BuildList.
+          where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
+          where(save_to_repository_id: save_to_repository_id).
+          where(build_for_platform_id: build_for_platform_id).
+          order(:updated_at)
+        locked_ids  = Redis.current.lrange(LOCKED_BUILD_LISTS, 0, -1)
+        build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) if locked_ids.present?
+        build_lists = build_lists.limit(150)
+        filter_build_lists_without_packages(build_lists.to_a)
+      end
+    end
+
+    def filter_build_lists_without_packages(build_lists)
+      ids = []
+      build_lists = build_lists.select do |build_list|
+        sha1 = build_list.packages.pluck(:sha1).find do |sha1|
+          !FileStoreService::File.new(sha1: sha1).exist?
+        end
+        if sha1.present?
+          ids << build_list.id
+          false
+        else
+          true
+        end
+      end
+
+      BuildList.where(id: ids).update_all(status: BuildList::PACKAGES_FAIL)
+
+      build_lists
     end
 
   end
