@@ -2,6 +2,10 @@ class PublishTaskManagerJob
   @queue = :middle
 
   def self.perform
+    PublishTaskManagerJob.new.perform
+  end
+
+  def perform
     regenerate_metadata_for_software_center
     resign_repositories
     regenerate_metadata
