@@ -63,8 +63,6 @@ module AbfWorkerService
 
       prepare_build_lists(projects_for_cleanup)
 
-      old_packages  = packages_structure
-
       projects_for_cleanup.each do |key|
         Redis.current.lrem PROJECTS_FOR_CLEANUP, 0, key
         packages = Redis.current.hget PACKAGES_FOR_CLEANUP, key
@@ -162,6 +160,10 @@ module AbfWorkerService
 
     def distrib_type
       @distrib_type ||= build_for_platform.distrib_type
+    end
+
+    def old_packages
+      @old_packages ||= packages_structure
     end
 
     def fill_in_packages
