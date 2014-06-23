@@ -18,7 +18,7 @@ describe ProjectToRepository do
   end
 
   it 'creates task for removing project from repository on destroy' do
-    expect(Resque).to receive(:enqueue).with(DestroyProjectFromRepositoryJob, project.id, first_repo.id)
+    expect(DestroyProjectFromRepositoryJob).to receive(:perform).with(project, first_repo)
     first_repo.project_to_repositories.destroy_all
   end
 end

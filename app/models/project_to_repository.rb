@@ -29,7 +29,7 @@ class ProjectToRepository < ActiveRecord::Base
   protected
 
   def destroy_project_from_repository
-    Resque.enqueue(DestroyProjectFromRepositoryJob, project_id, repository_id)
+    DestroyProjectFromRepositoryJob.perform(project, repository)
   end
 
   def one_project_in_platform_repositories
