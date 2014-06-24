@@ -1,14 +1,8 @@
-module AbfWorker::ModelHelper
-  # In model which contains this helper should be:
-  # - #abf_worker_args
-  # - #build_canceled
+module AbfWorkerMethods
+  extend ActiveSupport::Concern
 
   MASS_BUILDS_SET = 'abf-worker::mass-builds'
   USER_BUILDS_SET = 'abf-worker::user-builds'
-
-  def self.included(base)
-    base.extend(ClassMethods)
-  end
 
   module ClassMethods
     def log_server
@@ -18,10 +12,9 @@ module AbfWorker::ModelHelper
       )
     end
 
-    def self.next_build
+    def next_build
       raise NotImplementedError
     end
-
   end
 
   def abf_worker_log
@@ -105,5 +98,6 @@ module AbfWorker::ModelHelper
   def service_queue
     "abfworker::#{abf_worker_base_queue.gsub(/\_/, '-')}-#{id}"
   end
+
 
 end

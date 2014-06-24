@@ -160,6 +160,7 @@ ru:
         build_publish: публикуется
         failed_publish: ошибка публикации
         dependencies_fail: зависимости не найдены
+        packages_fail: пакеты не найдены
         waiting_for_response: ожидает ответа
         build_pending: ожидает сборку
         build_canceled: сборка отменена

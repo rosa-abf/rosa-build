@@ -1,7 +1,7 @@
 class BuildList < ActiveRecord::Base
   include CommitAndVersion
   include FileStoreClean
-  include AbfWorker::ModelHelper
+  include AbfWorkerMethods
   include Feed::BuildList
   include BuildListObserver
   include EventLoggable
@@ -89,6 +89,7 @@ class BuildList < ActiveRecord::Base
     # %w(PROJECT_SOURCE_ERROR           6),
     # %w(DEPENDENCIES_ERROR             555),
     %w(BUILD_ERROR                    666),
+    %w(PACKAGES_FAIL                  777),
     %w(BUILD_STARTED                  3000),
     %w(BUILD_CANCELED                 5000),
     %w(WAITING_FOR_RESPONSE           4000),
@@ -578,7 +579,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def cleanup_packages_from_testing
-    AbfWorker::BuildListsPublishTaskManager.cleanup_packages_from_testing(
+    AbfWorkerService::Base.cleanup_packages_from_testing(
       build_for_platform_id,
       save_to_repository_id,
       id
@@ -623,11 +624,11 @@ class BuildList < ActiveRecord::Base
   protected
 
   def create_container
-    AbfWorker::BuildListsPublishTaskManager.create_container_for self
+    Resque.enqueue(BuildLists::CreateContainerJob, id)
   end
 
   def remove_container
-    system "rm -rf #{save_to_platform.path}/container/#{id}" if save_to_platform
+    AbfWorkerService::Container.new(self).destroy! if save_to_platform
   end
 
   def abf_worker_priority

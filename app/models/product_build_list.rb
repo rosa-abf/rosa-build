@@ -3,7 +3,7 @@ class ProductBuildList < ActiveRecord::Base
   include TimeLiving
   include FileStoreClean
   include UrlHelper
-  include AbfWorker::ModelHelper
+  include AbfWorkerMethods
   include EventLoggable
 
   delegate :url_helpers, to: 'Rails.application.routes'

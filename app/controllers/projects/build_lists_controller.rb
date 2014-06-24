@@ -38,7 +38,7 @@ class Projects::BuildListsController < Projects::BaseController
                                   project: :project_statistics
                                 )
 
-        @build_server_status = AbfWorker::StatusInspector.projects_status
+        @build_server_status = AbfWorkerStatusPresenter.new.projects_status
       end
     end
   end
@@ -59,7 +59,7 @@ class Projects::BuildListsController < Projects::BaseController
       if build_list.save_to_platform.personal?
         raise CanCan::AccessDenied
       else
-        Resque.enqueue(RunBuildListsJob, build_list.id, current_user.id, params[:project_id])
+        Resque.enqueue(BuildLists::DependentPackagesJob, build_list.id, current_user.id, params[:project_id])
 
         flash[:notice] = t('flash.build_list.run_build_lists_job_added_to_queue')
         redirect_to build_list_path(build_list)
