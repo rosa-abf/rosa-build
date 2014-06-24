@@ -1,12 +1,19 @@
 class Platforms::PlatformsController < Platforms::BaseController
   include FileStoreHelper
+  layout 'bootstrap', only: [:index]
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
 
   def index
-    @platforms = @platforms.accessible_by(current_ability, :related).order(:name).paginate(page: params[:page], per_page: 20)
+    @platforms = @platforms.accessible_by(current_ability, :related)
+    @platforms_count = @platforms.count
+    @platforms = @platforms.paginate(page: current_page, per_page: Platform.per_page)
+    respond_to do |format|
+      format.html {}
+      format.json {}
+    end
   end
 
   def show

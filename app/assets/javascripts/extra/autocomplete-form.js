@@ -36,10 +36,9 @@ function addDataToAutocompleteForm(form, path, label, name, value) {
   var tr =  '<tr>' +
               '<td>' +
                 '<a href="' + path + '">' + label + '</a>' +
-              '</td>' +
-              '<td class="actions">' +
-                '<input name="' + name + '" type="hidden" value="' + value + '">' +
-                '<span class="delete"> </span>' +
+                '<div class="actions pull-right">' +
+                  '<input name="' + name + '" type="hidden" value="' + value + '">' +
+                  '<span class="fa fa-times fa-lg delete text-danger"> </span>' +
               '</td>' +
             '</tr>';
   form.find('table tbody').append($(tr));

@@ -12,6 +12,7 @@ class Platform < ActiveRecord::Base
   VISIBILITIES = %w(open hidden)
   NAME_PATTERN = /[\w\-\.]+/
   HUMAN_STATUSES = HUMAN_STATUSES.clone.freeze
+  self.per_page = 20
 
   belongs_to :parent, class_name: 'Platform', foreign_key: 'parent_platform_id'
   belongs_to :owner, polymorphic: true

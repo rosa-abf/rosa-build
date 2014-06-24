@@ -1,6 +1,9 @@
-RosaABF.controller('NewBuildListController', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+RosaABF.controller('NewBuildListController', ['$scope', '$http', '$timeout', '$window',
+  function($scope, $http, $timeout, $window) {
 
   $scope.save_to_repository_id = null;
+  $scope.extra_repositories = {};
+  $scope.extra_build_lists  = {};
 
   var save_to_repository     = $('#build_list_save_to_repository_id');
   var all_repositories       = $('.all_platforms input');
@@ -106,5 +109,24 @@ RosaABF.controller('NewBuildListController', ['$scope', '$http', '$timeout', fun
       // hack for FF to force render of select box.
       bl_version_sel[0].innerHTML = bl_version_sel[0].innerHTML;
     }
+  }
+
+  $scope.get_extra_repositories = function(val) {
+    return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
+      params: {
+        address: val,
+        sensor: false
+      }
+    }).then(function(res){
+      var addresses = [];
+      angular.forEach(res.data.results, function(item){
+        addresses.push(item.formatted_address);
+      });
+      return addresses;
+    });
+  }
+
+  $scope.select_extra_repositories = function(item, model, label) {
+
   }
 }]);

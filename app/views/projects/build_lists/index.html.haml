@@ -70,16 +70,10 @@
             / updated_at
             %td{'am-time-ago' => 'bl.updated_at', title: "{{bl.updated_at | amDateFormat:'ddd, LLL'}}"}
 
-      %pagination{ 'boundary-links' => 'true',
-            'total-items' => 'build_lists_count',
-            'page' => 'page',
-            'previous-text' => "‹", 'next-text' => "›",
-            'first-text' => "«", "last-text" => "»",
-            'items-per-page' => "params.per_page",
-            'max-size' => 5,
-            'rotate' => 'false',
-            'ng-show' => "build_lists_count > params.per_page",
-            'on-select-page' => "goToPage(page)" }
-
+      = paginate( total_items: 'build_lists_count',
+                  page:        'page',
+                  per_page:    'params.per_page',
+                  ng_show:     "build_lists_count > params.per_page",
+                  select_page: "goToPage(page)" )
 
 = render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'

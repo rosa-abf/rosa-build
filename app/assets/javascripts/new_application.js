@@ -3,6 +3,9 @@
 //= require jquery-ui
 //= require js-routes
 
+//= require autocomplete-rails
+//= require extra/autocomplete-form
+
 // Loads all Bootstrap javascripts
 //= require bootstrap
 

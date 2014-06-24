@@ -19,4 +19,13 @@ module PaginateHelper
     will_paginate *[collection_or_options, options].compact
   end
 
+  def paginate(options)
+    return nil if options.blank?
+    render 'shared/paginate',
+      total_items: options[:total_items],
+      page:        options[:page],
+      per_page:    options[:per_page],
+      ng_show:     options[:ng_show],
+      select_page: options[:select_page]
+  end
 end

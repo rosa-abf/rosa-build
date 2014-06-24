@@ -1,10 +1,10 @@
-%table#myTable.tablesorter.platforms{cellspacing: "0", cellpadding: "0"}
+%table.table.table-striped
   %thead
     %tr
-      %th.th1= t("activerecord.attributes.platform.name")
-      %th.th2= t("activerecord.attributes.platform.distrib_type")
+      %th= t 'activerecord.attributes.platform.name'
+      %th= t 'activerecord.attributes.platform.distrib_type'
   %tbody
     - @platforms.each do |platform|
-      %tr{class: cycle("odd", "even")}
+      %tr
         %td= link_to platform_printed_name(platform), platform_path(platform)
         %td= platform.distrib_type
