@@ -36,6 +36,7 @@ ru:
         name: Имя
         login: Псевдоним или Email
         email: Email
+        hide_email: Прятать email
         uname: Никнейм
         ssh_key: SSH ключ
         current_password: Текущий пароль

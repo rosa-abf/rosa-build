@@ -36,6 +36,7 @@ en:
         name: Name
         login: Nickname or Email
         email: Email
+        hide_email: Hide email
         uname: Nickname
         ssh_key: SSH key
         current_password: Current password

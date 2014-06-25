@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140612213342) do
+ActiveRecord::Schema.define(version: 20140625204136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -360,6 +360,7 @@ ActiveRecord::Schema.define(version: 20140612213342) do
     t.string   "authentication_token"
     t.integer  "build_priority",                      default: 50
     t.boolean  "sound_notifications",                 default: true
+    t.boolean  "hide_email",                          default: true, null: false
     t.index ["authentication_token"], :name => "index_users_on_authentication_token"
     t.index ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
     t.index ["email"], :name => "index_users_on_email", :unique => true
