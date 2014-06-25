@@ -32,7 +32,8 @@ module FileStoreService
       file      = ::File.new(data[:path])
       # Hook for RestClient
       # See: [RestClient::Payload#create_file_field](https://github.com/rest-client/rest-client/blob/master/lib/restclient/payload.rb#L202-L215)
-      file.define_singleton_method(:original_filename) { data[:fullname] }
+      fullname = data[:fullname]
+      file.define_singleton_method(:original_filename) { fullname }
       resp = resource.post(file_store: { file: file })
       resp = JSON(resp)
 
