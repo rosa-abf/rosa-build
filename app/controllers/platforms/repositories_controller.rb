@@ -116,9 +116,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
         FROM groups
       ) AS owner
       ON projects.owner_id = owner.id AND projects.owner_type = owner.type"
-    colName = ['projects.name']
-    sort_col = params[:iSortCol_0] || 0
-    order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
     if params[:added] == "true"
       @projects = @repository.projects
@@ -130,7 +127,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
     @total_projects = @projects.count
     @projects = @projects.by_owner(params[:owner_name]).
-      search(params[:sSearch]).order(order)
+      search(params[:sSearch]).order("projects.name #{sort_dir}")
 
     respond_to do |format|
       format.json {
