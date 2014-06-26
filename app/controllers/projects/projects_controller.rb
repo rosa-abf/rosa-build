@@ -141,7 +141,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def remove_user
-    #@project.relations.by_actor(current_user).destroy_all
+    @project.relations.by_actor(current_user).destroy_all
     respond_to do |format|
       format.html do
         flash[:notice] = t("flash.project.user_removed")
