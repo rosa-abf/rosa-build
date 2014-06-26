@@ -25,4 +25,9 @@ module PlatformsHelper
     settings.sort_by{ |s| s.arch.name }
   end
 
+  def fa_platform_visibility_icon(platform)
+    return nil unless platform
+    image, color = platform.hidden? ? ['lock', 'text-danger fa-fw']: ['unlock-alt', 'text-success fa-fw']
+    fa_icon(image, class: color)
+  end
 end

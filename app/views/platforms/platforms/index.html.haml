@@ -5,10 +5,13 @@
     %table.table.table-hover.offset20
       %thead
         %tr
+          %th
           %th= t 'activerecord.attributes.platform.name'
           %th= t 'activerecord.attributes.platform.distrib_type'
       %tbody
         %tr{ 'ng-repeat' => 'item in platforms' }
+          %td
+            %i.fa.fa-lg{ 'ng-class' => 'item.visibility_class' }
           %td
             %a{ 'ng-href' => "{{item.link}}" }
               {{item.name}}
