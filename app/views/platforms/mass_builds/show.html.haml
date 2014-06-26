@@ -1,0 +1,63 @@
+-set_meta_tags title: title_object(@mass_build)
+= render 'submenu'
+= render 'sidebar'
+
+%h3.fix
+  = t 'activerecord.models.mass_build'
+
+%table.tablesorter.unbordered
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.name')
+    %td= link_to_mass_build(@mass_build)
+
+  - %i(id arch_names auto_publish increase_release_tag use_cached_chroot use_extra_tests created_at).each do |field|
+    %tr
+      %td
+        %b= t("activerecord.attributes.mass_build.#{field}")
+      %td= @mass_build.send field
+
+  %tr
+    %td
+    %td
+  %tr
+    %td
+      %b= t('layout.mass_builds.statuses')
+    %td
+  - MassBuild::COUNT_STATUSES.each do |status|
+    - path = build_lists_path+"#?#{{filter: {mass_build_id: @mass_build.id, ownership: 'everything'}.merge(status != :build_lists ? {status: BuildList.status_by_human(status)} : {})}.to_param}"
+    %tr
+      %td
+        = link_to t("layout.build_lists.statuses.#{status}") + ": ", path
+      %td= @mass_build.send "#{status}_count"
+
+  %tr
+    %td
+    %td
+  %tr
+    %td
+      %b= t('layout.mass_builds.lists')
+    %td
+      - if @mass_build.projects_list.present?
+        = link_to_list @platform, @mass_build, 'projects_list'
+        .both
+      = link_to_list @platform, @mass_build, 'failed_builds_list'
+      .both
+      = link_to_list @platform, @mass_build, 'tests_failed_builds_list'
+      .both
+      = link_to_list @platform, @mass_build, 'success_builds_list'
+
+.buttons_block
+  - if can?(:publish, @mass_build)
+    - unless @mass_build.auto_publish?
+      = link_to t('layout.mass_builds.publish_success'),
+                publish_platform_mass_build_path(@platform, @mass_build.id),
+                method: :post, data: { confirm: t("layout.confirm") }, class: 'button'
+    = link_to t('layout.mass_builds.publish_test_failed'),
+              publish_platform_mass_build_path(@platform, @mass_build.id, status: 'test_failed'),
+              method: :post, data: { confirm: t("layout.confirm") }, class: 'button'
+  - if can?(:cancel, @mass_build)
+    = link_to t('layout.cancel'),
+              cancel_platform_mass_build_path(@platform, @mass_build.id),
+              method: :post, class: 'button',
+              data: { confirm: t('layout.mass_builds.cancel_confirm') }

@@ -10,6 +10,9 @@ class Platforms::MassBuildsController < Platforms::BaseController
   def new
   end
 
+  def show
+  end
+
   def create
     @mass_build.user, @mass_build.arches = current_user, params[:arches]
 
@@ -42,11 +45,14 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def get_list
-    text =  if %w(failed_builds_list tests_failed_builds_list).include? params[:kind]
-              @mass_build.send "generate_#{params[:kind]}"
-            elsif %w(projects_list missed_projects_list).include? params[:kind]
-              @mass_build.send params[:kind]
-            end
+
+    text =
+      case params[:kind]
+      when 'failed_builds_list', 'tests_failed_builds_list', 'success_builds_list'
+        @mass_build.send "generate_#{params[:kind]}"
+      when 'projects_list', 'missed_projects_list'
+        @mass_build.send params[:kind]
+      end
     render text: text
   end
 end

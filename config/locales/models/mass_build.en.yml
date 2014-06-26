@@ -8,6 +8,7 @@ en:
       extended_data: Extended data
       lists: Lists
       failed_builds_list: Failed Builds List
+      success_builds_list: Completed Build Lists
       tests_failed_builds_list: Tests failed Builds List
       statuses: Statuses
       actions: Actions

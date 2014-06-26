@@ -6,6 +6,11 @@ shared_examples_for 'mass_build platform owner' do
     response.should render_template(:index)
   end
 
+  it 'should be able to perform show action' do
+    get :show, platform_id: @platform, id: @mass_build
+    response.should render_template(:show)
+  end
+
   it 'should be able to perform new action' do
     get :new, platform_id: @platform
     response.should render_template(:new)

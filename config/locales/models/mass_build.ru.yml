@@ -8,6 +8,7 @@ ru:
       extended_data: Параметры задания
       lists: Списки
       failed_builds_list: Сборки с ошибками
+      success_builds_list: Успешные сборки
       tests_failed_builds_list: Сборки с ошибками в тестах
       statuses: Статусы
       actions: Действия

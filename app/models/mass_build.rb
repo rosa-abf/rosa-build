@@ -83,6 +83,10 @@ class MassBuild < ActiveRecord::Base
     generate_list BuildList::TESTS_FAILED
   end
 
+  def generate_success_builds_list
+    generate_list BuildList::SUCCESS
+  end
+
   def cancel_all
     update_column(:stop_build, true)
     build_lists.find_each(batch_size: 100) do |bl|
