@@ -20,11 +20,12 @@
       = link_to image_tag('gears.png'), edit_url if edit_url.present?
     .both
     - if user
-      %p.info.first
-        - message = "#{t 'activerecord.attributes.user.email'}: "
-        = message
-        = mail_to user.email, short_message(user.email, max_length - message.length), encode: 'javascript', title: user.email
-      %p.info
+      - unless user.hide_email?
+        %p.info.first
+          - message = "#{t 'activerecord.attributes.user.email'}: "
+          = message
+          = mail_to user.email, short_message(user.email, max_length - message.length), encode: 'javascript', title: user.email
+      %p.info{ class: user.hide_email? ? 'first' : '' }
         - message = "#{t 'activerecord.attributes.user.site'}: "
         = message
         = link_to short_message(user.site, max_length - message.length), user.site, title: user.site
