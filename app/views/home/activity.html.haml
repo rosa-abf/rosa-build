@@ -1,6 +1,6 @@
 -set_meta_tags title: nil
 .container
-  %div{ 'ng-controller' => 'ActivityCtrl', 'cg-busy' => "'activity'", 'ng-init' => "init('#{action_name}')" }
-    %tabset.offset20
+  %div{ 'ng-controller' => 'ActivityCtrl', 'ng-init' => "init('#{action_name}')" }
+    %tabset.offset20{ 'ng-cloak' => true }
       = render 'activity_tab'
       = render 'tracker_and_pulls_tabs'

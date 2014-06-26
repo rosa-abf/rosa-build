@@ -12,6 +12,7 @@ class Project < ActiveRecord::Base
   MAX_OWN_PROJECTS = 32000
   NAME_REGEXP = /[\w\-\+\.]+/
   OWNER_AND_NAME_REGEXP = /#{User::NAME_REGEXP.source}\/#{NAME_REGEXP.source}/
+  self.per_page = 25
 
   belongs_to :owner, polymorphic: true, counter_cache: :own_projects_count
   belongs_to :maintainer, class_name: 'User'

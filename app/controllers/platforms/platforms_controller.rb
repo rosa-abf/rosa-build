@@ -9,10 +9,9 @@ class Platforms::PlatformsController < Platforms::BaseController
   def index
     @platforms = @platforms.accessible_by(current_ability, :related)
     @platforms_count = @platforms.count
-    @platforms = @platforms.paginate(page: current_page, per_page: Platform.per_page)
     respond_to do |format|
       format.html {}
-      format.json {}
+      format.json { @platforms = @platforms.paginate(page: current_page, per_page: Platform.per_page) }
     end
   end
 

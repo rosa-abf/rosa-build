@@ -7,13 +7,9 @@ module ProjectsHelper
     (groups + owners).map do |o|
       class_name = o.class.name
       {
-        id: "#{class_name.downcase}-#{o.id}",
-        color: '0054a6',
-        selected: false,
-        check_box_name: class_name.downcase.pluralize,
-        check_box_value: o.id,
-        name: content_tag(:div, content_tag(:span, o.uname, class: class_name.downcase)),
-        uname: o.uname, # only for sorting
+        class_name: class_name.downcase,
+        id: o.id,
+        uname: o.uname,
         count: o.is_a?(User) ? projects_count_by_owners[o.id] : projects_count_by_groups[o.id]
       }
     end.sort_by{ |f| f[:uname] }
@@ -69,9 +65,9 @@ module ProjectsHelper
   end
 
   def participant_class(alone_member, project)
-    c = alone_member ? 'user' : 'group'
-    c = 'user_owner' if project.owner == current_user
-    c = 'group_owner' if project.owner.in? current_user.groups
+    c = alone_member ? 'fa-user text-primary' : 'fa-group text-primary'
+    c = 'fa-user text-success' if project.owner == current_user
+    c = 'fa-group text-success' if project.owner.in? current_user.groups
     return c
   end
 

@@ -1,10 +1,8 @@
 -set_meta_tags title: t('layout.platforms.list_header')
-.row{ 'ng-controller' => 'PlatformsCtrl', 'ng-cloak' => true,
-      'ng-init' => "init(#{@platforms_count}, #{params[:page]})" }
-  .col-md-6.col-md-offset-3
+.row{ 'ng-controller' => 'PlatformsCtrl', 'ng-init' => "init(#{@platforms_count}, #{params[:page]})" }
+  .col-md-6.col-md-offset-3{ 'ng-cloak' => true }
     = link_to t('layout.platforms.new'), new_platform_path, class: 'btn btn-primary' if can? :create, Platform
-    =# render 'list', object: @platforms
-    %table.table.table-striped.offset20
+    %table.table.table-hover.offset20
       %thead
         %tr
           %th= t 'activerecord.attributes.platform.name'

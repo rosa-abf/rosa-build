@@ -1,123 +1,44 @@
 -set_meta_tags title: t('layout.projects.list_header')
--render 'filters'
-.toolbar
-  -%w(user_owner group_owner user group).each do |el|
-    %span{class: el}=t "layout.relations.#{el}"
-  .both
-- columns = [{type: 'html'},
-             {type: 'html', sortable: false, searchable: false},
-             {type: nil, sortable: false, searchable: false, class: 'rights'},
-             {type: nil, sortable: false, searchable: false, class: 'buttons'}]
+.container{ 'ng-controller' => 'ProjectsCtrl' }
+  .row.offset20
+    .col-md-3.col-sm-4=render 'filters'
+    .col-md-9.col-sm-8
+      .toolbar
+        %span
+          %i.fa.fa-lg.fa-user.text-success.roffset5
+          =  t 'layout.relations.user_owner'
+          %i.fa.fa-lg.fa-user.text-success.roffset5.loffset10
+          =  t 'layout.relations.group_owner'
+          %i.fa.fa-lg.fa-group.text-primary.roffset5.loffset10
+          = t 'layout.relations.user'
+          %i.fa.fa-lg.fa-group.text-primary.roffset5.loffset10
+          = t 'layout.relations.group'
 
-%table#datatable.tablesorter{cellpadding: "0", cellspacing: "0"}
-  %thead
-    %tr
-      %th.th1= t("activerecord.attributes.project.name")
-      %th.th2= t("activerecord.attributes.project.description")
-      %th.th3= t("layout.projects.role")
-      %th.th4= t("layout.projects.remove_user")
-  %tbody= render partial: 'projects/projects/project', collection: @projects
+      %table.table.table-hover.offset10{ 'ng-cloak' => true }
+        %thead
+          %tr
+            %th
+            %th= t 'activerecord.attributes.project.name'
+            %th= t 'activerecord.attributes.project.description'
+            %th
+            %th= t 'layout.projects.role'
+            %th= t 'layout.projects.remove_user'
+        %tbody
+          %tr{ 'ng-repeat' => 'item in projects' }
+            %td
+              %i.fa{ 'ng-class' => 'item.visibility_class' }
+            %td
+              %a{ 'ng-href' => 'item.link' } {{item.name_with_owner}}
+            %td {{item.description}}
+            %td
+              %i.fa.roffset5{ 'ng-class' => 'item.participant_class' }
+            %td {{item.user_role_name}}
+            %td
+              %span.center-block.fa.fa-lg.fa-times.text-danger{ 'confirmed-click' => 'leave_project(item)',
+                'ng-show' => 'item.can_leave_project', 'ng-confirm-click' => t('layout.confirm') }
 
-:javascript
-  $(document).ready(function() {
-    var isUpdateDataTable = null;
-    var JsonParser = function (json) {
-
-      var firstColumn = function(row) {
-        var project = row.project
-
-        var image   = '<img alt="' + project.visibility + '" src="' + icons.visibilities[project.visibility] + '" />';
-
-        var project = '<a href="' +  project.link + '">' + project.name + '</a>';
-
-        return '<div class="table-sort-left">' + image + "</div>\n" +
-               '<div class="table-sort-right">' + project + '<div>';
-      }
-
-      var thirdColumn = function(row) {
-        var project = row.project
-
-        return '<span class="' + project.rights_class + '" title="' + project.title + '">' + project.role + '</span>';
-      }
-
-      var lastColumn = function(row) {
-        var project = row.project
-        var res = '';
-        if (project.leave_link !== undefined) {
-          res = '<a href="' + project.leave_link + '" data-method="delete" rel="nofollow" data-confirm="' + messages.remove_confirm + '">' +
-                '<span class="delete">&nbsp;</span></a>';
-        }
-        return res;
-      }
-
-      var icons = json.icons;
-      var messages = json.messages;
-
-      var res = [];
-      for ( var i=0, iLen=json.aaData.length ; i<iLen ; i++ ) {
-        var data = json.aaData[i];
-        var inner = [];
-        inner.push( firstColumn(data) );
-        inner.push( data.project.description );
-        inner.push( thirdColumn(data) );
-        inner.push( lastColumn(data) );
-        res.push( inner );
-      }
-      return res;
-    }
-
-    var oTable = $('#datatable').dataTable({
-      "oLanguage": {
-        #{t("datatables.full")}
-      },
-      "sPaginationType": "will_paginate_like",
-      "iDisplayLength": 25,
-      "bLengthChange": false,
-      "aaSorting": [[ 0, 'asc' ]],
-      "sDom": 'rtip',
-      "bServerSide": true,
-      "sAjaxSource": "#{ projects_path format: :json }",
-      "iDeferLoading": #{ @projects.count },
-      "aoColumns": [
-        #{ format_columns_for_datatable(columns) }
-      ],
-      "fnServerData": function ( sSource, aoData, fnCallback ) {
-        if (isUpdateDataTable != null) { isUpdateDataTable.abort(); }
-        _.each($('#filter_projects').serializeArray(), function(dv) { aoData.push(dv); });
-        isUpdateDataTable = $.getJSON( sSource, aoData, function (json) {
-          json.aaData = JsonParser(json);
-          fnCallback(json);
-        } );
-      }
-
-    });
-
-    var $search = $('#search');
-    $search.on('blur', function() {
-      $this = $(this);
-      if ($this.val() == '') {
-        $this.val('#{ t('layout.find_project') }');
-        $this.toggleClass('gray black');
-      }
-      return true;
-    });
-    $search.on('focus', function() {
-      $this = $(this);
-      if ($this.val() == '#{ t('layout.find_project') }') {
-        $this.val('');
-        $this.toggleClass('gray black');
-      }
-      return true;
-    });
-    $search.on('keyup', function() {
-      oTable.fnFilter(this.value);
-    });
-    $(".div-filter-labels").on('click', function() {
-      oTable.dataTable().fnDraw();
-    });
-    $('#filter_projects').on('submit', function() {
-      return false;
-    });
-  });
-
-=# will_paginate
+      = paginate( total_items: 'total_items',
+          page:        'page',
+          per_page:    Project.per_page,
+          ng_show:     "total_items > #{Project.per_page}",
+          select_page: "goToPage(page)" )

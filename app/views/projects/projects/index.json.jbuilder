@@ -1,21 +1,17 @@
-json.sEcho h(params[:sEcho].to_i || -1)
-json.iTotalRecords @projects[:total_count]
-json.iTotalDisplayRecords @projects[:filtered_count]
-
-json.messages do
-  json.remove_confirm t("layout.confirm")
-end
-
-json.icons do
-  json.visibilities do
-    Project::VISIBILITIES.each do |visibility|
-      json.set!(visibility, image_path(visibility_icon(visibility)))
+json.projects do
+  json.array!(@projects) do |item|
+    alone_member = alone_member?(item)
+    json.cache! item, expires_in: 10.minutes do
+      json.visibility_class   fa_visibility_icon(item)
+      json.name_with_owner    item.name_with_owner
+      json.link               project_path(item)
+      json.description        item.description
+      json.participant_class  participant_class(alone_member, item)
+      json.user_role_name     t("layout.collaborators.role_names.#{current_user.best_role item}")
+      json.can_leave_project  item.owner != current_user && alone_member
     end
   end
 end
 
-json.aaData do
-  json.array!(@projects[:projects]) do |proj|
-    json.partial! 'project', project: proj
-  end
-end
+json.page              params[:page]
+json.projects_count   @projects_count

@@ -1,23 +1,23 @@
 class Projects::ProjectsController < Projects::BaseController
   include ProjectsHelper
+  layout 'bootstrap', only: [:index]
   before_filter :authenticate_user!
   load_and_authorize_resource id_param: :name_with_owner # to force member actions load
   before_filter :who_owns, only: [:new, :create, :mass_import, :run_mass_import]
 
   def index
-    @projects = Project.accessible_by(current_ability, :membered)
-
+    @projects = Project.accessible_by(current_ability, :membered).search(params[:search])
     respond_to do |format|
       format.html {
-        @all_projects = @projects
         @groups = current_user.groups
         @owners = User.where(id: @projects.where(owner_type: 'User').uniq.pluck(:owner_id))
-        @projects = @projects.recent.paginate(page: params[:page], per_page: 25)
       }
       format.json {
-        selected_groups = params[:groups] || []
-        selected_owners = params[:users] || []
-        @projects = prepare_list(@projects, selected_groups, selected_owners)
+        groups = params[:groups] || []
+        owners = params[:users] || []
+        @projects = @projects.by_owners(groups, owners) if groups.present? || owners.present?
+        @projects_count = @projects.count
+        @projects = @projects.recent.paginate(page: current_page, per_page: Project.per_page)
       }
     end
   end
@@ -141,9 +141,14 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def remove_user
-    @project.relations.by_actor(current_user).destroy_all
-    flash[:notice] = t("flash.project.user_removed")
-    redirect_to projects_path
+    #@project.relations.by_actor(current_user).destroy_all
+    respond_to do |format|
+      format.html do
+        flash[:notice] = t("flash.project.user_removed")
+        redirect_to projects_path
+      end
+      format.json { render nothing: true }
+    end
   end
 
   def autocomplete_maintainers
@@ -168,38 +173,6 @@ class Projects::ProjectsController < Projects::BaseController
 
   def who_owns
     @who_owns = (@project.try(:owner_type) == 'User' ? :me : :group)
-  end
-
-  def prepare_list(projects, groups, owners)
-    res = {}
-
-    colName = ['name']
-    sort_col = params[:iSortCol_0] || 0
-    sort_dir = params[:sSortDir_0] == "desc" ? 'desc' : 'asc'
-    order = "#{colName[sort_col.to_i]} #{sort_dir}"
-
-    res[:total_count] = projects.count
-
-    if groups.present? || owners.present?
-      projects = projects.by_owners(groups, owners)
-    end
-
-    projects = projects.search(params[:sSearch])
-
-    res[:filtered_count] = projects.count
-
-    projects = projects.order(order)
-    res[:projects] = if params[:iDisplayLength].present?
-      start = params[:iDisplayStart].present? ? params[:iDisplayStart].to_i : 0
-      length = params[:iDisplayLength].to_i
-      page = start/length + 1
-
-      projects.paginate(page: page, per_page: length)
-    else
-      projects
-    end
-
-    res
   end
 
   def choose_owner
