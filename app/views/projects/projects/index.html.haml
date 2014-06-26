@@ -34,7 +34,7 @@
               %i.fa.roffset5{ 'ng-class' => 'item.participant_class' }
             %td {{item.user_role_name}}
             %td
-              %span.center-block.fa.fa-lg.fa-times.text-danger{ 'confirmed-click' => 'leave_project(item)',
+              %span.fa.fa-lg.fa-times.text-danger{ 'confirmed-click' => 'leave_project(item)',
                 'ng-show' => 'item.can_leave_project', 'ng-confirm-click' => t('layout.confirm') }
 
       = paginate( total_items: 'total_items',
