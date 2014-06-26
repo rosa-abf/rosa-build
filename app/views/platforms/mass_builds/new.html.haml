@@ -10,6 +10,9 @@
       .both
         = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), id: "repositories_#{rep.id}", href: "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
         = label_tag "repositories_#{rep.id}", rep.name
+    %h3=t('activerecord.attributes.mass_build.description')
+    = f.text_area :description
+    %br
     %h3=t('layout.mass_builds.projects_list')
     = f.text_area :projects_list
     %br

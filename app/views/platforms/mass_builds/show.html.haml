@@ -11,7 +11,7 @@
       %b= t('activerecord.attributes.mass_build.name')
     %td= link_to_mass_build(@mass_build)
 
-  - %i(id arch_names auto_publish increase_release_tag use_cached_chroot use_extra_tests created_at).each do |field|
+  - %i(id arch_names auto_publish increase_release_tag use_cached_chroot use_extra_tests created_at description).each do |field|
     %tr
       %td
         %b= t("activerecord.attributes.mass_build.#{field}")

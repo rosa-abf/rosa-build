@@ -1,4 +1,5 @@
 class Platforms::MassBuildsController < Platforms::BaseController
+  include DatatableHelper
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :get_list] if APP_CONFIG['anonymous_access']
@@ -41,7 +42,13 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def index
-    @mass_builds  = MassBuild.by_platform(@platform).order('created_at DESC').paginate(page: params[:page], per_page: 20)
+    if request.xhr?
+      @mass_builds        = @platform.mass_builds
+      @total_mass_builds  = @mass_builds.count
+      @mass_builds        = @mass_builds.order("id #{sort_dir}")
+      @mass_builds        = @mass_builds.search(params[:sSearch]).
+                              paginate(page: page, per_page: per_page)
+    end
   end
 
   def cancel

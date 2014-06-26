@@ -16,6 +16,10 @@ ru:
       cancel_confirm: Вы уверены, что хотите отменить массовую сборку?
       projects_list: Проекты
       missed_projects_list: 'Несуществующие проекты: '
+
+      placeholder:
+        description: Описание
+
   activerecord:
     models:
       mass_build: Массовая Сборка
@@ -23,6 +27,7 @@ ru:
       mass_build:
         id: Id
         name: Название
+        description: Описание
         created_at: Создан
         updated_at: Обновлен
         arch_names: Архитектуры

@@ -16,6 +16,9 @@ en:
       cancel_confirm: Are you sure you want to cancel mass build?
       projects_list: Projects list
       missed_projects_list: 'Missed projects: '
+
+      placeholder:
+        description: Description
   activerecord:
     models:
       mass_build: Mass Build
@@ -23,6 +26,7 @@ en:
       mass_build:
         id: Id
         name: Name
+        description: Description
         created_at: Created
         updated_at: Updated
         arch_names: Architectures

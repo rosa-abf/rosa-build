@@ -3,18 +3,16 @@
 
 = link_to t('layout.mass_builds.new'), new_platform_mass_build_path(@platform), class: 'button' if can? :create, @platform.mass_builds.build
 
-%table.tablesorter.unbordered{cellpadding: "0", cellspacing: "0"}
+
+= raw mass_builds_datatable(@platform)
+
+%table#datatable.tablesorter{cellspacing: 0, cellpadding: 0}
   %thead
     %tr
       %th.lpadding16= t('activerecord.attributes.mass_build.id')
       %th.lpadding16= t('activerecord.attributes.mass_build.name')
+      %th.th2= t('activerecord.attributes.mass_build.description')
       %th.lpadding16= t('activerecord.attributes.mass_build.created_at')
-      %th.lpadding16
-  - @mass_builds.each do |mass_build|
-    %tr
-      %td= mass_build.id
-      %td= link_to_mass_build(mass_build)
-      %td= mass_build.created_at
-      %td.right.mass-build-actions
-        = link_to t('layout.show'), platform_mass_build_path(@platform, mass_build.id)
-= will_paginate @mass_builds
+      %th.buttons &nbsp;
+  %tbody
+%br
