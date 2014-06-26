@@ -2,6 +2,7 @@ en:
   layout:
     mass_builds:
       new: New mass build
+      recreate: Recreate mass build
       publish_success: Publish success builds
       publish_test_failed: Publish test failed builds
       repositories: Repositories

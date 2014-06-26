@@ -18,7 +18,7 @@
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .lefter
-        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), id: "arches_#{arch.id}"
+        = check_box_tag "arches[]", arch.id, @mass_build.arches.include?(arch.id.to_s), id: "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
       .both
     - if @platform.personal?

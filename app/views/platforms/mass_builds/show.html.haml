@@ -61,3 +61,5 @@
               cancel_platform_mass_build_path(@platform, @mass_build.id),
               method: :post, class: 'button',
               data: { confirm: t('layout.mass_builds.cancel_confirm') }
+  - if can? :create, @mass_build
+    = link_to t('layout.mass_builds.recreate'), new_platform_mass_build_path(@platform, mass_build_id: @mass_build.id), class: 'button'

@@ -2,6 +2,7 @@ ru:
   layout:
     mass_builds:
       new: Новая массовая сборка
+      recreate: Пересоздать массовую сборку
       publish_success: Опубликовать успешные сборки
       publish_test_failed: Опубликовать сборки с проваленными тестами
       repositories: Репозитории

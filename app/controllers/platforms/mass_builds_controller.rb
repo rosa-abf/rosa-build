@@ -8,13 +8,19 @@ class Platforms::MassBuildsController < Platforms::BaseController
 
 
   def new
+    if params[:mass_build_id].present?
+      @mass_build         = @platform.mass_builds.find(params[:mass_build_id]).dup 
+      @mass_build.arches  = Arch.where(name: @mass_build.arch_names.split(', ')).pluck(:id)
+    end
+    @mass_build.arches  ||= @platform.platform_arch_settings.by_default.pluck(:arch_id)
+    @mass_build.arches.map!(&:to_s)
   end
 
   def show
   end
 
   def create
-    @mass_build.user, @mass_build.arches = current_user, params[:arches]
+    @mass_build.user, @mass_build.arches = current_user, params[:arches] || []
 
     if @mass_build.save
       redirect_to(platform_mass_builds_path(@platform), notice: t("flash.platform.build_all_success"))
