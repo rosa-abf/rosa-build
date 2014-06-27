@@ -14,6 +14,17 @@ class AutocompletesController < ApplicationController
     render json: results.to_json
   end
 
+  def autocomplete_extra_mass_build
+    mb = MassBuild.where(id: params[:term]).first
+    results << {
+      id:     mb.id,
+      value:  mb.id,
+      label:  "#{mb.id} - #{mb.name}",
+      path:   platform_mass_build_path(mb.save_to_platform, mb)
+    } if mb && can?(:show, mb)
+    render json: results.to_json
+  end
+
   def autocomplete_extra_repositories
     # Only personal and build for platform repositories can be attached to the build
     Platform.includes(:repositories).search(params[:term]).search_order

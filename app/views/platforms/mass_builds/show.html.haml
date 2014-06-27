@@ -20,6 +20,10 @@
     %td= @mass_build.arch_names
   %tr
     %td
+      %b= t('activerecord.attributes.mass_build.build_for_platform')
+    %td= link_to @mass_build.build_for_platform.name, platform_path(@mass_build.build_for_platform)
+  %tr
+    %td
       %b= t('activerecord.attributes.mass_build.auto_publish_status')
     %td= t("layout.build_lists.auto_publish_status.#{@mass_build.auto_publish_status}")
   %tr
@@ -42,6 +46,40 @@
     %td
       %b= t('activerecord.attributes.mass_build.description')
     %td= @mass_build.description
+
+  %tr
+    %td
+      %b= t("activerecord.attributes.build_list.extra_repositories")
+    %td
+      - if @mass_build.extra_repositories.present?
+        - Repository.where(id: @mass_build.extra_repositories).each do |repo|
+          %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
+          .both
+      - else
+        = t('layout.false_')
+
+  %tr
+    %td
+      %b= t("activerecord.attributes.build_list.extra_mass_builds")
+    %td
+      - if @mass_build.extra_mass_builds.present?
+        - MassBuild.where(id: @mass_build.extra_mass_builds).each do |mb|
+          %p= link_to "#{mb.id} - #{mb.name}", platform_mass_build_path(mb.save_to_platform, mb)
+          .both
+      - else
+        = t('layout.false_')
+
+  %tr
+    %td
+      %b= t("activerecord.attributes.build_list.extra_build_lists")
+    %td
+      - if @mass_build.extra_build_lists.present?
+        - BuildList.where(id: @mass_build.extra_build_lists).each do |bl|
+          %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
+          .both
+      - else
+        = t('layout.false_')
+
   %tr
     %td
     %td

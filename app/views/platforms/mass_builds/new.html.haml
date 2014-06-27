@@ -37,6 +37,12 @@
         subject: @mass_build,
         autocomplete_path: autocomplete_extra_repositories_autocompletes_path
     = render 'shared/autocomplete_form',
+      field: :extra_mass_builds,
+      field_class: MassBuild,
+      placeholder: '1000000',
+      subject: @mass_build,
+      autocomplete_path: autocomplete_extra_mass_build_autocompletes_path
+    = render 'shared/autocomplete_form',
       field: :extra_build_lists,
       field_class: BuildList,
       placeholder: '1000000',

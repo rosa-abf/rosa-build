@@ -37,3 +37,4 @@ en:
         use_extra_tests: Use extra tests
         repositories: Repositories
         projects_list: Projects list
+        build_for_platform: Build for platform

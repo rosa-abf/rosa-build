@@ -38,3 +38,4 @@ ru:
         use_extra_tests: Использовать дополнительные тесты
         repositories: Репозитории
         projects_list: Список проектов
+        build_for_platform: Собрано для платформы

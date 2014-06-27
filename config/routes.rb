@@ -230,6 +230,7 @@ Rosa::Application.routes.draw do
       get :autocomplete_user_uname
       get :autocomplete_group_uname
       get :autocomplete_extra_build_list
+      get :autocomplete_extra_mass_build
       get :autocomplete_extra_repositories
     end
   end
