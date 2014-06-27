@@ -1,4 +1,4 @@
-RosaABF.controller('PlatformsCtrl', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+RosaABF.controller('PlatformsCtrl', ['$scope', '$http', function($scope, $http) {
   $scope.total_items = null;
   $scope.page        = null;
   $scope.platforms   = null;

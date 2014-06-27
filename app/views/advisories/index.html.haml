@@ -1,8 +1,15 @@
 - set_meta_tags title: t('layout.advisories.list_header')
 - render partial: 'submenu'
-%h3.fix
-  = t("layout.advisories.list_header")
-  = link_to image_tag("rss.ico", width: '15px', height: '15px', class: 'atom_icon'),
-    APP_CONFIG['anonymous_access'] ? advisories_path(format: 'atom') : advisories_path(format: 'atom', token: current_user.authentication_token)
-= render partial: 'list', object: @advisories
-= will_paginate @advisories
+.row
+  .container{ 'ng-controller' => 'AdvisoryCtrl',
+              'ng-init' => "init(#{@advisories_count}, #{params[:page]}, #{params[:q].presence || 'null'})" }
+    %h3
+      = t 'layout.advisories.list_header'
+      = link_to image_tag("rss.ico", width: '15px', height: '15px', class: 'atom_icon'),
+        APP_CONFIG['anonymous_access'] ? advisories_path(format: 'atom') : advisories_path(format: 'atom', token: current_user.authentication_token)
+    = render partial: 'list', object: @advisories
+    = paginate( total_items: 'total_items',
+                page:        'page',
+                per_page:    Advisory.per_page,
+                ng_show:     "total_items > #{Advisory.per_page}",
+                select_page: "goToPage(page)" )
