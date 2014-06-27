@@ -9,6 +9,12 @@ module AbfWorkerService
 
     def create!
       cleanup_folder
+
+      if filter_build_lists_without_packages(build_list).blank?
+        build_list.fail_publish_container
+        return
+      end
+
       Resque.push(
         'publish_worker', # Low priority
         'class' => 'AbfWorker::PublishWorker',

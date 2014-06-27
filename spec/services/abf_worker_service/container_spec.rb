@@ -12,7 +12,15 @@ describe AbfWorkerService::Container do
   context '#create!' do
 
     it 'creates task' do
+      expect(build_list).to_not receive(:fail_publish_container)
       expect(Resque).to receive(:push)
+      subject.create!
+    end
+
+    it 'fails when no packages on FS' do
+      expect(subject).to receive(:filter_build_lists_without_packages).and_return([])
+      expect(build_list).to receive(:fail_publish_container)
+      expect(Resque).to_not receive(:push)
       subject.create!
     end
 
