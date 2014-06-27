@@ -188,7 +188,7 @@ class Project < ActiveRecord::Base
       bl.arch                   = arch
       bl.project_version        = project_version
       bl.user                   = user
-      bl.auto_publish_status    = mass_build.auto_publish? ? BuildList::AUTO_PUBLISH_STATUS_DEFAULT : BuildList::AUTO_PUBLISH_STATUS_NONE
+      bl.auto_publish_status    = mass_build.auto_publish_status
       bl.include_repos          = include_repos
       bl.extra_repositories     = mass_build.extra_repositories
       bl.extra_build_lists      = mass_build.extra_build_lists

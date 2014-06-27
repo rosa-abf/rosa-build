@@ -130,7 +130,6 @@ describe Platforms::MassBuildsController do
     @create_params = {
       mass_build: {
         :projects_list          => @repository.projects.map(&:name).join("\n"),
-        :auto_publish           => true,
         :build_for_platform_id  => @platform
       },
       :platform_id  => @platform,

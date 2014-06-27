@@ -1,4 +1,7 @@
 class MassBuild < ActiveRecord::Base
+
+  AUTO_PUBLISH_STATUSES = %w(none default testing)
+
   belongs_to :build_for_platform, -> { where(platform_type: 'main') }, class_name: 'Platform'
   belongs_to :save_to_platform, class_name: 'Platform'
   belongs_to :user
@@ -13,7 +16,7 @@ class MassBuild < ActiveRecord::Base
   scope :search,      -> (q)        { where("#{table_name}.description ILIKE ?", "%#{q}%") if q.present? }
 
   attr_accessor :arches
-  attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
+  attr_accessible :arches, :auto_publish_status, :projects_list, :build_for_platform_id,
                   :extra_repositories, :extra_build_lists, :increase_release_tag,
                   :use_cached_chroot, :use_extra_tests, :description
 
@@ -31,8 +34,10 @@ class MassBuild < ActiveRecord::Base
   validates :description,
             length:                 { maximum: 255 }
 
-  validates :auto_publish,
-            :increase_release_tag,
+  validates :auto_publish_status,
+            inclusion:              { in: AUTO_PUBLISH_STATUSES }
+
+  validates :increase_release_tag,
             :use_cached_chroot,
             :use_extra_tests,
             inclusion:              { in: [true, false] }

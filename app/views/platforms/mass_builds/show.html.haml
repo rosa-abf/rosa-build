@@ -10,13 +10,38 @@
     %td
       %b= t('activerecord.attributes.mass_build.name')
     %td= link_to_mass_build(@mass_build)
-
-  - %i(id arch_names auto_publish increase_release_tag use_cached_chroot use_extra_tests created_at description).each do |field|
-    %tr
-      %td
-        %b= t("activerecord.attributes.mass_build.#{field}")
-      %td= @mass_build.send field
-
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.id')
+    %td= @mass_build.id
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.arch_names')
+    %td= @mass_build.arch_names
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.auto_publish_status')
+    %td= t("layout.build_lists.auto_publish_status.#{@mass_build.auto_publish_status}")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.increase_release_tag')
+    %td= t("layout.#{@mass_build.increase_release_tag?}_")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.use_cached_chroot')
+    %td= t("layout.#{@mass_build.use_cached_chroot?}_")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.use_extra_tests')
+    %td= t("layout.#{@mass_build.use_extra_tests?}_")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.created_at')
+    %td= @mass_build.created_at
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.description')
+    %td= @mass_build.description
   %tr
     %td
     %td
@@ -49,7 +74,7 @@
 
 .buttons_block
   - if can?(:publish, @mass_build)
-    - unless @mass_build.auto_publish?
+    - unless @mass_build.auto_publish_status == BuildList::AUTO_PUBLISH_STATUS_DEFAULT
       = link_to t('layout.mass_builds.publish_success'),
                 publish_platform_mass_build_path(@platform, @mass_build.id),
                 method: :post, data: { confirm: t("layout.confirm") }, class: 'button'

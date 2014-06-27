@@ -32,10 +32,11 @@ class BuildList < ActiveRecord::Base
   EXTRA_PARAMS = %w[cfg_options cfg_urpm_options build_src_rpm build_rpm]
   EXTERNAL_NODES = %w[owned everything]
 
-  AUTO_PUBLISH_STATUS_NONE    = 'none'
-  AUTO_PUBLISH_STATUS_DEFAULT = 'default'
-  AUTO_PUBLISH_STATUS_TESTING = 'testing'
-  AUTO_PUBLISH_STATUSES = [AUTO_PUBLISH_STATUS_NONE, AUTO_PUBLISH_STATUS_DEFAULT, AUTO_PUBLISH_STATUS_TESTING]
+  AUTO_PUBLISH_STATUSES = [
+    AUTO_PUBLISH_STATUS_NONE    = 'none',
+    AUTO_PUBLISH_STATUS_DEFAULT = 'default',
+    AUTO_PUBLISH_STATUS_TESTING = 'testing'
+  ]
 
   validates :project_id,
             :project_version,
