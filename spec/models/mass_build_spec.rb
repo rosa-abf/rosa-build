@@ -23,6 +23,7 @@ describe MassBuild do
     it { should validate_presence_of(:projects_list)}
     it { should ensure_length_of(:projects_list).is_at_most(500_000) }
 
+    it { should ensure_length_of(:description).is_at_most(255) }
 
     it { should_not allow_mass_assignment_of(:name) }
     it { should_not allow_mass_assignment_of(:arch_names) }

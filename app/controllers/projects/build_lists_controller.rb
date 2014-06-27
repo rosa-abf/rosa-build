@@ -1,4 +1,5 @@
 class Projects::BuildListsController < Projects::BaseController
+  include DatatableHelper
   include FileStoreHelper
 
   NESTED_ACTIONS = [:index, :new, :create]
@@ -166,15 +167,11 @@ class Projects::BuildListsController < Projects::BaseController
 
   def list
     @build_lists = @project.build_lists
-    sort_col = params[:ol_0] || 7
-    sort_dir = params[:sSortDir_0] == 'asc' ? 'asc' : 'desc'
-    order = "build_lists.updated_at #{sort_dir}"
-
-    @build_lists = @build_lists.paginate(page: (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, per_page: params[:iDisplayLength])
+    @build_lists = @build_lists.paginate(page: page, per_page: per_page)
     @total_build_lists = @build_lists.count
     @build_lists = @build_lists.where(user_id: current_user) if params[:owner_filter] == 'true'
     @build_lists = @build_lists.where(status: [BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH]) if params[:status_filter] == 'true'
-    @build_lists = @build_lists.order(order)
+    @build_lists = @build_lists.order("build_lists.updated_at #{sort_dir}")
 
     render partial: 'build_lists_ajax', layout: false
   end

@@ -1,4 +1,5 @@
 class Projects::ProjectsController < Projects::BaseController
+  include DatatableHelper
   include ProjectsHelper
   before_filter :authenticate_user!
   load_and_authorize_resource id_param: :name_with_owner # to force member actions load
@@ -172,12 +173,6 @@ class Projects::ProjectsController < Projects::BaseController
 
   def prepare_list(projects, groups, owners)
     res = {}
-
-    colName = ['name']
-    sort_col = params[:iSortCol_0] || 0
-    sort_dir = params[:sSortDir_0] == "desc" ? 'desc' : 'asc'
-    order = "#{colName[sort_col.to_i]} #{sort_dir}"
-
     res[:total_count] = projects.count
 
     if groups.present? || owners.present?
@@ -188,13 +183,9 @@ class Projects::ProjectsController < Projects::BaseController
 
     res[:filtered_count] = projects.count
 
-    projects = projects.order(order)
+    projects = projects.order("name #{sort_dir}")
     res[:projects] = if params[:iDisplayLength].present?
-      start = params[:iDisplayStart].present? ? params[:iDisplayStart].to_i : 0
-      length = params[:iDisplayLength].to_i
-      page = start/length + 1
-
-      projects.paginate(page: page, per_page: length)
+      projects.paginate(page: page, per_page: per_page)
     else
       projects
     end

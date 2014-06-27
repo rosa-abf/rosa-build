@@ -10,11 +10,12 @@ class MassBuild < ActiveRecord::Base
   scope :recent,      ->            { order(created_at: :desc) }
   scope :by_platform, -> (platform) { where(save_to_platform_id: platform.id) }
   scope :outdated,    ->            { where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME) }
+  scope :search,      -> (q)        { where("#{table_name}.description ILIKE ?", "%#{q}%") if q.present? }
 
   attr_accessor :arches
   attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
                   :extra_repositories, :extra_build_lists, :increase_release_tag,
-                  :use_cached_chroot, :use_extra_tests
+                  :use_cached_chroot, :use_extra_tests, :description
 
   validates :save_to_platform_id,
             :build_for_platform_id,
@@ -26,6 +27,9 @@ class MassBuild < ActiveRecord::Base
   validates :projects_list,
             presence:               true,
             length:                 { maximum: 500_000 }
+
+  validates :description,
+            length:                 { maximum: 255 }
 
   validates :auto_publish,
             :increase_release_tag,
@@ -81,6 +85,10 @@ class MassBuild < ActiveRecord::Base
 
   def generate_tests_failed_builds_list
     generate_list BuildList::TESTS_FAILED
+  end
+
+  def generate_success_builds_list
+    generate_list BuildList::SUCCESS
   end
 
   def cancel_all

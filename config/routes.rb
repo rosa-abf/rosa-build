@@ -182,11 +182,11 @@ Rosa::Application.routes.draw do
         end
       end
 
-      resources :mass_builds, only: [:create, :new, :index] do
+      resources :mass_builds, only: [:create, :new, :index, :show] do
         member do
           post   :cancel
           post   :publish
-          get '/:kind' => "mass_builds#get_list", as: :get_list, kind: /failed_builds_list|missed_projects_list|projects_list|tests_failed_builds_list/
+          get '/:kind' => "mass_builds#get_list", as: :get_list, kind: /failed_builds_list|missed_projects_list|projects_list|tests_failed_builds_list|success_builds_list/
         end
       end
 
