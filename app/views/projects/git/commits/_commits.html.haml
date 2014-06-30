@@ -9,7 +9,7 @@
   - by_month.each_pair do |month, by_day|
     - by_day.each_pair do |day, commits|
       .date-block
-        .date= raw l(commits.first.authored_date, format: :date_block_format)
+        .date= raw l(commits.first.committed_date, format: :date_block_format)
         .messages
           - commits.each_with_index do |commit|
             - GitPresenters::CommitAsMessagePresenter.present(commit, project: @project) do |presenter|
