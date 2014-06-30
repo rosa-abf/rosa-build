@@ -35,6 +35,7 @@ en:
         increase_release_tag: Increase release tag
         use_cached_chroot: Use cached chroot
         use_extra_tests: Use extra tests
+        include_testing_subrepository: "Include 'testing' subrepository"
         repositories: Repositories
         projects_list: Projects list
         build_for_platform: Build for platform

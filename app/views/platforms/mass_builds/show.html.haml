@@ -32,6 +32,10 @@
     %td= t("layout.#{@mass_build.increase_release_tag?}_")
   %tr
     %td
+      %b= t('activerecord.attributes.mass_build.include_testing_subrepository')
+    %td= t("layout.#{@mass_build.include_testing_subrepository?}_")
+  %tr
+    %td
       %b= t('activerecord.attributes.mass_build.use_cached_chroot')
     %td= t("layout.#{@mass_build.use_cached_chroot?}_")
   %tr

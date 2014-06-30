@@ -36,6 +36,7 @@ ru:
         increase_release_tag: Увеличить release тег
         use_cached_chroot: Использовать кэшированный chroot
         use_extra_tests: Использовать дополнительные тесты
+        include_testing_subrepository: "Подключить 'testing' подрепозиторий"
         repositories: Репозитории
         projects_list: Список проектов
         build_for_platform: Собрано для платформы

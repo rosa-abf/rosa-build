@@ -182,21 +182,22 @@ class Project < ActiveRecord::Base
     increase_release_tag(project_version, user, "MassBuild##{mass_build.id}: Increase release tag") if increase_rt
 
     build_list = build_lists.build do |bl|
-      bl.save_to_platform       = save_to_platform
-      bl.build_for_platform     = build_for_platform
-      bl.update_type            = 'newpackage'
-      bl.arch                   = arch
-      bl.project_version        = project_version
-      bl.user                   = user
-      bl.auto_publish_status    = mass_build.auto_publish_status
-      bl.include_repos          = include_repos
-      bl.extra_repositories     = mass_build.extra_repositories
-      bl.extra_build_lists      = mass_build.extra_build_lists
-      bl.priority               = priority
-      bl.mass_build_id          = mass_build.id
-      bl.save_to_repository_id  = repository_id
-      bl.use_cached_chroot      = mass_build.use_cached_chroot?
-      bl.use_extra_tests        = mass_build.use_extra_tests?
+      bl.save_to_platform               = save_to_platform
+      bl.build_for_platform             = build_for_platform
+      bl.update_type                    = 'newpackage'
+      bl.arch                           = arch
+      bl.project_version                = project_version
+      bl.user                           = user
+      bl.auto_publish_status            = mass_build.auto_publish_status
+      bl.include_repos                  = include_repos
+      bl.extra_repositories             = mass_build.extra_repositories
+      bl.extra_build_lists              = mass_build.extra_build_lists
+      bl.priority                       = priority
+      bl.mass_build_id                  = mass_build.id
+      bl.save_to_repository_id          = repository_id
+      bl.include_testing_subrepository  = mass_build.include_testing_subrepository?
+      bl.use_cached_chroot              = mass_build.use_cached_chroot?
+      bl.use_extra_tests                = mass_build.use_extra_tests?
     end
     build_list.save
   end
