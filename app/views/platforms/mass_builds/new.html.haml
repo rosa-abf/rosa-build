@@ -52,7 +52,7 @@
     .both
     = f.select :auto_publish_status, auto_publish_statuses
     = f.label :auto_publish_status
-    - %i(increase_release_tag include_testing_subrepository use_cached_chroot use_extra_tests).each do |field|
+    - %i(auto_create_container increase_release_tag include_testing_subrepository use_cached_chroot use_extra_tests).each do |field|
       .both
         = f.check_box field
         = f.label field

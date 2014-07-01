@@ -32,6 +32,7 @@ en:
         arch_names: Architectures
         user: User
         auto_publish_status: Automated publishing
+        auto_create_container: Create container automatically
         increase_release_tag: Increase release tag
         use_cached_chroot: Use cached chroot
         use_extra_tests: Use extra tests

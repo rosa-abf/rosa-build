@@ -189,6 +189,7 @@ class Project < ActiveRecord::Base
       bl.project_version                = project_version
       bl.user                           = user
       bl.auto_publish_status            = mass_build.auto_publish_status
+      bl.auto_create_container          = mass_build.auto_create_container
       bl.include_repos                  = include_repos
       bl.extra_repositories             = mass_build.extra_repositories
       bl.extra_build_lists              = mass_build.extra_build_lists

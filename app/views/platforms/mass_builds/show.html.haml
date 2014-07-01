@@ -28,6 +28,10 @@
     %td= t("layout.build_lists.auto_publish_status.#{@mass_build.auto_publish_status}")
   %tr
     %td
+      %b= t('activerecord.attributes.mass_build.auto_create_container')
+    %td= t("layout.#{@mass_build.auto_create_container?}_")
+  %tr
+    %td
       %b= t('activerecord.attributes.mass_build.increase_release_tag')
     %td= t("layout.#{@mass_build.increase_release_tag?}_")
   %tr
