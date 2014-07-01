@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140626195741) do
+ActiveRecord::Schema.define(version: 20140630205045) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -308,26 +308,28 @@ ActiveRecord::Schema.define(version: 20140626195741) do
   end
 
   create_table "mass_builds", force: true do |t|
-    t.integer  "build_for_platform_id",                 null: false
+    t.integer  "build_for_platform_id",                          null: false
     t.string   "name"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
     t.string   "arch_names"
     t.integer  "user_id"
-    t.boolean  "auto_publish",          default: false, null: false
-    t.integer  "build_lists_count",     default: 0,     null: false
-    t.boolean  "stop_build",            default: false, null: false
+    t.integer  "build_lists_count",             default: 0,      null: false
+    t.boolean  "stop_build",                    default: false,  null: false
     t.text     "projects_list"
-    t.integer  "missed_projects_count", default: 0,     null: false
+    t.integer  "missed_projects_count",         default: 0,      null: false
     t.text     "missed_projects_list"
-    t.boolean  "new_core",              default: true
-    t.integer  "save_to_platform_id",                   null: false
+    t.boolean  "new_core",                      default: true
+    t.integer  "save_to_platform_id",                            null: false
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
-    t.boolean  "increase_release_tag",  default: false, null: false
-    t.boolean  "use_cached_chroot",     default: true,  null: false
-    t.boolean  "use_extra_tests",       default: false, null: false
+    t.boolean  "increase_release_tag",          default: false,  null: false
+    t.boolean  "use_cached_chroot",             default: true,   null: false
+    t.boolean  "use_extra_tests",               default: false,  null: false
     t.string   "description"
+    t.string   "auto_publish_status",           default: "none", null: false
+    t.text     "extra_mass_builds"
+    t.boolean  "include_testing_subrepository", default: false,  null: false
   end
 
   create_table "users", force: true do |t|

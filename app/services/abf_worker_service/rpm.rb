@@ -237,24 +237,5 @@ module AbfWorkerService
       end
     end
 
-    def filter_build_lists_without_packages(build_lists)
-      ids = []
-      build_lists = build_lists.select do |build_list|
-        sha1 = build_list.packages.pluck(:sha1).find do |sha1|
-          !FileStoreService::File.new(sha1: sha1).exist?
-        end
-        if sha1.present?
-          ids << build_list.id
-          false
-        else
-          true
-        end
-      end
-
-      BuildList.where(id: ids).update_all(status: BuildList::PACKAGES_FAIL)
-
-      build_lists
-    end
-
   end
 end

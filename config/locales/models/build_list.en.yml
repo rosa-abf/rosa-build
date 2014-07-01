@@ -9,6 +9,7 @@ en:
         name: Name
         extra_repositories: Extra repositories
         extra_build_lists: Extra build lists
+        extra_mass_builds: Extra mass builds
         auto_create_container: Create container automatically
         use_cached_chroot: Use cached chroot
         use_extra_tests: Use extra tests
