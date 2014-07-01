@@ -168,7 +168,7 @@ GEM
     faraday (0.9.0)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.3)
-    font-awesome-rails (4.0.3.1)
+    font-awesome-rails (4.1.0.0)
       railties (>= 3.2, < 5.0)
     formtastic (2.3.0.rc2)
       actionpack (>= 3.0)
@@ -513,6 +513,8 @@ GEM
     will_paginate (3.0.5)
     ya2yaml (0.31)
     yajl-ruby (1.1.0)
+    zeroclipboard-rails (0.1.0)
+      railties (>= 3.1)
 
 PLATFORMS
   ruby
@@ -544,7 +546,7 @@ DEPENDENCIES
   diff-display (~> 0.0.1)
   factory_girl_rails (~> 4.4.1)
   ffi (~> 1.9.3)
-  font-awesome-rails
+  font-awesome-rails (~> 4.1)
   friendly_id (~> 5.0.3)
   gemoji (~> 1.2.1)
   github-linguist (~> 2.10)
@@ -616,3 +618,4 @@ DEPENDENCIES
   whenever (~> 0.9.0)
   wikicloth
   will_paginate (~> 3.0.5)
+  zeroclipboard-rails

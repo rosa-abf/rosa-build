@@ -38,7 +38,7 @@ $mini-avatar-height: 30px;
 }
 
 .nav a, .pagination a, .carousel a, .panel-title a, i.fa-question-circle[data-toggle='modal'],
-span.fa.fa-times {
+span.fa.fa-times, .navbar a {
   cursor: pointer;
 }
 
@@ -147,6 +147,28 @@ table.table-borderless > thead > tr > th {
   margin-bottom: 0;
 }
 
-ul.nav.navbar-nav.left-border {
+#submenu-navbar-collapse ul.left-border {
   border-left: 1px solid #dcdcdc;
+}
+
+#repo-block-navbar-collapse {
+  padding-left: 0;
+}
+
+form#clone_url {
+  padding-left:  0px;
+  padding-right: 1px;
+}
+
+#copy_to_clipboard.navbar-text.navbar-left {
+  margin-left: 8px;
+}
+
+#git-help.navbar-text.navbar-left {
+  margin-left:  8px;
+  margin-right: 8px;
+}
+
+p.navbar-text.navbar-right.current_branch {
+  margin-right: 0;
 }

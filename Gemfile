@@ -89,10 +89,12 @@ gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
 gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
 
 gem 'bootstrap-sass', '~> 3.1.1'
-gem 'font-awesome-rails'
+gem 'font-awesome-rails', '~> 4.1'
 gem 'codemirror-rails'
 
 gem 'sitemap_generator'
+
+gem 'zeroclipboard-rails'
 
 group :production do
   gem "airbrake", '~> 3.1.2'

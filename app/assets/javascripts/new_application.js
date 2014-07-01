@@ -29,6 +29,8 @@
 
 //= require underscore
 
+//= require zeroclipboard
+
 //= require_self
 
 function setCookie (name, value, expires, path, domain, secure) {
@@ -46,4 +48,6 @@ $(document).ready(function() {
     var expires="expires="+exdate.toUTCString();
     setCookie("flash_notify_hash", FLASH_HASH_ID, expires);
   });
+
+  var clip = new ZeroClipboard($("#clipboard_copy_button"));
 });

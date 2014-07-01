@@ -9,12 +9,19 @@
           %span.icon-bar
           %span.icon-bar
           %span.icon-bar
-        = link_to project_path(@project), class: 'navbar-brand' do
+        .navbar-brand
           = fa_visibility_icon @project
-          = @project.name_with_owner
+          = link_to @project.owner.uname, @project.owner
+          \/
+          = link_to @project.name, project_path(@project)
       / Collect the nav links, forms, and other content for toggling
       #submenu-navbar-collapse.collapse.navbar-collapse
         %ul.nav.navbar-nav.left-border
+          - if @project.parent
+            %li
+              = link_to project_path(@project.parent), class: 'small' do
+                = fa_icon 'code-fork'
+                = @project.parent.name_with_owner
           %li{ class: ('active' if act.in?([:show, :edit, :branches, :tags]) && contr.in?([:trees, :blobs]) || contr == :commits) }
             = link_to t('project_menu.code'), tree_path(@project, treeish)
           - if @project.is_package and can?(:read, @project => BuildList)

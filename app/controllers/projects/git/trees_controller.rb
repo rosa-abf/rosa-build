@@ -1,4 +1,6 @@
 class Projects::Git::TreesController < Projects::Git::BaseController
+  layout 'bootstrap', only: [:show]
+
   before_filter -> {redirect_to @project if params[:treeish] == @project.default_branch and params[:path].blank?}, only: :show
   skip_before_filter :set_branch_and_tree, :set_treeish_and_path, only: :archive
   before_filter -> { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, only: [:branch, :destroy]
@@ -17,7 +19,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
 
   def archive
     format, @treeish = params[:format], params[:treeish]
-    raise Grit::NoSuchPathError unless  @treeish =~ /^#{@project.name}-/ && 
+    raise Grit::NoSuchPathError unless  @treeish =~ /^#{@project.name}-/ &&
                                         @treeish !~ /[\s]+/ &&
                                         format =~ /^(zip|tar\.gz)$/
     @treeish.gsub!(/^#{@project.name}-/, '')
