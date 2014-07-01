@@ -38,7 +38,7 @@ module MassBuildHelper
     datatable(
       COLUMNS,
       {
-        sort_by:            "[0, 'asc']",
+        sort_by:            "[0, 'desc']",
         search_label:       '',
         placeholder:        t('layout.mass_builds.placeholder.description'),
         processing:         t('layout.processing'),

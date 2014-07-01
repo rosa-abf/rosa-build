@@ -117,7 +117,9 @@
 
     - if @build_list.mass_build_id.present?
       .leftlist= t("activerecord.attributes.mass_build_id")
-      .rightlist= link_to @build_list.mass_build.name, platform_mass_builds_path(@build_list.save_to_platform)
+      - path = platform_mass_build_path(@build_list.save_to_platform, @build_list.mass_build_id)
+      .rightlist= link_to @build_list.mass_build.name, path
+
       .both
 
     %div{'ng-show' => 'build_list.advisory'}
