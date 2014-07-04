@@ -8,8 +8,9 @@
           .offset25= render 'include_repos', platform: pl
   %section.right
     %h3= t('activerecord.attributes.build_list.save_to_repository')
-    - selected = params[:build_list].try(:[], :save_to_repository_id) ? {selected: params[:build_list][:save_to_repository_id]} : {}
-    .lineForm= f.select :save_to_repository_id, save_to_repositories(project), selected
+    - select_options = save_to_repositories(project)
+    - selected = selected_save_to_repositories(project, select_options, params)
+    .lineForm= f.select :save_to_repository_id, select_options, selected
     %h3= t("activerecord.attributes.build_list.project_version")
     .lineForm= f.select :project_version, versions_for_group_select(project), selected: params[:build_list].try(:[], :project_version) || project.default_branch
     %h3= t("activerecord.attributes.build_list.arch")
@@ -61,5 +62,11 @@
     %br
     = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
     = f.submit t('layout.projects.build_button'), data: {'disable-with' => t('layout.processing')}
-.both
 
+    - if params[:build_list_id].blank?
+      :javascript
+        $(function() {
+          $('#build_list_save_to_repository_id').trigger('change');
+        });
+
+.both

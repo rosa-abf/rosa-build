@@ -60,6 +60,14 @@ module BuildListsHelper
     end.sort_by { |col| col[0] }
   end
 
+  def selected_save_to_repositories(project, select_options, params)
+    selected = params[:build_list].try(:[], :save_to_repository_id)
+    return selected if selected.present?
+    version = params[:build_list].try(:[], :project_version) || project.default_branch
+    res = select_options.select { |r| r[0] =~ /#{version}\// }[0].try :[], 1
+    res.present? ? { selected: res } : {}
+  end
+
   def external_nodes
     BuildList::EXTERNAL_NODES.map do |type|
       [I18n.t("layout.build_lists.external_nodes.#{type}"), type]

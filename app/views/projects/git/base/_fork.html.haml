@@ -16,4 +16,6 @@
       = render 'forks', owner: current_user, name: @project.name
 
 - if @project.is_package && can?(:create, @project.build_lists.new)
-  .r{style: "display: block"}= link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project), class: 'button'
+  .r{style: "display: block"}
+    - params = { build_list: { project_version: @treeish}}
+    = link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project, params), class: 'button'
