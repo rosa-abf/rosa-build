@@ -60,6 +60,7 @@ en:
       git_help:
         cloning: Cloning the repository
         remote: Add this repository as a remote to an existing local repository
+        question_title: Copy to clipboard
 
       diff_show_header: "%{files} with %{additions} and %{deletions}."
       about_subheader:  "About project"

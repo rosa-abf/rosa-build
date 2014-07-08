@@ -50,4 +50,18 @@ $(document).ready(function() {
   });
 
   var clip = new ZeroClipboard($("#clipboard_copy_button"));
+
+  $('.datetime_moment').each(function() {
+    var mtime = moment($(this).attr('origin_datetime'), 'X').format('ddd, LLL');
+    $(this).attr('title', mtime);
+  });
+
+  window.updateTime = function () {
+    $('.datetime_moment').each(function() {
+      $(this).html(moment($(this).attr('origin_datetime'), 'X').fromNow());
+    });
+  };
+
+  updateTime();
+  setInterval( updateTime, 15000 );
 });

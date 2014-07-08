@@ -1,50 +1,38 @@
-%h3= t("layout.projects.files_in_project")
-.files
-  .l= render 'whereami'
-  = render 'fork'
-.both
-
-%table#myTable.tablesorter.project{cellpadding: "0", cellspacing: "0"}
-  %thead
-    %tr
-      %th.th1= t("layout.projects.filename")
-      %th.th2= t("layout.projects.age")
-      %th.th3= t("layout.projects.message")
-      %th.th4= t("layout.projects.author")
-  %tbody
-    - if @path.present?
+%h3= t 'layout.projects.files_in_project'
+%div{ 'ng-controller' => 'GitTreeCtrl', 'ng-cloak' => true,
+      'ng-init' => "init('#{@project.name_with_owner}', '#{@treeish}', '#{@path}', '#{root_path}')" }
+  .files
+    .pull-left= render 'whereami'
+    .pull-right= render 'fork'
+  - root_path = @path.present? ? File.join([@path, ".."].compact) : 'null'
+  %table.table.table-hover
+    %thead
       %tr
+        %th= t 'layout.projects.filename'
+        %th.col-md-9= t 'layout.projects.message'
+        %th= t 'layout.projects.age'
+    %tbody
+      %tr{ 'ng-show' => 'path' }
         %td
-          .pic= image_tag 'folder.png'
-          .name= link_to "..", tree_path(@project, @treeish, File.join([@path, ".."].compact))
-        %td== &nbsp;
-        %td== &nbsp;
-        %td== &nbsp;
-    - @project.tree_info(@tree, @treeish, @path).each do |node, node_path, commit|
-      %tr
-        %td
-          - if node.is_a? Grit::Submodule
-            .pic= image_tag 'folder-submodule.png'
-            .name
-              - if url = submodule_url(node, @treeish)
-                = link_to(node.name, url, class: 'files-see')
-                = '@'
-                = link_to(node.id[0..6], "#{url}/tree/#{node.id}", class: 'files-see')
-              - else
-                = "#{node.name} @ #{node.id[0..6]}"
-          - else
-            - options = [@project, @treeish, node_path]
-            - if node.is_a?(Grit::Tree)
-              - pic = 'folder.png'
-              - path = tree_path *options
-            .pic= image_tag pic || 'code.png'
-            .name= link_to(node.name, path || blob_path(*options), class: 'files-see')
-
-        - if commit
-          = datetime_moment(commit.committed_date || commit.authored_date, tag: :td)
-          %td= commit.short_message
-          %td= (commit.committer || commit.author).name
-        - else
-          %td
-          %td
-          %td
+          %span= fa_icon 'folder', class: 'text-primary'
+          %a{ 'ng-href' => '{{root_path}}', 'ng-click' => 'getTree(root_path)' } ..
+        %td &nbsp;
+        %td &nbsp;
+      %tr{ 'ng-repeat' => 'el in tree' }
+        %td{ 'ng-show' => 'el.submodule && el.submodule.url' }
+          %span= fa_icon 'folder-open', class: 'text-info'
+          %a{ 'ng-href' => '{{el.submodule.url}}' } {{el.submodule.name}}
+          @
+          %a{ 'ng-href' => '{{el.submodule.tree_url}}' } {{el.submodule.id}}
+        %td{ 'ng-show' => 'el.is_submodule && !el.submodule.url' }
+          {{el.submodule.name+' @ '+el.submodule.id}}
+        %td{ 'ng-show' => '!el.submodule' }
+          %span
+            %i.fa.text-primary{ 'ng-class' => 'el.node.class_name' }
+          %a{ 'ng-href' => '{{el.node.url}}', 'ng-click' => 'getTree($event, el.node.path)' } {{el.node.name}}
+        %td{ 'ng-show' => 'el.commit' }
+          %a{ 'ng-href' => '{{el.commit.url}}' } {{el.commit.short_message}}
+        %td{ 'ng-show' => 'el.commit' }
+          %span{ 'am-time-ago' => 'el.commit.committed_date', title: "{{issue.committed_date | amDateFormat:'ddd, LLL'}}" }
+        %td{ 'ng-hide' => 'el.commit' }
+        %td{ 'ng-hide' => 'el.commit' }

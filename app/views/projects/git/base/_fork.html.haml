@@ -1,19 +1,26 @@
 = hidden_field_tag :possible_forks_path, possible_forks_project_path(@project)
 
 - if can? :write, @project
-  .r{style: "display: block"}
-    =link_to t("projects.pull_requests.show.pull"), new_project_pull_request_path(@project, treeish: @treeish), id: 'send_pull_request', class: 'button'
+  .pull-right.roffset5
+    =link_to t("projects.pull_requests.show.pull"), new_project_pull_request_path(@project, treeish: @treeish),
+             id: 'send_pull_request', class: 'btn btn-primary'
 
 - if can? :fork, @project
-  .r#fork-and-edit= link_to t('layout.projects.fork_and_edit'), '#forkModal', class: 'button', 'data-toggle' => 'modal'
-  #forkModal.modal.fork-modal{style: 'display: none;'}
-    .modal-header
-      %a.close{"data-dismiss" => "modal"} ×
-      %h3=t 'layout.projects.fork_modal_header'
-      = hidden_field_tag :possible_forks, possible_forks_project_path(@project)
-      %div{align: 'center'}= text_field_tag 'fork_name', @project.name, id: 'fork_name', class: 'fork_name'
-    #forks_list.modal-body.modal-body-fork
-      = render 'forks', owner: current_user, name: @project.name
+  .pull-right#fork-and-edit.roffset5
+    = link_to t('layout.projects.fork_and_edit'), '#', class: 'btn btn-primary',
+              'data-toggle' => 'modal', 'data-target' => '#forkModal'
+  #forkModal.modal.fade{ tabindex: '-1', role: 'dialog', 'aria-labelledby' => 'myModalLabel', 'aria-hidden' => 'true' }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{ type: 'button', 'data-dismiss' => 'modal' }
+            %span{ 'aria-hidden' => 'true' } &times;
+            %span.sr-only Close
+          %h4.modal-title#myModalLabel= t 'layout.projects.fork_modal_header'
+          = hidden_field_tag :possible_forks, possible_forks_project_path(@project)
+          %p.offset10= text_field_tag 'fork_name', @project.name, id: 'fork_name', class: 'form-control'
+        .modal-body= render 'forks', owner: current_user, name: @project.name
 
 - if @project.is_package && can?(:create, @project.build_lists.new)
-  .r{style: "display: block"}= link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project), class: 'button'
+  .pull-right.roffset5
+    = link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project), class: 'btn btn-primary'

@@ -56,8 +56,10 @@ module GitHelper
   end
 
   def iterate_path(path, &block)
+    p '*'*60, "path == #{path}", '*'*60
     path.split(File::SEPARATOR).inject('') do |a, e|
-      if e != '.' and e != '..'
+      p '*'*60, "a == #{a}; e = #{e}", '*'*60
+      if e != '.' && e != '..'
         a = File.join(a, e)
         a = a[1..-1] if a[0] == File::SEPARATOR
         block.call(a, e) if a.length > 1

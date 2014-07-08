@@ -9,12 +9,12 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   before_filter -> { authorize!(:write, @project) },  only: [:destroy, :restore_branch, :create]
 
   def show
-    unless request.xhr?
+    #unless request.xhr?
       render('empty') and return if @project.is_empty?
       @tree = @tree / @path if @path.present?
       @commit = @branch.present? ? @branch.commit() : @project.repo.log(@treeish, @path, max_count: 1).first
       raise Grit::NoSuchPathError unless @commit
-    end
+    #end
   end
 
   def archive

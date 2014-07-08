@@ -2,119 +2,77 @@
 -http_url = git_repo_url(project.name_with_owner)
 -ssh_url = git_ssh_repo_url(project.name_with_owner)
 
-%nav.navbar.navbar-default{ role: 'navigation', 'ng-controller' => 'ProjectRepoBlockController',
-                            'ng-init' => "init('#{ssh_url}', #{project.repo.branches.count})",
-                            'ng-cloak' => true }
-  .container-fluid
-    / Brand and toggle get grouped for better mobile display
-    .navbar-header
-      %button.navbar-toggle{ 'data-target' => '#repo-block-navbar-collapse', 'data-toggle' => 'collapse', type: 'button' }
-        %span.sr-only Toggle navigation
-        %span.icon-bar
-        %span.icon-bar
-        %span.icon-bar
-    / Collect the nav links, forms, and other content for toggling
-    #repo-block-navbar-collapse.collapse.navbar-collapse
-      %ul.nav.navbar-nav
-        %li.dropdown
-          %a.dropdown-toggle{ href: '#', 'data-toggle' => 'dropdown' }
-            = fa_icon 'file-archive-o', class: 'fa-lg'
-            %span.caret
-          %ul.dropdown-menu{ role: 'menu' }
-            - file_name = "#{@project.name}-#{treeish}"
-            %li= link_to 'tar.gz', archive_path(project, file_name, 'tar.gz')
-            %li= link_to 'zip', archive_path(project, file_name, 'zip')
-      .navbar-left
-        %button.btn.navbar-btn.btn-default{ type: 'button', 'ng-click' => "clone_url = '#{http_url}'",
-                                'ng-model' => "clone_url_protocol", 'btn-radio' => "'http'",
-                                'ng-class' => '{"btn-info": clone_url_protocol == "http"}' } HTTP
-        %button.btn.navbar-btn.btn-default{ type: 'button', 'ng-click' => "clone_url = '#{ssh_url}'",
-                                'ng-model' => "clone_url_protocol", 'btn-radio' => "'ssh'",
-                                'ng-class' => '{"btn-info": clone_url_protocol == "ssh"}'} SSH
-      #git-help.navbar-text.navbar-left
-        %a.navbar-link{ 'ng-click' => 'is_collapsed_git_help = !is_collapsed_git_help' }
-          = fa_icon 'question', class: 'fa-lg'
+%div{ role: 'navigation', 'ng-controller' => 'ProjectRepoBlockController', 'ng-cloak' => true,
+      'ng-init' => "init('#{ssh_url}', #{project.repo.branches.count})" }
+  %nav.navbar.navbar-default
+    .container-fluid
+      / Brand and toggle get grouped for better mobile display
+      .navbar-header
+        %button.navbar-toggle{ 'data-target' => '#repo-block-navbar-collapse', 'data-toggle' => 'collapse', type: 'button' }
+          %span.sr-only Toggle navigation
+          %span.icon-bar
+          %span.icon-bar
+          %span.icon-bar
+      / Collect the nav links, forms, and other content for toggling
+      #repo-block-navbar-collapse.collapse.navbar-collapse
+        %ul.nav.navbar-nav
+          %li.dropdown
+            %a.dropdown-toggle{ href: '#', 'data-toggle' => 'dropdown' }
+              = fa_icon 'file-archive-o', class: 'fa-lg'
+              %span.caret
+            %ul.dropdown-menu{ role: 'menu' }
+              - file_name = "#{@project.name}-#{treeish}"
+              %li= link_to 'tar.gz', archive_path(project, file_name, 'tar.gz')
+              %li= link_to 'zip', archive_path(project, file_name, 'zip')
+        .navbar-left
+          %button.btn.navbar-btn.btn-default{ type: 'button', 'ng-click' => "clone_url = '#{http_url}'",
+                                  'ng-model' => "clone_url_protocol", 'btn-radio' => "'http'",
+                                  'ng-class' => '{"btn-info": clone_url_protocol == "http"}' } HTTP
+          %button.btn.navbar-btn.btn-default{ type: 'button', 'ng-click' => "clone_url = '#{ssh_url}'",
+                                  'ng-model' => "clone_url_protocol", 'btn-radio' => "'ssh'",
+                                  'ng-class' => '{"btn-info": clone_url_protocol == "ssh"}'} SSH
+        #git-help.navbar-text.navbar-left
+          %a.navbar-link{ 'ng-click' => 'is_collapsed_git_help = !is_collapsed_git_help' }
+            = fa_icon 'question', class: 'fa-lg'
 
-      %form#clone_url.navbar-form.navbar-left
-        .form-group
-          %input#clone-url.form-control{ readonly: 'readonly', spellcheck: false,
-                                         type: 'text', 'ng-model' => 'clone_url' }
-      #copy_to_clipboard.navbar-text.navbar-left
-        %a.navbar-link
-          %i.fa.fa-clipboard.fa-lg
+        %form#clone_url.navbar-form.navbar-left
+          .form-group
+            %input#clone-url.form-control{ readonly: 'readonly', spellcheck: false,
+                                           type: 'text', 'ng-model' => 'clone_url' }
+        #copy_to_clipboard.navbar-text.navbar-left{ title: t('layout.projects.git_help.question_title') }
+          %a.navbar-link
+            %i.fa.fa-clipboard.fa-lg
 
-      .navbar-text.navbar-left
-        = can?(:write, project) ? t("layout.read_write_access") : t("layout.read_access")
+        .navbar-text.navbar-left
+          = can?(:write, project) ? t("layout.read_write_access") : t("layout.read_access")
 
-      = render 'branch_select', project: project if act != :tags
+        = render 'branch_select', project: project if act != :tags
 
-  %div{ collapse: "is_collapsed_git_help" }
-    .container
-      %p= t("layout.projects.git_help.cloning") + ":"
-      %p
-      - if current_user
-        %p{ 'ng-hide' => 'clone_url_protocol == "ssh"' }~ "git clone #{http_url} #{project.name}"
-        %p{ 'ng-hide' => 'clone_url_protocol == "http"' }~ "git clone #{ssh_url} #{project.name}"
-      %p~ "cd #{project.name}"
-      %p
-      %p= t("layout.projects.git_help.remote") + ":"
-      %p
-      - if current_user
-        %p{ 'ng-hide' => 'clone_url_protocol == "ssh"' }~ "git remote add #{project.name} #{http_url}"
-        %p{ 'ng-hide' => 'clone_url_protocol == "http"' }~ "git remote add #{project.name} #{ssh_url}"
-      %p~ "git fetch #{project.name}"
-      %p~ "git checkout -b my-local-tracking-branch #{project.name}/master_or_other_branch"
+    %div{ collapse: "is_collapsed_git_help" }
+      .container
+        %p= t("layout.projects.git_help.cloning") + ":"
+        %p
+        - if current_user
+          %p{ 'ng-hide' => 'clone_url_protocol == "ssh"' }~ "git clone #{http_url} #{project.name}"
+          %p{ 'ng-hide' => 'clone_url_protocol == "http"' }~ "git clone #{ssh_url} #{project.name}"
+        %p~ "cd #{project.name}"
+        %p
+        %p= t("layout.projects.git_help.remote") + ":"
+        %p
+        - if current_user
+          %p{ 'ng-hide' => 'clone_url_protocol == "ssh"' }~ "git remote add #{project.name} #{http_url}"
+          %p{ 'ng-hide' => 'clone_url_protocol == "http"' }~ "git remote add #{project.name} #{ssh_url}"
+        %p~ "git fetch #{project.name}"
+        %p~ "git checkout -b my-local-tracking-branch #{project.name}/master_or_other_branch"
 
-
--#
-  .well#description-top{'ng-controller' => 'ProjectRepoBlockController', 'ng-init' => "init(#{project.repo.branches.count})"}
-    -if @commit
-      %ul.nav.zip
-        %li#menu-archive.dropdown
-          %a.dropdown-toggle{"data-toggle" => "dropdown", href: "#menu-archive"}
-            =image_tag 'zip.png', alt: 'ZIP'
-            %b.caret
-          %ul.dropdown-menu
-            - file_name = "#{@project.name}-#{treeish}"
-            %li=link_to "tar.gz", archive_path(project, file_name, 'tar.gz')
-            %li=link_to "zip", archive_path(project, file_name, 'zip')
-    .btn-group#clone-urls
-      %button.git-protocol-selector.btn{value: 'http_url', class: current_user ? '' : 'active'} HTTP
-      %button.git-protocol-selector.btn{value: 'ssh_url', class: current_user ? 'active' : ''} SSH
-    =hidden_field_tag :http_url, http_url
-    =hidden_field_tag :ssh_url, ssh_url
-    = text_field_tag :url, (current_user ? ssh_url : http_url), class: 'name', spellcheck: 'false', readonly: true
-    .git_help ?
-    .role= can?(:write, project) ? t("layout.read_write_access") : t("layout.read_access")
-    = render 'branch_select', project: project if act != :tags
-    .both
-    #git_help_data
-      %p= t("layout.projects.git_help.cloning") + ":"
-      %p
-      %p.http_url{class: current_user ? 'hidden' : ''}~ "git clone #{http_url} #{project.name}"
-      %p.ssh_url{class: current_user ? '' : 'hidden'}~ "git clone #{ssh_url} #{project.name}"
-      %p~ "cd #{project.name}"
-      %p
-      %p= t("layout.projects.git_help.remote") + ":"
-      %p
-      %p.http_url{class: current_user ? 'hidden' : ''}~ "git remote add #{project.name} #{http_url}"
-      %p.ssh_url{class: current_user ? '' : 'hidden'}~ "git remote add #{project.name} #{ssh_url}"
-      %p~ "git fetch #{project.name}"
-      %p~ "git checkout -b my-local-tracking-branch #{project.name}/master_or_other_branch"
-    .project-tabnav
-      %ul.tabnav-tabs
-        %li{class: ('selected' if act == :show && contr == :trees )}
+  .container
+    .row
+      %ul.nav.nav-tabs{ role: 'tablist' }
+        %li{class: ('active' if act == :show && contr == :trees )}
           = link_to t('project_menu.files'), tree_path(project, treeish)
-        %li{class: ('selected' if act == :index && contr == :commits )}
+        %li{class: ('active' if act == :index && contr == :commits )}
           = link_to t('project_menu.commits'), commits_path(project, treeish)
-        %li{class: ('selected' if act == :branches && contr == :trees )}
+        %li{class: ('active' if act == :branches && contr == :trees )}
           = link_to t('project_menu.branches', count: '{{singleton.project.branches_count}}'), branch_path(project, branch)
-        %li.tags{class: ('selected' if act == :tags && contr == :trees )}
+        %li.tags{class: ('active' if act == :tags && contr == :trees )}
           = link_to t('project_menu.tags', count: project.repo.tags.count), tags_path(project)
-  .both
-  :javascript
-    $(document).ready(function() {
-      $('#url').on('click', function() {
-        $(this).select();
-      });
-    });

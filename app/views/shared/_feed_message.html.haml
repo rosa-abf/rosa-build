@@ -1,28 +1,27 @@
 -if !presenter.is_reference_to_issue || can?(:show, presenter.reference_project)
-  .activity{id: presenter.comment_id? ? presenter.comment_anchor : ''}
-    .top
-      - if presenter.buttons?
-        %span.buttons= raw presenter.buttons.join(' | ').html_safe
-      .image
-        %img{alt: "avatar", src: presenter.image}
-      .text
-        -#.imaged move up a line.
-        %span.name= presenter.header
-        .both
-        = datetime_moment presenter.date, tag: :span, class: :date
-        .both
+  .panel.panel-default{id: presenter.comment_id? ? presenter.comment_anchor : ''}
+    .panel-body
+      .pull-left.roffset5
+        %img{ alt: 'avatar', src: presenter.image }
+      .pull-left
+        %strong= presenter.header
+        - if presenter.buttons?
+          %span.pull-right= raw presenter.buttons.join(' | ').html_safe
+
+        = "(#{datetime_moment(presenter.date, tag: :strong)})".html_safe
         - if presenter.caption?
-          %span.subject= presenter.caption
+          .clearfix
+          %span= presenter.caption
           - if presenter.expandable? and presenter.content?
             %span.data-expander.collapsed{id: "expand#{item_no}"} &nbsp;
-          .both
-      .both
-      - if presenter.content?
-        %div
-          =presenter.issue_referenced_state if presenter.issue_referenced_state?
-          .fulltext{class: "#{presenter.expandable? ? "hidden" : ''} #{presenter.caption? ? "" : "alone"}",
-                    id: presenter.expandable? ? "content-expand#{item_no}" : ''}
-            .md_and_cm{class: presenter.is_reference_to_issue ? '' : 'cm-s-default'}
-              = preserve do
-                = presenter.is_reference_to_issue ? presenter.content : markdown(presenter.content)
-          .both
+
+        .clearfix
+        - if presenter.content?
+          %div
+            =presenter.issue_referenced_state if presenter.issue_referenced_state?
+            .fulltext{class: "#{presenter.expandable? ? "hidden" : ''} #{presenter.caption? ? "" : "alone"}",
+                      id: presenter.expandable? ? "content-expand#{item_no}" : ''}
+              .md_and_cm{class: presenter.is_reference_to_issue ? '' : 'cm-s-default'}
+                = preserve do
+                  = presenter.is_reference_to_issue ? presenter.content : markdown(presenter.content)
+            .clearfix
