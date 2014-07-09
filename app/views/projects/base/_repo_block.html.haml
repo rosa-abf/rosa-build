@@ -46,7 +46,7 @@
         .navbar-text.navbar-left
           = can?(:write, project) ? t("layout.read_write_access") : t("layout.read_access")
 
-        = render 'branch_select', project: project if act != :tags
+        .navbar-right= render 'branch_select', project: project if act != :tags
 
     %div{ collapse: "is_collapsed_git_help" }
       .container
