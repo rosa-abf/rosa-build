@@ -1,4 +1,4 @@
 ru:
   time:
     formats:
-      date_block_format: "%d<br />%B"
+      date_block_format: "%d %B, %Y"

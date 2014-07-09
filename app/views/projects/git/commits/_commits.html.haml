@@ -3,16 +3,14 @@
 - counter = 1
 
 - commits.each_pair do |year, by_month|
-  - if year != cur_year
-    .year= "#{year} #{t("layout.year")}"
-
   - by_month.each_pair do |month, by_day|
     - by_day.each_pair do |day, commits|
-      .date-block
-        .date= raw l(commits.first.authored_date, format: :date_block_format)
-        .messages
+      .panel.panel-info
+        .panel-heading
+          %h3.panel-title= raw l(commits.first.authored_date, format: :date_block_format)
+        %ul.list-group
           - commits.each_with_index do |commit|
-            - GitPresenters::CommitAsMessagePresenter.present(commit, project: @project) do |presenter|
-              = render 'shared/feed_message', presenter: presenter, item_no: counter
-              - counter += 1
-        .both
+            %li.list-group-item
+              - GitPresenters::CommitAsMessagePresenter.present(commit, project: @project) do |presenter|
+                = render 'shared/feed_commit', presenter: presenter, item_no: counter
+                - counter += 1

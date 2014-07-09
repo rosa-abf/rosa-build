@@ -6,24 +6,7 @@
 
     %h3= t 'layout.projects.last_commit'
     - GitPresenters::CommitAsMessagePresenter.present(@commit, project: @project) do |presenter|
-      =# render 'shared/feed_message', presenter: presenter, item_no: 1
-
       .panel.panel-default
-        .panel-body
-          .pull-left.roffset5
-            %img{ alt: 'avatar', src: presenter.image }
-          .pull-left
-            %strong= presenter.header
-            = "(#{datetime_moment(presenter.date, tag: :strong)})".html_safe
-            .clearfix
-            %span= presenter.caption
-            - if presenter.expandable? and presenter.content?
-              %span.glyphicon.glyphicon-chevron-down{ 'data-toggle' => 'collapse', 'data-target' => '#commit_message' }
-          .clearfix
-          - if presenter.content?
-            #commit_message.collapse
-              = preserve do
-                = markdown(presenter.content)
-
+        .panel-body= render 'shared/feed_commit', presenter: presenter, item_no: 1
     .clearfix
     = yield

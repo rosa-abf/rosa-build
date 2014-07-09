@@ -56,6 +56,13 @@ module ApplicationHelper
   end
 
   def alert_class(type)
-    "alert-#{type.to_s == 'error' ? 'danger' : type}"
+    case type
+    when 'error'
+      'alert-danger'
+    when 'notice'
+      'alert-success'
+    else
+      "alert-#{type}"
+    end
   end
 end

@@ -1,10 +1,13 @@
-.pagination.tmargin30
+- prev_text, next_text = t('will_paginate.previous_label'), t('will_paginate.next_label')
+%ul.pager
   - if @page == 1
-    %span.previous_page.disabled= t('will_paginate.previous_label')
+    %li.disabled
+      %a= prev_text
   - else
-    %a.previous_page{rel: "prev", href: commits_path(@project, treeish: @treeish, page: (@page - 1))}= t('will_paginate.previous_label')
-
-  - if @last_page
-    %span.next_page.disabled= t('will_paginate.next_label')
-  - else
-    %a.next_page{rel: "next", href: commits_path(@project, treeish: @treeish, page: (@page + 1))}= t('will_paginate.next_label')
+    %li
+      %a{ href: commits_path(@project, treeish: @treeish, page: (@page - 1))}= prev_text
+  %li
+    - if @last_page
+      %a= next_text
+    - else
+      %a{ href: commits_path(@project, treeish: @treeish, page: (@page + 1))}= next_text
