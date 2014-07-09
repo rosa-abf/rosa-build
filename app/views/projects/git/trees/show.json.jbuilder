@@ -40,7 +40,7 @@ json.breadcrumb do
     paths = File.split(@path)
     if paths.size > 1 and paths.first != '.'
       json.paths do
-        json.array! iterate_path2(paths.first).each do |el|
+        json.array! iterate_path(paths.first).each do |el|
           json.path el.first
           json.name el.last
         end
