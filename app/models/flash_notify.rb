@@ -23,8 +23,4 @@ class FlashNotify < ActiveRecord::Base
   def should_show?(cookie_hash_id)
     cookie_hash_id != hash_id && published
   end
-
-  def alert_class
-    "alert-#{status == 'error' ? 'danger' : status}"
-  end
 end

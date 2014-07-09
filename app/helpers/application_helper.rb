@@ -54,4 +54,8 @@ module ApplicationHelper
     klass = "datetime_moment #{options[:class]}"
     content_tag(tag, nil, class: klass, title: title, origin_datetime: date.to_i)
   end
+
+  def alert_class(type)
+    "alert-#{type.to_s == 'error' ? 'danger' : type}"
+  end
 end

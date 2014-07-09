@@ -42,7 +42,7 @@ function setCookie (name, value, expires, path, domain, secure) {
 }
 
 $(document).ready(function() {
-  $('.alert button.close').click(function () {
+  $('.notify.alert button.close').click(function () {
     var exdate=new Date();
     exdate.setDate(exdate.getDate() + 365);
     var expires="expires="+exdate.toUTCString();
@@ -71,4 +71,9 @@ $(document).ready(function() {
     form.attr('action', $(this).val());
     form.submit();
   });
+
+  $('#create_fork').click(function () {
+    $(this).button('loading');
+  });
+
 });

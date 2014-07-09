@@ -1,3 +1,4 @@
-.flash
-  - flash.each do |type, message|
-    .message{class: type}= message
+- flash.each do |type, message|
+  .alert.text-center{ class: alert_class(type) }
+    %button.close{ type: 'button', 'data-dismiss' => 'alert', 'aria-hidden' => true } &times;
+    = message
