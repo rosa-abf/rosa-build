@@ -2,8 +2,9 @@ ru:
   layout:
     autoreload_page: Автоматически обновлять страницу
     word_wrap: Перенос строк
-    autoreload_log: Обновлять лог каждые 
+    autoreload_log: Обновлять лог каждые
     read_more: Читать дальше
+    load_more: Загрузить далее
     turned_on: включены
     turned_off: выключены
 

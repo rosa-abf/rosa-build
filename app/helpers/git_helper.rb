@@ -55,17 +55,16 @@ module GitHelper
     res.html_safe
   end
 
-  def iterate_path(path, &block)
-    p '*'*60, "path == #{path}", '*'*60
-    path.split(File::SEPARATOR).inject('') do |a, e|
-      p '*'*60, "a == #{a}; e = #{e}", '*'*60
-      if e != '.' && e != '..'
-        a = File.join(a, e)
-        a = a[1..-1] if a[0] == File::SEPARATOR
-        block.call(a, e) if a.length > 1
+  def iterate_path(path)
+    tree = []
+    path.split("\/").each do |name|
+      if tree.last
+        tree << [File.join(tree.try(:last).try(:first), name), name]
+      else
+        tree << [name, name]
       end
-      a
     end
+    tree
   end
 
   def branch_selector_options(project)

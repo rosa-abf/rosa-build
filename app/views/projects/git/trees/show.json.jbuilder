@@ -1,14 +1,7 @@
-json.project do
-  json.(@project, :id, :name)
-  json.fullname '!!!!!!!!!' #@project.name_with_owner
-
-  json.owner do
-    json.(@project.owner, :id, :name, :uname)
-  end
-end
+page = params[:page].to_i
 
 json.tree do
-  json.array!@project.tree_info(@tree, @treeish, @path).each do |node, node_path, commit|
+  json.array!@project.tree_info(@tree, @treeish, @path, page).each do |node, node_path, commit|
     if node.is_a? Grit::Submodule
       url = submodule_url(node, @treeish)
       json.submodule do
@@ -42,26 +35,22 @@ json.tree do
   end
 end
 
-json.tree_breadcrumb do
+json.breadcrumb do
   if @path.present?
     paths = File.split(@path)
-    if paths.size > 1 && paths.first != '.'
-      json.elements do
-        json.array! paths.first.split(File::SEPARATOR).each do |a, name|
-          if name != '.' && name != '..'
-            path = File.join(a, name)
-            path = path[1..-1] if path[0] == File::SEPARATOR
-            if path.length > 1
-              json.name path
-              json.path name
-            end
-          end
+    if paths.size > 1 and paths.first != '.'
+      json.paths do
+        json.array! iterate_path2(paths.first).each do |el|
+          json.path el.first
+          json.name el.last
         end
       end
-      json.last paths.last
     end
+    json.last paths.last
   end
 end
 
 json.path @path
 json.root_path @path.present? ? File.join([@path, ".."].compact) : nil
+params[:page].to_i
+json.next_page page.next if @tree.contents.count >= Project::CONTENT_LIMIT*(page+1)

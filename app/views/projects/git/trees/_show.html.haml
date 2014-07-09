@@ -9,13 +9,13 @@
     %thead
       %tr
         %th= t 'layout.projects.filename'
-        %th.col-md-9= t 'layout.projects.message'
+        %th.col-md-8= t 'layout.projects.message'
         %th= t 'layout.projects.age'
     %tbody
-      %tr{ 'ng-show' => 'path' }
+      %tr{ 'ng-show' => 'path && !processing' }
         %td
           %span= fa_icon 'folder', class: 'text-primary'
-          %a{ 'ng-href' => '{{root_path}}', 'ng-click' => 'getTree(root_path)' } ..
+          %a{ 'ng-href' => '{{root_path}}', 'ng-click' => 'getTree($event, root_path)' } ..
         %td &nbsp;
         %td &nbsp;
       %tr{ 'ng-repeat' => 'el in tree' }
@@ -36,3 +36,8 @@
           %span{ 'am-time-ago' => 'el.commit.committed_date', title: "{{issue.committed_date | amDateFormat:'ddd, LLL'}}" }
         %td{ 'ng-hide' => 'el.commit' }
         %td{ 'ng-hide' => 'el.commit' }
+
+  %hr
+  %btn.center-block.btn.btn-primary{ 'ng-show' => 'next_page', 'ng-disabled' => 'processing',
+                                     'ng-click' => 'getTree($event, null, true)' }
+    = t 'layout.activity_feed.load_more'

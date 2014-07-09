@@ -5,6 +5,8 @@ module Git
   extend ActiveSupport::Concern
 
   included do
+    CONTENT_LIMIT = 200
+
     has_attached_file :srpm
 
     validates_attachment_size :srpm, less_than_or_equal_to: 500.megabytes
@@ -88,14 +90,16 @@ module Git
     [repo.commits(treeish, options[:per_page], skip), options[:page], last_page]
   end
 
-  def tree_info(tree, treeish = nil, path = nil)
+  def tree_info(tree, treeish = nil, path = nil, page = 0)
     return [] unless tree
     grouped = tree.contents.sort_by{|c| c.name.downcase}.group_by(&:class)
-    [
+    contents = [
       grouped[Grit::Tree],
       grouped[Grit::Blob],
       grouped[Grit::Submodule]
-    ].compact.flatten.map do |node|
+    ].compact.flatten
+    range = page*CONTENT_LIMIT..CONTENT_LIMIT+page*(CONTENT_LIMIT)-1
+    contents[range].map do |node|
       node_path = File.join([path.present? ? path : nil, node.name].compact)
       [
         node,
