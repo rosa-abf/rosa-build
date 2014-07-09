@@ -64,4 +64,11 @@ $(document).ready(function() {
 
   updateTime();
   setInterval( updateTime, 15000 );
+
+  // TODO refactoring
+  $('#branch_selector').change(function() {
+    var form = $('form#branch_changer');
+    form.attr('action', $(this).val());
+    form.submit();
+  });
 });

@@ -9,12 +9,4 @@ RosaABF.controller('ProjectRepoBlockController', ['$scope', 'ApiProject', functi
     $scope.clone_url = clone_url;
     $scope.singleton.project.branches_count = branches;
   }
-
-  // TODO refactoring
-  $scope.select_branch = function() {
-    $form = $('form#branch_changer');
-    $form.attr('action', $scope.branch);
-    $form.submit();
-  };
-
 }]);

@@ -11,8 +11,3 @@
     = hidden_field_tag :fork_name, name, name: 'fork_name'
     =f.submit t('layout.projects.fork_to', to: full_name), class: 'btn btn-primary center-block',
               'data-loading-text' => t('layout.processing'), id: 'create_fork'
-
-:javascript
-  $('#create_fork').click(function () {
-    $(this).button('loading');
-  })
