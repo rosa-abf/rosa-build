@@ -6,10 +6,10 @@ class RunExtraMassBuildsJob
   end
 
   def perform
-    MassBuild.where(status: BUILD_PENDING).find_each do |mb|
+    MassBuild.where(status: MassBuild::BUILD_PENDING).find_each do |mb|
       next if mb.extra_mass_builds.blank?
       next if mb.extra_mass_builds.exclude?(mass_build_id)
-      emb = MassBuild.where(status: SUCCESS, id: mb.extra_mass_builds).to_a
+      emb = MassBuild.where(status: MassBuild::SUCCESS, id: mb.extra_mass_builds).to_a
       next if emb.size != mb.extra_mass_builds.size
 
       next if emb.find{ |mb| not_ready?(mb) }
