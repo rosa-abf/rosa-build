@@ -15,7 +15,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :builder,    class_name: 'User'
   belongs_to :publisher,  class_name: 'User'
   belongs_to :advisory
-  belongs_to :mass_build, counter_cache: true, touch: true
+  belongs_to :mass_build, counter_cache: true
   has_many :items, class_name: '::BuildList::Item', dependent: :destroy
   has_many :packages, class_name: '::BuildList::Package', dependent: :destroy
   has_many :source_packages, -> { where(package_type: 'source') }, class_name: '::BuildList::Package'
@@ -172,7 +172,7 @@ class BuildList < ActiveRecord::Base
     end
 
     after_transition on: :published,
-      do: [:set_version_and_tag, :actualize_packages]
+      do: %i(set_version_and_tag actualize_packages)
     after_transition on: :publish, do: :set_publisher
     after_transition(on: :publish) do |build_list, transition|
       if transition.from == BUILD_PUBLISHED_INTO_TESTING

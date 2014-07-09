@@ -2,6 +2,34 @@ class MassBuild < ActiveRecord::Base
 
   AUTO_PUBLISH_STATUSES = %w(none default testing)
 
+  STATUSES, HUMAN_STATUSES = [], {}
+  [
+    %w(SUCCESS                        0),
+    %w(BUILD_STARTED                  3000),
+    %w(BUILD_PENDING                  2000),
+  ].each do |kind, value|
+    value = value.to_i
+    const_set kind, value
+    STATUSES << value
+    HUMAN_STATUSES[value] = kind.downcase.to_sym
+  end
+  STATUSES.freeze
+  HUMAN_STATUSES.freeze
+
+  state_machine :status, initial: :build_pending do
+    event :start do
+      transition build_pending: :build_started
+    end
+
+    event :done do
+      transition build_started: :success
+    end
+
+    HUMAN_STATUSES.each do |code,name|
+      state name, value: code
+    end
+  end
+
   belongs_to :build_for_platform, -> { where(platform_type: 'main') }, class_name: 'Platform'
   belongs_to :save_to_platform, class_name: 'Platform'
   belongs_to :user
@@ -43,7 +71,7 @@ class MassBuild < ActiveRecord::Base
             :use_extra_tests,
             inclusion:              { in: [true, false] }
 
-  after_commit      :build_all, on: :create
+  after_commit      :build_all, on: :create, if: Proc.new { |mb| mb.extra_mass_builds.blank? }
   before_validation :set_data,  on: :create
 
   COUNT_STATUSES = %i(
@@ -58,6 +86,7 @@ class MassBuild < ActiveRecord::Base
   )
 
   def build_all
+    start
     # later with resque
     arches_list = arch_names ? Arch.where(name: arch_names.split(', ')) : Arch.all
 
@@ -82,6 +111,7 @@ class MassBuild < ActiveRecord::Base
         update_column :missed_projects_list, list
       end
     end
+    done
   end
   later :build_all, queue: :low
 
