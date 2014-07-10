@@ -26,6 +26,13 @@ clean_api_defender_statistics:
   queue: low
   description: 'Cleans ApiDefender statistics'
 
+run_extra_mass_builds:
+  every:
+    - '5m'
+  class: 'RunExtraMassBuildsJob'
+  queue: low
+  description: 'Run mass builds with relations'
+
 restart_nodes:
   every:
     - '5m'
