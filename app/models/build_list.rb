@@ -690,8 +690,7 @@ class BuildList < ActiveRecord::Base
 
   def prepare_extra_build_lists
     if mass_build && mass_build.extra_mass_builds.present?
-      extra_build_lists ||= []
-      extra_build_lists << BuildList.where(mass_build_id: mass_build.extra_mass_builds, arch_id: arch_id).pluck(:id)
+      extra_build_lists << BuildList.where(mass_build_id: mass_build.extra_mass_builds).pluck(:id)
       extra_build_lists.flatten!
     end
     return if extra_build_lists.blank?

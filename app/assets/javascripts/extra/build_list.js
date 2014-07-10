@@ -23,9 +23,17 @@ $(document).ready(function() {
       auto_create_container.removeAttr('checked');
       addPersonalPlatformToExtraRepos(selected_option, extra_repos);
       extra_repos.show();
+
+      var version_sel = $('#build_list_project_version').val();
+      var parent = $('div.build_for_pl').filter(function (){
+        return $(this).text() == version_sel;
+      }).parent();
+      parent.find('input').removeAttr('disabled');
+      parent.find('input[rep_name="main"]').attr('checked', 'checked');
     } else {
       all_repositories.attr('disabled', 'disabled');
       extra_repos.hide();
+
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');
       parent.find('input[rep_name="main"]').attr('checked', 'checked');
@@ -42,10 +50,6 @@ $(document).ready(function() {
       auto_create_container.attr('checked', 'checked');
     }
   });
-
-  if($('#from_build_list_id').size() == 0) {
-    $('#build_list_save_to_repository_id').trigger('change');
-  }
 
   ownership_btn.click(function() {
     ownership_btn.removeClass('active');
@@ -96,6 +100,16 @@ $(document).ready(function() {
              }
      });
     return false;
+  });
+
+  $(document).on('change', '#build_list_project_version', function(){
+    var save_to_repo = $('#build_list_save_to_repository_id');
+    var platform_id = save_to_repo.find("option:selected").attr('platform_id');
+    var build_platform = $('#build_for_pl_' + platform_id);
+
+    if (build_platform.size() == 0) {
+      save_to_repo.trigger('change');
+    }
   });
 });
 
