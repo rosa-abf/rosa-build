@@ -86,7 +86,7 @@ class MassBuild < ActiveRecord::Base
   )
 
   def build_all
-    start
+    return unless start
     # later with resque
     arches_list = arch_names ? Arch.where(name: arch_names.split(', ')) : Arch.all
 
