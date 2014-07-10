@@ -8,7 +8,7 @@ RosaABF.directive "ngConfirmClick", ->
     clickAction = attr.confirmedClick
     element.bind 'click', (event) ->
       if clickAction
-        scope.$eval clickAction if window.confirm(msg)
+        scope.$apply clickAction if window.confirm(msg)
       else
         unless confirm(msg)
           event.stopImmediatePropagation()
