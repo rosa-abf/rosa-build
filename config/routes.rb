@@ -361,7 +361,7 @@ Rosa::Application.routes.draw do
         constraints Rosa::Constraints::Treeish do
           # Tree
           get '/' => "git/trees#show", as: :project
-          get '/tree/:treeish(/*path)' => "git/trees#show", as: :tree, format: false
+          get '/tree/:treeish' => "git/trees#show", as: :tree, format: false
           # Tags
           get '/tags' => "git/trees#tags", as: :tags
           # Branches

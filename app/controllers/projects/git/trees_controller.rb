@@ -14,6 +14,8 @@ class Projects::Git::TreesController < Projects::Git::BaseController
       @tree = @tree / @path if @path.present?
       @commit = @branch.present? ? @branch.commit() : @project.repo.log(@treeish, @path, max_count: 1).first
       raise Grit::NoSuchPathError unless @commit
+    else
+      @tree = @tree / @path if @path.present?
     end
   end
 

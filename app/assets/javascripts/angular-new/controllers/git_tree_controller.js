@@ -1,7 +1,6 @@
-RosaABF.controller('GitTreeCtrl', ['$scope', '$http', function($scope, $http) {
+RosaABF.controller('GitTreeCtrl', ['$scope', '$http', '$location', function($scope, $http, $location) {
   $scope.project    = null;
   $scope.treeish    = null;
-  $scope.path       = null;
   $scope.root_path  = null;
   $scope.tree       = null;
   $scope.breadcrumb = null;
@@ -10,28 +9,21 @@ RosaABF.controller('GitTreeCtrl', ['$scope', '$http', function($scope, $http) {
   $scope.init = function(project, treeish, path, root_path) {
     $scope.project   = project;
     $scope.treeish   = treeish;
+    $scope.root_path = root_path;
     $scope.path      = path;
-    $scope.path_path = root_path;
-    $scope.getTree();
+    //$scope.getTree();
   };
 
-  $scope.getTree = function($event, path, more) {
+  $scope.refresh = function(more) {
     $scope.processing = true;
-    more = typeof more !== 'undefined' ? more : false;
 
-    if(path) { $scope.path = path; }
-    if($scope.path) {
-      var treeish = $scope.treeish+'/'+$scope.path;
-    }
-    else {
-      var treeish = $scope.treeish;
-    }
-    var params = {format: 'json'};
+    var params = { format: 'json', path: $scope.path };
+
     if(more) {
       params.page = $scope.next_page;
     }
 
-    $http.get(Routes.tree_path($scope.project, treeish, params)).then(function(res) {
+    $http.get(Routes.tree_path($scope.project, $scope.treeish, params)).then(function(res) {
       $scope.path       = res.data.path;
       $scope.root_path  = res.data.root_path;
       $scope.breadcrumb = res.data.breadcrumb;
@@ -44,6 +36,28 @@ RosaABF.controller('GitTreeCtrl', ['$scope', '$http', function($scope, $http) {
       }
       $scope.processing = false;
     });
+  };
+
+  $scope.$on('$locationChangeSuccess', function(event) {
+    $scope.path = $location.search()['path'];
+    $scope.refresh();
+  });
+
+  $scope.getTree = function($event, path, more) {
+    if($scope.processing && $event) {
+      return $event.preventDefault();
+    }
+
+    more = typeof more !== 'undefined' ? more : false;
+    if(path && path !== '') { $scope.path = path; }
+    else { $scope.path = null; }
+
+    if(more) {
+      $scope.refresh(more);
+    }
+    else {
+      $location.search('path', $scope.path);
+    }
 
     if($event) {
       $event.preventDefault();

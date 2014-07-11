@@ -1,5 +1,5 @@
 %ol.breadcrumb
-  %li= link_to @project.name, tree_path(@project, treeish: @treeish), 'ng-click' => "getTree($event, '/')"
+  %li= link_to @project.name, tree_path(@project, treeish: @treeish), 'ng-click' => "getTree($event, '')"
   %li{ 'ng-repeat' => 'el in breadcrumb.paths' }
     %a{ href: '#', 'ng-click' => 'getTree($event, el.path)' } {{el.name}}
   %li.active {{breadcrumb.last}}

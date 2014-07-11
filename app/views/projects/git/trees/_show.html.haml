@@ -4,15 +4,14 @@
   .files
     .pull-left= render 'whereami'
     .pull-right= render 'fork'
-  - root_path = @path.present? ? File.join([@path, ".."].compact) : 'null'
   %table.table.table-hover
     %thead
       %tr
         %th= t 'layout.projects.filename'
         %th.col-md-8= t 'layout.projects.message'
         %th= t 'layout.projects.age'
-    %tbody
-      %tr{ 'ng-show' => 'path && !processing' }
+    %tbody{ 'ng-hide' => 'processing' }
+      %tr{ 'ng-show' => 'path' }
         %td
           %span= fa_icon 'folder', class: 'text-primary'
           %a{ 'ng-href' => '{{root_path}}', 'ng-click' => 'getTree($event, root_path)' } ..
