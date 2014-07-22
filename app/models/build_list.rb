@@ -105,7 +105,8 @@ class BuildList < ActiveRecord::Base
     %w(TESTS_FAILED                   11000),
     %w(BUILD_PUBLISHED_INTO_TESTING   12000),
     %w(BUILD_PUBLISH_INTO_TESTING     13000),
-    %w(FAILED_PUBLISH_INTO_TESTING    14000)
+    %w(FAILED_PUBLISH_INTO_TESTING    14000),
+    %w(UNPERMITTED_ARCH               15000)
   ].each do |kind, value|
     value = value.to_i
     const_set kind, value
@@ -187,6 +188,10 @@ class BuildList < ActiveRecord::Base
 
     event :place_build do
       transition waiting_for_response: :build_pending
+    end
+
+    event :unpermitted_arch do
+      transition build_pending: :unpermitted_arch
     end
 
     event :rerun_tests do
@@ -622,7 +627,40 @@ class BuildList < ActiveRecord::Base
     end
   end
 
+  def add_job_to_abf_worker_queue
+    if permitted_arch?
+      super
+    else
+      unpermitted_arch
+    end
+  end
+
   protected
+
+  def permitted_arch?
+    blob, raw = project.find_blob_and_raw_of_spec_file(commit_hash)
+    return true unless blob
+
+    permitted = true
+    file      = Tempfile.new(blob.name, File.join(Rails.root, 'tmp'))
+    filename  = file.path
+    begin
+      file.puts raw.content
+      file.rewind
+      exclusivearch = `rpm -q --qf="[%{EXCLUSIVEARCH}\n]" --specfile #{file.path}`
+      exitstatus    = $?.exitstatus
+      permitted     = false if exitstatus == 0 && exclusivearch.present?  && exclusivearch !~ /^#{arch.name}$/
+
+      excludearch   = `rpm -q --qf="[%{EXCLUDEARCH}\n]" --specfile #{file.path}`
+      exitstatus    = $?.exitstatus
+      permitted     = false if exitstatus == 0 && excludearch.present?    && excludearch =~ /^#{arch.name}$/
+    ensure
+      file.close
+      file.unlink # deletes the temp file
+    end
+
+    permitted
+  end
 
   def create_container
     Resque.enqueue(BuildLists::CreateContainerJob, id)

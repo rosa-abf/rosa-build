@@ -172,7 +172,7 @@ ru:
         build_published_into_testing: '[testing] опубликован'
         build_publish_into_testing: '[testing] публикуется'
         failed_publish_into_testing: '[testing] ошибка публикации'
-
+        unpermitted_arch: Недопустимая архитектура
 
       log:
         build_log: Лог сборки
