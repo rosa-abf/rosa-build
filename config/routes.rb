@@ -284,6 +284,8 @@ Rosa::Application.routes.draw do
         put :reject_publish
         put :publish_into_testing
         put :update_type
+        get :dependent_projects
+        post :dependent_projects
       end
     end
 

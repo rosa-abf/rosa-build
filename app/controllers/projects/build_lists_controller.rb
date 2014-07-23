@@ -7,7 +7,7 @@ class Projects::BuildListsController < Projects::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:show, :index, :log] if APP_CONFIG['anonymous_access']
 
-  before_filter :find_build_list, only: [:show, :publish, :cancel, :update, :log, :create_container]
+  before_filter :find_build_list, only: [:show, :publish, :cancel, :update, :log, :create_container, :dependent_projects]
 
   load_and_authorize_resource :project, only: [:new, :create]
   load_resource :project, only: :index, parent: false
@@ -55,53 +55,40 @@ class Projects::BuildListsController < Projects::BaseController
   def create
     notices, errors = [], []
 
-    if params[:origin].present?
-      build_list = BuildList.find(params[:origin])
-      if build_list.save_to_platform.personal?
-        raise CanCan::AccessDenied
-      else
-        Resque.enqueue(BuildLists::DependentPackagesJob, build_list.id, current_user.id, params[:project_id])
+    @repository = Repository.find params[:build_list][:save_to_repository_id]
+    @platform = @repository.platform
 
-        flash[:notice] = t('flash.build_list.run_build_lists_job_added_to_queue')
-        redirect_to build_list_path(build_list)
-      end
-    else
+    params[:build_list][:save_to_platform_id] = @platform.id
 
-      @repository = Repository.find params[:build_list][:save_to_repository_id]
-      @platform = @repository.platform
+    build_for_platforms = Repository.select(:platform_id).
+      where(id: params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
 
-      params[:build_list][:save_to_platform_id] = @platform.id
+    build_lists = []
+    Arch.where(id: params[:arches]).each do |arch|
+      Platform.main.where(id: build_for_platforms).each do |build_for_platform|
+        @build_list = @project.build_lists.build(params[:build_list])
+        @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
+        @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
+        @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
-      build_for_platforms = Repository.select(:platform_id).
-        where(id: params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
-
-      build_lists = []
-      Arch.where(id: params[:arches]).each do |arch|
-        Platform.main.where(id: build_for_platforms).each do |build_for_platform|
-          @build_list = @project.build_lists.build(params[:build_list])
-          @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
-          @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
-          @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
-
-          flash_options = {project_version: @build_list.project_version, arch: arch.name, build_for_platform: build_for_platform.name}
-          if authorize!(:create, @build_list) && @build_list.save
-            build_lists << @build_list
-            notices << t("flash.build_list.saved", flash_options)
-          else
-            errors << t("flash.build_list.save_error", flash_options)
-          end
+        flash_options = {project_version: @build_list.project_version, arch: arch.name, build_for_platform: build_for_platform.name}
+        if authorize!(:create, @build_list) && @build_list.save
+          build_lists << @build_list
+          notices << t("flash.build_list.saved", flash_options)
+        else
+          errors << t("flash.build_list.save_error", flash_options)
         end
       end
-      errors << t("flash.build_list.no_arch_or_platform_selected") if errors.blank? and notices.blank?
-      if errors.present?
-        @build_list ||= BuildList.new
-        flash[:error] = errors.join('<br>').html_safe
-        render action: :new
-      else
-        BuildList.where(id: build_lists.map(&:id)).update_all(group_id: build_lists[0].id) if build_lists.size > 1
-        flash[:notice] = notices.join('<br>').html_safe
-        redirect_to project_build_lists_path(@project)
-      end
+    end
+    errors << t("flash.build_list.no_arch_or_platform_selected") if errors.blank? and notices.blank?
+    if errors.present?
+      @build_list ||= BuildList.new
+      flash[:error] = errors.join('<br>').html_safe
+      render action: :new
+    else
+      BuildList.where(id: build_lists.map(&:id)).update_all(group_id: build_lists[0].id) if build_lists.size > 1
+      flash[:notice] = notices.join('<br>').html_safe
+      redirect_to project_build_lists_path(@project)
     end
   end
 
@@ -134,6 +121,35 @@ class Projects::BuildListsController < Projects::BaseController
 
     @build_list.publisher = current_user
     do_and_back(:publish, 'publish_')
+  end
+
+  def dependent_projects
+    raise CanCan::AccessDenied if @build_list.save_to_platform.personal?
+
+    if request.post?
+      prs = params[:build_list]
+      if prs.present? && prs[:projects].present? && prs[:arches].present?
+        project_ids = prs[:projects].select{ |k, v| v == '1'  }.keys
+        arch_ids    = prs[:arches].  select{ |k, v| v == '1'  }.keys
+
+        Resque.enqueue(
+          BuildLists::DependentPackagesJob,
+          @build_list.id,
+          current_user.id,
+          project_ids,
+          arch_ids,
+          {
+            auto_publish_status:            prs[:auto_publish_status],
+            auto_create_container:          prs[:auto_create_container],
+            include_testing_subrepository:  prs[:include_testing_subrepository],
+            use_cached_chroot:              prs[:use_cached_chroot],
+            use_extra_tests:                prs[:use_extra_tests]
+          }
+        )
+        flash[:notice] = t('flash.build_list.dependent_projects_job_added_to_queue')
+        redirect_to build_list_path(@build_list)
+      end
+    end
   end
 
   def publish_into_testing

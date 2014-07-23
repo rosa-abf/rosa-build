@@ -223,12 +223,9 @@
     - if can? :create, @build_list
       = link_to t('layout.build_lists.recreate_build_list'), new_project_build_list_path(@build_list.project, build_list_id: @build_list.id), class: 'button'
       - if can_run_dependent_build_lists?(@build_list)
-        = link_to t('layout.build_lists.run_build_lists'),
-            project_build_lists_path(@build_list.project, origin: @build_list.id),
-            method: :post,
-            class: 'button',
-            data:   { confirm: t('layout.build_lists.are_you_sure_to_run_build_lists') }
-
+        = link_to t('projects.build_lists.dependent_projects.title'),
+            dependent_projects_build_list_path(@build_list),
+            class: 'button'
 
     %div{'ng-show' => "build_list.status == #{BuildList::BUILD_STARTED}"}
       = render 'shared/log', { build_started: true, get_log_path: log_build_list_path(@build_list) }
@@ -294,12 +291,6 @@
           %td{ colspan: 3 }
             %a{'ng-href' => '{{project.new_url}}' }
               = t('layout.build_lists.create_build_list')
-            .both
-            = link_to t('layout.build_lists.run_build_list'),
-                      '',
-                      method: :post,
-                      data:   { confirm: t('layout.build_lists.are_you_sure_to_run_build_lists') },
-                      'ng-href' => '{{project.run_url}}'
     .both
 
   - if @build_list.new_core?
