@@ -35,20 +35,24 @@
   %h3= t('.preferences')
   .leftlist= f.label :auto_publish_status
   .rightlist= f.select :auto_publish_status, auto_publish_statuses
+  .both
 
   .leftlist= f.label :auto_create_container
   .rightlist= f.check_box :auto_create_container
+  .both
 
   .leftlist= f.label :include_testing_subrepository
   .rightlist= f.check_box :include_testing_subrepository
+  .both
 
   .leftlist= f.label :use_cached_chroot
   .rightlist= f.check_box :use_cached_chroot
+  .both
 
   .leftlist= f.label :use_extra_tests
   .rightlist= f.check_box :use_extra_tests
-
   .both
+
   .hr
 
   .button_block
