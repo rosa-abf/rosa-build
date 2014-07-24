@@ -191,7 +191,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :unpermitted_arch do
-      transition build_pending: :unpermitted_arch
+      transition [:build_started, :build_canceling, :build_canceled] => :unpermitted_arch
     end
 
     event :rerun_tests do
