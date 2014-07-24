@@ -60,7 +60,6 @@ json.build_list do
         json.name project.name_with_owner
         json.dependent_packages packages
         json.new_url new_project_build_list_path(project)
-        json.run_url project_build_lists_path(@build_list.project, origin: @build_list.id, project_id: project.id)
       end if @build_list.save_to_platform.main?
 
     end if @build_list.packages.present?
