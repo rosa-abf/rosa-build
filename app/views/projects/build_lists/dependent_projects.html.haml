@@ -1,0 +1,62 @@
+-set_meta_tags title: [title_object(@build_list.project), t('activerecord.models.build_list')]
+
+:javascript
+  $('article .all').addClass('bigpadding');
+
+= render 'submenu'
+
+%h3= t('.title')
+
+= form_for @build_list, url: dependent_projects_build_list_path(@build_list), html: { class: :form, method: :post } do |f|
+
+  %h3= t('.projects')
+  - @build_list.packages.each do |package|
+    - dependent_projects(package).each do |project, packages|
+      .leftlist
+        = link_to project.name_with_owner, project_path(project.name_with_owner)
+        .both
+        %span
+          = t('.packages')
+          %i= packages * ', '
+
+      .rightlist
+        = f.check_box :project_id, name: "build_list[projects][#{project.id}]", checked: true
+      .both
+
+  %h3= t('.architecture')
+
+  - Arch.recent.each do |arch|
+    .leftlist= arch.name
+    .rightlist
+      - arches = @build_list.build_for_platform.platform_arch_settings.by_default.pluck(:arch_id)
+      = f.check_box :arch_id, name: "build_list[arches][#{arch.id}]", checked: arches.include?(arch.id)
+    .both
+
+  %h3= t('.preferences')
+  .leftlist= f.label :auto_publish_status
+  .rightlist= f.select :auto_publish_status, auto_publish_statuses
+  .both
+
+  .leftlist= f.label :auto_create_container
+  .rightlist= f.check_box :auto_create_container
+  .both
+
+  .leftlist= f.label :include_testing_subrepository
+  .rightlist= f.check_box :include_testing_subrepository
+  .both
+
+  .leftlist= f.label :use_cached_chroot
+  .rightlist= f.check_box :use_cached_chroot
+  .both
+
+  .leftlist= f.label :use_extra_tests
+  .rightlist= f.check_box :use_extra_tests
+  .both
+
+  .hr
+
+  .button_block
+    = submit_tag t('layout.create'),
+      data: {'disable-with' => t('layout.saving'), confirm: t('.are_you_sure') }
+    %span.text_button_padding= t('layout.or')
+    = link_to t('layout.cancel'), build_list_path(@build_list), class: 'button'
