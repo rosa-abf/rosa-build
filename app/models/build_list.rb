@@ -627,40 +627,7 @@ class BuildList < ActiveRecord::Base
     end
   end
 
-  def add_job_to_abf_worker_queue
-    if permitted_arch?
-      super
-    else
-      unpermitted_arch
-    end
-  end
-
   protected
-
-  def permitted_arch?
-    blob, raw = project.find_blob_and_raw_of_spec_file(commit_hash)
-    return true unless blob
-
-    permitted = true
-    file      = Tempfile.new(blob.name, File.join(Rails.root, 'tmp'))
-    filename  = file.path
-    begin
-      file.puts raw.content
-      file.rewind
-      exclusivearch = `rpm -q --qf="[%{EXCLUSIVEARCH}\n]" --specfile #{file.path}`
-      exitstatus    = $?.exitstatus
-      permitted     = false if exitstatus == 0 && exclusivearch.present?  && exclusivearch !~ /^#{arch.name}$/
-
-      excludearch   = `rpm -q --qf="[%{EXCLUDEARCH}\n]" --specfile #{file.path}`
-      exitstatus    = $?.exitstatus
-      permitted     = false if exitstatus == 0 && excludearch.present?    && excludearch =~ /^#{arch.name}$/
-    ensure
-      file.close
-      file.unlink # deletes the temp file
-    end
-
-    permitted
-  end
 
   def create_container
     Resque.enqueue(BuildLists::CreateContainerJob, id)
