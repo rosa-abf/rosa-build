@@ -225,7 +225,8 @@
       - if can_run_dependent_build_lists?(@build_list)
         = link_to t('projects.build_lists.dependent_projects.title'),
             dependent_projects_build_list_path(@build_list),
-            class: 'button'
+            class: 'button',
+            'ng-show' => 'build_list.dependent_projects_exists'
 
     %div{'ng-show' => "build_list.status == #{BuildList::BUILD_STARTED}"}
       = render 'shared/log', { build_started: true, get_log_path: log_build_list_path(@build_list) }
