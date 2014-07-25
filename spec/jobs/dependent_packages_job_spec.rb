@@ -8,11 +8,11 @@ describe BuildLists::DependentPackagesJob do
   let(:project_ids) { [build_list.project_id] }
   let(:arch_ids)    { [build_list.arch_id] }
   let(:options)     { {
-    auto_publish_status:            'none',
-    auto_create_container:          '0',
-    include_testing_subrepository:  '0',
-    use_cached_chroot:              '0',
-    use_extra_tests:                '0'
+    'auto_publish_status'            => 'none',
+    'auto_create_container'          => '0',
+    'include_testing_subrepository'  => '0',
+    'use_cached_chroot'              => '0',
+    'use_extra_tests'                => '0'
   } }
 
   before do
