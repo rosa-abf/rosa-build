@@ -28,7 +28,7 @@ shared_examples_for 'content platform user with show rights' do
   end
 end
 
-shared_examples_for 'content platform user without owner rights' do
+shared_examples_for 'content platform user without member rights' do
   it 'should not be able to perform remove_file action for main platform' do
     get :remove_file, platform_id: @platform, path: '/test'
     response.should_not be_success
@@ -40,7 +40,7 @@ shared_examples_for 'content platform user without owner rights' do
   end
 end
 
-shared_examples_for 'content platform user with owner rights' do
+shared_examples_for 'content platform user with member rights' do
   before do
     allow(PlatformContent).to receive(:remove_file)
   end
@@ -80,7 +80,7 @@ describe Platforms::ContentsController do
 
     it_should_behave_like 'content platform user with show rights' if APP_CONFIG['anonymous_access']
     it_should_behave_like 'content platform user without show rights for hidden platform'
-    it_should_behave_like 'content platform user without owner rights'
+    it_should_behave_like 'content platform user without member rights'
   end
 
   context 'for global admin' do
@@ -90,20 +90,7 @@ describe Platforms::ContentsController do
 
     it_should_behave_like 'content platform user with show rights'
     it_should_behave_like 'content platform user with show rights for hidden platform'
-    it_should_behave_like 'content platform user with owner rights'
-  end
-
-  context 'for owner user' do
-    before do
-      http_login(@user)
-      allow(Platform).to receive(:find).and_return(@platform)
-      allow(@platform).to receive(:owner).and_return(@user)
-      create_relation(@platform, @user, 'admin')
-    end
-
-    it_should_behave_like 'content platform user with show rights'
-    it_should_behave_like 'content platform user with show rights for hidden platform'
-    it_should_behave_like 'content platform user with owner rights'
+    it_should_behave_like 'content platform user with member rights'
   end
 
   context 'for member of platform' do
@@ -115,7 +102,7 @@ describe Platforms::ContentsController do
 
     it_should_behave_like 'content platform user with show rights'
     it_should_behave_like 'content platform user with show rights for hidden platform'
-    it_should_behave_like 'content platform user without owner rights'
+    it_should_behave_like 'content platform user with member rights'
   end
 
   context 'for simple user' do
@@ -125,7 +112,7 @@ describe Platforms::ContentsController do
 
     it_should_behave_like 'content platform user with show rights'
     it_should_behave_like 'content platform user without show rights for hidden platform'
-    it_should_behave_like 'content platform user without owner rights'
+    it_should_behave_like 'content platform user without member rights'
   end
 
 end
