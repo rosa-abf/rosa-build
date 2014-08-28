@@ -6,9 +6,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   load_and_authorize_resource :build_list, only: [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing, :rerun_tests]
 
   def show
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def index
@@ -16,9 +14,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
     @build_lists = filter.find.includes(:save_to_platform, :project, :user, :arch)
     @build_lists = @build_lists.recent.paginate(paginate_params)
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def create

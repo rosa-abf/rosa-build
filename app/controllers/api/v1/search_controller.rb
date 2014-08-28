@@ -7,8 +7,6 @@ class Api::V1::SearchController < Api::V1::BaseController
       (params[:type] || 'all'),
       paginate_params
     )
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 end

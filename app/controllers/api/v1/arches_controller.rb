@@ -3,9 +3,7 @@ class Api::V1::ArchesController < Api::V1::BaseController
 
   def index
     @arches = Arch.order(:id).paginate(paginate_params)
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
 end

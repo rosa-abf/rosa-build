@@ -7,16 +7,12 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
 
   def index
     @advisories = @advisories.includes(:platforms, :projects).paginate(paginate_params)
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def show
     @packages_info = @advisory.fetch_packages_info
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def create

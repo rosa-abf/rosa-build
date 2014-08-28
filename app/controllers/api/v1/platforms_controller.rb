@@ -18,15 +18,11 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   def index
     @platforms = @platforms.accessible_by(current_ability, :related)
                            .by_type(params[:type]).paginate(paginate_params)
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def show
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def platforms_for_build
@@ -52,9 +48,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   def members
     @members = @platform.members.order('name').paginate(paginate_params)
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def add_member

@@ -39,9 +39,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
   def show
     redirect_to api_v1_project_issue_path(@project.id, @issue.serial_id) if @pull.nil?
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def create
@@ -98,16 +96,12 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
   def commits
     @commits = @pull.repo.commits_between(@pull.to_commit, @pull.from_commit).paginate(paginate_params)
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def files
     @stats = @pull.diff_stats.zip(@pull.diff).paginate(paginate_params)
-    respond_to do |format|
-      format.json
-    end
+    respond_to :json
   end
 
   def merge
