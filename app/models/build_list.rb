@@ -601,7 +601,7 @@ class BuildList < ActiveRecord::Base
 
     if task
       build_list = BuildList.where(id: task['args'][0]['id']).first
-      build_list.delayed_add_job_to_abf_worker_queue
+      build_list.delayed_add_job_to_abf_worker_queue if build_list.present?
       build_list
     end
   end
