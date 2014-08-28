@@ -7,10 +7,15 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def show
     @user = User.opened.find params[:id] # dont show system users
+    respond_to do |format|
+      format.json
+    end
   end
 
   def show_current_user
-    render :show
+    respond_to do |format|
+      format.json { render :show }
+    end
   end
 
   def update
@@ -35,7 +40,9 @@ class Api::V1::UsersController < Api::V1::BaseController
         render_json_response @user, error_message(@user.notifier, 'User notification settings have not been updated'), 422
       end
     else
-      render :notifiers
+      respond_to do |format|
+        format.json
+      end
     end
   end
 

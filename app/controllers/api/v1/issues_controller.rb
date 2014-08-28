@@ -1,6 +1,4 @@
 class Api::V1::IssuesController < Api::V1::BaseController
-  respond_to :json
-
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :group_index, :show] if APP_CONFIG['anonymous_access']
 
@@ -35,6 +33,9 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
   def show
     redirect_to api_v1_project_pull_request_path(@project.id, @issue.serial_id) if @issue.pull_request
+    respond_to do |format|
+      format.json
+    end
   end
 
   def create
@@ -102,7 +103,10 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
     @issues = @issues.where('issues.created_at >= to_timestamp(?)', params[:since]) if params[:since] =~ /\A\d+\z/
     @issues = @issues.paginate(paginate_params)
-    render :index
+
+    respond_to do |format|
+      format.json { render :index }
+    end
   end
 
   def get_all_project_ids default_project_ids

@@ -7,15 +7,23 @@ class Api::V1::GroupsController < Api::V1::BaseController
   def index
     # accessible_by(current_ability)
     @groups = current_user.groups.paginate(paginate_params)
+    respond_to do |format|
+      format.json
+    end
   end
 
   def show
+    respond_to do |format|
+      format.json
+    end
   end
 
   def members
-    @members = @group.members.
-      where('actor_id != ?', @group.owner_id).
-      order('name').paginate(paginate_params)
+    @members = @group.members.where('actor_id != ?', @group.owner_id)
+                     .order('name').paginate(paginate_params)
+    respond_to do |format|
+      format.json
+    end
   end
 
   def update

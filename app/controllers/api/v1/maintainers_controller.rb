@@ -7,5 +7,8 @@ class Api::V1::MaintainersController < Api::V1::BaseController
                                      .actual.by_platform(@platform)
                                      .like_name(params[:package_name])
                                      .paginate(paginate_params)
+    respond_to do |format|
+      format.json
+    end
   end
 end
