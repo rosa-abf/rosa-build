@@ -2,8 +2,8 @@ class AddNewFieldsToBuildLists < ActiveRecord::Migration
   def self.up
     add_column :build_lists, :build_requires, :boolean
     add_column :build_lists, :update_type, :string
-    add_column :build_lists, :bpl_id, :integer
-    add_column :build_lists, :pl_id, :integer
+    add_column :build_lists, :bpl_id, :integer, references: nil
+    add_column :build_lists, :pl_id, :integer, references: nil
     rename_column :build_lists, :branch_name, :project_version
   end
 
