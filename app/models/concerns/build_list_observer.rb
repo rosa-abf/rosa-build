@@ -16,7 +16,7 @@ module BuildListObserver
           self.class::TESTS_FAILED,
           self.class::BUILD_CANCELED].include? status
         # stores time interval beetwin build start and finish in seconds
-        duration = current_duration if self.started_at
+        self.duration = current_duration if self.started_at
 
         if status == self.class::SUCCESS
           # Update project average build time
