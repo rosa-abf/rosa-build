@@ -86,7 +86,8 @@ describe BuildList do
       end
 
       it "doesn't get notification by email when mass build" do
-        build_list.update_attributes({mass_build_id: 1, status: BuildList::BUILD_PUBLISH}, without_protection: true)
+        mb = FactoryGirl.build(:mass_build)
+        build_list.update_attributes(mass_build_id: mb.id, status: BuildList::BUILD_PUBLISH)
         build_list.published
         should have(:no).items
       end
