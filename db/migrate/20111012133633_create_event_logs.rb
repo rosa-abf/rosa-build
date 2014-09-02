@@ -1,9 +1,9 @@
 class CreateEventLogs < ActiveRecord::Migration
   def self.up
     create_table :event_logs do |t|
-      t.references :user
+      t.references :user, foreign_key: false, index: true
       t.string :user_name
-      t.references :object, polymorphic: true
+      t.references :object, polymorphic: true, index: true
       t.string :object_name
       t.string :ip
       t.string :kind
@@ -14,8 +14,6 @@ class CreateEventLogs < ActiveRecord::Migration
 
       t.timestamps
     end
-    # add_index :event_logs, :user_id
-    # add_index :event_logs, [:object_id, :object_type]
   end
 
   def self.down
