@@ -139,7 +139,7 @@ describe Api::V1::IssuesController do
       end
 
       it 'can assignee issue in own project' do
-        post :create, @create_params.deep_merge(project_id: @own_hidden_project, issue: {assignee_id: @issue.user.id})
+        post :create, @create_params.deep_merge(project_id: @own_hidden_project.id, issue: {assignee_id: @issue.user.id})
         @own_hidden_project.issues.reload.last.assignee.id.should == @issue.user.id
       end
 

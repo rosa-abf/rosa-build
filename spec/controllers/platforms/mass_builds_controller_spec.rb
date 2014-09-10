@@ -130,7 +130,7 @@ describe Platforms::MassBuildsController do
     @create_params = {
       mass_build: {
         :projects_list          => @repository.projects.map(&:name).join("\n"),
-        :build_for_platform_id  => @platform
+        :build_for_platform_id  => @platform.id
       },
       :platform_id  => @platform,
       :arches               => [Arch.first.id],
