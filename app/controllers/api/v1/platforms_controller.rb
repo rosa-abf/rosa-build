@@ -26,7 +26,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def platforms_for_build
-  	@platforms = Platform.main.opened.paginate(paginate_params)
+    @platforms = Platform.availables_main_platforms(current_user, current_ability).paginate(paginate_params)
     respond_to do |format|
       format.json { render :index }
     end
