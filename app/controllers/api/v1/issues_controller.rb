@@ -32,8 +32,11 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def show
-    redirect_to api_v1_project_pull_request_path(@project.id, @issue.serial_id) if @issue.pull_request
-    respond_to :json
+    if @issue.pull_request
+      redirect_to api_v1_project_pull_request_path(@project.id, @issue.serial_id)
+    else
+      respond_to :json
+    end
   end
 
   def create
