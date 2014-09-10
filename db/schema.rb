@@ -361,8 +361,8 @@ ActiveRecord::Schema.define(version: 20140709194335) do
     t.text     "message"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["user_id"], :name => "fk__event_logs_user_id"
-    t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_event_logs_user_id"
+    t.index ["eventable_id", "eventable_type"], :name => "index_event_logs_on_eventable_id_and_eventable_type"
+    t.index ["user_id"], :name => "index_event_logs_on_user_id"
   end
 
   create_table "flash_notifies", force: true do |t|

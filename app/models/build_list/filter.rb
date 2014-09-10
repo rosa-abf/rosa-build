@@ -15,7 +15,9 @@ class BuildList::Filter
       build_lists = build_lists.where(id: @options[:id])
     else
       build_lists = build_lists.scoped_to_new_core(@options[:new_core] == '0' ? nil : true) if @options[:new_core].present?
-      build_lists = build_lists.by_mass_build(@options[:mass_build_id]) if @options[:mass_build_id]
+      if @options[:mass_build_id]
+        build_lists = build_lists.by_mass_build(@options[:mass_build_id] == '-1' ? nil : @options[:mass_build_id])
+      end
       build_lists = build_lists.accessible_by(@current_ability, @options[:ownership].to_sym) if @options[:ownership]
 
       build_lists = build_lists.for_status(@options[:status])

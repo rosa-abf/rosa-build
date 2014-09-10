@@ -6,8 +6,9 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   load_and_authorize_resource :project
 
   def index
-    @projects = Project.accessible_by(current_ability, :membered).
-      paginate(paginate_params)
+    @projects = Project.accessible_by(current_ability, :membered)
+                       .paginate(paginate_params)
+    respond_to :json
   end
 
   def get_id
@@ -16,13 +17,16 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     else
       raise ActiveRecord::RecordNotFound
     end
+    respond_to :json
   end
 
   def show
+    respond_to :json
   end
 
   def refs_list
     @refs = @project.repo.branches + @project.repo.tags.select{ |t| t.commit }
+    respond_to :json
   end
 
   def update
@@ -48,6 +52,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
   def members
     @members = @project.collaborators.order('uname').paginate(paginate_params)
+    respond_to :json
   end
 
   def add_member
