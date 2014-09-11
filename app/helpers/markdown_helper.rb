@@ -128,7 +128,7 @@ module MarkdownHelper
   def parse_emoji(text)
     text.gsub(/:([\w+-]+):/) do |match|
       if emoji = Emoji.find_by_alias($1)
-        image_tag("emoji/#{emoji.image_filename}", class: 'emoji', title: $1, alt: $1, size: "20x20")
+        image_tag("/images/emoji/#{emoji.image_filename}", class: 'emoji', title: $1, alt: $1, size: "20x20")
       else
         match
       end
