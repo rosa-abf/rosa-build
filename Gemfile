@@ -65,7 +65,7 @@ gem 'ohm-expire', '~> 0.1.3'
 gem 'ffi', '~> 1.9.3'
 
 gem 'attr_encrypted', '~> 1.3'
-gem "gemoji", "~> 2.1", require: 'emoji/railtie'
+gem "gemoji", "~> 2.1"
 
 # AngularJS related stuff
 gem 'underscore-rails'
