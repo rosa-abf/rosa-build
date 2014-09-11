@@ -279,3 +279,17 @@ table.blame td.message .message {
     background: #ECECEC;
     color: #000;
 }
+
+table.diff td.diff-image {
+    text-align: center;
+
+    span.diff-image {
+      text-align: center;
+      margin: 0;
+      padding: 0;
+
+      img {
+        margin-top: 5px;
+      }
+    }
+}
