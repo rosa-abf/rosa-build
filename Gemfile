@@ -59,7 +59,7 @@ gem 'friendly_id', '~> 5.0'
 
 gem 'rack-throttle', '~> 0.3.0'
 gem 'rest-client', '~> 1.7'
-gem 'ohm', '~> 2.0'
+gem 'ohm', '~> 1.3.2' # Ohm 2 breaks the compatibility with previous versions.
 gem 'ohm-expire', '~> 0.1.3'
 
 gem 'ffi', '~> 1.9.3'
