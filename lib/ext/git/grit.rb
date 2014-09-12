@@ -49,7 +49,7 @@ module Grit
       if mime_type == 'text/rpm-spec'
         @raw_mime_type = 'text/x-rpm-spec'
       else
-        @raw_mime_type = Linguist::Language.detect(name, data).try(:lexer).try(:mimetypes).try(:first)
+        @raw_mime_type = Linguist::Language.detect(self).try(:lexer).try(:mimetypes).try(:first)
         @raw_mime_type ||= DEFAULT_MIME_TYPE
         @raw_mime_type.gsub!('application', 'text')
         @raw_mime_type
