@@ -23,7 +23,7 @@ ActiveAdmin.register BuildScript do
     end
     column :updated_at
 
-    default_actions
+    actions
   end
 
   show do
