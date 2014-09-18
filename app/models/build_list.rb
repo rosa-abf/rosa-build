@@ -125,15 +125,15 @@ class BuildList < ActiveRecord::Base
   scope :for_status, ->(status) { where(status: status) if status.present? }
   scope :for_user, ->(user) { where(user_id: user.id)  }
   scope :not_owned_external_nodes, -> { where("#{table_name}.external_nodes is null OR #{table_name}.external_nodes != ?", :owned) }
-  scope :external_nodes, ->(type) { where("#{table_name}.external_nodes = ?", type) }
-  scope :oldest, -> { where("#{table_name}.updated_at < ?", Time.zone.now - 15.seconds) }
-  scope :for_platform, ->(platform) { where(build_for_platform_id: platform)  }
-  scope :by_mass_build, ->(mass_build) { where(mass_build_id: mass_build) }
-  scope :scoped_to_arch, ->(arch) { where(arch_id: arch) if arch.present? }
-  scope :scoped_to_save_platform, ->(pl_id) { where(save_to_platform_id: pl_id) if pl_id.present? }
-  scope :scoped_to_project_version, ->(pr_version) { where(project_version: pr_version) if pr_version.present? }
-  scope :scoped_to_is_circle, ->(is_circle) { where(is_circle: is_circle) }
-  scope :for_creation_date_period, ->(start_date, end_date) {
+  scope :external_nodes,  ->(type) { where("#{table_name}.external_nodes = ?", type) }
+  scope :oldest,          -> { where("#{table_name}.updated_at < ?", Time.zone.now - 15.seconds) }
+  scope :for_platform,    ->(platform)    { where(build_for_platform_id: platform) if platform.present? }
+  scope :by_mass_build,   ->(mass_build)  { where(mass_build_id: mass_build) }
+  scope :scoped_to_arch,  ->(arch)        { where(arch_id: arch) if arch.present? }
+  scope :scoped_to_save_platform,   ->(pl_id)       { where(save_to_platform_id: pl_id) if pl_id.present? }
+  scope :scoped_to_project_version, ->(pr_version)  { where(project_version: pr_version) if pr_version.present? }
+  scope :scoped_to_is_circle,       ->(is_circle)   { where(is_circle: is_circle) }
+  scope :for_creation_date_period,  ->(start_date, end_date) {
     s = all
     s = s.where(["#{table_name}.created_at >= ?", start_date]) if start_date
     s = s.where(["#{table_name}.created_at <= ?", end_date]) if end_date
@@ -587,23 +587,36 @@ class BuildList < ActiveRecord::Base
     )
   end
 
-  def self.next_build
-    kind_id = Redis.current.spop(USER_BUILDS_SET)
-    key     = "user_build_#{kind_id}_rpm_worker_default" if kind_id
-    task    = Resque.pop(key) if key
-    Redis.current.sadd(USER_BUILDS_SET, kind_id) if task
+  def self.next_build(arch_ids, platform_ids)
+    kind_id       = Redis.current.spop(USER_BUILDS_SET)
+    key           = "user_build_#{kind_id}_rpm_worker_default" if kind_id
+    build_list    = next_build_from_queue(kind_id, key, arch_ids, platform_ids) if key
+    Redis.current.sadd(USER_BUILDS_SET, kind_id) if build_list
 
+    kind_id     ||= Redis.current.spop(MASS_BUILDS_SET)
+    key         ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
+    build_list  ||= next_build_from_queue(kind_id, key, arch_ids, platform_ids, true) if key
+    Redis.current.sadd(MASS_BUILDS_SET, kind_id) if build_list && key =~ /^mass_build/
 
-    kind_id ||= Redis.current.spop(MASS_BUILDS_SET)
-    key     ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
-    task    ||= Resque.pop(key) if key
-    Redis.current.sadd(MASS_BUILDS_SET, kind_id) if task && key =~ /^mass_build/
+    build_list.delayed_add_job_to_abf_worker_queue if build_list.present?
+    build_list
+  end
 
-    if task
-      build_list = BuildList.where(id: task['args'][0]['id']).first
-      build_list.delayed_add_job_to_abf_worker_queue if build_list.present?
-      build_list
+  def self.next_build_from_queue(kind_id, key, arch_ids, platform_ids, mass_build = false)
+    if kind_id && (arch_ids.present? || platform_ids.present?)
+      build_list = BuildList.where(user_id: kind_id).
+        scoped_to_arch(arch_ids).
+        for_platform(platform_ids)
+      build_list = build_list.where.not(mass_build_id: nil) if mass_build
+      build_list = build_list.oldest.order(:created_at).first
+
+      build_list = nil if build_list && build_list.destroy_from_resque_queue != 1
+    elsif key
+      task = Resque.pop(key)
     end
+
+    build_list ||= BuildList.where(id: task['args'][0]['id']).first if task
+    build_list
   end
 
   def delayed_add_job_to_abf_worker_queue(*args)
