@@ -13,8 +13,8 @@ class Api::V1::JobsController < Api::V1::BaseController
     else
       build_lists = BuildList.scoped_to_arch(arch_ids).
         for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
-        oldest.order(:created_at).
-        for_platform(platform_ids)
+        for_platform(platform_ids).
+        oldest.order(:created_at)
 
       ActiveRecord::Base.transaction do
         if current_user.system?

@@ -606,6 +606,7 @@ class BuildList < ActiveRecord::Base
     if kind_id && (arch_ids.present? || platform_ids.present?)
       build_list = BuildList.where(user_id: kind_id).
         scoped_to_arch(arch_ids).
+        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
         for_platform(platform_ids)
       build_list = build_list.where.not(mass_build_id: nil) if mass_build
       build_list = build_list.oldest.order(:created_at).first
