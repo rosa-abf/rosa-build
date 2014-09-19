@@ -140,12 +140,12 @@ describe Api::V1::IssuesController do
 
       it 'can assignee issue in own project' do
         post :create, @create_params.deep_merge(project_id: @own_hidden_project.id, issue: {assignee_id: @issue.user.id})
-        @own_hidden_project.issues.reload.last.assignee.id.should == @issue.user.id
+        @own_hidden_project.issues.order(:id).last.assignee.id.should == @issue.user.id
       end
 
       it "can't assignee issue in open project" do
         post :create, @create_params.deep_merge(project_id: @open_project.id, issue: {assignee_id: @issue.user.id})
-        @open_project.issues.reload.last.assignee.should be_nil
+        @open_project.issues.order(:id).last.assignee.should be_nil
       end
     end
 
