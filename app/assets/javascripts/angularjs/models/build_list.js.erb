@@ -51,6 +51,7 @@ var BuildList = function(atts, dictionary) {
     case <%=BuildList::FAILED_PUBLISH%>:
     case <%=BuildList::FAILED_PUBLISH_INTO_TESTING%>:
     case <%=BuildList::PACKAGES_FAIL%>:
+    case <%=BuildList::UNPERMITTED_ARCH%>:
     case <%=BuildList::REJECTED_PUBLISH%>: self.status_color = 'error'; break
     case <%=BuildList::TESTS_FAILED%>: self.status_color = 'warning'; break
     default: self.status_color = 'nocolor';

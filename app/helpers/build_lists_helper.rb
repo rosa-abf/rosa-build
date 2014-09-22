@@ -5,7 +5,7 @@ module BuildListsHelper
     case status
     when BuildList::BUILD_PUBLISHED, BuildList::SUCCESS, BuildList::BUILD_PUBLISHED_INTO_TESTING
       'success'
-    when BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH, BuildList::FAILED_PUBLISH_INTO_TESTING, BuildList::PACKAGES_FAIL
+    when BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH, BuildList::FAILED_PUBLISH_INTO_TESTING, BuildList::PACKAGES_FAIL, BuildList::UNPERMITTED_ARCH
       'error'
     when BuildList::TESTS_FAILED
       'warning'
