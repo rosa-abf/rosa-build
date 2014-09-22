@@ -81,10 +81,8 @@ module BuildListsHelper
   end
 
   def mass_build_options
-    options_from_collection_for_select(
-      MassBuild.recent.limit(15),
-      :id,
-      :name
+    options_for_select(
+      MassBuild.recent.limit(15).pluck(:name, :id).unshift([t(:none), -1])
     )
   end
 

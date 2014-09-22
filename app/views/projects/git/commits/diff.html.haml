@@ -15,7 +15,7 @@
   .both
   -begin
     =render_diff_stats @stats
-    -@project.repo.diff(@commit1.id, @commit.id).each_with_index do |commit_diff, diff_counter|
+    - Grit::Commit.diff(@project.repo, @common_ancestor.id, @commit.id).each_with_index do |commit_diff, diff_counter|
       - commit_id = commit_diff.deleted_file ? @common_ancestor.id : @commit.id
       .file
         %a{name: "diff-#{diff_counter}"}
@@ -24,7 +24,17 @@
           - if commit_diff.b_path.present?
             .r= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@project, commit_id, commit_diff.b_path)
           .clear
-        -if commit_diff.diff.present? && !(@project.repo.tree(commit_id) / commit_diff.b_path).binary?
-          .diff_data=render_diff(commit_diff, diff_counter: diff_counter)
+        -if commit_diff.diff.present?
+          .diff_data
+            - blob = @project.repo.tree(commit_id) / commit_diff.b_path
+            - if blob.render_as == :image
+              %table.diff.inline{ cellspacing: 0, cellpadding: 0 }
+                %tr
+                  %td.lines
+                  %td.blob.diff-image
+                    %span.diff-image
+                      %img{ src: "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}",
+                            style: 'max-width: 600px;' }
+            = render_diff(commit_diff, diff_counter: diff_counter) unless blob.binary?
   - rescue Grit::Git::GitTimeout
     %p= t 'layout.git.repositories.commit_diff_too_big'

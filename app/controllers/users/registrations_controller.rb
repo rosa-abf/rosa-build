@@ -5,6 +5,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def create
     # Try stop bots
     if params[:recaptcha_response_field].present?
+      build_resource(sign_up_params)
       respond_with(resource, location: after_inactive_sign_up_path_for(resource))
       return
     end

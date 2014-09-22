@@ -21,6 +21,7 @@ class ApplicationController < ActionController::Base
     rescue_from ActiveRecord::RecordNotFound,
                 # ActionController::RoutingError, # see: config/routes.rb:<last line>
                 ActionController::UnknownController,
+                ActionController::UnknownFormat,
                 AbstractController::ActionNotFound, with: :render_404
   end
 

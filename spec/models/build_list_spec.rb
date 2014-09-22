@@ -15,6 +15,48 @@ describe BuildList do
     end
   end
 
+  context '#next_build' do
+    let!(:build_list) { FactoryGirl.create(:build_list, updated_at: Time.now - 20.seconds) }
+
+    it 'returns build list' do
+      expect_any_instance_of(BuildList).to receive(:delayed_add_job_to_abf_worker_queue)
+      expect(BuildList.next_build([], [])).to eq build_list
+    end
+
+    context 'filtering build lists by platform' do
+      it 'returns build list for correct platform' do
+        expect_any_instance_of(BuildList).to receive(:delayed_add_job_to_abf_worker_queue)
+        expect(BuildList.next_build([], [build_list.build_for_platform_id])).to eq build_list
+      end
+
+      it 'returns nothing if build list does not in queue' do
+        expect_any_instance_of(BuildList).to receive(:destroy_from_resque_queue).and_return(0)
+        expect(BuildList.next_build([], [build_list.build_for_platform_id])).to be_nil
+      end
+
+      it 'returns nothing for wrong platform' do
+        expect(BuildList.next_build([], [-1])).to be_nil
+      end
+    end
+
+    context 'filtering build lists by arch' do
+      it 'returns build list for correct arch' do
+        expect_any_instance_of(BuildList).to receive(:delayed_add_job_to_abf_worker_queue)
+        expect(BuildList.next_build([build_list.arch_id], [])).to eq build_list
+      end
+
+      it 'returns nothing if build list does not in queue' do
+        expect_any_instance_of(BuildList).to receive(:destroy_from_resque_queue).and_return(0)
+        expect(BuildList.next_build([build_list.arch_id], [])).to be_nil
+      end
+
+      it 'returns nothing for wrong arch' do
+        expect(BuildList.next_build([-1], [])).to be_nil
+      end
+    end
+
+  end
+
   context "#notify_users" do
     let!(:user) { FactoryGirl.create(:user) }
     let!(:build_list) { FactoryGirl.create(:build_list,
@@ -86,7 +128,8 @@ describe BuildList do
       end
 
       it "doesn't get notification by email when mass build" do
-        build_list.update_attributes({mass_build_id: 1, status: BuildList::BUILD_PUBLISH}, without_protection: true)
+        mb = FactoryGirl.build(:mass_build)
+        build_list.update_attributes(mass_build_id: mb.id, status: BuildList::BUILD_PUBLISH)
         build_list.published
         should have(:no).items
       end

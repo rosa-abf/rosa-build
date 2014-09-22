@@ -13,6 +13,7 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
                            end
     @product_build_lists = @product_build_lists.joins(:product, :project, :arch)
     @product_build_lists = @product_build_lists.recent.paginate(paginate_params)
+    respond_to :json
   end
 
   def create
@@ -24,6 +25,7 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
   end
 
   def show
+    respond_to :json
   end
 
   def update

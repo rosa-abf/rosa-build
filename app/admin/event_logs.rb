@@ -31,7 +31,7 @@ ActiveAdmin.register EventLog do
     end
 
 
-    default_actions
+    actions
   end
 
 end

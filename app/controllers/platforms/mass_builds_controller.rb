@@ -10,7 +10,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
 
   def new
     if params[:mass_build_id].present?
-      @mass_build         = @platform.mass_builds.find(params[:mass_build_id]).dup 
+      @mass_build         = @platform.mass_builds.find(params[:mass_build_id]).dup
       @mass_build.arches  = Arch.where(name: @mass_build.arch_names.split(', ')).pluck(:id)
     end
     @mass_build.arches  ||= @platform.platform_arch_settings.by_default.pluck(:arch_id)
@@ -42,12 +42,15 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def index
-    if request.xhr?
-      @mass_builds        = @platform.mass_builds
-      @total_mass_builds  = @mass_builds.count
-      @mass_builds        = @mass_builds.order("id #{sort_dir}")
-      @mass_builds        = @mass_builds.search(params[:sSearch]).
-                              paginate(page: page, per_page: per_page)
+    respond_to do |format|
+      format.html {}
+      format.json {
+        @mass_builds        = @platform.mass_builds
+        @total_mass_builds  = @mass_builds.count
+        @mass_builds        = @mass_builds.order("id #{sort_dir}")
+                                .search(params[:sSearch])
+                                .paginate(page: page, per_page: per_page)
+      }
     end
   end
 

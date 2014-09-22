@@ -92,8 +92,6 @@ module MarkdownHelper
   def parse(text)
     parse_references(text) if @project
     parse_emoji(text)
-
-    text
   end
 
   REFERENCE_PATTERN = %r{
@@ -127,26 +125,14 @@ module MarkdownHelper
     end
   end
 
-  EMOJI_PATTERN = %r{(:(\S+):)}.freeze
-
   def parse_emoji(text)
-    # parse emoji
-    text.gsub!(EMOJI_PATTERN) do |match|
-      if valid_emoji?($2)
-        image_tag(image_path("emoji/#{$2}.png"), class: 'emoji', title: $1, alt: $1, size: "20x20")
+    text.gsub(/:([\w+-]+):/) do |match|
+      if emoji = Emoji.find_by_alias($1)
+        image_tag("/images/emoji/#{emoji.image_filename}", class: 'emoji', title: $1, alt: $1, size: "20x20")
       else
         match
       end
-    end
-  end
-
-  # Private: Checks if an emoji icon exists in the image asset directory
-  #
-  # emoji - Identifier of the emoji as a string (e.g., "+1", "heart")
-  #
-  # Returns boolean
-  def valid_emoji?(emoji)
-    Emoji.names.include? emoji
+    end if text.present?
   end
 
   # Private: Dispatches to a dedicated processing method based on reference

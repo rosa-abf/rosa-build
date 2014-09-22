@@ -40,7 +40,7 @@ module BuildLists
             group_id
           ).each { |field| bl.send("#{field}=", build_list.send(field)) }
 
-          %i(
+          %w(
             auto_publish_status
             auto_create_container
             include_testing_subrepository
