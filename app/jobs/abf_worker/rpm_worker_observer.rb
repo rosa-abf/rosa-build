@@ -2,6 +2,11 @@ module AbfWorker
   class RpmWorkerObserver < AbfWorker::BaseObserver
     RESTARTED_BUILD_LISTS = 'abf-worker::rpm-worker-observer::restarted-build-lists'
 
+    # EXIT CODES:
+    # 6 - Unpermitted architecture
+    # other - Build error
+    EXIT_CODE_UNPERMITTED_ARCHITECTURE = 6
+
     @queue = :rpm_worker_observer
 
     def self.perform(options)
@@ -29,7 +34,14 @@ module AbfWorker
           subject.publish_into_testing
         end
       when FAILED
-        subject.build_error
+
+        case options['exit_status'].to_i
+        when EXIT_CODE_UNPERMITTED_ARCHITECTURE
+          subject.unpermitted_arch
+        else
+          subject.build_error
+        end
+
         item.update_attributes({status: BuildList::BUILD_ERROR}) unless rerunning_tests
       when STARTED
         subject.start_build

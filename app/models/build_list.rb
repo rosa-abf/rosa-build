@@ -105,7 +105,8 @@ class BuildList < ActiveRecord::Base
     %w(TESTS_FAILED                   11000),
     %w(BUILD_PUBLISHED_INTO_TESTING   12000),
     %w(BUILD_PUBLISH_INTO_TESTING     13000),
-    %w(FAILED_PUBLISH_INTO_TESTING    14000)
+    %w(FAILED_PUBLISH_INTO_TESTING    14000),
+    %w(UNPERMITTED_ARCH               15000)
   ].each do |kind, value|
     value = value.to_i
     const_set kind, value
@@ -187,6 +188,10 @@ class BuildList < ActiveRecord::Base
 
     event :place_build do
       transition waiting_for_response: :build_pending
+    end
+
+    event :unpermitted_arch do
+      transition [:build_started, :build_canceling, :build_canceled] => :unpermitted_arch
     end
 
     event :rerun_tests do

@@ -181,6 +181,7 @@ en:
         build_published_into_testing: '[testing] Build has been published'
         build_publish_into_testing: '[testing] Build is being published'
         failed_publish_into_testing: '[testing] Publishing error'
+        unpermitted_arch: Unpermitted architecture
 
       log:
         build_log: Build Log

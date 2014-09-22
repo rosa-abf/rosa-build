@@ -337,10 +337,9 @@ class Project < ActiveRecord::Base
   end
 
   def increase_release_tag(project_version, user, message)
-    blob = repo.tree(project_version).contents.find{ |n| n.is_a?(Grit::Blob) && n.name =~ /.spec$/ }
+    blob, raw = find_blob_and_raw_of_spec_file(project_version)
     return unless blob
 
-    raw = Grit::GitRuby::Repository.new(repo.path).get_raw_object_by_sha1(blob.id)
     content = self.class.replace_release_tag raw.content
     return if content == raw.content
 
