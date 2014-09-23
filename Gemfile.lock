@@ -228,7 +228,6 @@ GEM
       rack
       rest-client
       ya2yaml
-    logglier (0.2.11)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -549,7 +548,6 @@ DEPENDENCIES
   jquery-rails (~> 2.3)
   js-routes
   localeapp
-  logglier
   mailcatcher
   meta-tags (~> 2.0)
   meta_request
