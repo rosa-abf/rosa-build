@@ -125,13 +125,14 @@ describe BuildList do
       end
 
       it "doesn't get notification by email when auto_publish_into_testing and status - Build complete" do
-        build_list.auto_publish_status =BuildList::AUTO_PUBLISH_STATUS_TESTING
+        build_list.auto_publish_status = BuildList::AUTO_PUBLISH_STATUS_TESTING
         build_list.build_success
         should have(:no).items
       end
 
       it "doesn't get notification by email when mass build" do
-        build_list.mass_build_id  = -1 # Don't care
+        mb = FactoryGirl.create(:mass_build)
+        build_list.mass_build_id  = mb.id
         build_list.status         = BuildList::BUILD_PUBLISH
         build_list.published
         should have(:no).items
