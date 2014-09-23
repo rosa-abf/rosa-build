@@ -91,8 +91,6 @@ gem 'codemirror-rails', '~> 4.5'
 group :production do
   gem "airbrake", '~> 3.1'
   #gem 'bluepill', '~> 0.0.60', require: false
-  # gem 'le'
-  gem 'logglier'
   gem 'puma'
 end
 

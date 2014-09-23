@@ -16,7 +16,6 @@ common: &common
     key_pair_secret_key: 'key_pair_secret_key'
     node_instruction_secret_key: 'node_instruction_secret_key'
     airbrake_api_key: 'airbrake_api_key'
-    logentries_key: 'logentries_key'
     secret_token: 'secret_token'
     secret_key_base: 'secret_key_base'
     devise:
