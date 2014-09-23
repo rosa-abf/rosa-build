@@ -131,7 +131,7 @@ describe BuildList do
       end
 
       it "doesn't get notification by email when mass build" do
-        build_list.mass_build_id  = 123
+        build_list.mass_build_id  = -1 # Don't care
         build_list.status         = BuildList::BUILD_PUBLISH
         build_list.published
         should have(:no).items
