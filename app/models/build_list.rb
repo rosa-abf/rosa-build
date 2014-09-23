@@ -182,7 +182,7 @@ class BuildList < ActiveRecord::Base
     end
     after_transition on: :cancel, do: :cancel_job
 
-    after_transition on: [:published, :fail_publish, :build_error, :tests_failed], do: :notify_users
+    after_transition on: %i(published fail_publish build_error tests_failed unpermitted_arch), do: :notify_users
     after_transition on: :build_success, do: :notify_users,
       unless: ->(build_list) { build_list.auto_publish? || build_list.auto_publish_into_testing? }
 
