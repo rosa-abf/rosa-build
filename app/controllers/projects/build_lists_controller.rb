@@ -229,7 +229,7 @@ class Projects::BuildListsController < Projects::BaseController
       :save_to_repository_id, :auto_publish_status, :include_repos,
       :extra_params, :project_version, :update_type, :auto_create_container,
       :extra_repositories, :extra_build_lists, :build_for_platform_id,
-      :use_cached_chroot, :use_extra_tests
+      :use_cached_chroot, :use_extra_tests, :save_buildroot
     ]
     keys.each { |key| params[:build_list][key] = build_list.send(key) }
     params[:arches] = [build_list.arch_id.to_s]

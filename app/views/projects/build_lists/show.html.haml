@@ -69,6 +69,9 @@
     .leftlist= t("activerecord.attributes.build_list.use_extra_tests")
     .rightlist= t("layout.#{@build_list.use_extra_tests?}_")
     .both
+    .leftlist= t("activerecord.attributes.build_list.save_buildroot")
+    .rightlist= t("layout.#{@build_list.save_buildroot?}_")
+    .both
     .leftlist= t("activerecord.attributes.build_list.project_version")
     .rightlist= link_to @build_list.project_version, tree_path(@build_list.project, @build_list.project_version)
     .both
