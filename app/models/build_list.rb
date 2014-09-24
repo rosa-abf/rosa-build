@@ -79,7 +79,7 @@ class BuildList < ActiveRecord::Base
                   :save_to_platform_id, :project_version, :auto_create_container,
                   :extra_repositories, :extra_build_lists, :extra_params, :external_nodes,
                   :include_testing_subrepository, :auto_publish_status,
-                  :use_cached_chroot, :use_extra_tests
+                  :use_cached_chroot, :use_extra_tests, :save_buildroot
 
   LIVE_TIME     = 4.week  # for unpublished
   MAX_LIVE_TIME = 3.month # for published
@@ -553,6 +553,7 @@ class BuildList < ActiveRecord::Base
       'GIT_PROJECT_ADDRESS'           => git_project_address,
       'COMMIT_HASH'                   => commit_hash,
       'USE_EXTRA_TESTS'               => use_extra_tests?,
+      'SAVE_BUILDROOT'                => save_buildroot?,
       'EXTRA_CFG_OPTIONS'             => extra_params['cfg_options'],
       'EXTRA_CFG_URPM_OPTIONS'        => extra_params['cfg_urpm_options'],
       'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],

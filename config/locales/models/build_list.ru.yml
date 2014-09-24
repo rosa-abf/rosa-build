@@ -13,6 +13,7 @@ ru:
         auto_create_container: Создать контейнер автоматически
         use_cached_chroot: Использовать кэшированный chroot
         use_extra_tests: Использовать дополнительные тесты
+        save_buildroot: Сохранить RPM build root
         container_path: Путь до контейнера
         status: Статус
         project_id: Проект
