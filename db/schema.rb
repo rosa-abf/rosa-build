@@ -31,8 +31,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.text     "description", default: ""
     t.text     "references",  default: ""
     t.text     "update_type", default: ""
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["advisory_id"], :name => "index_advisories_on_advisory_id", :unique => true
     t.index ["update_type"], :name => "index_advisories_on_update_type"
   end
@@ -90,8 +90,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.string   "version"
     t.string   "release"
     t.string   "package_type"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "actual",             default: false
     t.string   "sha1"
     t.integer  "epoch"
@@ -151,31 +151,6 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.index ["project_id"], :name => "index_build_lists_on_project_id"
   end
 
-  create_table "projects", force: true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "owner_id"
-    t.string   "owner_type"
-    t.string   "visibility",               default: "open"
-    t.text     "description"
-    t.string   "ancestry"
-    t.boolean  "has_issues",               default: true
-    t.string   "srpm_file_name"
-    t.integer  "srpm_file_size"
-    t.datetime "srpm_updated_at"
-    t.string   "srpm_content_type"
-    t.boolean  "has_wiki",                 default: false
-    t.string   "default_branch",           default: "master"
-    t.boolean  "is_package",               default: true,     null: false
-    t.integer  "maintainer_id"
-    t.boolean  "publish_i686_into_x86_64", default: false
-    t.string   "owner_uname",                                 null: false
-    t.boolean  "architecture_dependent",   default: false,    null: false
-    t.integer  "autostart_status"
-    t.index ["name", "owner_id", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
-  end
-
   create_table "build_scripts", force: true do |t|
     t.integer  "project_id", null: false
     t.string   "treeish",    null: false
@@ -185,8 +160,6 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["project_id", "treeish"], :name => "index_build_scripts_on_project_id_and_treeish", :unique => true
-    t.index ["project_id"], :name => "fk__build_scripts_project_id"
-    t.foreign_key ["project_id"], "projects", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_build_scripts_project_id"
   end
 
   create_table "comments", force: true do |t|
@@ -222,6 +195,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.text     "message"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["eventable_id", "eventable_type"], :name => "index_event_logs_on_eventable_id_and_eventable_type"
+    t.index ["user_id"], :name => "index_event_logs_on_user_id"
   end
 
   create_table "flash_notifies", force: true do |t|
@@ -229,8 +204,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.text     "body_en",                   null: false
     t.string   "status",                    null: false
     t.boolean  "published",  default: true, null: false
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "groups", force: true do |t|
@@ -250,8 +225,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.text     "data"
     t.integer  "project_id"
     t.string   "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "issues", force: true do |t|
@@ -276,8 +251,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.string   "key_id",           null: false
     t.integer  "user_id",          null: false
     t.integer  "repository_id",    null: false
-    t.datetime "created_at",       null: false
-    t.datetime "updated_at",       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["repository_id"], :name => "index_key_pairs_on_repository_id", :unique => true
   end
 
@@ -286,16 +261,16 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.integer  "user_id",       null: false
     t.string   "key_id",        null: false
     t.text     "public",        null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["repository_id"], :name => "index_key_pairs_backup_on_repository_id", :unique => true
   end
 
   create_table "labelings", force: true do |t|
     t.integer  "label_id",   null: false
     t.integer  "issue_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["issue_id"], :name => "index_labelings_on_issue_id"
   end
 
@@ -303,16 +278,16 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.string   "name",       null: false
     t.string   "color",      null: false
     t.integer  "project_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["project_id"], :name => "index_labels_on_project_id"
   end
 
   create_table "mass_builds", force: true do |t|
     t.integer  "build_for_platform_id",                          null: false
     t.string   "name"
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "arch_names"
     t.integer  "user_id"
     t.integer  "build_lists_count",             default: 0,      null: false
@@ -335,46 +310,6 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.integer  "status",                        default: 2000,   null: false
   end
 
-  create_table "users", force: true do |t|
-    t.string   "name"
-    t.string   "email",                               default: "",   null: false
-    t.string   "encrypted_password",      limit: 128, default: "",   null: false
-    t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "ssh_key"
-    t.string   "uname"
-    t.string   "role"
-    t.string   "language",                            default: "en"
-    t.integer  "own_projects_count",                  default: 0,    null: false
-    t.text     "professional_experience"
-    t.string   "site"
-    t.string   "company"
-    t.string   "location"
-    t.string   "avatar_file_name"
-    t.string   "avatar_content_type"
-    t.integer  "avatar_file_size"
-    t.datetime "avatar_updated_at"
-    t.integer  "failed_attempts",                     default: 0
-    t.string   "unlock_token"
-    t.datetime "locked_at"
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string   "authentication_token"
-    t.integer  "build_priority",                      default: 50
-    t.boolean  "sound_notifications",                 default: true
-    t.boolean  "hide_email",                          default: true, null: false
-    t.index ["authentication_token"], :name => "index_users_on_authentication_token"
-    t.index ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
-    t.index ["email"], :name => "index_users_on_email", :unique => true
-    t.index ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
-    t.index ["uname"], :name => "index_users_on_uname", :unique => true
-    t.index ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
-  end
-
   create_table "node_instructions", force: true do |t|
     t.integer  "user_id",               null: false
     t.text     "encrypted_instruction", null: false
@@ -382,8 +317,6 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.string   "status"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["user_id"], :name => "fk__node_instructions_user_id"
-    t.foreign_key ["user_id"], "users", ["id"], :on_update => :no_action, :on_delete => :no_action, :name => "fk_node_instructions_user_id"
   end
 
   create_table "platform_arch_settings", force: true do |t|
@@ -391,8 +324,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.integer  "arch_id",     null: false
     t.integer  "time_living", null: false
     t.boolean  "default"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["platform_id", "arch_id"], :name => "index_platform_arch_settings_on_platform_id_and_arch_id", :unique => true
   end
 
@@ -407,7 +340,7 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.string   "owner_type"
     t.string   "visibility",                      default: "open", null: false
     t.string   "platform_type",                   default: "main", null: false
-    t.string   "distrib_type",                                     null: false
+    t.string   "distrib_type"
     t.integer  "status"
     t.datetime "last_regenerated_at"
     t.integer  "last_regenerated_status"
@@ -465,8 +398,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.integer  "build_count",        default: 0, null: false
     t.integer  "arch_id",                        null: false
     t.integer  "project_id",                     null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["project_id", "arch_id"], :name => "index_project_statistics_on_project_id_and_arch_id", :unique => true
   end
 
@@ -476,8 +409,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.string   "sha1"
     t.string   "tag_name"
     t.integer  "format_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "project_to_repositories", force: true do |t|
@@ -489,6 +422,31 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.index ["repository_id", "project_id"], :name => "index_project_to_repositories_on_repository_id_and_project_id", :unique => true
   end
 
+  create_table "projects", force: true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "visibility",               default: "open"
+    t.text     "description"
+    t.string   "ancestry"
+    t.boolean  "has_issues",               default: true
+    t.boolean  "has_wiki",                 default: false
+    t.string   "srpm_file_name"
+    t.string   "srpm_content_type"
+    t.integer  "srpm_file_size"
+    t.datetime "srpm_updated_at"
+    t.string   "default_branch",           default: "master"
+    t.boolean  "is_package",               default: true,     null: false
+    t.integer  "maintainer_id"
+    t.boolean  "publish_i686_into_x86_64", default: false
+    t.string   "owner_uname",                                 null: false
+    t.boolean  "architecture_dependent",   default: false,    null: false
+    t.integer  "autostart_status"
+    t.index ["name", "owner_id", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
+  end
+
   create_table "pull_requests", force: true do |t|
     t.integer "issue_id",                 null: false
     t.integer "to_project_id",            null: false
@@ -497,9 +455,9 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.string  "from_ref",                 null: false
     t.string  "from_project_owner_uname"
     t.string  "from_project_name"
-    t.index ["from_project_id"], :name => "index_pull_requests_on_head_project_id"
+    t.index ["from_project_id"], :name => "index_pull_requests_on_from_project_id"
     t.index ["issue_id"], :name => "index_pull_requests_on_issue_id"
-    t.index ["to_project_id"], :name => "index_pull_requests_on_base_project_id"
+    t.index ["to_project_id"], :name => "index_pull_requests_on_to_project_id"
   end
 
   create_table "register_requests", force: true do |t|
@@ -547,8 +505,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.integer  "status",                    default: 0
     t.datetime "last_regenerated_at"
     t.integer  "last_regenerated_status"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "last_regenerated_log_sha1"
     t.index ["repository_id", "platform_id"], :name => "index_repository_statuses_on_repository_id_and_platform_id", :unique => true
   end
@@ -575,8 +533,8 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.text     "key",         null: false
     t.string   "fingerprint", null: false
     t.integer  "user_id",     null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["fingerprint"], :name => "index_ssh_keys_on_fingerprint", :unique => true
     t.index ["user_id"], :name => "index_ssh_keys_on_user_id"
   end
@@ -599,10 +557,50 @@ ActiveRecord::Schema.define(version: 20140924203530) do
     t.string   "status",               default: "active"
     t.text     "description"
     t.string   "authentication_token",                    null: false
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["authentication_token"], :name => "index_tokens_on_authentication_token", :unique => true
     t.index ["subject_id", "subject_type"], :name => "index_tokens_on_subject_id_and_subject_type"
+  end
+
+  create_table "users", force: true do |t|
+    t.string   "name"
+    t.string   "email",                   default: "",   null: false
+    t.string   "encrypted_password",      default: "",   null: false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "ssh_key"
+    t.string   "uname"
+    t.string   "role"
+    t.string   "language",                default: "en"
+    t.integer  "own_projects_count",      default: 0,    null: false
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.text     "professional_experience"
+    t.string   "site"
+    t.string   "company"
+    t.string   "location"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
+    t.integer  "failed_attempts",         default: 0
+    t.string   "unlock_token"
+    t.datetime "locked_at"
+    t.string   "authentication_token"
+    t.integer  "build_priority",          default: 50
+    t.boolean  "sound_notifications",     default: true
+    t.boolean  "hide_email",              default: true, null: false
+    t.index ["authentication_token"], :name => "index_users_on_authentication_token"
+    t.index ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
+    t.index ["email"], :name => "index_users_on_email", :unique => true
+    t.index ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+    t.index ["uname"], :name => "index_users_on_uname", :unique => true
+    t.index ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
   end
 
 end
