@@ -6,7 +6,7 @@ describe BuildLists::CleanBuildrootJob do
   subject { BuildLists::CleanBuildrootJob }
 
   it 'ensures that not raises error' do
-    FactoryGirl.create(:build_list)
+    FactoryGirl.create(:build_list, status: BuildList::BUILD_ERROR)
     expect(FileStoreService::File).to_not receive(:new)
     expect do
       subject.perform
@@ -20,11 +20,13 @@ describe BuildLists::CleanBuildrootJob do
     ]
     FactoryGirl.create(:build_list,
       results:        results,
-      save_buildroot: true
+      save_buildroot: true,
+      status:         BuildList::BUILD_ERROR
     )
     bl = FactoryGirl.create(:build_list,
       results:        results,
       save_buildroot: true,
+      status:         BuildList::BUILD_ERROR,
       updated_at:     Time.now - 2.hours
     )
     file_store_service = double(:file_store_service, destroy: true)
