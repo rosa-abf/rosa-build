@@ -26,6 +26,13 @@ clean_api_defender_statistics:
   queue: low
   description: 'Cleans ApiDefender statistics'
 
+clean_build_list_buildroot:
+  every:
+    - '1h'
+  class: 'BuildLists::CleanBuildrootJob'
+  queue: middle
+  description: 'Cleans RPM buildroot from BuildList'
+
 run_extra_mass_builds:
   every:
     - '5m'
