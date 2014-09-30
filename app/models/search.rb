@@ -16,13 +16,14 @@ class Search
     protected
 
     def find_collection(type, term, ability, paginate_params)
-      if type == 'users'
-        User.opened
-      else
-        type.classify.constantize.accessible_by(ability, :read)
-      end.search(term).
-          search_order.
-          paginate(paginate_params)
+      scope = if type == 'users'
+                User.opened
+              else
+                type.classify.constantize.accessible_by(ability, :read)
+              end
+      scope.search(term).
+            search_order.
+            paginate(paginate_params)
     end
   end
 end
