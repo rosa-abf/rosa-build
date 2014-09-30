@@ -48,6 +48,9 @@ end
 def stub_symlink_methods
   allow_any_instance_of(Platform).to receive(:symlink_directory).and_return(true)
   allow_any_instance_of(Platform).to receive(:remove_symlink_directory).and_return(true)
+
+  allow_any_instance_of(Platform).to    receive(:create_empty_metadata).and_return(true)
+  allow_any_instance_of(Repository).to  receive(:create_empty_metadata).and_return(true)
 end
 
 Resque.inline = true
