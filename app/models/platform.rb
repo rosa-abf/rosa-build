@@ -6,12 +6,21 @@ class Platform < ActiveRecord::Base
   include RegenerationStatus
   include Owner
   include EventLoggable
+  include EmptyMetadata
 
-  CACHED_CHROOT_PRODUCT_NAME       = 'cached-chroot'
-  AUTOMATIC_METADATA_REGENERATIONS = %w(day week)
-  VISIBILITIES = %w(open hidden)
-  NAME_PATTERN = /[\w\-\.]+/
-  HUMAN_STATUSES = HUMAN_STATUSES.clone.freeze
+  CACHED_CHROOT_PRODUCT_NAME        = 'cached-chroot'
+  AUTOMATIC_METADATA_REGENERATIONS  = %w(day week)
+  VISIBILITIES                      = [
+    VISIBILITY_OPEN   = 'open',
+    VISIBILITY_HIDDEN = 'hidden'
+  ]
+  NAME_PATTERN                      = /[\w\-\.]+/
+  HUMAN_STATUSES                    = HUMAN_STATUSES.clone.freeze
+  TYPES                             = [
+    TYPE_PERSONAL = 'personal',
+    TYPE_MAIN     = 'main'
+  ]
+
 
   belongs_to :parent, class_name: 'Platform', foreign_key: 'parent_platform_id'
   belongs_to :owner, polymorphic: true
@@ -32,16 +41,36 @@ class Platform < ActiveRecord::Base
 
   has_many :mass_builds, foreign_key: :save_to_platform_id
 
-  validates :description, presence: true
-  validates :visibility, presence: true, inclusion: { in: VISIBILITIES }
-  validates :automatic_metadata_regeneration, inclusion: { in: AUTOMATIC_METADATA_REGENERATIONS }, allow_blank: true
-  validates :name, uniqueness: {case_sensitive: false}, presence: true, format: { with: /\A#{NAME_PATTERN}\z/ }
-  validates :distrib_type, presence: true, inclusion: { in: APP_CONFIG['distr_types'] }
+  validates :description,
+    presence: true
+
+  validates :visibility,
+    presence:   true,
+    inclusion:  { in: VISIBILITIES }
+
+  validates :platform_type,
+    presence:   true,
+    inclusion:  { in: TYPES }
+
+  validates :automatic_metadata_regeneration,
+    inclusion:    { in: AUTOMATIC_METADATA_REGENERATIONS },
+    allow_blank:  true
+
+  validates :name,
+    uniqueness: { case_sensitive: false },
+    presence:   true,
+    format:     { with: /\A#{NAME_PATTERN}\z/ }
+
+  validates :distrib_type,
+    presence:   true,
+    inclusion:  { in: APP_CONFIG['distr_types'] }
+
   validate -> {
     if released_was && !released
       errors.add(:released, I18n.t('flash.platform.released_status_can_not_be_changed'))
     end
   }
+
   validate -> {
     if personal? && (owner_id_changed? || owner_type_changed?)
       errors.add :owner, I18n.t('flash.platform.owner_can_not_be_changed')
@@ -54,22 +83,32 @@ class Platform < ActiveRecord::Base
   after_update :freeze_platform_and_update_repos
   after_update :update_owner_relation
 
-  after_create -> { symlink_directory unless hidden? }
+  after_create  -> { symlink_directory unless hidden? }
   after_destroy -> { remove_symlink_directory unless hidden? }
 
-  scope :search_order, -> { order(:name) }
-  scope :search, ->(q) { where("#{table_name}.name ILIKE ?", "%#{q.to_s.strip}%") }
-  scope :by_visibilities, ->(v) { where(visibility: v) }
-  scope :opened, -> { where(visibility: 'open') }
-  scope :hidden, -> { where(visibility: 'hidden') }
-  scope :by_type, ->(type) { where(platform_type: type) if type.present? }
-  scope :main, -> { by_type('main') }
-  scope :personal, -> { by_type('personal') }
-  scope :waiting_for_regeneration, -> { where(status: WAITING_FOR_REGENERATION) }
+  scope :search_order,              -> { order(:name) }
+  scope :search,                    -> (q) { where("#{table_name}.name ILIKE ?", "%#{q.to_s.strip}%") }
+  scope :by_visibilities,           -> (v) { where(visibility: v) }
+  scope :opened,                    -> { where(visibility: VISIBILITY_OPEN) }
+  scope :hidden,                    -> { where(visibility: VISIBILITY_HIDDEN) }
+  scope :by_type,                   -> (type) { where(platform_type: type) if type.present? }
+  scope :main,                      -> { by_type(TYPE_MAIN) }
+  scope :personal,                  -> { by_type(TYPE_PERSONAL) }
+  scope :waiting_for_regeneration,  -> { where(status: WAITING_FOR_REGENERATION) }
 
   accepts_nested_attributes_for :platform_arch_settings, allow_destroy: true
-  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released, :platform_arch_settings_attributes, :automatic_metadata_regeneration
-  attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
+  attr_accessible :name,
+                  :distrib_type,
+                  :parent_platform_id,
+                  :platform_type,
+                  :owner,
+                  :visibility,
+                  :description,
+                  :released,
+                  :platform_arch_settings_attributes,
+                  :automatic_metadata_regeneration
+
+  attr_readonly :name, :distrib_type, :parent_platform_id, :platform_type
 
   state_machine :status, initial: :ready do
 
@@ -144,15 +183,15 @@ class Platform < ActiveRecord::Base
   end
 
   def hidden?
-    visibility == 'hidden'
+    visibility == VISIBILITY_HIDDEN
   end
 
   def personal?
-    platform_type == 'personal'
+    platform_type == TYPE_PERSONAL
   end
 
   def main?
-    platform_type == 'main'
+    platform_type == TYPE_MAIN
   end
 
   def base_clone(attrs = {}) # :description, :name, :owner
@@ -175,10 +214,10 @@ class Platform < ActiveRecord::Base
   end
 
   def change_visibility
-    if !hidden?
-      update_attributes(visibility: 'hidden')
+    if hidden?
+      update_attributes(visibility: VISIBILITY_OPEN)
     else
-      update_attributes(visibility: 'open')
+      update_attributes(visibility: VISIBILITY_HIDDEN)
     end
   end
 
@@ -190,6 +229,7 @@ class Platform < ActiveRecord::Base
       File.open(File.join(symlink_path, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
     end
   end
+  later :symlink_directory, queue: :middle
 
   def remove_symlink_directory
     system("rm -Rf #{symlink_path}")
@@ -261,7 +301,6 @@ class Platform < ActiveRecord::Base
     def create_directory
       system("mkdir -p -m 0777 #{build_path([name, 'repository'])}")
     end
-
 
     def build_path(dir)
       File.join(APP_CONFIG['root_path'], 'platforms', dir)
