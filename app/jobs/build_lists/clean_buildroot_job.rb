@@ -6,6 +6,7 @@ module BuildLists
 
     def self.perform
       build_lists = BuildList.where(save_buildroot: true).
+        for_status(BuildList::BUILD_ERROR).
         where('updated_at < ?', Time.now - 1.hour).
         where('results ~ ?', "file_name: #{FILENAME}")
 
