@@ -8,6 +8,7 @@ class SearchController < ApplicationController
     Search.by_term_and_type(
       @query,
       @type,
+      current_ability,
       {page: params[:page]}
     ).each do |k, v|
       var = :"@#{k}"
