@@ -1,4 +1,4 @@
-- project = defined?(project) ? project : @project
+- project ||= @project
 - commits = split_commits_by_date(commits)
 - cur_year = Date.today.year
 - counter = 1
