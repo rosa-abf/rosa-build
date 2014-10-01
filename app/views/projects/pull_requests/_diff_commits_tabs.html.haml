@@ -18,4 +18,4 @@
 #commits.tab-pane
   - if @total_commits > @commits.count
     %div= t("projects.pull_requests.is_big", count: @commits.count)
-  = render partial: 'projects/git/commits/commits', object: @commits
+  = render partial: 'projects/git/commits/commits', object: @commits, locals: { project: @pull.from_project }

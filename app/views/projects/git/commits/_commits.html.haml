@@ -1,3 +1,4 @@
+- project = defined?(project) ? project : @project
 - commits = split_commits_by_date(commits)
 - cur_year = Date.today.year
 - counter = 1
@@ -12,7 +13,7 @@
         .date= raw l(commits.first.committed_date, format: :date_block_format)
         .messages
           - commits.each_with_index do |commit|
-            - GitPresenters::CommitAsMessagePresenter.present(commit, project: @project) do |presenter|
+            - GitPresenters::CommitAsMessagePresenter.present(commit, project: project) do |presenter|
               = render 'shared/feed_message', presenter: presenter, item_no: counter
               - counter += 1
         .both
