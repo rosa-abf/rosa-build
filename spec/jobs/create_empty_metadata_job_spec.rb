@@ -60,7 +60,7 @@ describe CreateEmptyMetadataJob do
 
     it 'repository of personal platform' do
       platform.platform_type = Platform::TYPE_PERSONAL
-      allow(Platform).to receive(:main).and_return([platform])
+      Platform.stub_chain(:main, :opened).and_return([platform])
       paths = <<-STR
         #{ platform.path }/repository/#{ platform.name }/i586/#{ repository.name }/release
         #{ platform.path }/repository/#{ platform.name }/i586/#{ repository.name }/updates
@@ -82,7 +82,7 @@ describe CreateEmptyMetadataJob do
     let(:job)         { CreateEmptyMetadataJob.new('Platform', 123) }
 
     before do
-      Platform.stub_chain(:main, :find).and_return(platform)
+      Platform.stub_chain(:main, :opened, :find).and_return(platform)
       Repository.stub_chain(:joins, :where, :find_each).and_yield(repository1).and_yield(repository2)
     end
 

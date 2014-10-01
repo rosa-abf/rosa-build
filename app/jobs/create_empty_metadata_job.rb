@@ -17,7 +17,7 @@ class CreateEmptyMetadataJob < Struct.new(:class_name, :id)
   private
 
   def create_empty_metadata_for_platform
-    platform      = Platform.main.find id
+    platform      = Platform.main.opened.find id
     @platforms    = [platform]
     repositories  = Repository.joins(:platform).
       where(platforms: { platform_type: Platform::TYPE_PERSONAL })
@@ -64,7 +64,7 @@ class CreateEmptyMetadataJob < Struct.new(:class_name, :id)
   end
 
   def platforms
-    @platforms ||= Platform.main.to_a
+    @platforms ||= Platform.main.opened.to_a
   end
 
 end

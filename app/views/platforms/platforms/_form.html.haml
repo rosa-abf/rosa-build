@@ -12,6 +12,10 @@
   .rightlist= f.select :distrib_type, options_for_select(APP_CONFIG['distr_types'])
   .both
 
+  .leftlist= f.label :visibility, class: :label
+  .rightlist= f.select :visibility, options_for_select(Platform::VISIBILITIES.map{ |v| [t("activerecord.attributes.platform.visibility_types.#{v}"), v] })
+  .both
+
   -#.leftlist= f.label :parent, class: :label
     .rightlist= f.collection_select :parent_platform_id, Platform.all, :id, :description, include_blank: true
     .both
@@ -26,24 +30,25 @@
   = hidden_field_tag 'admin_id', @admin_id, id: 'admin_id_field'
   .both
 
-  %h3= t('layout.platform_arch_settings.extra_settings')
+  - if ['edit', 'update'].include? controller.action_name
+    %h3= t('layout.platform_arch_settings.extra_settings')
 
-  %table.tablesorter{cellpadding: "0", cellspacing: "0"}
-    %thead
-      %tr
-        %th.lpadding16= t("activerecord.models.arch")
-        %th.lpadding16= t("activerecord.attributes.platform_arch_setting.default")
-        %th.lpadding16= t("activerecord.attributes.platform_arch_setting.time_living")
-    %tbody
-      - platform_arch_settings(@platform).each do |setting|
-        %tr{class: cycle("odd", "even")}
-          = f.fields_for :platform_arch_settings, setting do |s_form|
-            %td
-              = setting.arch.name
-              = s_form.hidden_field :arch_id
-            %td.center= s_form.check_box :default, class: 'check_box'
-            %td.right= s_form.text_field :time_living, value: setting.time_living / 60, class: 'text_field', size: 10
-  .both
+    %table.tablesorter{cellpadding: "0", cellspacing: "0"}
+      %thead
+        %tr
+          %th.lpadding16= t("activerecord.models.arch")
+          %th.lpadding16= t("activerecord.attributes.platform_arch_setting.default")
+          %th.lpadding16= t("activerecord.attributes.platform_arch_setting.time_living")
+      %tbody
+        - platform_arch_settings(@platform).each do |setting|
+          %tr{class: cycle("odd", "even")}
+            = f.fields_for :platform_arch_settings, setting do |s_form|
+              %td
+                = setting.arch.name
+                = s_form.hidden_field :arch_id
+              %td.center= s_form.check_box :default, class: 'check_box'
+              %td.right= s_form.text_field :time_living, value: setting.time_living / 60, class: 'text_field', size: 10
+    .both
 
 .button_block
   = f.submit t('layout.save'), data: {'disable-with' => t('layout.saving')}

@@ -6,7 +6,7 @@ module EmptyMetadata
   end
 
   def create_empty_metadata
-    return if is_a?(Platform) && personal?
+    return if is_a?(Platform) && ( personal? || hidden? )
     Resque.enqueue(CreateEmptyMetadataJob, self.class.name, id)
   end
 
