@@ -30,28 +30,26 @@ class CreateEmptyMetadataJob < Struct.new(:class_name, :id)
     @platforms = [repository.platform] if repository.platform.main?
     platforms.each do |platform|
       arch_names.each do |arch_name|
-        [repository.name, "debug_#{repository.name}"].each do |repository_name|
-          %w(release updates).each do |type|
-            path  = "#{repository.platform.path}/repository/"
-            path << "#{platform.name}/" if repository.platform.personal?
-            path << "#{arch_name}/#{repository_name}/#{type}"
-            create_empty_metadata(repository, platform, path)
-          end
+        %w(release updates).each do |type|
+          path  = "#{ repository.platform.path }/repository/"
+          path << "#{ platform.name }/" if repository.platform.personal?
+          path << "#{ arch_name }/#{ repository.name }/#{ type }"
+          create_empty_metadata(platform, path)
         end
       end
     end
   end
 
-  def create_empty_metadata(repository, platform, path)
+  def create_empty_metadata(platform, path)
     case platform.distrib_type
     when 'rhel'
-      path << 'repodata/'
+      path << '/repodata/'
     when 'mdv'
-      path << 'media_info/'
+      path << '/media_info/'
     else
       return
     end
-    if Dir["#{path}/*"].empty?
+    if Dir["#{ path }/*"].empty?
       system "mkdir -p -m 0777 #{ path }"
       system "cp -f #{ empty_metadatas(platform) }/* #{ path }/"
     end
