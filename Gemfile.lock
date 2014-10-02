@@ -40,14 +40,12 @@ GIT
 
 GIT
   remote: git://github.com/rosa-abf/grit.git
-  revision: a28b4c059f4d2fa66e59bb998f4250affeed286c
-  tag: 2.6.13
+  revision: 87e7cc875de5fd1c3e446d1fd0f533a95d10bb2d
   specs:
-    grit (2.7.1)
-      charlock_holmes (~> 0.6)
+    grit (2.5.0)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
-      posix-spawn (~> 0.3)
+      posix-spawn (~> 0.3.6)
 
 GEM
   remote: https://rubygems.org/
