@@ -19,7 +19,7 @@ class Search
       scope = if type == 'users'
                 User.opened
               else
-                type.classify.constantize.accessible_by(ability, :read)
+                type.classify.constantize.accessible_by(ability, :show)
               end
       scope.search(term).
             search_order.
