@@ -7,17 +7,17 @@ module PersonalRepository
 
   def create_personal_repository
     begin
-      pl = own_platforms.build
-      pl.owner = self
-      pl.name = "#{self.uname}_personal"
-      pl.description = "#{self.uname}_personal"
-      pl.platform_type = 'personal'
-      pl.distrib_type = APP_CONFIG['distr_types'].first
-      pl.visibility = 'open'
+      pl                = own_platforms.build
+      pl.owner          = self
+      pl.name           = "#{self.uname}_personal"
+      pl.description    = "#{self.uname}_personal"
+      pl.platform_type  = Platform::TYPE_PERSONAL
+      pl.distrib_type   = APP_CONFIG['distr_types'].first
+      pl.visibility     = Platform::VISIBILITY_OPEN
       pl.save!
 
-      rep = pl.repositories.build
-      rep.name = 'main'
+      rep             = pl.repositories.build
+      rep.name        = 'main'
       rep.description = 'main'
       rep.save!
     rescue Exception => e
