@@ -37,6 +37,7 @@ $(document).ready(function() {
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');
       parent.find('input[rep_name="main"]').attr('checked', 'checked');
+      parent.find('input[rep_name="base"]').attr('checked', 'checked');
       if (rep_name != 'main') {
         parent.find('input[rep_name="' + rep_name + '"]').attr('checked', 'checked');
       }
