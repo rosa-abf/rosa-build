@@ -202,7 +202,7 @@ module Git
           package = link.attributes['href'].value
           package.chomp!; package.strip!
 
-          next if package.size == 0 || package !~ /^[\w\.\-]+$/
+          next if package.size == 0 || package !~ Project::NAME_REGEXP
           next if filter.present? && !filter.include?(package)
 
           uri = URI "#{url}/#{package}"
