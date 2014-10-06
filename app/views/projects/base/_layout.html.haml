@@ -2,9 +2,10 @@
 = render 'repo_block', project: @project
 = render 'about_block', project: @project
 
-%h3= t("layout.projects.last_commit")
-- GitPresenters::CommitAsMessagePresenter.present(@commit, project: @project) do |presenter|
-  = render 'shared/feed_message', presenter: presenter, item_no: 1
+- if @commit.present?
+  %h3= t("layout.projects.last_commit")
+  - GitPresenters::CommitAsMessagePresenter.present(@commit, project: @project) do |presenter|
+    = render 'shared/feed_message', presenter: presenter, item_no: 1
 
 .both
 
