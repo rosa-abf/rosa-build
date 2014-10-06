@@ -33,4 +33,31 @@ class Statistic < ActiveRecord::Base
                   :type,
                   :counter,
                   :activity_at
+
+  def self.now_statsd_increment(options = {})
+    # Truncates a DateTime to the minute
+    activity_at = options[:activity_at].utc.change(min: 0)
+    user        = User.find options[:user_id]
+    project     = Project.find options[:project_id]
+    Statistic.create(
+      user:                     user,
+      email:                    user.email,
+      project:                  project,
+      project_name_with_owner:  project.name_with_owner,
+      type:                     options[:type],
+      activity_at:              activity_at
+    )
+  ensure
+    Statistic.where(
+      user_id:      options[:user_id],
+      project_id:   options[:project_id],
+      type:         options[:type],
+      activity_at:  activity_at
+    ).update_all('counter = counter + ?', options[:counter])
+  end
+
+  def self.statsd_increment(options = {})
+    Statistic.perform_later(:middle, :now_statsd_increment, options)
+  end
+
 end
