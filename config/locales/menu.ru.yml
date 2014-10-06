@@ -9,6 +9,7 @@ ru:
     build_lists: Мониторинг задач
     groups: Группы
     advisories: Бюллетени
+    statistics: Статистика
   bottom_menu:
     copyright: ROSA Лаб. © %{year}
     about: О компании

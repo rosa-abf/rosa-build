@@ -13,6 +13,7 @@ Rosa::Application.routes.draw do
   match '/sitemap.xml.gz' => 'sitemap#show', via: [:get, :post, :head], as: :sitemap
   match '/robots.txt' => 'sitemap#robots', via: [:get, :post, :head], as: :robots
 
+  resources :statistics, only: [:index]
   resource :contact, only: [:new, :create, :sended] do
     get '/' => 'contacts#new'
     get :sended
