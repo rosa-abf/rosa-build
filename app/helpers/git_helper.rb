@@ -110,6 +110,8 @@ module GitHelper
     else
       blob.colorize
     end.html_safe
+  rescue MentosError => e
+    blob.data.html_safe
   end
 
   def blame_highlight(blob, text)
@@ -118,5 +120,7 @@ module GitHelper
     else
       blob.lexer.highlight text
     end.html_safe
+  rescue MentosError => e
+    text.html_safe
   end
 end
