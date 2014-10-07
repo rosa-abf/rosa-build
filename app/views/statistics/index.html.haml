@@ -1,3 +1,7 @@
 - set_meta_tags title: t('.header')
 
-= t('.hello')
+#manage-statistics{ ng_controller: 'StatisticsController', ng_init: 'init()' }
+
+  = render 'filter'
+  = render 'build_lists'
+

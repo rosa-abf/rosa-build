@@ -1,0 +1,14 @@
+.row
+  .span11.flash_notify
+
+    %h3.text-info
+      = t('.header')
+
+    = form_tag '#', class: 'form-inline alert alert-info centered', id: 'range-form' do
+      %label.control-label
+        = t('.range_label')
+      = select_tag 'range', statistics_range_options, id: 'range_select', class: 'select input-medium', ng_model: 'range', ng_change: 'rangeChange()'
+      %span{ ng_show: "range == 'custom'" }
+        = text_field_tag :range_start, Date.today - 1.month, class: 'date_picker input-medium', placeholder: t('.range_start_placeholder'), ng_model: 'range_start', ng_change: 'rangeChange()', readonly: true
+        = t('.range_separator')
+        = text_field_tag :range_end, Date.today, class: 'date_picker input-medium', placeholder: t('.range_end_placeholder'), ng_model: 'range_end', ng_change: 'rangeChange()', readonly: true
