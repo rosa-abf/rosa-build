@@ -13,13 +13,13 @@ class CreateStatistics < ActiveRecord::Migration
     end
 
 
-    add_index :statistics, :user_id,                            algorithm: :concurrently
-    add_index :statistics, :project_id,                         algorithm: :concurrently
-    add_index :statistics, :type,                               algorithm: :concurrently
-    add_index :statistics, [:user_id, :type, :activity_at],     algorithm: :concurrently
-    add_index :statistics, [:project_id, :type, :activity_at],  algorithm: :concurrently
-    add_index :statistics, [:type, :activity_at],               algorithm: :concurrently
-    add_index :statistics, :activity_at,                        algorithm: :concurrently
+    add_index :statistics, :user_id
+    add_index :statistics, :project_id
+    add_index :statistics, :type
+    add_index :statistics, [:user_id, :type, :activity_at]
+    add_index :statistics, [:project_id, :type, :activity_at]
+    add_index :statistics, [:type, :activity_at]
+    add_index :statistics, :activity_at
 
     add_index :statistics, [:user_id, :project_id, :type, :activity_at], unique: true,
       name: 'index_statistics_on_all_keys'
