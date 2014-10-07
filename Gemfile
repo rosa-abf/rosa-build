@@ -30,7 +30,7 @@ gem 'state_machine', '~> 1.2'
 gem 'redis-rails', '~> 4.0'
 
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git', require: 'git_http'
-gem 'grit', git: 'git://github.com/rosa-abf/grit.git'
+gem 'grit', git: 'git://github.com/rosa-abf/grit.git', tag: '2.6.16'
 gem 'charlock_holmes', '~> 0.7'
 gem 'github-linguist', '~> 3.1', require: 'linguist'
 gem 'diff-display', '~> 0.0.1'
