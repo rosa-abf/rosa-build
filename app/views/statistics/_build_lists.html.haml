@@ -14,7 +14,7 @@
         = image_tag 'loading-large.gif'
       .no-data{ ng_hide: 'loading || statistics.build_lists' }
         = t('.no_data')
-      %canvas#build_lists_chart ng-show='statistics.build_lists'
+      %canvas#build_lists_chart{ ng_show: 'statistics.build_lists' }
 
   .span3
     .panel-wrapper

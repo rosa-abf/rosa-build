@@ -586,18 +586,18 @@ ActiveRecord::Schema.define(version: 20141006182907) do
     t.string   "email",                               null: false
     t.integer  "project_id",                          null: false
     t.string   "project_name_with_owner",             null: false
-    t.string   "type",                                null: false
+    t.string   "key",                                 null: false
     t.integer  "counter",                 default: 0, null: false
     t.datetime "activity_at",                         null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.index ["activity_at"], :name => "index_statistics_on_activity_at"
-    t.index ["project_id", "type", "activity_at"], :name => "index_statistics_on_project_id_and_type_and_activity_at"
+    t.index ["key", "activity_at"], :name => "index_statistics_on_key_and_activity_at"
+    t.index ["key"], :name => "index_statistics_on_key"
+    t.index ["project_id", "key", "activity_at"], :name => "index_statistics_on_project_id_and_key_and_activity_at"
     t.index ["project_id"], :name => "index_statistics_on_project_id"
-    t.index ["type", "activity_at"], :name => "index_statistics_on_type_and_activity_at"
-    t.index ["type"], :name => "index_statistics_on_type"
-    t.index ["user_id", "project_id", "type", "activity_at"], :name => "index_statistics_on_all_keys", :unique => true
-    t.index ["user_id", "type", "activity_at"], :name => "index_statistics_on_user_id_and_type_and_activity_at"
+    t.index ["user_id", "key", "activity_at"], :name => "index_statistics_on_user_id_and_key_and_activity_at"
+    t.index ["user_id", "project_id", "key", "activity_at"], :name => "index_statistics_on_all_keys", :unique => true
     t.index ["user_id"], :name => "index_statistics_on_user_id"
   end
 

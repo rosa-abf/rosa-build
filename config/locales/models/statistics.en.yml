@@ -15,6 +15,11 @@ en:
       total_user_sessions:                        "Total user sessions"
       no_data:                                    "No data available"
 
+    build_lists:
+      build_started_title:                        "Build started"
+      success_title:                              "Build complete"
+      build_error_title:                          "Build error"
+      build_published_title:                      "Build has been published"
 
     helper:
       period:
