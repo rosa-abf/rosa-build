@@ -505,7 +505,8 @@ class BuildList < ActiveRecord::Base
 
   def log(load_lines)
     if new_core?
-      Pygments.highlight abf_worker_log, lexer: 'sh'
+      worker_log = abf_worker_log
+      Pygments.highlight(worker_log, lexer: 'sh') rescue worker_log
     else
       I18n.t('layout.build_lists.log.not_available')
     end
