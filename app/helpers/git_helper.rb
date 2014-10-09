@@ -105,6 +105,7 @@ module GitHelper
   end
 
   def blob_highlight(blob)
+    return if blob.nil? || blob.data.blank?
     if blob.mime_type == 'text/rpm-spec'
       Pygments.highlight blob.data, lexer: 'spec'
     else
@@ -115,6 +116,7 @@ module GitHelper
   end
 
   def blame_highlight(blob, text)
+    return if blob.nil? || text.blank?
     if blob.mime_type == 'text/rpm-spec'
       Pygments.highlight(text, lexer: 'spec')
     else
