@@ -106,22 +106,25 @@ module GitHelper
 
   def blob_highlight(blob)
     return if blob.nil? || blob.data.blank?
-    if blob.mime_type == 'text/rpm-spec'
-      Pygments.highlight blob.data, lexer: 'spec'
-    else
-      blob.colorize
-    end.html_safe
+    result = if blob.mime_type == 'text/rpm-spec'
+               Pygments.highlight blob.data, lexer: 'spec'
+             else
+               blob.colorize
+             end
+             result  = nil
+    result.present? ? result.html_safe : blob.data
   rescue MentosError, Yajl::ParseError => e
     blob.data.html_safe
   end
 
   def blame_highlight(blob, text)
     return if blob.nil? || text.blank?
-    if blob.mime_type == 'text/rpm-spec'
-      Pygments.highlight(text, lexer: 'spec')
-    else
-      blob.lexer.highlight text
-    end.html_safe
+    result = if blob.mime_type == 'text/rpm-spec'
+               Pygments.highlight(text, lexer: 'spec')
+             else
+               blob.lexer.highlight text
+             end
+    result.present? ? result.html_safe : text
   rescue MentosError, Yajl::ParseError => e
     text.html_safe
   end
