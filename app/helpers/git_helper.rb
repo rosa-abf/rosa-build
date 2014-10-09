@@ -111,7 +111,6 @@ module GitHelper
              else
                blob.colorize
              end
-             result  = nil
     result.present? ? result.html_safe : blob.data
   rescue MentosError, Yajl::ParseError => e
     blob.data.html_safe
