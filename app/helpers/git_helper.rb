@@ -111,7 +111,7 @@ module GitHelper
     else
       blob.colorize
     end.html_safe
-  rescue MentosError => e
+  rescue MentosError, Yajl::ParseError => e
     blob.data.html_safe
   end
 
@@ -122,7 +122,7 @@ module GitHelper
     else
       blob.lexer.highlight text
     end.html_safe
-  rescue MentosError => e
+  rescue MentosError, Yajl::ParseError => e
     text.html_safe
   end
 end
