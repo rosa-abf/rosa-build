@@ -35,9 +35,9 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$filter', ($scop
     range_end   = new Date($scope.range_end)
 
     if range_start > range_end
-      tpm                 = $scope.range_start
+      tmp                 = $scope.range_start
       $scope.range_start  = $scope.range_end
-      $scope.range_end    = tpm
+      $scope.range_end    = tmp
 
 
   $scope.rangeChange = ->

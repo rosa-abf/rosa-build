@@ -14,12 +14,10 @@ class StatisticsController < ApplicationController
   before_filter :init_variables
 
   def index
-    # TODO
     respond_to do |format|
       format.html
       format.json do
-        scope         = Statistic.for_period(@range_start, @range_end)
-        @build_lists  = scope.build_lists(@range_start, @range_end, @unit)
+        render json: StatisticPresenter.new(range_start: @range_start, range_end: @range_end, unit: @unit)
       end
     end
   end

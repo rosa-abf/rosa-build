@@ -9,10 +9,6 @@ en:
       range_start_placeholder:                    "Select a start date"
       range_separator:                            " and "
       range_end_placeholder:                      "Select an end date"
-      page_views_title:                           " Page views"
-      unique_visitors_title:                      " Unique visitors"
-      total_page_views:                           "Total page views"
-      total_user_sessions:                        "Total user sessions"
       no_data:                                    "No data available"
 
     build_lists:
@@ -20,6 +16,11 @@ en:
       success_title:                              "Build complete"
       build_error_title:                          "Build error"
       build_published_title:                      "Build has been published"
+
+      total_build_started:                        "Total build started"
+      total_success:                              "Total build complete"
+      total_build_error:                          "Total build error"
+      total_build_published:                      "Total build has been published"
 
     helper:
       period:
