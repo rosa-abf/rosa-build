@@ -17,7 +17,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
 
   def archive
     format, @treeish = params[:format], params[:treeish]
-    raise Grit::NoSuchPathError unless  @treeish =~ /^#{@project.name}-/ && 
+    raise Grit::NoSuchPathError unless  @treeish =~ /^#{@project.name}-/ &&
                                         @treeish !~ /[\s]+/ &&
                                         format =~ /^(zip|tar\.gz)$/
     @treeish.gsub!(/^#{@project.name}-/, '')

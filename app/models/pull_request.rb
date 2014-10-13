@@ -180,6 +180,7 @@ class PullRequest < ActiveRecord::Base
   end
 
   def clone
+    return if from_project.nil?
     git = Grit::Git.new(path)
     if new_record? || !git.exist?
       #~ FileUtils.mkdir_p(path)
