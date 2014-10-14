@@ -11,12 +11,11 @@ class StatisticsController < ApplicationController
     RANGE_CUSTOM            = 'custom',
   ]
 
-  before_filter :init_variables
-
   def index
     respond_to do |format|
       format.html
       format.json do
+        init_variables
         render json: StatisticPresenter.new(range_start: @range_start, range_end: @range_end, unit: @unit)
       end
     end
