@@ -93,7 +93,7 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$filter', ($scop
             x = x.replace(/\s/, 'T') + 'Z'
             'HH:mm'
           else
-            'MMM dd'
+            'yyyy-MM-dd'
         x = $filter('date')(x, format)
         tooltipTitles.push x
         if index %% factor == 0
