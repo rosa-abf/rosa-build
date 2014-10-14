@@ -236,7 +236,7 @@ describe BuildList do
     end
 
     it 'ensures that return true if version of packages are same and platform RHEL is released' do
-      build_list.save_to_platform.update_attributes(released: true)
+      build_list.save_to_platform.update_attributes(released: true, distrib_type: 'rhel')
       build_list.has_new_packages?.should be_true
     end
 
