@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
-  AIRBRAKE_IGNORE = [ActionController::InvalidAuthenticityToken,
-                     AbstractController::ActionNotFound]
+  AIRBRAKE_IGNORE = [
+    ActionController::InvalidAuthenticityToken,
+    AbstractController::ActionNotFound
+  ]
 
   protect_from_forgery
 

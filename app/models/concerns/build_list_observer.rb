@@ -3,9 +3,19 @@ module BuildListObserver
 
   included do
     before_update :update_average_build_time
+    before_update :update_statistic
   end
 
   private
+
+  def update_statistic
+    Statistic.statsd_increment(
+      activity_at:  Time.now,
+      key:          "build_list.#{status}",
+      project_id:   project_id,
+      user_id:      user_id,
+    ) if status_changed?
+  end
 
   def update_average_build_time
     if status_changed?
