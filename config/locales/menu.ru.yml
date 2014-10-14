@@ -48,7 +48,7 @@ ru:
     wiki: Вики
   platform_menu:
     settings: Настройки
-  admins_menu_header: Центр управления
+  admins_menu_header: ЦУ
   admins_menu:
     users: Пользователи
     register_requests: Инвайты

@@ -66,7 +66,11 @@ class StatisticsController < ApplicationController
         else
           :month
         end
+    else
+      raise ActiveRecord::RecordNotFound
     end
+  rescue ArgumentError
+    raise ActiveRecord::RecordNotFound
   end
 
 end
