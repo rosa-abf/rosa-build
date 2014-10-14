@@ -21,7 +21,6 @@ class StatisticPresenter < ApplicationPresenter
         build_error_count:      build_lists_error.sum(&:count),
         build_published_count:  build_lists_published.sum(&:count),
       }
-
     }
   end
 
@@ -59,14 +58,14 @@ class StatisticPresenter < ApplicationPresenter
     while to <= range_end
       from  = to - 1.send(unit)
       y     = items.find{ |i| i.activity_at > from && i.activity_at <= to }.try(:count)
-      data << { x: from.strftime(format), y: y || 0 }
+      data << { x: to.strftime(format), y: y || 0 }
       to += 1.send(unit)
     end
     data
   end
 
   def format
-    @format ||= unit == :hour ? '%F %H:00:00' : '%F'
+    @format ||= unit == :hour ? '%H:%M' : '%Y-%m-%d'
   end
 
 end

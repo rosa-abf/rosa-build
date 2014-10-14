@@ -1,4 +1,4 @@
-RosaABF.controller 'StatisticsController', ['$scope', '$http', '$filter', ($scope, $http, $filter) ->
+RosaABF.controller 'StatisticsController', ['$scope', '$http', ($scope, $http) ->
 
   $scope.range                    = 'last_30_days'
   $scope.range_start              = $('#range_start').attr('value')
@@ -86,15 +86,7 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$filter', ($scop
 
       tooltipTitles = []
       labels        = _.map points, (d, index) ->
-        x       = d.x
-        format  =
-          if $scope.statistics.unit == 'hour'
-            # input date should have format: 'yyyy-MM-ddTHH:mm:ssZ'
-            x = x.replace(/\s/, 'T') + 'Z'
-            'HH:mm'
-          else
-            'yyyy-MM-dd'
-        x = $filter('date')(x, format)
+        x = d.x
         tooltipTitles.push x
         if index %% factor == 0
           x

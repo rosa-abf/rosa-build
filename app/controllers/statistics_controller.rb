@@ -54,8 +54,8 @@ class StatisticsController < ApplicationController
       @range_start  = @range_end - 1.year
       @unit         = :month
     when RANGE_CUSTOM
-      @range_start  = Time.parse(params[:range_start]).utc
-      @range_end    = Time.parse(params[:range_end]).utc
+      @range_start  = Time.zone.parse(params[:range_start]).utc
+      @range_end    = Time.zone.parse(params[:range_end]).utc
       diff          = @range_end - @range_start
       @unit         =
         if diff <= 24.hours
