@@ -372,7 +372,7 @@ class BuildList < ActiveRecord::Base
   # @return [Boolean]
   # - false if no new packages
   # - false if version of packages is less than version of pubished packages.
-  # - true if version of packages is equal to version of pubished packages (only if platform is not released).
+  # - true if version of packages is equal to version of pubished packages (only if platform is not released or platform is RHEL).
   # - true if version of packages is greater than version of pubished packages.
   def has_new_packages?
     if last_bl = last_published.joins(:source_packages).where(build_list_packages: {actual: true}).last
@@ -380,7 +380,8 @@ class BuildList < ActiveRecord::Base
         sp = last_bl.source_packages.find{ |sp| nsp.name == sp.name }
         return true unless sp
         comparison = nsp.rpmvercmp(sp)
-        return comparison == 1 || (comparison == 0 && !save_to_platform.released?)
+        return true if comparison == 1
+        return comparison == 0 && ( !save_to_platform.released? || save_to_platform.distrib_type == 'rhel' )
       end
     else
       return true # no published packages
