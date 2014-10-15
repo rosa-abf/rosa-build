@@ -41,3 +41,4 @@ ru:
         repositories: Репозитории
         projects_list: Список проектов
         build_for_platform: Собрано для платформы
+        external_nodes: Дополнительные ноды

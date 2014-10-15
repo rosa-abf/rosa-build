@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141006182907) do
+ActiveRecord::Schema.define(version: 20141015193923) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -333,6 +333,7 @@ ActiveRecord::Schema.define(version: 20141006182907) do
     t.boolean  "include_testing_subrepository", default: false,  null: false
     t.boolean  "auto_create_container",         default: false,  null: false
     t.integer  "status",                        default: 2000,   null: false
+    t.string   "external_nodes"
   end
 
   create_table "users", force: true do |t|

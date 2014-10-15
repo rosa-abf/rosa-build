@@ -1,6 +1,7 @@
 class MassBuild < ActiveRecord::Base
 
   AUTO_PUBLISH_STATUSES = %w(none default testing)
+  EXTERNAL_NODES        = %w(owned everything)
 
   STATUSES, HUMAN_STATUSES = [], {}
   [
@@ -47,7 +48,7 @@ class MassBuild < ActiveRecord::Base
   attr_accessible :arches, :auto_publish_status, :projects_list, :build_for_platform_id,
                   :extra_repositories, :extra_build_lists, :increase_release_tag,
                   :use_cached_chroot, :use_extra_tests, :description, :extra_mass_builds,
-                  :include_testing_subrepository, :auto_create_container
+                  :include_testing_subrepository, :auto_create_container, :external_nodes
 
   validates :save_to_platform_id,
             :build_for_platform_id,
@@ -55,6 +56,10 @@ class MassBuild < ActiveRecord::Base
             :name,
             :user_id,
             presence:               true
+
+  validates :external_nodes,
+            inclusion:              { in: EXTERNAL_NODES },
+            allow_blank:            true
 
   validates :projects_list,
             presence:               true,
