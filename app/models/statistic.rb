@@ -54,6 +54,8 @@ class Statistic < ActiveRecord::Base
       key:                      key,
       activity_at:              activity_at
     )
+  rescue ActiveRecord::RecordNotUnique
+    # Do nothing, see: ensure
   ensure
     Statistic.where(
       user_id:      user_id,
