@@ -27,7 +27,7 @@ RosaABF.controller('BuildListsController',
     <%=BuildList::REJECTED_PUBLISH%>: 0
   };
   $scope.minDate = new Date(2010, 1, 1);
-  $scope.maxDate = moment().add('months', 1).calendar();
+  $scope.maxDate = moment().add(1, 'months').calendar();
 
   $scope.today = function() {
     $scope.dt = new Date();
