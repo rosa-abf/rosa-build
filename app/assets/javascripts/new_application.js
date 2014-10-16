@@ -21,6 +21,8 @@
 //= require angular-cookies
 //= require soundmanager2-nodebug-jsmin
 
+//= require angular-rails-templates
+
 //= require moment
 //= require angularjs/angular-moment
 
