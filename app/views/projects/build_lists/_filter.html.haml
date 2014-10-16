@@ -3,13 +3,13 @@
   %accordion-group{ 'is-open' => '$parent.isOpenServerStatus' }
     %accordion-heading
       = t 'layout.build_lists.build_server_status.header'
-      %i.pull-right.glyphicon{ 'ng-class' => "{'glyphicon-chevron-down': isOpenServerStatus, 'glyphicon-chevron-right': !isOpenServerStatus}" }
+      %span.pull-right.fa{ 'ng-class' => "{'fa-chevron-down': isOpenServerStatus, 'fa-chevron-up': !isOpenServerStatus}" }
     = render 'server_status'
 
   %accordion-group{ 'is-open' => '$parent.isOpenFilters' }
     %accordion-heading
       = t 'layout.build_lists.filters'
-      %i.pull-right.glyphicon{ 'ng-class' => "{'glyphicon-chevron-down': isOpenFilters, 'glyphicon-chevron-right': !isOpenFilters}" }
+      %span.pull-right.fa{ 'ng-class' => "{'fa-chevron-down': isOpenFilters, 'fa-chevron-up': !isOpenFilters}" }
     = form_for :filter, html: { class: :form, id: 'monitoring_filter' },
                authenticity_token: false do |f|
       .row
