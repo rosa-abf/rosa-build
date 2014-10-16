@@ -1,0 +1,34 @@
+ru:
+  statistics:
+    index:
+      header:                                     "Статистика"
+
+    filter:
+      header:                                     "Статистика"
+      range_label:                                "Показать данные за"
+      range_start_placeholder:                    "Выберите начальную дату"
+      range_separator:                            " и "
+      range_end_placeholder:                      "Выберите конечную дату"
+      no_data:                                    "Нет данных"
+
+    build_lists:
+      build_started_title:                        "Cобирается"
+      success_title:                              "Cобрано"
+      build_error_title:                          "Ошибка сборки"
+      build_published_title:                      "Опубликовано"
+
+      total_build_started:                        "Всего собирается"
+      total_success:                              "Всего собрано"
+      total_build_error:                          "Всего ошибок сборки"
+      total_build_published:                      "Всего опубликовано"
+
+    helper:
+      period:
+        twenty_four_hours:                        "последние 24 часа"
+        last_7_days:                              "последние 7 дней"
+        last_30_days:                             "последние 30 дней"
+        last_60_days:                             "последние 60 дней"
+        last_90_days:                             "последние 90 дней"
+        last_180_days:                            "последние 6 месяцев"
+        last_year:                                "последний год"
+        custom:                                   "интервал"

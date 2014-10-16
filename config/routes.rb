@@ -13,6 +13,7 @@ Rosa::Application.routes.draw do
   match '/sitemap.xml.gz' => 'sitemap#show', via: [:get, :post, :head], as: :sitemap
   match '/robots.txt' => 'sitemap#robots', via: [:get, :post, :head], as: :robots
 
+  resources :statistics, only: [:index]
   resource :contact, only: [:new, :create, :sended] do
     get '/' => 'contacts#new'
     get :sended
@@ -182,11 +183,11 @@ Rosa::Application.routes.draw do
         end
       end
 
-      resources :mass_builds, only: [:create, :new, :index] do
+      resources :mass_builds, only: [:create, :new, :index, :show] do
         member do
           post   :cancel
           post   :publish
-          get '/:kind' => "mass_builds#get_list", as: :get_list, kind: /failed_builds_list|missed_projects_list|projects_list|tests_failed_builds_list/
+          get '/:kind' => "mass_builds#get_list", as: :get_list, kind: /failed_builds_list|missed_projects_list|projects_list|tests_failed_builds_list|success_builds_list/
         end
       end
 
@@ -230,6 +231,7 @@ Rosa::Application.routes.draw do
       get :autocomplete_user_uname
       get :autocomplete_group_uname
       get :autocomplete_extra_build_list
+      get :autocomplete_extra_mass_build
       get :autocomplete_extra_repositories
     end
   end
@@ -283,6 +285,8 @@ Rosa::Application.routes.draw do
         put :reject_publish
         put :publish_into_testing
         put :update_type
+        get :dependent_projects
+        post :dependent_projects
       end
     end
 

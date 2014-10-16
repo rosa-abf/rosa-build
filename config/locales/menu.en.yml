@@ -9,6 +9,7 @@ en:
     build_lists: Task monitoring
     groups: Groups
     advisories: Advisories
+    statistics: Statistics
   bottom_menu:
     copyright: ROSA Lab © %{year}
     about: About the company

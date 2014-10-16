@@ -1,4 +1,35 @@
 class MassBuild < ActiveRecord::Base
+
+  AUTO_PUBLISH_STATUSES = %w(none default testing)
+
+  STATUSES, HUMAN_STATUSES = [], {}
+  [
+    %w(SUCCESS                        0),
+    %w(BUILD_STARTED                  3000),
+    %w(BUILD_PENDING                  2000),
+  ].each do |kind, value|
+    value = value.to_i
+    const_set kind, value
+    STATUSES << value
+    HUMAN_STATUSES[value] = kind.downcase.to_sym
+  end
+  STATUSES.freeze
+  HUMAN_STATUSES.freeze
+
+  state_machine :status, initial: :build_pending do
+    event :start do
+      transition build_pending: :build_started
+    end
+
+    event :done do
+      transition build_started: :success
+    end
+
+    HUMAN_STATUSES.each do |code,name|
+      state name, value: code
+    end
+  end
+
   belongs_to :build_for_platform, -> { where(platform_type: 'main') }, class_name: 'Platform'
   belongs_to :save_to_platform, class_name: 'Platform'
   belongs_to :user
@@ -6,15 +37,17 @@ class MassBuild < ActiveRecord::Base
 
   serialize :extra_repositories,  Array
   serialize :extra_build_lists,   Array
+  serialize :extra_mass_builds,   Array
 
-  scope :recent,      ->            { order(created_at: :desc) }
-  scope :by_platform, -> (platform) { where(save_to_platform_id: platform.id) }
-  scope :outdated,    ->            { where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME) }
+  scope :recent,      ->     { order(created_at: :desc) }
+  scope :outdated,    ->     { where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME) }
+  scope :search,      -> (q) { where("#{table_name}.description ILIKE ?", "%#{q}%") if q.present? }
 
   attr_accessor :arches
-  attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
+  attr_accessible :arches, :auto_publish_status, :projects_list, :build_for_platform_id,
                   :extra_repositories, :extra_build_lists, :increase_release_tag,
-                  :use_cached_chroot, :use_extra_tests
+                  :use_cached_chroot, :use_extra_tests, :description, :extra_mass_builds,
+                  :include_testing_subrepository, :auto_create_container
 
   validates :save_to_platform_id,
             :build_for_platform_id,
@@ -27,13 +60,18 @@ class MassBuild < ActiveRecord::Base
             presence:               true,
             length:                 { maximum: 500_000 }
 
-  validates :auto_publish,
-            :increase_release_tag,
+  validates :description,
+            length:                 { maximum: 255 }
+
+  validates :auto_publish_status,
+            inclusion:              { in: AUTO_PUBLISH_STATUSES }
+
+  validates :increase_release_tag,
             :use_cached_chroot,
             :use_extra_tests,
             inclusion:              { in: [true, false] }
 
-  after_commit      :build_all, on: :create
+  after_commit      :build_all, on: :create, if: Proc.new { |mb| mb.extra_mass_builds.blank? }
   before_validation :set_data,  on: :create
 
   COUNT_STATUSES = %i(
@@ -48,6 +86,7 @@ class MassBuild < ActiveRecord::Base
   )
 
   def build_all
+    return unless start
     # later with resque
     arches_list = arch_names ? Arch.where(name: arch_names.split(', ')) : Arch.all
 
@@ -72,6 +111,7 @@ class MassBuild < ActiveRecord::Base
         update_column :missed_projects_list, list
       end
     end
+    done
   end
   later :build_all, queue: :low
 
@@ -81,6 +121,10 @@ class MassBuild < ActiveRecord::Base
 
   def generate_tests_failed_builds_list
     generate_list BuildList::TESTS_FAILED
+  end
+
+  def generate_success_builds_list
+    generate_list BuildList::SUCCESS
   end
 
   def cancel_all

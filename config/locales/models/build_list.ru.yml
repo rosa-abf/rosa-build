@@ -9,9 +9,11 @@ ru:
         name: Название
         extra_repositories: Дополнительные репозитории
         extra_build_lists: Дополнительные сборки
+        extra_mass_builds: Дополнительные массовые сборки
         auto_create_container: Создать контейнер автоматически
         use_cached_chroot: Использовать кэшированный chroot
         use_extra_tests: Использовать дополнительные тесты
+        save_buildroot: Сохранить RPM build root
         container_path: Путь до контейнера
         status: Статус
         project_id: Проект
@@ -62,9 +64,20 @@ ru:
         release: Релиз
         version: Версия
 
+  projects:
+    build_lists:
+      dependent_projects:
+        title: Создать сборку зависимых проектов
+        projects: Проекты
+        packages: "Пакеты:"
+        architecture: Архитектура
+        preferences: Настройки
+        are_you_sure: Вы уверены что хотите запустить сборку? Release тег будет увеличен автоматически.
+
   layout:
     build_lists:
       create_container: Создать контейнер
+      create_build_list: Создать сборку
       platform_deleted: платформа была удалена
       filter_header: Фильтр
       current: Текущие
@@ -100,6 +113,7 @@ ru:
       new_header: Новая сборка
       main_data: Основные данные
       tests_failed: Некоторые тесты провалились. Будьте осторожны!
+      wrong_branch_for_publish_html: Публикация разрешена только для сборок из <b>%{branch}</b> ветки
 
       human_current_duration: Сборка длится уже %{hours} ч. %{minutes} мин.
       human_duration: Собрано за %{hours} ч. %{minutes} мин.
@@ -155,6 +169,7 @@ ru:
         build_publish: публикуется
         failed_publish: ошибка публикации
         dependencies_fail: зависимости не найдены
+        packages_fail: пакеты не найдены
         waiting_for_response: ожидает ответа
         build_pending: ожидает сборку
         build_canceled: сборка отменена
@@ -165,7 +180,7 @@ ru:
         build_published_into_testing: '[testing] опубликован'
         build_publish_into_testing: '[testing] публикуется'
         failed_publish_into_testing: '[testing] ошибка публикации'
-
+        unpermitted_arch: Недопустимая архитектура
 
       log:
         build_log: Лог сборки
@@ -208,3 +223,4 @@ ru:
       wrong_include_repos: Включаемые репозитории должны принадлежать платформе для сборки
       wrong_commit_hash: "Невозможно найти коммит '%{commit_hash}' в проекте"
       not_all_build_lists_success: Проект собран успешно не для всех дефолтных архитектур
+      dependent_projects_job_added_to_queue: Задача на создание билд листов добавлена в очередь.

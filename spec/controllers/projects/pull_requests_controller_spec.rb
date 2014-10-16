@@ -70,8 +70,10 @@ shared_examples_for 'pull request user with project reader rights' do
   end
 
   it "should not create already up-to-date pull" do
-    post :create, @create_params.merge({pull_request: {issue_attributes: {title: 'already', body: 'creating'}, to_ref: 'master', from_ref: 'master'}, to_project_id: @project.id})
-    PullRequest.joins(:issue).where(issues: {title: 'already', body: 'creating'}).count.should == 0
+    lambda{
+      post :create, @create_params.merge({pull_request: {issue_attributes: {title: 'already', body: 'creating'},
+                                         to_ref: 'master', from_ref: 'master'}, to_project_id: @project.id}) }.should
+      change{ PullRequest.count }.by(0)
   end
 
   it "should create pull request to the same project" do
@@ -151,7 +153,7 @@ shared_examples_for 'user without pull request update rights' do
     pull.issue.body.should_not =='updating'
   end
 
-  it 'should be able to perform merge action' do
+  it 'should not be able to perform merge action' do
     @pull.check
     put :merge, @update_params
     response.should_not be_success
@@ -239,7 +241,7 @@ describe Projects::PullRequestsController do
 
     it_should_behave_like 'pull request user with project guest rights'
     it_should_behave_like 'pull request user with project reader rights'
-    it_should_behave_like 'user without pull request update rights'
+    it_should_behave_like 'user with pull request update rights'
     it_should_behave_like 'pull request when project with issues turned off'
   end
 

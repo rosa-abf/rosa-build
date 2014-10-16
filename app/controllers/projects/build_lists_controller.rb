@@ -1,13 +1,14 @@
 class Projects::BuildListsController < Projects::BaseController
-  layout 'bootstrap', only: [:index, :show, :new]
   include FileStoreHelper
+
+  layout 'bootstrap', only: [:index, :show, :new]
 
   NESTED_ACTIONS = [:index, :new, :create]
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:show, :index, :log] if APP_CONFIG['anonymous_access']
 
-  before_filter :find_build_list, only: [:show, :publish, :cancel, :update, :log, :create_container]
+  before_filter :find_build_list, only: [:show, :publish, :cancel, :update, :log, :create_container, :dependent_projects]
 
   load_and_authorize_resource :project, only: [:new, :create]
   load_resource :project, only: :index, parent: false
@@ -40,7 +41,7 @@ class Projects::BuildListsController < Projects::BaseController
                                           :source_packages,
                                           project: :project_statistics)
 
-        @build_server_status = AbfWorker::StatusInspector.projects_status
+        @build_server_status = AbfWorkerStatusPresenter.new.projects_status
       end
     end
   end
@@ -124,6 +125,35 @@ class Projects::BuildListsController < Projects::BaseController
     do_and_back(:publish, 'publish_')
   end
 
+  def dependent_projects
+    raise CanCan::AccessDenied if @build_list.save_to_platform.personal?
+
+    if request.post?
+      prs = params[:build_list]
+      if prs.present? && prs[:projects].present? && prs[:arches].present?
+        project_ids = prs[:projects].select{ |k, v| v == '1'  }.keys
+        arch_ids    = prs[:arches].  select{ |k, v| v == '1'  }.keys
+
+        Resque.enqueue(
+          BuildLists::DependentPackagesJob,
+          @build_list.id,
+          current_user.id,
+          project_ids,
+          arch_ids,
+          {
+            auto_publish_status:            prs[:auto_publish_status],
+            auto_create_container:          prs[:auto_create_container],
+            include_testing_subrepository:  prs[:include_testing_subrepository],
+            use_cached_chroot:              prs[:use_cached_chroot],
+            use_extra_tests:                prs[:use_extra_tests]
+          }
+        )
+        flash[:notice] = t('flash.build_list.dependent_projects_job_added_to_queue')
+        redirect_to build_list_path(@build_list)
+      end
+    end
+  end
+
   def publish_into_testing
     @build_list.publisher = current_user
     do_and_back(:publish_into_testing, 'publish_')
@@ -155,15 +185,11 @@ class Projects::BuildListsController < Projects::BaseController
 
   def list
     @build_lists = @project.build_lists
-    sort_col = params[:ol_0] || 7
-    sort_dir = params[:sSortDir_0] == 'asc' ? 'asc' : 'desc'
-    order = "build_lists.updated_at #{sort_dir}"
-
-    @build_lists = @build_lists.paginate(page: (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, per_page: params[:iDisplayLength])
+    @build_lists = @build_lists.paginate(page: page, per_page: per_page)
     @total_build_lists = @build_lists.count
     @build_lists = @build_lists.where(user_id: current_user) if params[:owner_filter] == 'true'
     @build_lists = @build_lists.where(status: [BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH]) if params[:status_filter] == 'true'
-    @build_lists = @build_lists.order(order)
+    @build_lists = @build_lists.order("build_lists.updated_at #{sort_dir}")
 
     render partial: 'build_lists_ajax', layout: false
   end
@@ -204,8 +230,8 @@ class Projects::BuildListsController < Projects::BaseController
     keys = [
       :save_to_repository_id, :auto_publish_status, :include_repos,
       :extra_params, :project_version, :update_type, :auto_create_container,
-      :extra_repositories, :extra_build_lists, :build_for_platform,
-      :use_cached_chroot, :use_extra_tests
+      :extra_repositories, :extra_build_lists, :build_for_platform_id,
+      :use_cached_chroot, :use_extra_tests, :save_buildroot
     ]
     keys.each { |key| params[:build_list][key] = build_list.send(key) }
     params[:arches] = [build_list.arch_id.to_s]

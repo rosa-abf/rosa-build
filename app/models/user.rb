@@ -51,7 +51,7 @@ class User < Avatar
   validates :language, inclusion: { in: LANGUAGES }, allow_blank: true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
-                  :site, :company, :professional_experience, :location, :sound_notifications
+                  :site, :company, :professional_experience, :location, :sound_notifications, :hide_email
   attr_readonly :uname
   attr_accessor :login
 

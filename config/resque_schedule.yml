@@ -8,14 +8,14 @@ clean_rpm_build_nodes:
 build_lists_publish_task_manager:
   every:
     - '3m'
-  class: 'BuildListsPublishTaskManagerJob'
+  class: 'PublishTaskManagerJob'
   queue: middle
   description: 'Creates tasks for publishing'
 
 build_lists_queues_monitoring:
   every:
     - '1m'
-  class: 'BuildListsQueuesMonitoringJob'
+  class: 'BuildLists::QueuesMonitoringJob'
   queue: middle
   description: 'Monitoring for "user/mass-build" queues'
 
@@ -25,6 +25,20 @@ clean_api_defender_statistics:
   class: 'CleanApiDefenderStatisticsJob'
   queue: low
   description: 'Cleans ApiDefender statistics'
+
+clean_build_list_buildroot:
+  every:
+    - '1h'
+  class: 'BuildLists::CleanBuildrootJob'
+  queue: middle
+  description: 'Cleans RPM buildroot from BuildList'
+
+run_extra_mass_builds:
+  every:
+    - '5m'
+  class: 'RunExtraMassBuildsJob'
+  queue: low
+  description: 'Run mass builds with relations'
 
 restart_nodes:
   every:

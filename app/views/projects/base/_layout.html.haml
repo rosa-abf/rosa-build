@@ -4,9 +4,10 @@
     = render 'repo_block', project: @project
     = render 'about_block', project: @project
 
-    %h3= t 'layout.projects.last_commit'
-    - GitPresenters::CommitAsMessagePresenter.present(@commit, project: @project) do |presenter|
-      .panel.panel-default
-        .panel-body= render 'shared/feed_commit', presenter: presenter, item_no: 1
+    - if @commit.present?
+      %h3= t 'layout.projects.last_commit'
+      - GitPresenters::CommitAsMessagePresenter.present(@commit, project: @project) do |presenter|
+        .panel.panel-default
+          .panel-body= render 'shared/feed_commit', presenter: presenter, item_no: 1
     .clearfix
     = yield

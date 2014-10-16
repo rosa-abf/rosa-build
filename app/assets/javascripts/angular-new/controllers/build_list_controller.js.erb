@@ -27,22 +27,27 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', 'Sound
     });
   }
 
+  $scope.canRefresh = function() {
+    if ($scope.attach_advisory != 'no') { return false; }
+    if (!$scope.build_list)             { return true; }
+
+    var show_dependent_projects = _.find($scope.build_list.packages, function(p){
+      return p.show_dependent_projects;
+    });
+    if (show_dependent_projects) { return false; }
+    if (!(
+      $scope.build_list.status == <%=BuildList::BUILD_PUBLISHED%> ||
+      $scope.build_list.status == <%=BuildList::REJECTED_PUBLISH%> ||
+      $scope.build_list.status == <%=BuildList::FAILED_PUBLISH%> ||
+      $scope.build_list.status == <%=BuildList::BUILD_CANCELED%> ||
+      $scope.build_list.status == <%=BuildList::BUILD_ERROR%>
+    )) { return true; }
+    return false;
+  }
+
   $scope.cancelRefresh = null;
   $scope.refresh = function() {
-    if ( $scope.attach_advisory == 'no' &&
-          (
-            !$scope.build_list ||
-            !(
-              $scope.build_list.status == <%=BuildList::BUILD_PUBLISHED%> ||
-              $scope.build_list.status == <%=BuildList::REJECTED_PUBLISH%> ||
-              $scope.build_list.status == <%=BuildList::FAILED_PUBLISH%> ||
-              $scope.build_list.status == <%=BuildList::BUILD_CANCELED%> ||
-              $scope.build_list.status == <%=BuildList::BUILD_ERROR%>
-            )
-          )
-      ) {
-      $scope.getBuildList();
-    }
+    if ($scope.canRefresh()) { $scope.getBuildList(); }
     $scope.cancelRefresh = $timeout($scope.refresh, 10000);
   }
   $scope.refresh();

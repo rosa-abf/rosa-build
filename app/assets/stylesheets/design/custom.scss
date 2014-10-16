@@ -1182,11 +1182,12 @@ div#advisory_search_block div.continue_input {
 form.mass_build {
   section.left {
     margin-left: 10px;
-    width: 350px;
+    width: 250px;
   }
 
   section.right {
     margin-right: 50px;
+    width: 300px;
   }
   input[type="submit"] {
     margin: 10px 0 10px 0;
@@ -2048,7 +2049,7 @@ article .activity .top {
 }
 
 table tbody {
-    td.build-list-statuses {
+    td.build-list-statuses, td.package {
         background: #FFF;
 
         .status {

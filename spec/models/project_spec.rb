@@ -167,17 +167,23 @@ describe Project do
     end
   end
 
-  it '#run_mass_import' do
-    owner = FactoryGirl.create(:user)
-    repository = FactoryGirl.create(:repository)
-    url = 'http://abf-downloads.rosalinux.ru/abf_personal/repository/test-mass-import'
-    visibility = 'open'
+  context '#run_mass_import' do
+    before  { WebMock.allow_net_connect! }
+    after   { WebMock.disable_net_connect! }
 
-    Project.run_mass_import(url, "abf-worker-service-1-3.src.rpm\nredir-2.2.1-7.res6.src.rpm\n", visibility, owner, repository.id)
+    it 'success' do
+      owner = FactoryGirl.create(:user)
+      repository = FactoryGirl.create(:repository)
+      url = 'http://abf-downloads.rosalinux.ru/abf_personal/repository/test-mass-import'
+      visibility = 'open'
 
-    Project.count.should == 2
-    repository.projects.should have(2).items
-    owner.projects.should have(2).items
+      
+      Project.run_mass_import(url, "abf-worker-service-1-3.src.rpm\nredir-2.2.1-7.res6.src.rpm\n", visibility, owner, repository.id)
+
+      Project.count.should == 2
+      repository.projects.should have(2).items
+      owner.projects.should have(2).items
+    end
   end
 
   shared_examples_for 'autostart build_lists' do |once_a_12_hours, once_a_day, once_a_week|

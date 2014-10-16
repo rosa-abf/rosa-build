@@ -1,7 +1,7 @@
 class BuildList < ActiveRecord::Base
   include CommitAndVersion
   include FileStoreClean
-  include AbfWorker::ModelHelper
+  include AbfWorkerMethods
   include Feed::BuildList
   include BuildListObserver
   include EventLoggable
@@ -15,20 +15,28 @@ class BuildList < ActiveRecord::Base
   belongs_to :builder,    class_name: 'User'
   belongs_to :publisher,  class_name: 'User'
   belongs_to :advisory
-  belongs_to :mass_build, counter_cache: true, touch: true
+  belongs_to :mass_build, counter_cache: true
   has_many :items, class_name: '::BuildList::Item', dependent: :destroy
   has_many :packages, class_name: '::BuildList::Package', dependent: :destroy
   has_many :source_packages, -> { where(package_type: 'source') }, class_name: '::BuildList::Package'
 
-  UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
-  RELEASE_UPDATE_TYPES = %w[bugfix security]
+  UPDATE_TYPES = [
+    UPDATE_TYPE_BUGFIX      = 'bugfix',
+    UPDATE_TYPE_SECURITY    = 'security',
+    UPDATE_TYPE_ENHANCEMENT = 'enhancement',
+    UPDATE_TYPE_RECOMMENDED = 'recommended',
+    UPDATE_TYPE_NEWPACKAGE  = 'newpackage'
+  ]
+
+  RELEASE_UPDATE_TYPES = [UPDATE_TYPE_BUGFIX, UPDATE_TYPE_SECURITY]
   EXTRA_PARAMS = %w[cfg_options cfg_urpm_options build_src_rpm build_rpm]
   EXTERNAL_NODES = %w[owned everything]
 
-  AUTO_PUBLISH_STATUS_NONE    = 'none'
-  AUTO_PUBLISH_STATUS_DEFAULT = 'default'
-  AUTO_PUBLISH_STATUS_TESTING = 'testing'
-  AUTO_PUBLISH_STATUSES = [AUTO_PUBLISH_STATUS_NONE, AUTO_PUBLISH_STATUS_DEFAULT, AUTO_PUBLISH_STATUS_TESTING]
+  AUTO_PUBLISH_STATUSES = [
+    AUTO_PUBLISH_STATUS_NONE    = 'none',
+    AUTO_PUBLISH_STATUS_DEFAULT = 'default',
+    AUTO_PUBLISH_STATUS_TESTING = 'testing'
+  ]
 
   validates :project_id,
             :project_version,
@@ -71,7 +79,7 @@ class BuildList < ActiveRecord::Base
                   :save_to_platform_id, :project_version, :auto_create_container,
                   :extra_repositories, :extra_build_lists, :extra_params, :external_nodes,
                   :include_testing_subrepository, :auto_publish_status,
-                  :use_cached_chroot, :use_extra_tests
+                  :use_cached_chroot, :use_extra_tests, :save_buildroot
 
   LIVE_TIME     = 4.week  # for unpublished
   MAX_LIVE_TIME = 3.month # for published
@@ -82,6 +90,7 @@ class BuildList < ActiveRecord::Base
     # %w(PROJECT_SOURCE_ERROR           6),
     # %w(DEPENDENCIES_ERROR             555),
     %w(BUILD_ERROR                    666),
+    %w(PACKAGES_FAIL                  777),
     %w(BUILD_STARTED                  3000),
     %w(BUILD_CANCELED                 5000),
     %w(WAITING_FOR_RESPONSE           4000),
@@ -96,7 +105,8 @@ class BuildList < ActiveRecord::Base
     %w(TESTS_FAILED                   11000),
     %w(BUILD_PUBLISHED_INTO_TESTING   12000),
     %w(BUILD_PUBLISH_INTO_TESTING     13000),
-    %w(FAILED_PUBLISH_INTO_TESTING    14000)
+    %w(FAILED_PUBLISH_INTO_TESTING    14000),
+    %w(UNPERMITTED_ARCH               15000)
   ].each do |kind, value|
     value = value.to_i
     const_set kind, value
@@ -116,15 +126,15 @@ class BuildList < ActiveRecord::Base
   scope :for_status, ->(status) { where(status: status) if status.present? }
   scope :for_user, ->(user) { where(user_id: user.id)  }
   scope :not_owned_external_nodes, -> { where("#{table_name}.external_nodes is null OR #{table_name}.external_nodes != ?", :owned) }
-  scope :external_nodes, ->(type) { where("#{table_name}.external_nodes = ?", type) }
-  scope :oldest, -> { where("#{table_name}.updated_at < ?", Time.zone.now - 15.seconds) }
-  scope :for_platform, ->(platform) { where(build_for_platform_id: platform)  }
-  scope :by_mass_build, ->(mass_build) { where(mass_build_id: mass_build) }
-  scope :scoped_to_arch, ->(arch) { where(arch_id: arch) if arch.present? }
-  scope :scoped_to_save_platform, ->(pl_id) { where(save_to_platform_id: pl_id) if pl_id.present? }
-  scope :scoped_to_project_version, ->(pr_version) { where(project_version: pr_version) if pr_version.present? }
-  scope :scoped_to_is_circle, ->(is_circle) { where(is_circle: is_circle) }
-  scope :for_creation_date_period, ->(start_date, end_date) {
+  scope :external_nodes,  ->(type) { where("#{table_name}.external_nodes = ?", type) }
+  scope :oldest,          -> { where("#{table_name}.updated_at < ?", Time.zone.now - 15.seconds) }
+  scope :for_platform,    ->(platform)    { where(build_for_platform_id: platform) if platform.present? }
+  scope :by_mass_build,   ->(mass_build)  { where(mass_build_id: mass_build) }
+  scope :scoped_to_arch,  ->(arch)        { where(arch_id: arch) if arch.present? }
+  scope :scoped_to_save_platform,   ->(pl_id)       { where(save_to_platform_id: pl_id) if pl_id.present? }
+  scope :scoped_to_project_version, ->(pr_version)  { where(project_version: pr_version) if pr_version.present? }
+  scope :scoped_to_is_circle,       ->(is_circle)   { where(is_circle: is_circle) }
+  scope :for_creation_date_period,  ->(start_date, end_date) {
     s = all
     s = s.where(["#{table_name}.created_at >= ?", start_date]) if start_date
     s = s.where(["#{table_name}.created_at <= ?", end_date]) if end_date
@@ -163,7 +173,7 @@ class BuildList < ActiveRecord::Base
     end
 
     after_transition on: :published,
-      do: [:set_version_and_tag, :actualize_packages]
+      do: %i(set_version_and_tag actualize_packages)
     after_transition on: :publish, do: :set_publisher
     after_transition(on: :publish) do |build_list, transition|
       if transition.from == BUILD_PUBLISHED_INTO_TESTING
@@ -172,12 +182,16 @@ class BuildList < ActiveRecord::Base
     end
     after_transition on: :cancel, do: :cancel_job
 
-    after_transition on: [:published, :fail_publish, :build_error, :tests_failed], do: :notify_users
+    after_transition on: %i(published fail_publish build_error tests_failed unpermitted_arch), do: :notify_users
     after_transition on: :build_success, do: :notify_users,
       unless: ->(build_list) { build_list.auto_publish? || build_list.auto_publish_into_testing? }
 
     event :place_build do
       transition waiting_for_response: :build_pending
+    end
+
+    event :unpermitted_arch do
+      transition [:build_started, :build_canceling, :build_canceled] => :unpermitted_arch
     end
 
     event :rerun_tests do
@@ -358,7 +372,7 @@ class BuildList < ActiveRecord::Base
   # @return [Boolean]
   # - false if no new packages
   # - false if version of packages is less than version of pubished packages.
-  # - true if version of packages is equal to version of pubished packages (only if platform is not released).
+  # - true if version of packages is equal to version of pubished packages (only if platform is not released or platform is RHEL).
   # - true if version of packages is greater than version of pubished packages.
   def has_new_packages?
     if last_bl = last_published.joins(:source_packages).where(build_list_packages: {actual: true}).last
@@ -366,7 +380,8 @@ class BuildList < ActiveRecord::Base
         sp = last_bl.source_packages.find{ |sp| nsp.name == sp.name }
         return true unless sp
         comparison = nsp.rpmvercmp(sp)
-        return comparison == 1 || (comparison == 0 && !save_to_platform.released?)
+        return true if comparison == 1
+        return comparison == 0 && ( !save_to_platform.released? || save_to_platform.distrib_type == 'rhel' )
       end
     else
       return true # no published packages
@@ -491,7 +506,8 @@ class BuildList < ActiveRecord::Base
 
   def log(load_lines)
     if new_core?
-      Pygments.highlight abf_worker_log, lexer: 'sh'
+      worker_log = abf_worker_log
+      Pygments.highlight(worker_log, lexer: 'sh') rescue worker_log
     else
       I18n.t('layout.build_lists.log.not_available')
     end
@@ -539,6 +555,7 @@ class BuildList < ActiveRecord::Base
       'GIT_PROJECT_ADDRESS'           => git_project_address,
       'COMMIT_HASH'                   => commit_hash,
       'USE_EXTRA_TESTS'               => use_extra_tests?,
+      'SAVE_BUILDROOT'                => save_buildroot?,
       'EXTRA_CFG_OPTIONS'             => extra_params['cfg_options'],
       'EXTRA_CFG_URPM_OPTIONS'        => extra_params['cfg_urpm_options'],
       'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],
@@ -571,30 +588,44 @@ class BuildList < ActiveRecord::Base
   end
 
   def cleanup_packages_from_testing
-    AbfWorker::BuildListsPublishTaskManager.cleanup_packages_from_testing(
+    AbfWorkerService::Base.cleanup_packages_from_testing(
       build_for_platform_id,
       save_to_repository_id,
       id
     )
   end
 
-  def self.next_build
-    kind_id = Redis.current.spop(USER_BUILDS_SET)
-    key     = "user_build_#{kind_id}_rpm_worker_default" if kind_id
-    task    = Resque.pop(key) if key
-    Redis.current.sadd(USER_BUILDS_SET, kind_id) if task
+  def self.next_build(arch_ids, platform_ids)
+    kind_id       = Redis.current.spop(USER_BUILDS_SET)
+    key           = "user_build_#{kind_id}_rpm_worker_default" if kind_id
+    build_list    = next_build_from_queue(kind_id, key, arch_ids, platform_ids) if key
+    Redis.current.sadd(USER_BUILDS_SET, kind_id) if build_list
 
+    kind_id     ||= Redis.current.spop(MASS_BUILDS_SET)
+    key         ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
+    build_list  ||= next_build_from_queue(kind_id, key, arch_ids, platform_ids, true) if key
+    Redis.current.sadd(MASS_BUILDS_SET, kind_id) if build_list && key =~ /^mass_build/
 
-    kind_id ||= Redis.current.spop(MASS_BUILDS_SET)
-    key     ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
-    task    ||= Resque.pop(key) if key
-    Redis.current.sadd(MASS_BUILDS_SET, kind_id) if task && key =~ /^mass_build/
+    build_list.delayed_add_job_to_abf_worker_queue if build_list.present?
+    build_list
+  end
 
-    if task
-      build_list = BuildList.where(id: task['args'][0]['id']).first
-      build_list.delayed_add_job_to_abf_worker_queue
-      build_list
+  def self.next_build_from_queue(kind_id, key, arch_ids, platform_ids, mass_build = false)
+    if kind_id && (arch_ids.present? || platform_ids.present?)
+      build_list = BuildList.where(user_id: kind_id).
+        scoped_to_arch(arch_ids).
+        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
+        for_platform(platform_ids)
+      build_list = build_list.where.not(mass_build_id: nil) if mass_build
+      build_list = build_list.oldest.order(:created_at).first
+
+      build_list = nil if build_list && build_list.destroy_from_resque_queue != 1
+    elsif key
+      task = Resque.pop(key)
     end
+
+    build_list ||= BuildList.where(id: task['args'][0]['id']).first if task
+    build_list
   end
 
   def delayed_add_job_to_abf_worker_queue(*args)
@@ -602,25 +633,25 @@ class BuildList < ActiveRecord::Base
   end
   later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :middle
 
-  protected
-
   def valid_branch_for_publish?
-    return true if save_to_platform.personal? ||
-      save_to_repository.publish_builds_only_from_branch.blank? ||
-      ( project_version == save_to_repository.publish_builds_only_from_branch )
-
-    project.repo.git.native(:branch, {}, '--contains', commit_hash).
-      gsub(/\*/, '').split(/\n/).map(&:strip).
-      include?(save_to_repository.publish_builds_only_from_branch)
+    @valid_branch_for_publish ||= begin
+      save_to_platform.personal?                                                ||
+      save_to_repository.publish_builds_only_from_branch.blank?                 ||
+      ( project_version == save_to_repository.publish_builds_only_from_branch ) ||
+      project.repo.git.native(:branch, {}, '--contains', commit_hash).
+        gsub(/\*/, '').split(/\n/).map(&:strip).
+        include?(save_to_repository.publish_builds_only_from_branch)
+    end
   end
 
+  protected
 
   def create_container
-    AbfWorker::BuildListsPublishTaskManager.create_container_for self
+    Resque.enqueue(BuildLists::CreateContainerJob, id)
   end
 
   def remove_container
-    system "rm -rf #{save_to_platform.path}/container/#{id}" if save_to_platform
+    AbfWorkerService::Container.new(self).destroy! if save_to_platform
   end
 
   def abf_worker_priority
@@ -680,6 +711,11 @@ class BuildList < ActiveRecord::Base
   end
 
   def prepare_extra_build_lists
+    if mass_build && mass_build.extra_mass_builds.present?
+      extra_build_lists << BuildList.where(mass_build_id: mass_build.extra_mass_builds).pluck(:id)
+      extra_build_lists.flatten!
+    end
+    return if extra_build_lists.blank?
     bls = BuildList.for_extra_build_lists(extra_build_lists, current_ability, save_to_platform)
     if save_to_platform
       if save_to_platform.distrib_type == 'rhel'

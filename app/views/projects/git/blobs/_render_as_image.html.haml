@@ -1,8 +1,6 @@
-%table.table.blob
+%table.table.blob.diff
   %tr
     %td.lines
-    %td.blob
-      :plain
-        <br/>
-        <center><img src='#{raw_path(@project, @treeish, @path)}'/></center>
-        <br/>
+    %td.blob.diff-image
+      %span.diff-image
+        %img{ src: raw_path(@project, @treeish, @path), style: 'max-width: 600px;' }

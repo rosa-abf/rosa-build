@@ -20,9 +20,11 @@
         %p=link_to t('layout.comments.md_cheatsheet.emoji_header'), 'http://www.emoji-cheat-sheet.com/', target: '_blank'
         %pre
           =":smile:"
-          =image_tag(image_path('emoji/smile.png'), class: 'emoji', title: 'smile', alt: 'smile', size: "20x20")
+          =image_tag("/images/emoji/#{Emoji.find_by_alias('smile').image_filename}",
+                     class: 'emoji', title: 'smile', alt: 'smile', size: "20x20")
           ="   :+1:"
-          =image_tag(image_path('emoji/+1.png'), class: 'emoji', title: '+1', alt: '+1', size: "20x20")
+          =image_tag("/images/emoji/#{Emoji.find_by_alias('+1').image_filename}",
+                     class: 'emoji', title: '+1', alt: '+1', size: "20x20")
       .col
         %h3=t 'layout.comments.md_cheatsheet.lists'
         %p{style: 'float:left;margin-left:20px;'}=t 'layout.comments.md_cheatsheet.unordered'

@@ -13,9 +13,9 @@ then
   $rspec spec/controllers/api/
 elif [ $SPEC_GROUP = 'models' ]
 then
-  $rspec spec/models/
+  $rspec spec/models/ spec/jobs/
 elif [ $SPEC_GROUP = 'others' ]
 then
   # $rspec spec/helpers/ spec/integration/ spec/lib/ spec/mailers/ spec/mailers/ spec/routing/ 
-  $rspec spec/integration/ spec/lib/ spec/mailers/ spec/mailers/ spec/routing/ 
+  $rspec spec/integration/ spec/services/ spec/mailers/ spec/mailers/ spec/routing/ 
 fi

@@ -10,6 +10,9 @@
       .both
         = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), id: "repositories_#{rep.id}", href: "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
         = label_tag "repositories_#{rep.id}", rep.name
+    %h3=t('activerecord.attributes.mass_build.description')
+    = f.text_area :description
+    %br
     %h3=t('layout.mass_builds.projects_list')
     = f.text_area :projects_list
     %br
@@ -18,7 +21,7 @@
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .lefter
-        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), id: "arches_#{arch.id}"
+        = check_box_tag "arches[]", arch.id, @mass_build.arches.include?(arch.id.to_s), id: "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
       .both
     - if @platform.personal?
@@ -34,13 +37,22 @@
         subject: @mass_build,
         autocomplete_path: autocomplete_extra_repositories_autocompletes_path
     = render 'shared/autocomplete_form',
+      field: :extra_mass_builds,
+      field_class: MassBuild,
+      placeholder: '1000000',
+      subject: @mass_build,
+      autocomplete_path: autocomplete_extra_mass_build_autocompletes_path
+    = render 'shared/autocomplete_form',
       field: :extra_build_lists,
       field_class: BuildList,
       placeholder: '1000000',
       subject: @mass_build,
       autocomplete_path: autocomplete_extra_build_list_autocompletes_path
     %h3= t("activerecord.attributes.build_list.preferences")
-    - %i(auto_publish increase_release_tag use_cached_chroot use_extra_tests).each do |field|
+    .both
+    = f.select :auto_publish_status, auto_publish_statuses
+    = f.label :auto_publish_status
+    - %i(auto_create_container increase_release_tag include_testing_subrepository use_cached_chroot use_extra_tests).each do |field|
       .both
         = f.check_box field
         = f.label field

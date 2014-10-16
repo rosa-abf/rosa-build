@@ -1,4 +1,5 @@
 class Api::V1::RepositoriesController < Api::V1::BaseController
+  respond_to :csv, only: :packages
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
@@ -6,11 +7,12 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   load_and_authorize_resource :repository, through: :platform, shallow: true
 
   def show
+    respond_to :json
   end
 
   def projects
-    @projects = @repository.projects.
-      recent.paginate(paginate_params)
+    @projects = @repository.projects.recent.paginate(paginate_params)
+    respond_to :json
   end
 
   def update
@@ -30,6 +32,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   end
 
   def key_pair
+    respond_to :json
   end
 
   # Only one request per 15 minutes for each platform

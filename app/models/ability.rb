@@ -114,8 +114,8 @@ class Ability
         can [:read, :related, :members], Platform, owner_type: 'Group', owner_id: user_group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can [:read, :related], Platform, id: user.repositories.pluck(:platform_id)
-        can([:update, :destroy, :change_visibility, :remove_file], Platform) {|platform| owner?(platform) }
-        can([:local_admin_manage, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
+        can([:update, :destroy, :change_visibility], Platform) {|platform| owner?(platform) }
+        can([:local_admin_manage, :members, :add_member, :remove_member, :remove_members, :remove_file] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
 
         can([:create, :publish], MassBuild) {|mass_build| owner?(mass_build.save_to_platform) || local_admin?(mass_build.save_to_platform)}
         can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.save_to_platform) || local_admin?(mass_build.save_to_platform)) && !mass_build.stop_build}
@@ -154,8 +154,8 @@ class Ability
         can [:read, :commits, :files], PullRequest, to_project: {owner_type: 'Group', owner_id: user_group_ids}
         can([:read, :commits, :files], PullRequest, read_relations_for('pull_requests', 'to_projects')) {|pull| can? :read, pull.to_project}
         can :create, PullRequest
-        can(:update, PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.to_project)}
-        can(:merge,  PullRequest) {|pull| local_admin?(pull.to_project)}
+        can(:update, PullRequest) {|pull| pull.user_id == user.id or local_writer?(pull.to_project)}
+        can(:merge,  PullRequest) {|pull| local_writer?(pull.to_project)}
 
         can([:create, :new_line], Comment) {|comment| can? :read, comment.project}
         can([:update, :destroy], Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}

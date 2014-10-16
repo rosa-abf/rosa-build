@@ -14,7 +14,7 @@ ActiveAdmin.register RegisterRequest do
     column :more
     column :created_at
 
-    default_actions
+    actions
   end
 
 end

@@ -1,6 +1,6 @@
 class Api::V1::BaseController < ApplicationController
   include PaginateHelper
-  #respond_to :json
+  respond_to :json
 
   helper_method :member_path
 

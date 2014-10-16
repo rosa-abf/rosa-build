@@ -31,12 +31,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def new_issue_notification(issue, user)
-    @user, @issue = user, issue
+  def new_issue_notification(issue_id, user_id)
+    @user, @issue = User.find(user_id), Issue.find(issue_id)
     mail(
-      to:      email_with_name(user, user.email),
-      subject: subject_for_issue(issue, true),
-      from:    email_with_name(issue.user)
+      to:      email_with_name(@user, @user.email),
+      subject: subject_for_issue(@issue, true),
+      from:    email_with_name(@issue.user)
     ) do |format|
       format.html
     end

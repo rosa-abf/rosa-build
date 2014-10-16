@@ -9,6 +9,7 @@ ru:
     build_lists: Мониторинг задач
     groups: Группы
     advisories: Бюллетени
+    statistics: Статистика
   bottom_menu:
     copyright: ROSA Лаб. © %{year}
     about: О компании
@@ -47,7 +48,7 @@ ru:
     wiki: Вики
   platform_menu:
     settings: Настройки
-  admins_menu_header: Центр управления
+  admins_menu_header: ЦУ
   admins_menu:
     users: Пользователи
     register_requests: Инвайты

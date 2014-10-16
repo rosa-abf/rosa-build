@@ -23,4 +23,5 @@
 
 - if @project.is_package && can?(:create, @project.build_lists.new)
   .pull-right.roffset5
-    = link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project), class: 'btn btn-primary'
+    - params = { build_list: { project_version: @treeish}}
+    = link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project, params), class: 'btn btn-primary'

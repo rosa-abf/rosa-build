@@ -5,7 +5,7 @@ module BuildListsHelper
     case status
     when BuildList::BUILD_PUBLISHED, BuildList::SUCCESS, BuildList::BUILD_PUBLISHED_INTO_TESTING
       'success'
-    when BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH, BuildList::FAILED_PUBLISH_INTO_TESTING
+    when BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH, BuildList::FAILED_PUBLISH_INTO_TESTING, BuildList::PACKAGES_FAIL, BuildList::UNPERMITTED_ARCH
       'error'
     when BuildList::TESTS_FAILED
       'warning'
@@ -14,8 +14,36 @@ module BuildListsHelper
     end
   end
 
+  def can_run_dependent_build_lists?(build_list)
+    build_list.save_to_platform.main? &&
+    build_list.save_to_platform.distrib_type == 'mdv'
+  end
+
   def availables_main_platforms
     Platform.availables_main_platforms current_user, current_ability
+  end
+
+  def dependent_projects(package)
+    return [] if package.dependent_packages.blank?
+
+    packages = BuildList::Package.
+      select('build_list_packages.project_id, build_list_packages.name').
+      joins(:build_list).
+      where(
+        platform_id:  package.platform,
+        name:         package.dependent_packages,
+        package_type: package.package_type,
+        build_lists:  { status: BuildList::BUILD_PUBLISHED }
+      ).
+      group('build_list_packages.project_id, build_list_packages.name').
+      reorder(:project_id).group_by(&:project_id)
+
+    Project.where(id: packages.keys).recent.map do |project|
+      [
+        project,
+        packages[project.id].map(&:name).sort
+      ]
+    end
   end
 
   def save_to_repositories(project)
@@ -32,6 +60,14 @@ module BuildListsHelper
     end.sort_by { |col| col[0] }
   end
 
+  def selected_save_to_repositories(project, select_options, params)
+    selected = params[:build_list].try(:[], :save_to_repository_id)
+    return { selected: selected } if selected.present?
+    version = params[:build_list].try(:[], :project_version) || project.default_branch
+    res = select_options.select { |r| r[0] =~ /#{version}\// }[0].try :[], 1
+    res.present? ? { selected: res } : {}
+  end
+
   def external_nodes
     BuildList::EXTERNAL_NODES.map do |type|
       [I18n.t("layout.build_lists.external_nodes.#{type}"), type]
@@ -45,10 +81,8 @@ module BuildListsHelper
   end
 
   def mass_build_options
-    options_from_collection_for_select(
-      MassBuild.recent.limit(15),
-      :id,
-      :name
+    options_for_select(
+      MassBuild.recent.limit(15).pluck(:name, :id).unshift([t(:none), -1])
     )
   end
 

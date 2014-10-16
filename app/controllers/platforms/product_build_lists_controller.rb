@@ -39,8 +39,10 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def log
+    worker_log = @product_build_list.abf_worker_log
+
     render json: {
-      log: Pygments.highlight(@product_build_list.abf_worker_log, lexer: 'sh'),
+      log: ( Pygments.highlight(worker_log, lexer: 'sh') rescue worker_log),
       building: @product_build_list.build_started?
     }
   end
@@ -78,7 +80,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
       @product_build_lists = @product_build_lists.for_status(params[:status]) if params[:status].present?
     end
     @product_build_lists = @product_build_lists.recent.paginate page: params[:page]
-    @build_server_status = AbfWorker::StatusInspector.products_status
+    @build_server_status = AbfWorkerStatusPresenter.new.products_status
   end
 
   protected

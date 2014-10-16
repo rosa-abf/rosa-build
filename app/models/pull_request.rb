@@ -135,7 +135,7 @@ class PullRequest < ActiveRecord::Base
 
   # FIXME maybe move to warpc/grit?
   def diff
-    @diff ||= repo.diff(to_commit.id, from_commit.id)
+    @diff ||= Grit::Commit.diff(repo, to_commit.id, from_commit.id)
   end
 
   def set_user_and_time user
@@ -180,6 +180,7 @@ class PullRequest < ActiveRecord::Base
   end
 
   def clone
+    return if from_project.nil?
     git = Grit::Git.new(path)
     if new_record? || !git.exist?
       #~ FileUtils.mkdir_p(path)

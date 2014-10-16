@@ -1,0 +1,34 @@
+en:
+  statistics:
+    index:
+      header:                                     "Statistics"
+
+    filter:
+      header:                                     "Statistics"
+      range_label:                                "Display data for"
+      range_start_placeholder:                    "Select a start date"
+      range_separator:                            " and "
+      range_end_placeholder:                      "Select an end date"
+      no_data:                                    "No data available"
+
+    build_lists:
+      build_started_title:                        "Build started"
+      success_title:                              "Build complete"
+      build_error_title:                          "Build error"
+      build_published_title:                      "Build has been published"
+
+      total_build_started:                        "Total build started"
+      total_success:                              "Total build complete"
+      total_build_error:                          "Total build error"
+      total_build_published:                      "Total build has been published"
+
+    helper:
+      period:
+        twenty_four_hours:                        "the last 24 hours"
+        last_7_days:                              "the last 7 days"
+        last_30_days:                             "the last 30 days"
+        last_60_days:                             "the last 60 days"
+        last_90_days:                             "the last 90 days"
+        last_180_days:                            "the last 6 months"
+        last_year:                                "the last year"
+        custom:                                   "custom"

@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
-  AIRBRAKE_IGNORE = [ActionController::InvalidAuthenticityToken,
-                     AbstractController::ActionNotFound]
+  AIRBRAKE_IGNORE = [
+    ActionController::InvalidAuthenticityToken,
+    AbstractController::ActionNotFound
+  ]
 
   protect_from_forgery
 
@@ -21,6 +23,7 @@ class ApplicationController < ActionController::Base
     rescue_from ActiveRecord::RecordNotFound,
                 # ActionController::RoutingError, # see: config/routes.rb:<last line>
                 ActionController::UnknownController,
+                ActionController::UnknownFormat,
                 AbstractController::ActionNotFound, with: :render_404
   end
 

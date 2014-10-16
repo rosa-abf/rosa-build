@@ -12,7 +12,7 @@ ActiveAdmin.register FlashNotify do
     end
     column :published
 
-    default_actions
+    actions
   end
 
   form do |f|

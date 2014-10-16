@@ -3,6 +3,7 @@ class Repository < ActiveRecord::Base
   friendly_id :name, use: [:finders]
 
   include EventLoggable
+  include EmptyMetadata
 
   LOCK_FILE_NAMES = { sync: '.sync.lock', repo: '.repo.lock' }
   SORT = { 'base' => 1, 'main' => 2, 'contrib' => 3, 'non-free' => 4, 'restricted' => 5 }
@@ -28,7 +29,7 @@ class Repository < ActiveRecord::Base
   scope :recent, -> { order(:name) }
   scope :main,   -> { where(name: %w(main base)) }
 
-  before_destroy :detele_directory
+  before_destroy  :detele_directory
 
   attr_accessible :name,
                   :description,
@@ -66,6 +67,7 @@ class Repository < ActiveRecord::Base
     end
   end
   later :clone_relations, loner: true, queue: :low
+
   def add_projects(list, user)
     current_ability = Ability.new(user)
     list.lines.each do |line|

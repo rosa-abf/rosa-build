@@ -26,7 +26,7 @@ ActiveAdmin.register User do
     column :created_at
     column :role
 
-    default_actions
+    actions
   end
 
   form do |f|

@@ -1,14 +1,14 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.5'
+gem 'rails', '4.0.9'
 
 gem 'activeadmin', github: 'gregbell/active_admin'
 gem 'pg', '~> 0.17.1'
-gem 'schema_plus', '~> 1.4.0'
+gem 'schema_plus', '~> 1.5'
 ########
 gem 'protected_attributes'
 ########
-gem 'devise', '~> 3.2.3'
+gem 'devise', '~> 3.3'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
@@ -17,10 +17,10 @@ gem 'omniauth-github'
 # gem 'cancan', '1.6.10'
 gem 'cancan', git: 'git://github.com/rosa-abf/cancan.git', tag: '1.6.10-abf'
 
-gem 'ancestry', '~> 2.0.0'
-gem 'paperclip', '~> 4.1.1'
+gem 'ancestry', '~> 2.1'
+gem 'paperclip', '~> 4.2'
 gem 'resque', '~> 1.25'
-gem 'resque-status', '~> 0.4.2'
+gem 'resque-status', '~> 0.4'
 gem 'resque_mailer', '~> 2.2'
 gem 'resque-scheduler', '~> 2.5.4'
 gem 'perform_later', git: 'git://github.com/KensoDev/perform_later.git' # should be after resque_mailer
@@ -30,14 +30,14 @@ gem 'state_machine', '~> 1.2'
 gem 'redis-rails', '~> 4.0'
 
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git', require: 'git_http'
-gem 'grit', git: 'git://github.com/rosa-abf/grit.git'
-gem 'charlock_holmes', '~> 0.6.9'
-gem 'github-linguist', '~> 2.10', require: 'linguist'
+gem 'grit', git: 'git://github.com/rosa-abf/grit.git', tag: '2.6.16'
+gem 'charlock_holmes', '~> 0.7'
+gem 'github-linguist', '~> 3.1', require: 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
-gem "gollum-lib", '~> 2.0'
-gem "redcarpet", '~> 3.1.1'
+gem "gollum-lib", '~> 3.0'
+gem "redcarpet", '~> 3.1'
 gem 'creole'
 gem 'rdiscount'
 # gem 'org-ruby'
@@ -47,25 +47,25 @@ gem 'wikicloth'
 gem 'newrelic_rpm'
 gem 'whenever', '~> 0.9.0', require: false
 
-gem 'jbuilder', '~> 2.0.3'
+gem 'jbuilder', '~> 2.1'
 gem 'rails3-jquery-autocomplete', '~> 1.0'
-gem 'will_paginate', '~> 3.0.5'
-gem 'meta-tags', '~> 1.5', require: 'meta_tags'
+gem 'will_paginate', '~> 3.0'
+gem 'meta-tags', '~> 2.0', require: 'meta_tags'
 gem "haml-rails", '~> 0.5'
-gem 'jquery-rails', '~> 2.3.0'
+gem 'jquery-rails', '~> 2.3'
 gem 'jquery-migrate-rails'
 gem 'ruby-haml-js', '~> 0.0.5'
-gem 'friendly_id', '~> 5.0.3'
+gem 'friendly_id', '~> 5.0'
 
 gem 'rack-throttle', '~> 0.3.0'
-gem 'rest-client', '~> 1.6.7'
-gem 'ohm', '~> 1.3.2'
+gem 'rest-client', '~> 1.7'
+gem 'ohm', '~> 1.3.2' # Ohm 2 breaks the compatibility with previous versions.
 gem 'ohm-expire', '~> 0.1.3'
 
 gem 'ffi', '~> 1.9.3'
 
-gem 'attr_encrypted', '~> 1.3.2'
-gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
+gem 'attr_encrypted', '~> 1.3'
+gem "gemoji", "~> 2.1"
 
 # AngularJS related stuff
 gem 'underscore-rails'
@@ -81,26 +81,24 @@ gem 'ngmin-rails'
 
 gem 'time_diff'
 
-gem 'sass-rails', '~> 4.0.1'
-gem 'coffee-rails', '~> 4.0.1'
-gem 'compass-rails', '~> 1.1.6'
+gem 'sass-rails', '~> 4.0'
+gem 'coffee-rails', '~> 4.1'
+gem 'bootstrap-sass', '~> 3.2'
+gem 'font-awesome-rails', '~> 4.2'
+gem 'zeroclipboard-rails', '~> 0.1.0'
+
+gem 'compass-rails', '~> 2.0'
 gem 'uglifier', '~> 2.5'
 gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
-gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
-
-gem 'bootstrap-sass', '~> 3.1.1'
-gem 'font-awesome-rails', '~> 4.1'
-gem 'codemirror-rails'
-
+gem 'therubyrhino', '~> 2.0', platforms: :jruby
 gem 'sitemap_generator'
 
-gem 'zeroclipboard-rails'
+gem 'codemirror-rails', '~> 4.5'
+
 
 group :production do
-  gem "airbrake", '~> 3.1.2'
-  gem 'bluepill', '~> 0.0.60', require: false
-  # gem 'le'
-  gem 'logglier'
+  gem "airbrake", '~> 3.1'
+  #gem 'bluepill', '~> 0.0.60', require: false
   gem 'puma'
 end
 
@@ -133,6 +131,7 @@ group :test do
   gem 'shoulda'
   gem 'shoulda-matchers'
   gem 'mock_redis',         '~> 0.11'
+  gem 'webmock'
   gem 'rake'
   gem 'test_after_commit'
   gem 'timecop'

@@ -1,4 +1,5 @@
 class Projects::ProjectsController < Projects::BaseController
+  include DatatableHelper
   include ProjectsHelper
   layout 'bootstrap', only: [:index]
   before_filter :authenticate_user!

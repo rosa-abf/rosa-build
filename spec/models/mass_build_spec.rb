@@ -23,6 +23,7 @@ describe MassBuild do
     it { should validate_presence_of(:projects_list)}
     it { should ensure_length_of(:projects_list).is_at_most(500_000) }
 
+    it { should ensure_length_of(:description).is_at_most(255) }
 
     it { should_not allow_mass_assignment_of(:name) }
     it { should_not allow_mass_assignment_of(:arch_names) }
@@ -74,6 +75,33 @@ describe MassBuild do
     expect(bl4).to_not receive(:now_publish)
 
     mb.send(:publish, user, [])
+  end
+
+  it 'ensures that calls #build_all on create' do
+    mass_build = FactoryGirl.build(:mass_build)
+    expect(mass_build).to receive(:build_all)
+    mass_build.save
+  end
+
+  it 'ensures that does not call #build_all on create if attached extra mass builds' do
+    mass_build = FactoryGirl.build(:mass_build, extra_mass_builds: [1])
+    expect(mass_build).to_not receive(:build_all)
+    mass_build.save
+  end
+
+  context '#build_all' do
+    let(:mass_build) { FactoryGirl.create(:mass_build, extra_mass_builds: [1]) }
+
+    it 'ensures that do nothing when build has status build_started' do
+      mass_build.start
+      expect(mass_build).to_not receive(:projects_list)
+      mass_build.build_all
+    end
+
+    it 'ensures that works when build has status build_pending' do
+      expect(mass_build).to receive(:projects_list).at_least(:once)
+      mass_build.build_all
+    end
   end
 
 end

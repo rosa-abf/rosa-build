@@ -121,7 +121,10 @@ class Projects::PullRequestsController < Projects::BaseController
   def autocomplete_to_project
     items = []
     term = params[:term].to_s.strip.downcase
-    [Project.accessible_by(current_ability, :membered), @project.ancestors].each do |p|
+    [ Project.where(id: @project.pull_requests.last.try(:to_project_id)),
+      @project.ancestors,
+      Project.accessible_by(current_ability, :membered)
+    ].each do |p|
       items.concat p.by_owner_and_name(term)
     end
     items = items.uniq{|i| i.id}.select{|e| e.repo.branches.count > 0}
@@ -154,7 +157,7 @@ class Projects::PullRequestsController < Projects::BaseController
   def find_destination_project bang=true
     project = Project.find_by_owner_and_name params[:to_project]
     raise ActiveRecord::RecordNotFound if bang && !project
-    project || @project
+    project || @project.pull_requests.last.try(:to_project) || @project.root
   end
 
   def set_attrs

@@ -9,9 +9,11 @@ en:
         name: Name
         extra_repositories: Extra repositories
         extra_build_lists: Extra build lists
+        extra_mass_builds: Extra mass builds
         auto_create_container: Create container automatically
         use_cached_chroot: Use cached chroot
         use_extra_tests: Use extra tests
+        save_buildroot: Save RPM build root
         container_path: Container path
         status: Status
         project_id: Project
@@ -63,9 +65,21 @@ en:
         release: Release
         version: Version
 
+  projects:
+    build_lists:
+      dependent_projects:
+        title: Create Build Lists of dependent projects
+        projects: Projects
+        packages: "Packages:"
+        architecture: Architecture
+        preferences: Preferences
+        are_you_sure: Are you sure what would like to run build lists? Release tag will be increased automatically.
+
   layout:
     build_lists:
       create_container: Create container
+      create_build_list: Create Build List
+      are_you_sure_to_run_build_lists: Are you sure what would like to run build lists? Release tag will be increased automatically.
       platform_deleted: platform has been deleted
       filter_header: Filter
       current: Curent
@@ -101,6 +115,7 @@ en:
       new_header: New build
       main_data: Main data
       tests_failed: Some tests failed. Be careful!
+      wrong_branch_for_publish_html: Build can be published only from <b>%{branch}</b> branch
 
       human_current_duration: Build currently takes %{hours} h. %{minutes} min.
       human_duration: Built in %{hours} h. %{minutes} min.
@@ -156,6 +171,7 @@ en:
         build_publish: Build is being published
         failed_publish: Publishing error
         dependencies_fail: Dependences not found
+        packages_fail: Packages not found
         waiting_for_response: Waiting for response
         build_pending: Build pending
         build_canceling: Build is canceling
@@ -166,6 +182,7 @@ en:
         build_published_into_testing: '[testing] Build has been published'
         build_publish_into_testing: '[testing] Build is being published'
         failed_publish_into_testing: '[testing] Publishing error'
+        unpermitted_arch: Unpermitted architecture
 
       log:
         build_log: Build Log
@@ -208,3 +225,4 @@ en:
       wrong_include_repos: Include repos have to belongs to build for platform
       wrong_commit_hash: "Unable find commit '%{commit_hash}' in project"
       not_all_build_lists_success: 'Project has been builded successfully not for all default arches'
+      dependent_projects_job_added_to_queue: Task for creation of build lists has been added to queue.

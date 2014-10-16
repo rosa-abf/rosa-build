@@ -94,8 +94,9 @@ module GitHelper
   end
 
   def split_commits_by_date(commits)
-    commits.sort{|x, y| y.authored_date <=> x.authored_date}.inject({}) do |h, commit|
-      dt = commit.authored_date
+    # See: https://github.com/gitlabhq/gitlabhq/blob/master/app/views/projects/commits/_commits.html.haml#L1
+    commits.sort{|x, y| y.committed_date <=> x.committed_date}.inject({}) do |h, commit|
+      dt = commit.committed_date
       h[dt.year] ||= {}
       h[dt.year][dt.month] ||= {}
       h[dt.year][dt.month][dt.day] ||= []
@@ -105,18 +106,26 @@ module GitHelper
   end
 
   def blob_highlight(blob)
-    if blob.mime_type == 'text/rpm-spec'
-      Pygments.highlight blob.data, lexer: 'spec'
-    else
-      blob.colorize
-    end.html_safe
+    return if blob.nil? || blob.data.blank?
+    result = if blob.mime_type == 'text/rpm-spec'
+               Pygments.highlight blob.data, lexer: 'spec'
+             else
+               blob.colorize
+             end
+    result.present? ? result.html_safe : blob.data
+  rescue MentosError, Yajl::ParseError => e
+    blob.data.html_safe
   end
 
   def blame_highlight(blob, text)
-    if blob.mime_type == 'text/rpm-spec'
-      Pygments.highlight(text, lexer: 'spec')
-    else
-      blob.lexer.highlight text
-    end.html_safe
+    return if blob.nil? || text.blank?
+    result = if blob.mime_type == 'text/rpm-spec'
+               Pygments.highlight(text, lexer: 'spec')
+             else
+               blob.lexer.highlight text
+             end
+    result.present? ? result.html_safe : text
+  rescue MentosError, Yajl::ParseError => e
+    text.html_safe
   end
 end

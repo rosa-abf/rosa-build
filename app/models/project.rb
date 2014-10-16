@@ -183,21 +183,23 @@ class Project < ActiveRecord::Base
     increase_release_tag(project_version, user, "MassBuild##{mass_build.id}: Increase release tag") if increase_rt
 
     build_list = build_lists.build do |bl|
-      bl.save_to_platform       = save_to_platform
-      bl.build_for_platform     = build_for_platform
-      bl.update_type            = 'newpackage'
-      bl.arch                   = arch
-      bl.project_version        = project_version
-      bl.user                   = user
-      bl.auto_publish_status    = mass_build.auto_publish? ? BuildList::AUTO_PUBLISH_STATUS_DEFAULT : BuildList::AUTO_PUBLISH_STATUS_NONE
-      bl.include_repos          = include_repos
-      bl.extra_repositories     = mass_build.extra_repositories
-      bl.extra_build_lists      = mass_build.extra_build_lists
-      bl.priority               = priority
-      bl.mass_build_id          = mass_build.id
-      bl.save_to_repository_id  = repository_id
-      bl.use_cached_chroot      = mass_build.use_cached_chroot?
-      bl.use_extra_tests        = mass_build.use_extra_tests?
+      bl.save_to_platform               = save_to_platform
+      bl.build_for_platform             = build_for_platform
+      bl.update_type                    = 'newpackage'
+      bl.arch                           = arch
+      bl.project_version                = project_version
+      bl.user                           = user
+      bl.auto_publish_status            = mass_build.auto_publish_status
+      bl.auto_create_container          = mass_build.auto_create_container
+      bl.include_repos                  = include_repos
+      bl.extra_repositories             = mass_build.extra_repositories
+      bl.extra_build_lists              = mass_build.extra_build_lists
+      bl.priority                       = priority
+      bl.mass_build_id                  = mass_build.id
+      bl.save_to_repository_id          = repository_id
+      bl.include_testing_subrepository  = mass_build.include_testing_subrepository?
+      bl.use_cached_chroot              = mass_build.use_cached_chroot?
+      bl.use_extra_tests                = mass_build.use_extra_tests?
     end
     build_list.save
   end
@@ -225,10 +227,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def destroy_project_from_repository(repository)
-    AbfWorker::BuildListsPublishTaskManager.destroy_project_from_repository self, repository
-  end
-
   def default_head treeish = nil # maybe need change 'head'?
     # Attention!
     # repo.commit(nil) => <Grit::Commit "b6c0f81deb17590d22fc07ba0bbd4aa700256f61">
@@ -245,10 +243,10 @@ class Project < ActiveRecord::Base
     format_id = ProjectTag::FORMATS["#{tag_file_format(format)}"]
     project_tag = project_tags.where(tag_name: tag.name, format_id: format_id).first
 
-    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && FileStoreClean.file_exist_on_file_store?(project_tag.sha1)
+    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && FileStoreService::File.new(sha1: project_tag.sha1).exist?
 
     archive = archive_by_treeish_and_format tag.name, format
-    sha1    = FileStoreClean.save_file_to_file_store(archive)
+    sha1    = FileStoreService::File.new(data: archive).save
     return nil if sha1.blank?
 
     if project_tag
@@ -319,7 +317,7 @@ class Project < ActiveRecord::Base
             build_list = p.build_lists.build do |bl|
               bl.save_to_platform       = repository.platform
               bl.build_for_platform     = platform
-              bl.update_type            = 'newpackage'
+              bl.update_type            = BuildList::UPDATE_TYPE_NEWPACKAGE
               bl.arch_id                = arch_id
               bl.project_version        = p.project_version_for(repository.platform, platform)
               bl.user                   = user
@@ -339,13 +337,10 @@ class Project < ActiveRecord::Base
     end
   end
 
-  protected
-
   def increase_release_tag(project_version, user, message)
-    blob = repo.tree(project_version).contents.find{ |n| n.is_a?(Grit::Blob) && n.name =~ /.spec$/ }
+    blob, raw = find_blob_and_raw_of_spec_file(project_version)
     return unless blob
 
-    raw = Grit::GitRuby::Repository.new(repo.path).get_raw_object_by_sha1(blob.id)
     content = self.class.replace_release_tag raw.content
     return if content == raw.content
 
@@ -356,6 +351,7 @@ class Project < ActiveRecord::Base
     )
   end
 
+  protected
 
   def create_archive(treeish, format)
     file_name = "#{name}-#{treeish}"

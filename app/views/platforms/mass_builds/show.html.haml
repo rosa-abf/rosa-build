@@ -1,0 +1,136 @@
+-set_meta_tags title: title_object(@mass_build)
+= render 'submenu'
+= render 'sidebar'
+
+%h3.fix
+  = t 'activerecord.models.mass_build'
+
+%table.tablesorter.unbordered
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.name')
+    %td= link_to_mass_build(@mass_build)
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.id')
+    %td= @mass_build.id
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.arch_names')
+    %td= @mass_build.arch_names
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.build_for_platform')
+    %td= link_to @mass_build.build_for_platform.name, platform_path(@mass_build.build_for_platform)
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.auto_publish_status')
+    %td= t("layout.build_lists.auto_publish_status.#{@mass_build.auto_publish_status}")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.auto_create_container')
+    %td= t("layout.#{@mass_build.auto_create_container?}_")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.increase_release_tag')
+    %td= t("layout.#{@mass_build.increase_release_tag?}_")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.include_testing_subrepository')
+    %td= t("layout.#{@mass_build.include_testing_subrepository?}_")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.use_cached_chroot')
+    %td= t("layout.#{@mass_build.use_cached_chroot?}_")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.use_extra_tests')
+    %td= t("layout.#{@mass_build.use_extra_tests?}_")
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.created_at')
+    %td= @mass_build.created_at
+  %tr
+    %td
+      %b= t('activerecord.attributes.mass_build.description')
+    %td= @mass_build.description
+
+  %tr
+    %td
+      %b= t("activerecord.attributes.build_list.extra_repositories")
+    %td
+      - if @mass_build.extra_repositories.present?
+        - Repository.where(id: @mass_build.extra_repositories).each do |repo|
+          %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
+          .both
+      - else
+        = t('layout.false_')
+
+  %tr
+    %td
+      %b= t("activerecord.attributes.build_list.extra_mass_builds")
+    %td
+      - if @mass_build.extra_mass_builds.present?
+        - MassBuild.where(id: @mass_build.extra_mass_builds).each do |mb|
+          %p= link_to "#{mb.id} - #{mb.name}", platform_mass_build_path(mb.save_to_platform, mb)
+          .both
+      - else
+        = t('layout.false_')
+
+  %tr
+    %td
+      %b= t("activerecord.attributes.build_list.extra_build_lists")
+    %td
+      - if @mass_build.extra_build_lists.present?
+        - BuildList.where(id: @mass_build.extra_build_lists).each do |bl|
+          %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
+          .both
+      - else
+        = t('layout.false_')
+
+  %tr
+    %td
+    %td
+  %tr
+    %td
+      %b= t('layout.mass_builds.statuses')
+    %td
+  - MassBuild::COUNT_STATUSES.each do |status|
+    - path = build_lists_path+"#?#{{filter: {mass_build_id: @mass_build.id, ownership: 'everything'}.merge(status != :build_lists ? {status: BuildList.status_by_human(status)} : {})}.to_param}"
+    %tr
+      %td
+        = link_to t("layout.build_lists.statuses.#{status}") + ": ", path
+      %td= @mass_build.send "#{status}_count"
+
+  %tr
+    %td
+    %td
+  %tr
+    %td
+      %b= t('layout.mass_builds.lists')
+    %td
+      - if @mass_build.projects_list.present?
+        = link_to_list @platform, @mass_build, 'projects_list'
+        .both
+      = link_to_list @platform, @mass_build, 'failed_builds_list'
+      .both
+      = link_to_list @platform, @mass_build, 'tests_failed_builds_list'
+      .both
+      = link_to_list @platform, @mass_build, 'success_builds_list'
+
+.buttons_block
+  - if can?(:publish, @mass_build)
+    - unless @mass_build.auto_publish_status == BuildList::AUTO_PUBLISH_STATUS_DEFAULT
+      = link_to t('layout.mass_builds.publish_success'),
+                publish_platform_mass_build_path(@platform, @mass_build.id),
+                method: :post, data: { confirm: t("layout.confirm") }, class: 'button'
+    = link_to t('layout.mass_builds.publish_test_failed'),
+              publish_platform_mass_build_path(@platform, @mass_build.id, status: 'test_failed'),
+              method: :post, data: { confirm: t("layout.confirm") }, class: 'button'
+  - if can?(:cancel, @mass_build)
+    = link_to t('layout.cancel'),
+              cancel_platform_mass_build_path(@platform, @mass_build.id),
+              method: :post, class: 'button',
+              data: { confirm: t('layout.mass_builds.cancel_confirm') }
+  - if can? :create, @mass_build
+    = link_to t('layout.mass_builds.recreate'), new_platform_mass_build_path(@platform, mass_build_id: @mass_build.id), class: 'button'

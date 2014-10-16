@@ -2,18 +2,24 @@ ru:
   layout:
     mass_builds:
       new: Новая массовая сборка
+      recreate: Пересоздать массовую сборку
       publish_success: Опубликовать успешные сборки
       publish_test_failed: Опубликовать сборки с проваленными тестами
       repositories: Репозитории
       extended_data: Параметры задания
       lists: Списки
       failed_builds_list: Сборки с ошибками
+      success_builds_list: Успешные сборки
       tests_failed_builds_list: Сборки с ошибками в тестах
       statuses: Статусы
       actions: Действия
       cancel_confirm: Вы уверены, что хотите отменить массовую сборку?
       projects_list: Проекты
       missed_projects_list: 'Несуществующие проекты: '
+
+      placeholder:
+        description: Описание
+
   activerecord:
     models:
       mass_build: Массовая Сборка
@@ -21,13 +27,17 @@ ru:
       mass_build:
         id: Id
         name: Название
+        description: Описание
         created_at: Создан
         updated_at: Обновлен
         arch_names: Архитектуры
         user: Пользователь
-        auto_publish: Автоматическая публикация
+        auto_publish_status: Автоматическая публикация
+        auto_create_container: Создать контейнер автоматически
         increase_release_tag: Увеличить release тег
         use_cached_chroot: Использовать кэшированный chroot
         use_extra_tests: Использовать дополнительные тесты
+        include_testing_subrepository: "Подключить 'testing' подрепозиторий"
         repositories: Репозитории
         projects_list: Список проектов
+        build_for_platform: Собрано для платформы

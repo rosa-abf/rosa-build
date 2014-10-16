@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140606193047) do
+ActiveRecord::Schema.define(version: 20141006182907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -96,7 +96,6 @@ ActiveRecord::Schema.define(version: 20140606193047) do
     t.string   "sha1"
     t.integer  "epoch"
     t.text     "dependent_packages"
-    t.text     "dependent_projects"
     t.index ["actual", "platform_id"], :name => "index_build_list_packages_on_actual_and_platform_id"
     t.index ["build_list_id"], :name => "index_build_list_packages_on_build_list_id"
     t.index ["name", "project_id"], :name => "index_build_list_packages_on_name_and_project_id"
@@ -144,6 +143,7 @@ ActiveRecord::Schema.define(version: 20140606193047) do
     t.string   "auto_publish_status",           default: "default", null: false
     t.boolean  "use_cached_chroot",             default: false,     null: false
     t.boolean  "use_extra_tests",               default: true,      null: false
+    t.boolean  "save_buildroot",                default: false,     null: false
     t.index ["advisory_id"], :name => "index_build_lists_on_advisory_id"
     t.index ["arch_id"], :name => "index_build_lists_on_arch_id"
     t.index ["mass_build_id", "status"], :name => "index_build_lists_on_mass_build_id_and_status"
@@ -309,25 +309,30 @@ ActiveRecord::Schema.define(version: 20140606193047) do
   end
 
   create_table "mass_builds", force: true do |t|
-    t.integer  "build_for_platform_id",                 null: false
+    t.integer  "build_for_platform_id",                          null: false
     t.string   "name"
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at",                                     null: false
+    t.datetime "updated_at",                                     null: false
     t.string   "arch_names"
     t.integer  "user_id"
-    t.boolean  "auto_publish",          default: false, null: false
-    t.integer  "build_lists_count",     default: 0,     null: false
-    t.boolean  "stop_build",            default: false, null: false
+    t.integer  "build_lists_count",             default: 0,      null: false
+    t.boolean  "stop_build",                    default: false,  null: false
     t.text     "projects_list"
-    t.integer  "missed_projects_count", default: 0,     null: false
+    t.integer  "missed_projects_count",         default: 0,      null: false
     t.text     "missed_projects_list"
-    t.boolean  "new_core",              default: true
-    t.integer  "save_to_platform_id",                   null: false
+    t.boolean  "new_core",                      default: true
+    t.integer  "save_to_platform_id",                            null: false
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
-    t.boolean  "increase_release_tag",  default: false, null: false
-    t.boolean  "use_cached_chroot",     default: true,  null: false
-    t.boolean  "use_extra_tests",       default: false, null: false
+    t.boolean  "increase_release_tag",          default: false,  null: false
+    t.boolean  "use_cached_chroot",             default: true,   null: false
+    t.boolean  "use_extra_tests",               default: false,  null: false
+    t.string   "description"
+    t.string   "auto_publish_status",           default: "none", null: false
+    t.text     "extra_mass_builds"
+    t.boolean  "include_testing_subrepository", default: false,  null: false
+    t.boolean  "auto_create_container",         default: false,  null: false
+    t.integer  "status",                        default: 2000,   null: false
   end
 
   create_table "users", force: true do |t|
@@ -361,6 +366,7 @@ ActiveRecord::Schema.define(version: 20140606193047) do
     t.string   "authentication_token"
     t.integer  "build_priority",                      default: 50
     t.boolean  "sound_notifications",                 default: true
+    t.boolean  "hide_email",                          default: true, null: false
     t.index ["authentication_token"], :name => "index_users_on_authentication_token"
     t.index ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
     t.index ["email"], :name => "index_users_on_email", :unique => true
@@ -573,6 +579,26 @@ ActiveRecord::Schema.define(version: 20140606193047) do
     t.datetime "updated_at",  null: false
     t.index ["fingerprint"], :name => "index_ssh_keys_on_fingerprint", :unique => true
     t.index ["user_id"], :name => "index_ssh_keys_on_user_id"
+  end
+
+  create_table "statistics", force: true do |t|
+    t.integer  "user_id",                             null: false
+    t.string   "email",                               null: false
+    t.integer  "project_id",                          null: false
+    t.string   "project_name_with_owner",             null: false
+    t.string   "key",                                 null: false
+    t.integer  "counter",                 default: 0, null: false
+    t.datetime "activity_at",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["activity_at"], :name => "index_statistics_on_activity_at"
+    t.index ["key", "activity_at"], :name => "index_statistics_on_key_and_activity_at"
+    t.index ["key"], :name => "index_statistics_on_key"
+    t.index ["project_id", "key", "activity_at"], :name => "index_statistics_on_project_id_and_key_and_activity_at"
+    t.index ["project_id"], :name => "index_statistics_on_project_id"
+    t.index ["user_id", "key", "activity_at"], :name => "index_statistics_on_user_id_and_key_and_activity_at"
+    t.index ["user_id", "project_id", "key", "activity_at"], :name => "index_statistics_on_all_keys", :unique => true
+    t.index ["user_id"], :name => "index_statistics_on_user_id"
   end
 
   create_table "subscribes", force: true do |t|

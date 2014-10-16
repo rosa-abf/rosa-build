@@ -1,4 +1,5 @@
 class Platforms::RepositoriesController < Platforms::BaseController
+  include DatatableHelper
   include FileStoreHelper
   include RepositoriesHelper
 
@@ -115,10 +116,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
         FROM groups
       ) AS owner
       ON projects.owner_id = owner.id AND projects.owner_type = owner.type"
-    colName = ['projects.name']
-    sort_col = params[:iSortCol_0] || 0
-    sort_dir = params[:sSortDir_0] == 'asc' ? 'asc' : 'desc'
-    order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
     if params[:added] == "true"
       @projects = @repository.projects
@@ -126,14 +123,11 @@ class Platforms::RepositoriesController < Platforms::BaseController
       @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
       @projects = @projects.opened if @repository.platform.main? && !@repository.platform.hidden?
     end
-    @projects = @projects.paginate(
-      page: (params[:iDisplayStart].to_i/(params[:iDisplayLength].present? ? params[:iDisplayLength] : 25).to_i).to_i + 1,
-      per_page: params[:iDisplayLength].present? ? params[:iDisplayLength] : 25
-    )
+    @projects = @projects.paginate(page: page, per_page: per_page)
 
     @total_projects = @projects.count
     @projects = @projects.by_owner(params[:owner_name]).
-      search(params[:sSearch]).order(order)
+      search(params[:sSearch]).order("projects.name #{sort_dir}")
 
     respond_to do |format|
       format.json {

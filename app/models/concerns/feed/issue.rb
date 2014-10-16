@@ -17,7 +17,7 @@ module Feed::Issue
     collect_recipients.each do |recipient|
       next if user_id == recipient.id
       if recipient.notifier.can_notify && recipient.notifier.new_issue && assignee_id != recipient.id
-        UserMailer.new_issue_notification(self, recipient).deliver
+        UserMailer.new_issue_notification(id, recipient.id).deliver
       end
       ActivityFeed.create(
         user: recipient,

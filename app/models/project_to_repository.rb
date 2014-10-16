@@ -8,7 +8,7 @@ class ProjectToRepository < ActiveRecord::Base
 
   scope :autostart_enabled, -> { where("autostart_options -> 'enabled' = 'true'") }
 
-  after_destroy -> { project.destroy_project_from_repository(repository) }, unless: -> { Thread.current[:skip] }
+  after_destroy :destroy_project_from_repository, unless: -> { Thread.current[:skip] }
 
   validate :one_project_in_platform_repositories, on: :create
 
@@ -27,6 +27,10 @@ class ProjectToRepository < ActiveRecord::Base
   end
 
   protected
+
+  def destroy_project_from_repository
+    DestroyProjectFromRepositoryJob.perform(project, repository)
+  end
 
   def one_project_in_platform_repositories
     if Project.joins(repositories: :platform).where('platforms.id = ?', repository.platform_id).by_name(project.name).exists?

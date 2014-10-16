@@ -2,6 +2,7 @@
 ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
+require 'webmock/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -47,6 +48,9 @@ end
 def stub_symlink_methods
   allow_any_instance_of(Platform).to receive(:symlink_directory).and_return(true)
   allow_any_instance_of(Platform).to receive(:remove_symlink_directory).and_return(true)
+
+  allow_any_instance_of(Platform).to    receive(:create_empty_metadata).and_return(true)
+  allow_any_instance_of(Repository).to  receive(:create_empty_metadata).and_return(true)
 end
 
 Resque.inline = true
