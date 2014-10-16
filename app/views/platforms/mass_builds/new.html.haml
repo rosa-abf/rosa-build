@@ -56,4 +56,9 @@
       .both
         = f.check_box field
         = f.label field
+
+    .both
+    = f.select :external_nodes, external_nodes, include_blank: true
+    = f.label :external_nodes
+
 .both

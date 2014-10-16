@@ -200,6 +200,7 @@ class Project < ActiveRecord::Base
       bl.include_testing_subrepository  = mass_build.include_testing_subrepository?
       bl.use_cached_chroot              = mass_build.use_cached_chroot?
       bl.use_extra_tests                = mass_build.use_extra_tests?
+      bl.external_nodes                 = mass_build.external_nodes
     end
     build_list.save
   end

@@ -22,6 +22,11 @@
     %td
       %b= t('activerecord.attributes.mass_build.build_for_platform')
     %td= link_to @mass_build.build_for_platform.name, platform_path(@mass_build.build_for_platform)
+  - if @mass_build.external_nodes.present?
+    %tr
+      %td
+        %b= t('activerecord.attributes.build_list.external_nodes')
+      %td= I18n.t("layout.build_lists.external_nodes.#{@mass_build.external_nodes}")
   %tr
     %td
       %b= t('activerecord.attributes.mass_build.auto_publish_status')
