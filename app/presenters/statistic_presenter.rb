@@ -20,6 +20,10 @@ class StatisticPresenter < ApplicationPresenter
         success_count:          build_lists_success.sum(&:count),
         build_error_count:      build_lists_error.sum(&:count),
         build_published_count:  build_lists_published.sum(&:count),
+      },
+      commits: {
+        chart:                  prepare_collection(commits_chart),
+        commits_count:          commits_chart.sum(&:count)
       }
     }
   end
@@ -27,29 +31,29 @@ class StatisticPresenter < ApplicationPresenter
   private
 
   def scope
-    @scope ||= Statistic.for_period(range_start, range_end)
-  end
-
-  def build_lists
-    @build_lists ||= scope.
+    @scope ||= Statistic.for_period(range_start, range_end).
       select("SUM(counter) as count, date_trunc('#{ unit }', activity_at) as activity_at").
       group("date_trunc('#{ unit }', activity_at)").order('activity_at')
   end
 
+  def commits_chart
+    @commits_chart ||= scope.commits.to_a
+  end
+
   def build_lists_started
-    @build_lists_started ||= build_lists.build_lists_started.to_a
+    @build_lists_started ||= scope.build_lists_started.to_a
   end
 
   def build_lists_success
-    @build_lists_success ||= build_lists.build_lists_success.to_a
+    @build_lists_success ||= scope.build_lists_success.to_a
   end
 
   def build_lists_error
-    @build_lists_error ||= build_lists.build_lists_error.to_a
+    @build_lists_error ||= scope.build_lists_error.to_a
   end
 
   def build_lists_published
-    @build_lists_published ||= build_lists.build_lists_published.to_a
+    @build_lists_published ||= scope.build_lists_published.to_a
   end
 
   def prepare_collection(items)

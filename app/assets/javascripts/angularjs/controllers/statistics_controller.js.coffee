@@ -70,6 +70,10 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', ($scope, $http) -
       if $scope.statistics.issues
         $scope.initIssuesChart()
 
+      # Commits
+      if $scope.statistics.commits
+        $scope.initCommitsChart()
+
     .error (data, status, headers, config) ->
       console.log 'error:'
       $scope.loading    = false
@@ -123,6 +127,11 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', ($scope, $http) -
       $scope.statistics.build_lists.success,
       $scope.statistics.build_lists.build_error,
       $scope.statistics.build_lists.build_published
+    ]
+
+  $scope.initCommitsChart = ->
+    $scope.dateChart '#commits_chart', [
+      $scope.statistics.commits.chart
     ]
 
   $scope.initPullRequestsChart = ->
