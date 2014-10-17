@@ -85,6 +85,9 @@ class Issue < ActiveRecord::Base
   def set_serial_id
     self.serial_id = self.project.issues.count
     self.save!
+  rescue ActiveRecord::RecordNotUnique
+    self.serial_id += 1
+    self.save!
   end
 
   def subscribe_users
