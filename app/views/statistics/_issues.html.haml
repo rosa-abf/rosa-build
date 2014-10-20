@@ -1,0 +1,37 @@
+.row
+  .span12
+    %h3.text-info
+      = t('.header')
+
+.row
+  .span8
+    .graph-wrapper
+      %h3
+        %span.graph-key-color1
+        = t('.open_title')
+        %span.graph-key-color2
+        = t('.closed_title')
+      .centered.graph-loading{ ng_show: 'loading' }
+        = image_tag 'loading-large.gif'
+      .no-data{ ng_hide: 'loading || statistics.issues' }
+        = t('.no_data')
+      %canvas#issues_chart{ ng_show: 'statistics.issues' }
+
+  .span3
+    .panel-wrapper
+      %h3
+        = t('.total_open')
+      .panel-data
+        = image_tag 'loading-small.gif', ng_show: 'loading'
+        .no-data{ ng_hide: 'loading || statistics.issues.open_count >= 0' }
+          = t('.no_data')
+        {{ statistics.issues.open_count | number }}
+
+    .panel-wrapper
+      %h3
+        = t('.total_closed')
+      .panel-data
+        = image_tag 'loading-small.gif', ng_show: 'loading'
+        .no-data{ ng_hide: 'loading || statistics.issues.closed_count >= 0' }
+          = t('.no_data')
+        {{ statistics.issues.closed_count | number }}

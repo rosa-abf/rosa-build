@@ -29,6 +29,26 @@ en:
       total_commits:                              "Total commits"
       no_data:                                    "No data available"
 
+    issues:
+      header:                                     "Issues"
+      open_title:                                 "Open"
+      closed_title:                               "Closed"
+
+      total_open:                                 "Total open"
+      total_closed:                               "Total closed"
+      no_data:                                    "No data available"
+
+    pull_requests:
+      header:                                     "Pull Requests"
+      open_title:                                 "Open"
+      merged_title:                               "Merged"
+      closed_title:                               "Closed"
+
+      total_open:                                 "Total open"
+      total_merged:                               "Total merged"
+      total_closed:                               "Total closed"
+      no_data:                                    "No data available"
+
     helper:
       period:
         twenty_four_hours:                        "the last 24 hours"

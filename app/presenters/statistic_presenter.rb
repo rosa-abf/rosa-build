@@ -24,6 +24,22 @@ class StatisticPresenter < ApplicationPresenter
       commits: {
         chart:                  prepare_collection(commits_chart),
         commits_count:          commits_chart.sum(&:count)
+      },
+      issues: {
+        open:                   prepare_collection(issues_open),
+        closed:                 prepare_collection(issues_closed),
+
+        open_count:             issues_open.sum(&:count),
+        closed_count:           issues_closed.sum(&:count)
+      },
+      pull_requests: {
+        open:                   prepare_collection(pull_requests_open),
+        merged:                 prepare_collection(pull_requests_merged),
+        closed:                 prepare_collection(pull_requests_closed),
+
+        open_count:             pull_requests_open.sum(&:count),
+        merged_count:           pull_requests_merged.sum(&:count),
+        closed_count:           pull_requests_closed.sum(&:count)
       }
     }
   end
@@ -34,6 +50,26 @@ class StatisticPresenter < ApplicationPresenter
     @scope ||= Statistic.for_period(range_start, range_end).
       select("SUM(counter) as count, date_trunc('#{ unit }', activity_at) as activity_at").
       group("date_trunc('#{ unit }', activity_at)").order('activity_at')
+  end
+
+  def issues_open
+    @issues_open ||= scope.issues_open.to_a
+  end
+
+  def issues_closed
+    @issues_closed ||= scope.issues_closed.to_a
+  end
+
+  def pull_requests_open
+    @pull_requests_open ||= scope.pull_requests_open.to_a
+  end
+
+  def pull_requests_merged
+    @pull_requests_merged ||= scope.pull_requests_merged.to_a
+  end
+
+  def pull_requests_closed
+    @pull_requests_closed ||= scope.pull_requests_closed.to_a
   end
 
   def commits_chart

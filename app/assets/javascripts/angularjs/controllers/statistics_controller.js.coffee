@@ -137,15 +137,14 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', ($scope, $http) -
   $scope.initPullRequestsChart = ->
     $scope.dateChart '#pull_requests_chart', [
       $scope.statistics.pull_requests.open,
+      $scope.statistics.pull_requests.merged
       $scope.statistics.pull_requests.closed,
-      $scope.statistics.pull_requests.approved
     ]
 
   $scope.initIssuesChart = ->
     $scope.dateChart '#issues_chart', [
       $scope.statistics.issues.open,
-      $scope.statistics.issues.closed,
-      $scope.statistics.issues.approved
+      $scope.statistics.issues.closed
     ]
 
 ]

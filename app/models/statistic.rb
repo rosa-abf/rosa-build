@@ -5,7 +5,14 @@ class Statistic < ActiveRecord::Base
     KEY_BUILD_LIST_BUILD_STARTED    = "#{KEY_BUILD_LIST}.#{BuildList::BUILD_STARTED}",
     KEY_BUILD_LIST_SUCCESS          = "#{KEY_BUILD_LIST}.#{BuildList::SUCCESS}",
     KEY_BUILD_LIST_BUILD_ERROR      = "#{KEY_BUILD_LIST}.#{BuildList::BUILD_ERROR}",
-    KEY_BUILD_LIST_BUILD_PUBLISHED  = "#{KEY_BUILD_LIST}.#{BuildList::BUILD_PUBLISHED}"
+    KEY_BUILD_LIST_BUILD_PUBLISHED  = "#{KEY_BUILD_LIST}.#{BuildList::BUILD_PUBLISHED}",
+    KEY_ISSUE                       = 'issue',
+    KEY_ISSUES_OPEN                 = "#{KEY_ISSUE}.#{Issue::STATUS_OPEN}",
+    KEY_ISSUES_CLOSED               = "#{KEY_ISSUE}.#{Issue::STATUS_CLOSED}",
+    KEY_PULL_REQUEST                = 'pull_request',
+    KEY_PULL_REQUESTS_OPEN          = "#{KEY_PULL_REQUEST}.#{PullRequest::STATUS_OPEN}",
+    KEY_PULL_REQUESTS_MERGED        = "#{KEY_PULL_REQUEST}.#{PullRequest::STATUS_MERGED}",
+    KEY_PULL_REQUESTS_CLOSED        = "#{KEY_PULL_REQUEST}.#{PullRequest::STATUS_CLOSED}",
   ]
 
   belongs_to :user
@@ -48,7 +55,11 @@ class Statistic < ActiveRecord::Base
   scope :build_lists_error,     -> { where(key: KEY_BUILD_LIST_BUILD_ERROR) }
   scope :build_lists_published, -> { where(key: KEY_BUILD_LIST_BUILD_PUBLISHED) }
   scope :commits,               -> { where(key: KEY_COMMIT) }
-
+  scope :issues_open,           -> { where(key: KEY_ISSUES_OPEN) }
+  scope :issues_closed,         -> { where(key: KEY_ISSUES_CLOSED) }
+  scope :pull_requests_open,    -> { where(key: KEY_PULL_REQUESTS_OPEN) }
+  scope :pull_requests_merged,  -> { where(key: KEY_PULL_REQUESTS_MERGED) }
+  scope :pull_requests_closed,  -> { where(key: KEY_PULL_REQUESTS_CLOSED) }
 
 
   def self.now_statsd_increment(activity_at: nil, user_id: nil, project_id: nil, key: nil, counter: 1)

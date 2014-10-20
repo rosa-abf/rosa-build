@@ -29,6 +29,26 @@ ru:
       total_commits:                              "Всего коммитов"
       no_data:                                    "Нет данных"
 
+    issues:
+      header:                                     "Задачи"
+      open_title:                                 "Открыто"
+      closed_title:                               "Закрыто"
+
+      total_open:                                 "Всего открыто"
+      total_closed:                               "Всего закрыто"
+      no_data:                                    "Нет данных"
+
+    pull_requests:
+      header:                                     "Пулл реквесты"
+      open_title:                                 "Открыто"
+      merged_title:                               "Принято"
+      closed_title:                               "Закрыто"
+
+      total_open:                                 "Всего открыто"
+      total_merged:                               "Всего принято"
+      total_closed:                               "Всего закрыто"
+      no_data:                                    "Нет данных"
+
     helper:
       period:
         twenty_four_hours:                        "последние 24 часа"
