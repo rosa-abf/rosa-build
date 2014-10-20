@@ -72,7 +72,7 @@ class Statistic < ActiveRecord::Base
       project_id:   project_id,
       key:          key,
       activity_at:  activity_at
-    ).update_all(['counter = counter + ?', counter])
+    ).update_all(['counter = counter + ?', counter]) if user_id.present? && project_id.present?
   end
 
   def self.statsd_increment(options = {})
