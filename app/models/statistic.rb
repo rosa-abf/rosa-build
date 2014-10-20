@@ -1,4 +1,13 @@
 class Statistic < ActiveRecord::Base
+  KEYS = [
+    KEY_COMMIT                      = 'commit',
+    KEY_BUILD_LIST                  = 'build_list',
+    KEY_BUILD_LIST_BUILD_STARTED    = "#{KEY_BUILD_LIST}.#{BuildList::BUILD_STARTED}",
+    KEY_BUILD_LIST_SUCCESS          = "#{KEY_BUILD_LIST}.#{BuildList::SUCCESS}",
+    KEY_BUILD_LIST_BUILD_ERROR      = "#{KEY_BUILD_LIST}.#{BuildList::BUILD_ERROR}",
+    KEY_BUILD_LIST_BUILD_PUBLISHED  = "#{KEY_BUILD_LIST}.#{BuildList::BUILD_PUBLISHED}"
+  ]
+
   belongs_to :user
   belongs_to :project
 
@@ -34,14 +43,15 @@ class Statistic < ActiveRecord::Base
 
   scope :for_period,            -> (start_date, end_date) { where(activity_at: (start_date..end_date)) }
 
-  scope :build_lists_started,   -> { where(key: "build_list.#{BuildList::BUILD_STARTED}") }
-  scope :build_lists_success,   -> { where(key: "build_list.#{BuildList::SUCCESS}") }
-  scope :build_lists_error,     -> { where(key: "build_list.#{BuildList::BUILD_ERROR}") }
-  scope :build_lists_published, -> { where(key: "build_list.#{BuildList::BUILD_PUBLISHED}") }
+  scope :build_lists_started,   -> { where(key: KEY_BUILD_LIST_BUILD_STARTED) }
+  scope :build_lists_success,   -> { where(key: KEY_BUILD_LIST_SUCCESS) }
+  scope :build_lists_error,     -> { where(key: KEY_BUILD_LIST_BUILD_ERROR) }
+  scope :build_lists_published, -> { where(key: KEY_BUILD_LIST_BUILD_PUBLISHED) }
+  scope :commits,               -> { where(key: KEY_COMMIT) }
 
 
 
-  def self.now_statsd_increment(activity_at: nil, user_id: nil, project_id: nil, key: nil)
+  def self.now_statsd_increment(activity_at: nil, user_id: nil, project_id: nil, key: nil, counter: 1)
     # Truncates a DateTime to the minute
     activity_at = activity_at.utc.change(min: 0)
     user        = User.find user_id
@@ -62,25 +72,7 @@ class Statistic < ActiveRecord::Base
       project_id:   project_id,
       key:          key,
       activity_at:  activity_at
-    ).update_all('counter = counter + 1')
-  end
-
-  # TODO: remove later
-  def self.fill_in_build_lists
-    BuildList.find_each do |bl|
-      Statistic.now_statsd_increment({
-        activity_at:  bl.created_at,
-        key:          "build_list.#{BuildList::BUILD_STARTED}",
-        project_id:   bl.project_id,
-        user_id:      bl.user_id,
-      })
-      Statistic.now_statsd_increment({
-        activity_at:  bl.updated_at,
-        key:          "build_list.#{bl.status}",
-        project_id:   bl.project_id,
-        user_id:      bl.user_id,
-      })
-    end
+    ).update_all(['counter = counter + ?', counter]) if user_id.present? && project_id.present?
   end
 
   def self.statsd_increment(options = {})

@@ -9,9 +9,9 @@ en:
       range_start_placeholder:                    "Select a start date"
       range_separator:                            " and "
       range_end_placeholder:                      "Select an end date"
-      no_data:                                    "No data available"
 
     build_lists:
+      header:                                     "Build lists"
       build_started_title:                        "Build started"
       success_title:                              "Build complete"
       build_error_title:                          "Build error"
@@ -21,6 +21,13 @@ en:
       total_success:                              "Total build complete"
       total_build_error:                          "Total build error"
       total_build_published:                      "Total build has been published"
+      no_data:                                    "No data available"
+
+    commits:
+      header:                                     "Commits"
+      commits_title:                              "Commits"
+      total_commits:                              "Total commits"
+      no_data:                                    "No data available"
 
     helper:
       period:

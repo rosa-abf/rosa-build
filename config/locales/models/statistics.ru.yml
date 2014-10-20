@@ -9,9 +9,9 @@ ru:
       range_start_placeholder:                    "Выберите начальную дату"
       range_separator:                            " и "
       range_end_placeholder:                      "Выберите конечную дату"
-      no_data:                                    "Нет данных"
 
     build_lists:
+      header:                                     "Сборочные листы"
       build_started_title:                        "Cобирается"
       success_title:                              "Cобрано"
       build_error_title:                          "Ошибка сборки"
@@ -21,6 +21,13 @@ ru:
       total_success:                              "Всего собрано"
       total_build_error:                          "Всего ошибок сборки"
       total_build_published:                      "Всего опубликовано"
+      no_data:                                    "Нет данных"
+
+    commits:
+      header:                                     "Коммиты"
+      commits_title:                              "Коммиты"
+      total_commits:                              "Всего коммитов"
+      no_data:                                    "Нет данных"
 
     helper:
       period:
