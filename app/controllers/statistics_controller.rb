@@ -16,7 +16,12 @@ class StatisticsController < ApplicationController
       format.html
       format.json do
         init_variables
-        render json: StatisticPresenter.new(range_start: @range_start, range_end: @range_end, unit: @unit)
+        render json: StatisticPresenter.new(
+          range_start:      @range_start,
+          range_end:        @range_end,
+          unit:             @unit,
+          users_or_groups:  params[:users_or_groups]
+        )
       end
     end
   end

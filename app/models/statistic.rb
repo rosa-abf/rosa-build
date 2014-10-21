@@ -48,7 +48,24 @@ class Statistic < ActiveRecord::Base
                   :counter,
                   :activity_at
 
-  scope :for_period,            -> (start_date, end_date) { where(activity_at: (start_date..end_date)) }
+  scope :for_period,            -> (start_date, end_date) {
+    where(activity_at: (start_date..end_date))
+  }
+  scope :for_users,             -> (user_ids)   {
+    where(user_id: user_ids) if user_ids.present?
+  }
+  scope :for_groups,            -> (group_ids)  {
+    where(["project_id = ANY (
+        ARRAY (
+          SELECT target_id
+          FROM relations
+          INNER JOIN projects ON projects.id = relations.target_id
+          WHERE relations.target_type = 'Project' AND
+          relations.actor_type = 'Group' AND relations.actor_id IN (:groups)
+        )
+      )", { user: @user, groups: group_ids }
+    ]) if group_ids.present?
+  }
 
   scope :build_lists_started,   -> { where(key: KEY_BUILD_LIST_BUILD_STARTED) }
   scope :build_lists_success,   -> { where(key: KEY_BUILD_LIST_SUCCESS) }

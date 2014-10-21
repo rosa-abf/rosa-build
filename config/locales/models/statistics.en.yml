@@ -10,6 +10,10 @@ en:
       range_separator:                            " and "
       range_end_placeholder:                      "Select an end date"
 
+      users_or_groups_label:                      "for users or groups"
+      refresh:                                    "refresh"
+      users_or_groups_placeholder:                "Enter a nickname here."
+
     build_lists:
       header:                                     "Build lists"
       build_started_title:                        "Build started"

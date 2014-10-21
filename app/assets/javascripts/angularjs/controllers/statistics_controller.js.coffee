@@ -1,9 +1,10 @@
-RosaABF.controller 'StatisticsController', ['$scope', '$http', ($scope, $http) ->
+RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($scope, $http, $timeout) ->
 
+  $scope.users_or_groups          = null
   $scope.range                    = 'last_30_days'
   $scope.range_start              = $('#range_start').attr('value')
   $scope.range_end                = $('#range_end').attr('value')
-  $scope.loading                  = true
+  $scope.loading                  = false
   $scope.statistics               = {}
   $scope.statistics_path          = '/statistics'
 
@@ -12,22 +13,24 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', ($scope, $http) -
     '77, 169, 68',
     '241, 128, 73',
     '174, 199, 232',
-    '255, 187, 120',
-    '152, 223, 138',
-    '214, 39, 40',
-    '31, 119, 180'
+    # '255, 187, 120',
+    # '152, 223, 138',
+    # '214, 39, 40',
+    # '31, 119, 180'
   ]
   $scope.charts                   = {}
 
+  $('#users_or_groups').on 'autocompleteselect', (e) ->
+    $timeout($scope.update, 100)
 
   $scope.init = ->
-    $('#range-form .date_picker').datepicker
+    $('#statistics-form .date_picker').datepicker
       'dateFormat': 'yy-mm-dd'
       maxDate: 0
       minDate: -366
       showButtonPanel: true
 
-    $scope.rangeChange()
+    $scope.update()
     true
 
   $scope.prepareRange = ->
@@ -39,18 +42,27 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', ($scope, $http) -
       $scope.range_start  = $scope.range_end
       $scope.range_end    = tmp
 
+  $scope.prepareUsersOrGroups = ->
+    if $scope.users_or_groups
+      items = _.uniq $('#users_or_groups').val().replace(/\s/g, '').split(/,/)
+      items = _.reject items, (i) ->
+        _.isEmpty(i)
+      $scope.users_or_groups = _.first(items, 3).join(', ') + ', '
 
-  $scope.rangeChange = ->
+  $scope.update = ->
+    return if $scope.loading
     $scope.loading    = true
     $scope.statistics = {}
 
     $scope.prepareRange()
+    $scope.prepareUsersOrGroups()
     $('.doughnut-legend').remove()
 
     params = 
-      range:        $scope.range
-      range_start:  $scope.range_start
-      range_end:    $scope.range_end
+      range:            $scope.range
+      range_start:      $scope.range_start
+      range_end:        $scope.range_end
+      users_or_groups:  $scope.users_or_groups
       format:       'json'
 
     $http.get($scope.statistics_path, params: params).success (results) ->

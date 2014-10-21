@@ -1,11 +1,12 @@
 class StatisticPresenter < ApplicationPresenter
 
-  attr_accessor :range_start, :range_end, :unit
+  attr_accessor :range_start, :range_end, :unit, :users_or_groups
 
-  def initialize(range_start: nil, range_end: nil, unit: nil)
-    @range_start  = range_start
-    @range_end    = range_end
-    @unit         = unit
+  def initialize(range_start: nil, range_end: nil, unit: nil, users_or_groups: nil)
+    @range_start      = range_start
+    @range_end        = range_end
+    @unit             = unit
+    @users_or_groups  = users_or_groups.to_s.split(/,/).map(&:strip).select(&:present?).first(3)
   end
 
   def as_json(options = nil)
@@ -46,8 +47,17 @@ class StatisticPresenter < ApplicationPresenter
 
   private
 
+  def user_ids
+    @user_ids ||= User.where(uname: users_or_groups).pluck(:id)
+  end
+
+  def group_ids
+    @group_ids ||= Group.where(uname: users_or_groups).map(&:member_ids).flatten.uniq
+  end
+
   def scope
     @scope ||= Statistic.for_period(range_start, range_end).
+      for_users(user_ids).for_groups(group_ids).
       select("SUM(counter) as count, date_trunc('#{ unit }', activity_at) as activity_at").
       group("date_trunc('#{ unit }', activity_at)").order('activity_at')
   end
