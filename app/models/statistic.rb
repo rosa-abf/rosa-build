@@ -61,9 +61,11 @@ class Statistic < ActiveRecord::Base
           FROM relations
           INNER JOIN projects ON projects.id = relations.target_id
           WHERE relations.target_type = 'Project' AND
-          relations.actor_type = 'Group' AND relations.actor_id IN (:groups)
+          projects.owner_type = 'Group' AND
+          relations.actor_type = 'Group' AND
+          relations.actor_id IN (:groups)
         )
-      )", { user: @user, groups: group_ids }
+      )", { groups: group_ids }
     ]) if group_ids.present?
   }
 

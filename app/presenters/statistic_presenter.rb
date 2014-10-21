@@ -52,7 +52,7 @@ class StatisticPresenter < ApplicationPresenter
   end
 
   def group_ids
-    @group_ids ||= Group.where(uname: users_or_groups).map(&:member_ids).flatten.uniq
+    @group_ids ||= Group.where(uname: users_or_groups).pluck(:id)
   end
 
   def scope
