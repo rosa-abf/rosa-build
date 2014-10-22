@@ -36,9 +36,11 @@ en:
     issues:
       header:                                     "Issues"
       open_title:                                 "Open"
+      reopen_title:                               "Reopen"
       closed_title:                               "Closed"
 
-      total_open:                                 "Total open"
+      total_open:                                 "Total opened"
+      total_reopen:                               "Total reopened"
       total_closed:                               "Total closed"
       no_data:                                    "No data available"
 

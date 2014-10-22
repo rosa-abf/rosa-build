@@ -156,6 +156,7 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
   $scope.initIssuesChart = ->
     $scope.dateChart '#issues_chart', [
       $scope.statistics.issues.open,
+      $scope.statistics.issues.reopen,
       $scope.statistics.issues.closed
     ]
 

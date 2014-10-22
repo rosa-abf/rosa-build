@@ -36,9 +36,11 @@ ru:
     issues:
       header:                                     "Задачи"
       open_title:                                 "Открыто"
+      reopen_title:                               "Переоткрыто"
       closed_title:                               "Закрыто"
 
       total_open:                                 "Всего открыто"
+      total_reopen:                               "Всего переоткрыто"
       total_closed:                               "Всего закрыто"
       no_data:                                    "Нет данных"
 

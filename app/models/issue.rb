@@ -3,6 +3,7 @@ class Issue < ActiveRecord::Base
 
   STATUSES = [
     STATUS_OPEN   = 'open',
+    STATUS_REOPEN = 'reopen',
     STATUS_CLOSED = 'closed'
   ]
   HASH_TAG_REGEXP = /([a-zA-Z0-9\-_]*\/)?([a-zA-Z0-9\-_]*)?#([0-9]+)/
@@ -46,10 +47,10 @@ class Issue < ActiveRecord::Base
   attr_accessible :labelings_attributes, :title, :body, :assignee_id
   accepts_nested_attributes_for :labelings, allow_destroy: true
 
-  scope :opened, -> { where(status: STATUS_OPEN) }
+  scope :opened, -> { where(status: [STATUS_OPEN, STATUS_REOPEN]) }
   scope :closed, -> { where(status: STATUS_CLOSED) }
 
-  scope :needed_checking,       -> { where(issues: { status: %w(open blocked ready already) }) }
+  scope :needed_checking,       -> { where(issues: { status: %w(open reopen blocked ready already) }) }
   scope :not_closed_or_merged,  -> { needed_checking }
   scope :closed_or_merged,      -> { where(issues: { status: %w(closed merged) }) }
   # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
@@ -61,6 +62,16 @@ class Issue < ActiveRecord::Base
   }
 
   attr_accessor :new_pull_request
+
+  state_machine :status, initial: :open do
+    event :reopen do
+      transition closed: :reopen
+    end
+
+    event :close do
+      transition [:open, :reopen] => :closed
+    end
+  end
 
   def assign_uname
     assignee.uname if assignee
@@ -83,12 +94,12 @@ class Issue < ActiveRecord::Base
   def set_close(closed_by)
     self.closed_at  = Time.now.utc
     self.closer     = closed_by
-    self.status     = STATUS_CLOSED
+    close(false) # skip the saving
   end
 
   def set_open
     self.closed_at  = self.closed_by = nil
-    self.status     = STATUS_OPEN
+    reopen(false) # skip the saving
   end
 
   def collect_recipients

@@ -28,9 +28,11 @@ class StatisticPresenter < ApplicationPresenter
       },
       issues: {
         open:                   prepare_collection(issues_open),
+        reopen:                 prepare_collection(issues_reopen),
         closed:                 prepare_collection(issues_closed),
 
         open_count:             issues_open.sum(&:count),
+        reopen_count:           issues_reopen.sum(&:count),
         closed_count:           issues_closed.sum(&:count)
       },
       pull_requests: {
@@ -64,6 +66,10 @@ class StatisticPresenter < ApplicationPresenter
 
   def issues_open
     @issues_open ||= scope.issues_open.to_a
+  end
+
+  def issues_reopen
+    @issues_reopen ||= scope.issues_reopen.to_a
   end
 
   def issues_closed

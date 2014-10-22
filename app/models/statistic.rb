@@ -8,6 +8,7 @@ class Statistic < ActiveRecord::Base
     KEY_BUILD_LIST_BUILD_PUBLISHED  = "#{KEY_BUILD_LIST}.#{BuildList::BUILD_PUBLISHED}",
     KEY_ISSUE                       = 'issue',
     KEY_ISSUES_OPEN                 = "#{KEY_ISSUE}.#{Issue::STATUS_OPEN}",
+    KEY_ISSUES_REOPEN               = "#{KEY_ISSUE}.#{Issue::STATUS_REOPEN}",
     KEY_ISSUES_CLOSED               = "#{KEY_ISSUE}.#{Issue::STATUS_CLOSED}",
     KEY_PULL_REQUEST                = 'pull_request',
     KEY_PULL_REQUESTS_OPEN          = "#{KEY_PULL_REQUEST}.#{PullRequest::STATUS_OPEN}",
@@ -75,6 +76,7 @@ class Statistic < ActiveRecord::Base
   scope :build_lists_published, -> { where(key: KEY_BUILD_LIST_BUILD_PUBLISHED) }
   scope :commits,               -> { where(key: KEY_COMMIT) }
   scope :issues_open,           -> { where(key: KEY_ISSUES_OPEN) }
+  scope :issues_reopen,         -> { where(key: KEY_ISSUES_REOPEN) }
   scope :issues_closed,         -> { where(key: KEY_ISSUES_CLOSED) }
   scope :pull_requests_open,    -> { where(key: KEY_PULL_REQUESTS_OPEN) }
   scope :pull_requests_merged,  -> { where(key: KEY_PULL_REQUESTS_MERGED) }
