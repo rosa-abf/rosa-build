@@ -63,16 +63,6 @@ class Issue < ActiveRecord::Base
 
   attr_accessor :new_pull_request
 
-  state_machine :status, initial: :open do
-    event :reopen do
-      transition closed: :reopen
-    end
-
-    event :close do
-      transition [:open, :reopen] => :closed
-    end
-  end
-
   def assign_uname
     assignee.uname if assignee
   end
@@ -94,12 +84,12 @@ class Issue < ActiveRecord::Base
   def set_close(closed_by)
     self.closed_at  = Time.now.utc
     self.closer     = closed_by
-    close(false) # skip the saving
+    self.status     = STATUS_CLOSED
   end
 
   def set_open
     self.closed_at  = self.closed_by = nil
-    reopen(false) # skip the saving
+    self.status     = STATUS_REOPEN
   end
 
   def collect_recipients
