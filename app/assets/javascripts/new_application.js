@@ -3,12 +3,10 @@
 //= require jquery-ui
 //= require js-routes
 
-//= require autocomplete-rails
-//= require extra/autocomplete-form
+// require autocomplete-rails
+// require extra/autocomplete-form
 
 //= require bootstrap-sprockets
-// Loads all Bootstrap javascripts
-//= require bootstrap
 
 //= require angular
 //= require angular-sanitize

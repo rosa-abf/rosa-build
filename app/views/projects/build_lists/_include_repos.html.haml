@@ -1,6 +1,6 @@
 .col-md-5.col-md-offset-2
   %h4= t 'activerecord.attributes.build_list.build_for_platform'
-  .offset20{ 'ng-repeat' => 'platform in newBuildCtrl.platforms',
+  .boffset20{ 'ng-repeat' => 'platform in newBuildCtrl.platforms',
              'ng-hide' => 'newBuildCtrl.hidePlatform(platform)' }
     %div
       %h5 {{ platform.name }}

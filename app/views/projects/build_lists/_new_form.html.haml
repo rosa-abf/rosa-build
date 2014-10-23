@@ -3,26 +3,26 @@
     = render 'include_repos'
 
     .col-md-5
-      %h4.boffset20= t 'activerecord.attributes.build_list.save_to_repository'
-      %select.form-control{ 'ng-model' => 'newBuildCtrl.save_to_repository',
+      %h4= t 'activerecord.attributes.build_list.save_to_repository'
+      %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.save_to_repository',
         'ng-options' => 'save_in_repo.name for save_in_repo in newBuildCtrl.save_to_repositories',
         'ng-change' => 'newBuildCtrl.selectSaveToRepository()' }
 
-      %h4.boffset20= t 'activerecord.attributes.build_list.project_version'
-      %select.form-control{ 'ng-model' => 'newBuildCtrl.project_version',
+      %h4= t 'activerecord.attributes.build_list.project_version'
+      %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.project_version',
         'ng-options' => 'version.name group by version.kind for version in newBuildCtrl.project_versions' }
 
-      %h3= t 'activerecord.attributes.build_list.arch'
-      .checkbox{ 'ng-repeat' => 'arch in newBuildCtrl.arches' }
+      %h4= t 'activerecord.attributes.build_list.arch'
+      .checkbox.boffset20{ 'ng-repeat' => 'arch in newBuildCtrl.arches' }
         %label
           %input{ type:            'checkbox',
                   'ng-model' =>    'arch.checked',
                   name:            'arches[]' }
           {{ arch.name }}
 
-      %h3= t 'activerecord.attributes.build_list.update_type'
+      %h4= t 'activerecord.attributes.build_list.update_type'
       - selected = params[:build_list].try(:[], :update_type) ? {selected: params[:build_list][:update_type]} : {}
-      = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control'
+      = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control boffset20'
 
       = render 'shared/autocomplete_form',
         field:             :extra_repositories,

@@ -9,55 +9,13 @@
 
 - default_values ||= []
 - subject_class = subject.class.name.underscore
-.modal.fade{ id: "#{field}_dialog", tabindex: '-1', role: 'dialog', 'aria-labelledby' => "myModalLabel",
-             'aria-hidden' => 'true'}
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close{ type: 'button', 'data-dismiss' => 'modal', 'aria-hidden' => 'true' } &times;
-        %h4.modal-title= t "activerecord.attributes.build_list.#{field}"
-      .modal-body= render "shared/autocomplete_docs/#{field}"
-      .modal-footer
-        %button.btn.btn-default{ type: 'button', 'data-dismiss' => 'modal' }= t 'close'
 
-.autocomplete-form{subject_class: subject_class, field: field, path: autocomplete_path, class: field}
-  %h3
-    = t "activerecord.attributes.build_list.#{field}"
-    %i.fa.fa-question-circle{ 'data-toggle' => 'modal', 'data-target' => "##{field}_dialog" }
-  %input.form-control{ type: 'text', 'ng-model' => "async_#{field}_selected", placeholder: placeholder,
-    'typeahead' => "extra for extra in get_#{field}($viewValue)", 'typeahead-loading' => "loading_#{field}",
-    'typeahead-on-select' => "select_#{field}($item, $model, $label)" }
-  %i.glyphicon.glyphicon-refresh{ 'ng-show' => "loading_#{field}" }
-
-  .row
-    = hidden_field_tag field, nil, id: "#{field}_field"
-    = hidden_field_tag field, nil, id: "#{field}_field_path"
-    = hidden_field_tag field, nil, id: "#{field}_field_label"
-    .col-xs-6
-      .form-group
-        = autocomplete_field_tag field, nil,
-          "#{autocomplete_path}?#{{platform_id: subject.save_to_platform.try(:id)}.to_param}",
-          placeholder: placeholder, class: 'autocomplete form-control',
-          update_elements: { id: "##{field}_field", path: "##{field}_field_path", label: "##{field}_field_label" }
-    .col-xs-2= submit_tag t('layout.add'), class: 'btn btn-default add'
-
-  %table.table.table-bordered
-    %tbody
-      - field_name = "#{subject_class}[#{field}][]"
-      - field_class.where(id: params[:build_list].try(:[], field) ).each do |extra|
-        %tr
-          %td
-            - if extra.is_a?(BuildList)
-              = link_to "#{extra.id} (#{extra.project.name} - #{extra.arch.name})", extra
-            - else
-              = link_to "#{extra.platform.name}/#{extra.name}", [extra.platform, extra]
-            .actions.pull-right
-              = hidden_field_tag field_name, extra.id
-              %span.fa.fa-times.fa-lg.delete.text-danger
-  .default-values
-    - field_class.where(id: default_values).each do |extra|
-      .hidden{ label: "#{extra.platform.name}/#{extra.name}",
-               path:  url_for([extra.platform, extra]),
-               name:  field_name, value: extra.id }
-
-
+%h4
+  = t "activerecord.attributes.build_list.#{field}"
+  -#%a{ href: '#', tabindex: 0, class: 'btn btn-lg btn-danger bs-docs-popover boffset20', 'data-toggle' => 'popover',
+      'data-trigger' => 'focus', title: t("activerecord.attributes.build_list.#{field}"),
+      html: 'true', 'data-content' => "And here's some amazing content. It's very engaging. Right?" }
+    %i.fa.fa-question-circle
+  %button.btn.btn-default{ popover: render("shared/autocomplete_docs/#{field}"),
+           'popover-title' => t("activerecord.attributes.build_list.#{field}") }
+    %i.fa.fa-question-circle
