@@ -6,6 +6,7 @@
 //= require autocomplete-rails
 //= require extra/autocomplete-form
 
+//= require bootstrap-sprockets
 // Loads all Bootstrap javascripts
 //= require bootstrap
 

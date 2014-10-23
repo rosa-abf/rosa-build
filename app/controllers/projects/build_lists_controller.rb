@@ -234,7 +234,7 @@ class Projects::BuildListsController < Projects::BaseController
       :use_cached_chroot, :use_extra_tests, :save_buildroot
     ]
     keys.each { |key| params[:build_list][key] = build_list.send(key) }
-    params[:arches] = [build_list.arch_id.to_s]
+    params[:arches] = [build_list.arch_id]
     [:owner_filter, :status_filter].each { |t| params[t] = 'true' if %w(true undefined).exclude? params[t] }
   end
 end

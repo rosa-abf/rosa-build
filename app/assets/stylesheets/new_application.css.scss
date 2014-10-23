@@ -22,6 +22,7 @@ $navbar-inverse-toggle-hover-bg:           #ddd;
 $navbar-inverse-toggle-icon-bar-bg:        #888;
 $navbar-inverse-toggle-border-color:       #ddd;
 
+@import "bootstrap-sprockets";
 @import "bootstrap";
 @import "custom_bootstrap";
 @import "timeline";

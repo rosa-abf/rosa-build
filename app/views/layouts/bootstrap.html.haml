@@ -31,3 +31,4 @@
     - if I18n.locale == :ru
       = javascript_include_tag 'moment/ru.js'
       = javascript_include_tag 'angular-1.2.15-locale_ru-ru'
+    = yield :additional_scripts if content_for?(:additional_scripts)

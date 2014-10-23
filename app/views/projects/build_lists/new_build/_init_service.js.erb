@@ -1,0 +1,5 @@
+<script>
+  angular.module('RosaABF').service('newBuildInitializer', function(){
+    return <%= new_build_list_data(@build_list, @project, params).html_safe %>;
+  });
+</script>
