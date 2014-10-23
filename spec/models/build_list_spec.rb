@@ -343,7 +343,7 @@ describe BuildList do
     it 'removes unsafe symbols' do
       build_list.extra_params = { 'build_rpm' => '--test \'001\' --define "cross armv7hl"{(@' }
       build_list.send :prepare_extra_params
-      expect(build_list.extra_params['build_rpm']).to eq '--test \'001\' --define "cross armv7hl"'
+      expect(build_list.extra_params['build_rpm']).to eq '--test 001 --define "cross armv7hl"'
     end
   end
 
