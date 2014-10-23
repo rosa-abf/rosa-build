@@ -114,7 +114,7 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
           d.y
 
         dataset =
-          fillColor:        "rgba(#{ $scope.colors[index] }, 0.5)"
+          fillColor:        "rgba(#{ $scope.colors[index] }, 0.1)"
           strokeColor:      "rgba(#{ $scope.colors[index] }, 1)"
           pointColor:       "rgba(#{ $scope.colors[index] }, 1)"
           pointStrokeColor: "#fff"
