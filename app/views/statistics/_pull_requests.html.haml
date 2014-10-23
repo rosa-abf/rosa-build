@@ -1,0 +1,48 @@
+.row
+  .span12
+    %h3.text-info
+      = t('.header')
+
+.row
+  .span8
+    .graph-wrapper
+      %h3
+        %span.graph-key-color1
+        = t('.open_title')
+        %span.graph-key-color2
+        = t('.merged_title')
+        %span.graph-key-color3
+        = t('.closed_title')
+      .centered.graph-loading{ ng_show: 'loading' }
+        = image_tag 'loading-large.gif'
+      .no-data{ ng_hide: 'loading || statistics.pull_requests' }
+        = t('.no_data')
+      %canvas#pull_requests_chart{ ng_show: 'statistics.pull_requests' }
+
+  .span3
+    .panel-wrapper
+      %h3
+        = t('.total_open')
+      .panel-data
+        = image_tag 'loading-small.gif', ng_show: 'loading'
+        .no-data{ ng_hide: 'loading || statistics.pull_requests.open_count >= 0' }
+          = t('.no_data')
+        {{ statistics.pull_requests.open_count | number }}
+
+    .panel-wrapper
+      %h3
+        = t('.total_merged')
+      .panel-data
+        = image_tag 'loading-small.gif', ng_show: 'loading'
+        .no-data{ ng_hide: 'loading || statistics.pull_requests.merged_count >= 0' }
+          = t('.no_data')
+        {{ statistics.pull_requests.merged_count | number }}
+
+    .panel-wrapper
+      %h3
+        = t('.total_closed')
+      .panel-data
+        = image_tag 'loading-small.gif', ng_show: 'loading'
+        .no-data{ ng_hide: 'loading || statistics.pull_requests.closed_count >= 0' }
+          = t('.no_data')
+        {{ statistics.pull_requests.closed_count | number }}

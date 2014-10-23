@@ -49,10 +49,11 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
     @pull = @project.pull_requests.new
     @pull.build_issue title: pull_params[:title], body: pull_params[:body]
-    @pull.from_project = @project
-    @pull.to_ref, @pull.from_ref = pull_params[:to_ref], pull_params[:from_ref]
-    @pull.issue.assignee_id = pull_params[:assignee_id] if can?(:write, @project)
+    @pull.from_project            = @project
+    @pull.to_ref, @pull.from_ref  = pull_params[:to_ref], pull_params[:from_ref]
+    @pull.issue.assignee_id       = pull_params[:assignee_id] if can?(:write, @project)
     @pull.issue.user, @pull.issue.project = current_user, @project
+    @pull.issue.new_pull_request  = true
     render_validation_error(@pull, "#{@pull.class.name} has not been created") && return unless @pull.valid?
 
     @pull.save # set pull id

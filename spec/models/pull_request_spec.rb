@@ -14,9 +14,10 @@ def set_data_for_pull
 end
 
 describe PullRequest do
+  before { stub_symlink_methods }
+
   context 'for owner user' do
     before do
-      stub_symlink_methods
       @user = FactoryGirl.create(:user)
       set_data_for_pull
       @pull = @project.pull_requests.new(issue_attributes: {title: 'test', body: 'testing'})
@@ -126,6 +127,20 @@ describe PullRequest do
   it { should belong_to(:issue).validate(true) }
   it { should belong_to(:to_project) }
   it { should belong_to(:from_project) }
+
+  context '#update_statistic' do
+    let(:issue)         { FactoryGirl.build(:issue) }
+    let(:pull_request)  { FactoryGirl.build(:pull_request, issue: issue) }
+
+    it 'updates styatistics' do
+      allow(PullRequest).to receive(:check_ref).and_return(true)
+      issue.new_pull_request = true
+      expect do
+        pull_request.save
+      end.to change(Statistic, :count).by(1)
+      expect(Statistic.last.key).to eq "#{Statistic::KEY_PULL_REQUEST}.#{Issue::STATUS_OPEN}"
+    end
+  end
 
   after do
     FileUtils.rm_rf(APP_CONFIG['root_path'])

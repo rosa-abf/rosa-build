@@ -42,4 +42,19 @@ describe Statistic do
     end
   end
 
+  context '#for_groups' do
+    it 'returns projects by group ids' do
+      group1    = FactoryGirl.create(:group)
+      group2    = FactoryGirl.create(:group)
+      project1  = FactoryGirl.create(:project, owner: group1)
+      project2  = FactoryGirl.create(:project, owner: group2)
+
+      FactoryGirl.create(:statistic, project: project1)
+      FactoryGirl.create(:statistic, project: project2)
+
+      expect(Statistic.for_groups([group1.id])).to have(1).item
+      expect(Statistic.for_groups([group1.id, group2])).to have(2).items
+    end
+  end
+
 end

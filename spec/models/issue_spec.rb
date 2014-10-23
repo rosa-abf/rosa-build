@@ -16,6 +16,16 @@ describe Issue do
     stub_symlink_methods
     any_instance_of(Project, versions: ['v1.0', 'v2.0'])
   end
+
+
+  context '#update_statistic' do
+    it 'updates styatistics' do
+      expect do
+        FactoryGirl.create(:issue)
+      end.to change(Statistic, :count).by(1)
+    end
+  end
+
   context 'for project admin user' do
     before(:each) do
       set_data

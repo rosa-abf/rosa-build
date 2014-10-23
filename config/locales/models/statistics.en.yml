@@ -10,6 +10,10 @@ en:
       range_separator:                            " and "
       range_end_placeholder:                      "Select an end date"
 
+      users_or_groups_label:                      "for users or groups"
+      refresh:                                    "refresh"
+      users_or_groups_placeholder:                "Enter a nickname here."
+
     build_lists:
       header:                                     "Build lists"
       build_started_title:                        "Build started"
@@ -27,6 +31,28 @@ en:
       header:                                     "Commits"
       commits_title:                              "Commits"
       total_commits:                              "Total commits"
+      no_data:                                    "No data available"
+
+    issues:
+      header:                                     "Issues"
+      open_title:                                 "Open"
+      reopen_title:                               "Reopen"
+      closed_title:                               "Closed"
+
+      total_open:                                 "Total opened"
+      total_reopen:                               "Total reopened"
+      total_closed:                               "Total closed"
+      no_data:                                    "No data available"
+
+    pull_requests:
+      header:                                     "Pull Requests"
+      open_title:                                 "Open"
+      merged_title:                               "Merged"
+      closed_title:                               "Closed"
+
+      total_open:                                 "Total open"
+      total_merged:                               "Total merged"
+      total_closed:                               "Total closed"
       no_data:                                    "No data available"
 
     helper:

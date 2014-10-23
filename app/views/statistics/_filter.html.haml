@@ -4,11 +4,19 @@
     %h3.text-info
       = t('.header')
 
-    = form_tag '#', class: 'form-inline alert alert-info centered', id: 'range-form' do
+    %form#statistics-form.form-inline.alert.alert-info.centered
       %label.control-label
         = t('.range_label')
-      = select_tag 'range', statistics_range_options, id: 'range_select', class: 'select input-medium', ng_model: 'range', ng_change: 'rangeChange()'
+      = select_tag 'range', statistics_range_options, id: 'range_select', class: 'select input-medium', ng_model: 'range', ng_change: 'update()', ng_disabled: 'loading'
       %span{ ng_show: "range == 'custom'" }
-        = text_field_tag :range_start, Date.today - 1.month, class: 'date_picker input-medium', placeholder: t('.range_start_placeholder'), ng_model: 'range_start', ng_change: 'rangeChange()', readonly: true
+        = text_field_tag :range_start, Date.today - 1.month, class: 'date_picker input-medium', placeholder: t('.range_start_placeholder'), ng_model: 'range_start', ng_change: 'update()', readonly: true, size: 10, ng_disabled: 'loading'
         = t('.range_separator')
-        = text_field_tag :range_end, Date.today, class: 'date_picker input-medium', placeholder: t('.range_end_placeholder'), ng_model: 'range_end', ng_change: 'rangeChange()', readonly: true
+        = text_field_tag :range_end, Date.today, class: 'date_picker input-medium', placeholder: t('.range_end_placeholder'), ng_model: 'range_end', ng_change: 'update()', readonly: true, size: 10, ng_disabled: 'loading'
+
+      %label.control-label
+        = t('.users_or_groups_label')
+      = autocomplete_field_tag 'users_or_groups', nil,autocomplete_user_or_group_autocompletes_path, multiple: true, 'data-delimiter' => ', ', ng_model: 'users_or_groups', placeholder: t('.users_or_groups_placeholder'), ng_disabled: 'loading'
+
+      %a{ href: '#', ng_click: 'update()' }
+        %b
+          = t('.refresh')
