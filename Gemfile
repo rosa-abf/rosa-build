@@ -55,6 +55,7 @@ gem "haml-rails", '~> 0.5'
 gem 'jquery-rails', '~> 2.3'
 gem 'jquery-migrate-rails'
 gem 'ruby-haml-js', '~> 0.0.5'
+gem 'slim'
 gem 'friendly_id', '~> 5.0'
 
 gem 'rack-throttle', '~> 0.3.0'

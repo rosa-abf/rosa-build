@@ -1,5 +1,78 @@
+/ - content_for :submenu do
+/   - act = action_name.to_sym; contr = controller_name.to_sym
+/   .left= platform_printed_name(@platform)
+/   %nav
+/     %ul
+
 - content_for :submenu do
   - act = action_name.to_sym; contr = controller_name.to_sym
-  .left= platform_printed_name(@platform)
-  %nav
-    %ul
+  %nav.navbar.navbar-default{ role: 'navigation' }
+    .container-fluid
+      / Brand and toggle get grouped for better mobile display
+      .navbar-header
+        %button.navbar-toggle{ 'data-target' => '#submenu-navbar-collapse', 'data-toggle' => 'collapse', type: 'button' }
+          %span.sr-only Toggle navigation
+          %span.icon-bar
+          %span.icon-bar
+          %span.icon-bar
+        .navbar-brand
+          = link_to platform_printed_name(@platform), @platform
+      / Collect the nav links, forms, and other content for toggling
+      #submenu-navbar-collapse.collapse.navbar-collapse
+        %ul.nav.navbar-nav.left-border
+
+          %li{class: (act == :show && contr == :platforms) ? 'active' : ''}
+            = link_to t("layout.platforms.about"), platform_path(@platform)
+          %li{class: (contr == :repositories) ? 'active' : ''}
+            = link_to t("layout.repositories.list_header"), platform_repositories_path(@platform)
+          %li{class: (contr == :contents) ? 'active' : ''}
+            = link_to t('layout.platforms.contents'), platform_contents_path(@platform)
+          - if can? :show, @platform
+            %li{class: (act == :index && contr == :maintainers) ? 'active' : nil}
+              = link_to t("layout.platforms.maintainers"), platform_maintainers_path(@platform)
+            %li{class: (contr == :mass_builds) ? 'active' : ''}
+              = link_to t("layout.platforms.mass_build"), platform_mass_builds_path(@platform)
+          - if can? :read, @platform.products.build
+            %li{class: (contr == :products) ? 'active' : ''}
+              = link_to t("layout.products.list_header"), platform_products_path(@platform)
+          - if can? :advisories, @platform
+            %li{class: (contr == :platforms and act == :advisories) ? 'active' : ''}
+              = link_to t("layout.advisories.list_header"), advisories_platform_path(@platform)
+          - if can? :update, @platform
+            %li{class: (act == :edit && contr == :platforms) ? 'active' : nil}
+              = link_to t("platform_menu.settings"), edit_platform_path(@platform)
+          - if can? :members, @platform
+            %li{class: (act == :members && contr == :platforms) ? 'active' : nil}
+              = link_to t("layout.platforms.members"), members_platform_path(@platform)
+          - if can? :edit, @platform
+            %li{class: (act == :index && contr == :key_pairs) ? 'active' : ''}
+              = link_to t("layout.key_pairs.header"), platform_key_pairs_path(@platform)
+            %li{class: (contr == :tokens) ? 'active' : ''}
+              = link_to t('layout.tokens.header'), platform_tokens_path(@platform)
+
+    /       - if @project.parent
+    /         %li
+    /           = link_to project_path(@project.parent), class: 'small' do
+    /             = fa_icon 'code-fork'
+    /             = @project.parent.name_with_owner
+    /       %li{ class: ('active' if act.in?([:show, :edit, :branches, :tags]) && contr.in?([:trees, :blobs]) || contr == :commits) }
+    /         = link_to t('project_menu.code'), tree_path(@project, treeish)
+    /       - if @project.is_package and can?(:read, @project => BuildList)
+    /         %li{ class: ('active' if contr == :build_lists) }
+    /           = link_to t('project_menu.builds'), project_build_lists_path(@project)
+
+    /       - if @project.has_issues
+    /         %li{ class: ('active' if contr == :issues) }
+    /           = link_to t('project_menu.tracker', count: @opened_issues_count), project_issues_path(@project)
+    /       %li{ class: ('active' if contr == :pull_requests) }
+    /         =link_to t('project_menu.pull_requests', count: @opened_pull_requests_count), project_pull_requests_path(@project)
+    /       - if @project.has_wiki
+    /         %li{ class: ('active' if contr == :wiki) }
+    /           = link_to t('project_menu.wiki'), project_wiki_index_path(@project)
+    /       %li=# link_to t('project_menu.readme'), '#' #pending
+    /       - if can? :update, @project
+    /         %li{ class: ('active' if act == :edit && contr == :projects) }
+    /           = link_to t('project_menu.settings'), edit_project_path(@project)
+    /   / /.navbar-collapse
+    / / /.container-fluid
+
