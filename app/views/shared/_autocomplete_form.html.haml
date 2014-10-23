@@ -12,10 +12,16 @@
 
 %h4
   = t "activerecord.attributes.build_list.#{field}"
-  -#%a{ href: '#', tabindex: 0, class: 'btn btn-lg btn-danger bs-docs-popover boffset20', 'data-toggle' => 'popover',
-      'data-trigger' => 'focus', title: t("activerecord.attributes.build_list.#{field}"),
-      html: 'true', 'data-content' => "And here's some amazing content. It's very engaging. Right?" }
-    %i.fa.fa-question-circle
-  %button.btn.btn-default{ popover: render("shared/autocomplete_docs/#{field}"),
-           'popover-title' => t("activerecord.attributes.build_list.#{field}") }
-    %i.fa.fa-question-circle
+  - modal_id = "#{field}Modal"
+  %a.fa.fa-question-circle{ href: '#', 'data-toggle' => 'modal', 'data-target' => "##{modal_id}" }
+
+  .modal.fade{ id: modal_id, tabindex: '-1', role: 'dialog',
+               'aria-labelledby' => "#{modal_id}Label", 'aria-hidden' => 'true' }
+    .modal-dialog
+      .modal-content
+        .modal-header
+          %button.close{ type: 'button', 'data-dismiss' => 'modal' }
+            %span{ 'aria-hidden' => 'true' } &times;
+            %span.sr-only Close
+          %h4.modal-titleLabel{ id: modal_id }= t "activerecord.attributes.build_list.#{field}"
+        .modal-body= render "shared/autocomplete_docs/#{field}"
