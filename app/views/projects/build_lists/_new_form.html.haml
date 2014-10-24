@@ -10,17 +10,18 @@
 
       %h4= t 'activerecord.attributes.build_list.project_version'
       %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.project_version',
-        'ng-options' => 'version.name group by version.kind for version in newBuildCtrl.project_versions' }
+        'ng-options' => 'version.name group by version.kind for version in newBuildCtrl.project_versions',
+        'ng-change' => 'newBuildCtrl.selectProjectVersion()' }
 
       %h4= t 'activerecord.attributes.build_list.arch'
-      .checkbox.boffset20{ 'ng-repeat' => 'arch in newBuildCtrl.arches' }
+      .checkbox{ 'ng-repeat' => 'arch in newBuildCtrl.arches' }
         %label
           %input{ type:            'checkbox',
                   'ng-model' =>    'arch.checked',
                   name:            'arches[]' }
           {{ arch.name }}
 
-      %h4= t 'activerecord.attributes.build_list.update_type'
+      %h4.offset20= t 'activerecord.attributes.build_list.update_type'
       - selected = params[:build_list].try(:[], :update_type) ? {selected: params[:build_list][:update_type]} : {}
       = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control boffset20'
 

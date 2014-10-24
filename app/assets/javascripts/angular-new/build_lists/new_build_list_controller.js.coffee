@@ -22,7 +22,7 @@ NewBuildListController = (dataservice) ->
     result = _.select(vm.project_versions, (e) ->
       e.name is vm.project_version_name
     )
-    return vm.project_versions[0] if result.length
+    return vm.project_versions[0] if result.length is 0
     result[0]
 
   vm = this
@@ -34,20 +34,19 @@ NewBuildListController = (dataservice) ->
       result = _.select(vm.project_versions, (e) ->
         e.name is vm.project_version_name
       )
-      return vm.project_versions[0] unless result.length
+      return vm.project_versions[0] if result.length is 0
       result[0]
 
     changeStatusRepositories = ->
       return unless vm.platforms
-      vm.is_build_for_main_platform = isBuildForMainPlatform()
-      _.each(vm.platforms, (e) ->
-        _.each(e.repositories, (r) ->
-          if e.id isnt vm.build_for_platform_id
+      _.each(vm.platforms, (pl) ->
+        _.each(pl.repositories, (r) ->
+          if pl.id isnt vm.build_for_platform_id
             r.checked = false
-          else
+          if pl.id is vm.build_for_platform_id or
+             (!vm.is_build_for_main_platform and vm.project_version.name is pl.name)
             r.checked = true if r.name == 'main' or r.name == 'base'
         )
-
       )
 
     updateDefaultArches = ->
@@ -57,10 +56,16 @@ NewBuildListController = (dataservice) ->
       )
 
     vm.build_for_platform_id = vm.save_to_repository.platform_id
+    vm.is_build_for_main_platform = isBuildForMainPlatform()
     vm.project_version_name = vm.save_to_repository.platform_name
-    vm.project_version = setProjectVersion()
+
+    vm.project_version = setProjectVersion() if vm.is_build_for_main_platform
     changeStatusRepositories()
     updateDefaultArches()
+
+  vm.selectProjectVersion = ->
+    return unless vm.project_versions
+    vm.selectSaveToRepository() unless vm.is_build_for_main_platform
 
   init = (dataservice) ->
 
@@ -82,6 +87,8 @@ NewBuildListController = (dataservice) ->
     vm.is_build_for_main_platform = isBuildForMainPlatform()
 
   init(dataservice)
+  vm.selectSaveToRepository() if !dataservice.build_list_id
+  return true
 
 angular
   .module("RosaABF")
