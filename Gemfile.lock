@@ -450,6 +450,9 @@ GEM
     shoulda-context (1.2.1)
     shoulda-matchers (2.6.2)
       activesupport (>= 3.0.0)
+    simple_form (3.0.2)
+      actionpack (~> 4.0)
+      activemodel (~> 4.0)
     sinatra (1.4.5)
       rack (~> 1.4)
       rack-protection (~> 1.4)
@@ -500,7 +503,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    tzinfo (0.3.41)
+    tzinfo (0.3.42)
     uglifier (2.5.3)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
@@ -592,7 +595,7 @@ DEPENDENCIES
   rack-throttle (~> 0.3.0)
   rails (= 4.0.9)
   rails3-generators
-  rails3-jquery-autocomplete (~> 1.0)
+  rails3-jquery-autocomplete
   rake
   rdiscount
   redcarpet (~> 3.1)
@@ -612,6 +615,7 @@ DEPENDENCIES
   shotgun
   shoulda
   shoulda-matchers
+  simple_form
   sitemap_generator
   skype
   slim

@@ -19,8 +19,9 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def new
-    @admin_uname = current_user.uname
-    @admin_id = current_user.id
+    @admin_uname  = current_user.uname
+    @admin_id     = current_user.id
+    @platform     = Platform.new
   end
 
   def edit

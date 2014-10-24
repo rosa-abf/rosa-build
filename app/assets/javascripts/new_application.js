@@ -3,7 +3,7 @@
 //= require jquery-ui
 //= require js-routes
 
-// require autocomplete-rails
+//= require autocomplete-rails
 // require extra/autocomplete-form
 
 //= require bootstrap-sprockets

@@ -107,7 +107,10 @@ class Platform < ActiveRecord::Base
                   :description,
                   :released,
                   :platform_arch_settings_attributes,
-                  :automatic_metadata_regeneration
+                  :automatic_metadata_regeneration,
+                  :admin_id
+
+  attr_accessor :admin_id
 
   attr_readonly :name, :distrib_type, :parent_platform_id, :platform_type
 

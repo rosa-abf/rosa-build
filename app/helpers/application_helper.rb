@@ -56,7 +56,7 @@ module ApplicationHelper
   end
 
   def alert_class(type)
-    case type
+    case type.to_s
     when 'error'
       'alert-danger'
     when 'notice'

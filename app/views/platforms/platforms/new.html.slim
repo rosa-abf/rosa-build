@@ -1,0 +1,8 @@
+
+.container
+  .row
+    h3
+      = title t("layout.platforms.new_header")
+
+    = simple_form_for @platform do |f|
+      = render 'form', f: f
