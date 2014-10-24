@@ -1,0 +1,46 @@
+- content_for :submenu do
+  - act   = action_name.to_sym
+  - contr = controller_name.to_sym
+  nav.navbar.navbar-default role='navigation'
+    .container-fluid
+      / Brand and toggle get grouped for better mobile display
+      .navbar-header
+        button.navbar-toggle data-target='#submenu-navbar-collapse' data-toggle='collapse' type='button'
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        .navbar-brand
+          = link_to platform_printed_name(@platform), @platform
+      / Collect the nav links, forms, and other content for toggling
+      #submenu-navbar-collapse.collapse.navbar-collapse
+        ul.nav.navbar-nav.left-border
+
+          li class=('active' if act == :show && contr == :platforms)
+            = link_to t("layout.platforms.about"), platform_path(@platform)
+          li class=('active' if contr == :repositories)
+            = link_to t("layout.repositories.list_header"), platform_repositories_path(@platform)
+          li class=('active' if contr == :contents)
+            = link_to t('layout.platforms.contents'), platform_contents_path(@platform)
+          - if can? :show, @platform
+            li class=('active' if act == :index && contr == :maintainers)
+              = link_to t("layout.platforms.maintainers"), platform_maintainers_path(@platform)
+            li class=('active' if contr == :mass_builds)
+              = link_to t("layout.platforms.mass_build"), platform_mass_builds_path(@platform)
+          - if can? :read, @platform.products.build
+            li class=('active' if contr == :products)
+              = link_to t("layout.products.list_header"), platform_products_path(@platform)
+          - if can? :advisories, @platform
+            li class=('active' if contr == :platforms && act == :advisories)
+              = link_to t("layout.advisories.list_header"), advisories_platform_path(@platform)
+          - if can? :update, @platform
+            li class=('active' if act == :edit && contr == :platforms)
+              = link_to t("platform_menu.settings"), edit_platform_path(@platform)
+          - if can? :members, @platform
+            li class=('active' if act == :members && contr == :platforms)
+              = link_to t("layout.platforms.members"), members_platform_path(@platform)
+          - if can? :edit, @platform
+            li class=('active' if act == :index && contr == :key_pairs)
+              = link_to t("layout.key_pairs.header"), platform_key_pairs_path(@platform)
+            li class=('active' if contr == :tokens)
+              = link_to t('layout.tokens.header'), platform_tokens_path(@platform)
