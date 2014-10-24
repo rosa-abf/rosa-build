@@ -21,7 +21,7 @@ ru:
       build_error_title:                          "Ошибка сборки"
       build_published_title:                      "Опубликовано"
 
-      total_build_started:                        "Всего собирается"
+      total_build_started:                        "Всего запущено"
       total_success:                              "Всего собрано"
       total_build_error:                          "Всего ошибок сборки"
       total_build_published:                      "Всего опубликовано"
