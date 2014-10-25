@@ -32,12 +32,14 @@ class AutocompletesController < ApplicationController
             .where("platforms.platform_type = 'personal' OR platforms.id = ?",
                     params[:build_for_platform_id].to_i).each do |platform|
       platform.repositories.each do |repository|
-        label = "#{platform.name}/#{repository.name}"
-        results <<  { :id     => repository.id,
-                      :label  => label,
-                      :value  => label,
-                      :path   => platform_repository_path(platform, repository)
-                    }
+        results <<
+          {
+            id:              repository.id,
+            platform_name:   platform.name,
+            repository_name: repository.name,
+            label:           "#{platform.name}/#{repository.name}",
+            path:            platform_repository_path(platform, repository)
+          }
       end
     end if save_to_platform.personal?
     render json: results.to_json

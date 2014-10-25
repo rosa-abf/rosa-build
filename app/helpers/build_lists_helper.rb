@@ -171,7 +171,8 @@ module BuildListsHelper
             platforms:             new_build_list_platforms(params),
             save_to_repositories:  save_to_repositories(project, params),
             project_versions:      build_list_project_versions(project),
-            arches:                arches(params)
+            arches:                arches(params),
+            extra_repositories:    extra_repositories(project)
           }
     res.to_json
   end
@@ -183,7 +184,7 @@ module BuildListsHelper
   private
 
   def save_to_repositories(project, params)
-    project.repositories.collect do |r|
+    project.repositories.map do |r|
       {
         name:               "#{r.platform.name}/#{r.name}",
         #selected:           selected_save_to_repositories(project, r.id, r.platform.name, params),
@@ -202,7 +203,7 @@ module BuildListsHelper
   end
 
   def new_build_list_platforms(params)
-    availables_main_platforms.collect do |pl|
+    availables_main_platforms.map do |pl|
       platform = { id: pl.id, name: pl.name, repositories: [] }
       Repository.custom_sort(pl.repositories).each do |repo|
         platform[:repositories] << { id:       repo.id,
@@ -252,6 +253,18 @@ module BuildListsHelper
                    (params[:arches].blank? &&
                     controller.action_name == 'new' &&
                     Arch::DEFAULT.include?(arch.name))
+      }
+    end
+  end
+
+  def extra_repositories(project)
+    project.repositories.joins(:platform).accessible_by(current_ability, :read)
+           .where(platforms: { platform_type: 'personal' }).map do |extra|
+      {
+        id:              extra.id,
+        platform_name:   extra.platform.name,
+        repository_name: extra.name,
+        path:            url_for([extra.platform, extra])
       }
     end
   end

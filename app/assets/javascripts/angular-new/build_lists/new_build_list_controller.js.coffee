@@ -1,4 +1,4 @@
-NewBuildListController = (dataservice) ->
+NewBuildListController = (dataservice, $http) ->
 
   isBuildForMainPlatform = ->
     result = _.select(vm.platforms, (e) ->
@@ -67,6 +67,17 @@ NewBuildListController = (dataservice) ->
     return unless vm.project_versions
     vm.selectSaveToRepository() unless vm.is_build_for_main_platform
 
+  vm.getExtraRepositories = (val) ->
+    path = Routes.autocomplete_extra_repositories_autocompletes_path(
+      {
+        platform_id: vm.build_for_platform_id,
+        term:        val
+      }
+    )
+
+    return $http.get(path).then (response) ->
+      response.data
+
   init = (dataservice) ->
 
     vm.build_for_platform_id      = dataservice.build_for_platform_id
@@ -78,6 +89,9 @@ NewBuildListController = (dataservice) ->
     vm.project_version            = defaultProjectVersion()
     vm.save_to_repository_id      = dataservice.save_to_repository_id
     vm.save_to_repository         = defaultSaveToRepository()
+
+    vm.default_extra_repos        = dataservice.extra_repositories
+    vm.extra_repositories         = vm.default_extra_repos;
 
     vm.arches                     = dataservice.arches
 
@@ -94,4 +108,4 @@ angular
   .module("RosaABF")
   .controller "NewBuildListController", NewBuildListController
 
-NewBuildListController.$inject = ["newBuildInitializer"]
+NewBuildListController.$inject = ['newBuildInitializer', '$http']

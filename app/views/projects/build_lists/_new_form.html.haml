@@ -25,13 +25,11 @@
       - selected = params[:build_list].try(:[], :update_type) ? {selected: params[:build_list][:update_type]} : {}
       = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control boffset20'
 
-      = render 'shared/autocomplete_form',
-        field:             :extra_repositories,
-        field_class:       Repository,
+      = render 'projects/build_lists/new_build/autocomplete_form',
+        field:             :ExtraRepositories,
         placeholder:       'uxteam_personal',
         subject:           @build_list,
-        autocomplete_path: autocomplete_extra_repositories_autocompletes_path,
-        default_values:    project.repositories.select{ |r| r.platform.personal? }
+        autocomplete_path: autocomplete_extra_repositories_autocompletes_path
 
 - content_for :additional_scripts do
   = render 'projects/build_lists/new_build/init_service.js.erb'
