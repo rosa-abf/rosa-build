@@ -1,6 +1,6 @@
 class Platforms::PlatformsController < Platforms::BaseController
   include FileStoreHelper
-  layout 'bootstrap', only: [:index]
+  layout 'bootstrap'#, only: [:index]
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
@@ -19,8 +19,9 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def new
-    @admin_uname = current_user.uname
-    @admin_id = current_user.id
+    @admin_uname  = current_user.uname
+    @admin_id     = current_user.id
+    @platform     = Platform.new
   end
 
   def edit

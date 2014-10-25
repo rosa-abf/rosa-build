@@ -107,7 +107,10 @@ class Platform < ActiveRecord::Base
                   :description,
                   :released,
                   :platform_arch_settings_attributes,
-                  :automatic_metadata_regeneration
+                  :automatic_metadata_regeneration,
+                  :admin_id
+
+  attr_accessor :admin_id
 
   attr_readonly :name, :distrib_type, :parent_platform_id, :platform_type
 
@@ -142,10 +145,11 @@ class Platform < ActiveRecord::Base
 
     # TODO: rename method or create separate methods for mdv and rhel
     # Platform.main.opened.where(distrib_type: APP_CONFIG['distr_types'].first).each do |pl|
+    arches = Arch.all.to_a
     Platform.main.opened.each do |pl|
       urpmi_commands[pl.name] = {}
       # FIXME should support restricting access to the hidden platform
-      Arch.all.each do |arch|
+      arches.each do |arch|
         tail = "/#{arch.name}/#{repository_name}/release"
         command = add_commands ? "urpmi.addmedia #{name} " : ''
         command << "#{APP_CONFIG['downloads_url']}/#{name}/repository/#{pl.name}#{tail}"

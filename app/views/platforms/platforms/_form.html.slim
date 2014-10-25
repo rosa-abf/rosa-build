@@ -1,0 +1,72 @@
+fieldset
+
+  - unless %w(edit update).include? controller.action_name
+    = f.input :name
+
+  = f.input :description, as: :text
+
+  - unless %w(edit update).include? controller.action_name
+    = f.input :distrib_type,
+      collection:     APP_CONFIG['distr_types'],
+      include_blank:  false
+
+    = f.input :visibility,
+      collection:     platform_visibility_options,
+      include_blank:  false
+
+  - unless @platform.personal?
+    = f.input :released, as: :boolean
+    = f.input :admin_id,
+      url:        autocomplete_user_uname_autocompletes_path,
+      as:         :autocomplete,
+      id_element: '#admin_id_field',
+      input_html: { value:  @admin_uname }
+    = hidden_field_tag 'admin_id', @admin_id, id: 'admin_id_field'
+
+  - if %w(edit update).include? controller.action_name
+
+    - if can? :change_visibility, @platform
+      dl.dl-horizontal
+        dt
+          = t('activerecord.attributes.platform.visibility')
+        dd
+          = link_to t("layout.platforms.change_visibility_from_#{@platform.visibility}"),
+            change_visibility_platform_path(@platform),
+            method: :post,
+            data: { confirm: t("layout.platforms.confirm_change_visibility") },
+            class: 'btn btn-xs btn-warning'
+
+    h3
+      = t('layout.platform_arch_settings.extra_settings')
+
+
+    table.table
+      thead
+        tr
+          th.lpadding16= t("activerecord.models.arch")
+          th.lpadding16= t("activerecord.attributes.platform_arch_setting.default")
+          th.lpadding16= t("activerecord.attributes.platform_arch_setting.time_living")
+      tbody
+        - platform_arch_settings(@platform).each do |setting|
+          tr
+            = f.fields_for :platform_arch_settings, setting do |s_form|
+              td
+                = setting.arch.name
+                = s_form.hidden_field :arch_id
+              td.center
+                = s_form.input :default, as: :boolean, label: false
+              td.right
+                = s_form.input :time_living,
+                  input_html: { value:  setting.time_living / 60 },
+                  label:      false
+
+
+.button_block
+  button type="submit" class="btn btn-default" data-disable-with=t('layout.saving')
+    = t('layout.save')
+  | &nbsp;
+  = t('layout.or')
+  | &nbsp;
+  = link_to t('layout.cancel'),
+    @platform.new_record? ? root_path : platform_path(@platform)
+

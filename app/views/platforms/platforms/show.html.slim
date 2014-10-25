@@ -1,0 +1,53 @@
+-set_meta_tags title: title_object(@platform)
+= render 'submenu'
+
+.container
+  .row
+    .col-md-6
+      h3
+        = t('layout.platforms.about')
+        | &nbsp;
+        = link_to @platform.name, platform_contents_path(@platform)
+      dl.dl-horizontal
+        dt= t('activerecord.attributes.platform.description')
+        dd= @platform.description
+
+        - if @platform.parent
+          dt= t('activerecord.attributes.platform.parent')
+          dd= link_to @platform.parent.description, platform_path(@platform.parent)
+
+        dt= t('layout.platforms.owner')
+        dd= link_to @platform.owner.try(:name), url_for(@platform.owner)
+
+        dt= t('layout.platforms.visibility')
+        dd= t("layout.visibilities.#{@platform.visibility}")
+
+        dt= t('layout.platforms.platform_type')
+        dd= @platform.platform_type
+
+        dt= t('layout.platforms.distrib_type')
+        dd= @platform.distrib_type
+
+        - if can? :clone, @platform
+          dt
+          dd
+            a.btn.btn-primary href=clone_platform_path(@platform)
+              = t('layout.platforms.clone')
+
+    - if @platform.platform_type == 'personal' and @platform.visibility == 'open'
+      .col-md-6 ng-controller='PlatformSysReposController' ng-init="init(#{@platform.id})"
+        h3= t('layout.platforms.sys_repos_header')
+        dl.dl-horizontal
+          dt= t('layout.platforms.target_platform')
+          dd
+            select ng-model='platform' ng-change='updateCommand()'
+              option ng-repeat='platform in platforms' ng-value='platform'
+                | {{ platform }}
+
+          dt= t('layout.platforms.target_architecture')
+          dd
+            select ng-model='arch' ng-change='updateCommand()'
+              option ng-repeat='arch in arches' ng-value='arch'
+                | {{ arch }}
+          br
+          textarea.form-control readonly='readonly' ng-model='command' rows=3 ng-click='selectAll($event)'

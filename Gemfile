@@ -48,13 +48,15 @@ gem 'newrelic_rpm'
 gem 'whenever', '~> 0.9.0', require: false
 
 gem 'jbuilder', '~> 2.1'
-gem 'rails3-jquery-autocomplete', '~> 1.0'
+gem 'rails3-jquery-autocomplete'
 gem 'will_paginate', '~> 3.0'
 gem 'meta-tags', '~> 2.0', require: 'meta_tags'
 gem "haml-rails", '~> 0.5'
 gem 'jquery-rails', '~> 2.3'
 gem 'jquery-migrate-rails'
 gem 'ruby-haml-js', '~> 0.0.5'
+gem 'slim'
+gem 'simple_form'
 gem 'friendly_id', '~> 5.0'
 
 gem 'rack-throttle', '~> 0.3.0'

@@ -1,4 +1,11 @@
 module PlatformsHelper
+
+  def platform_visibility_options
+    Platform::VISIBILITIES.map do |v|
+      [ I18n.t("activerecord.attributes.platform.visibility_types.#{v}"), v ]
+    end
+  end
+
   def repository_name_postfix(platform)
      return "" unless platform
      return platform.released ? '/update' : '/release'
