@@ -1,0 +1,24 @@
+- set_meta_tags title: [title_object(@platform), t('layout.tokens.header')]
+= render 'submenu'
+.container
+  .row
+    a.btn.btn-primary href=new_platform_token_path(@platform)
+      = t('layout.tokens.new')
+
+  .row
+    table.table.table-striped
+      thead
+        tr
+          th= t('activerecord.attributes.token.description')
+          th= t('activerecord.attributes.token.creator')
+          th= t('activerecord.attributes.token.status')
+          th
+      tbody
+        - @tokens.each do |token|
+          tr
+            td= truncate token.description, length: 50
+            td= link_to token.creator.try(:fullname), token.creator
+            td= t("layout.tokens.statuses.#{token.status}")
+            td= link_to t('layout.show'), platform_token_path(@platform, token)
+
+    = will_paginate @tokens

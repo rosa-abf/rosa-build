@@ -1,0 +1,45 @@
+-set_meta_tags title: [title_object(@platform), t('layout.tokens.header')]
+= render 'submenu'
+
+.container
+  .row
+    h3
+      = t('layout.tokens.about')
+      | &nbsp;
+      = @platform.name
+
+    p= @token.description
+
+    table.table.table-striped
+      tr
+        td
+          b= t('activerecord.attributes.token.creator')
+        td= link_to @token.creator.try(:name), @token.creator
+      tr
+        td
+          b= t('activerecord.attributes.token.created_at')
+        td= @token.created_at
+      - if @token.updater
+        tr
+          td
+            b= t('activerecord.attributes.token.updater')
+          td= link_to @token.updater.try(:name), @token.updater if @token.updater
+        tr
+          td
+            b= t('activerecord.attributes.token.updated_at')
+          td= @token.updated_at
+      tr
+        td
+          b= t('activerecord.attributes.token.status')
+        td= t("layout.tokens.statuses.#{@token.status}")
+      tr
+        td
+          b= t('activerecord.attributes.token.authentication_token')
+        td= @token.authentication_token
+
+    - if @token.active?
+      .buttons_block
+        = link_to t('layout.tokens.withdraw'),
+                  withdraw_platform_token_path(@platform, @token),
+                  method: :post, class: 'btn btn-danger',
+                  data: { confirm: t('layout.tokens.withdraw_confirm') }

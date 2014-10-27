@@ -1,0 +1,15 @@
+-set_meta_tags title: [title_object(@platform), t('layout.tokens.new')]
+= render 'submenu'
+
+.container
+  .row
+    h3
+      = t('layout.tokens.new')
+
+    = simple_form_for @token, url: platform_tokens_path(@platform) do |f|
+      fieldset
+        = f.input :description, as: :text
+
+      .button_block
+        button type="submit" class="btn btn-default" data-disable-with=t('layout.saving')
+          = t('layout.save')
