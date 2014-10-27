@@ -2,7 +2,6 @@ en:
   layout:
     maintainers:
       list_header: Maintainers
-      search_by_package: Search by package name
 
   flash:
     maintainer:
@@ -23,3 +22,10 @@ en:
         updated_at: Last Update
         version: Version-Release
 
+  simple_form:
+    labels:
+      build_list_package:
+        name:       Package
+    placeholders:
+      build_list_package:
+        name:       Enter the package name here.
