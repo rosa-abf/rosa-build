@@ -9,6 +9,16 @@ module PaginateHelper
     {page: page, per_page: per_page}
   end
 
+  def will_paginate(collection_or_options = nil, options = {})
+    if collection_or_options.is_a? Hash
+      options, collection_or_options = collection_or_options, nil
+    end
+    options.merge!(renderer: BootstrapLinkRenderer) unless options[:renderer]
+    options.merge!(next_label: I18n.t('datatables.next_label')) unless options[:next_label]
+    options.merge!(previous_label: I18n.t('datatables.previous_label')) unless options[:previous_label]
+    super *[collection_or_options, options].compact
+  end
+
   def angularjs_will_paginate(collection_or_options = nil, options = {})
     if collection_or_options.is_a? Hash
       options, collection_or_options = collection_or_options, nil
