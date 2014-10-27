@@ -36,29 +36,28 @@ fieldset
             data: { confirm: t("layout.platforms.confirm_change_visibility") },
             class: 'btn btn-xs btn-warning'
 
-    h3
-      = t('layout.platform_arch_settings.extra_settings')
-
-
-    table.table
-      thead
-        tr
-          th.lpadding16= t("activerecord.models.arch")
-          th.lpadding16= t("activerecord.attributes.platform_arch_setting.default")
-          th.lpadding16= t("activerecord.attributes.platform_arch_setting.time_living")
-      tbody
-        - platform_arch_settings(@platform).each do |setting|
+    - unless @platform.personal?
+      h3
+        = t('layout.platform_arch_settings.extra_settings')
+      table.table
+        thead
           tr
-            = f.fields_for :platform_arch_settings, setting do |s_form|
-              td
-                = setting.arch.name
-                = s_form.hidden_field :arch_id
-              td.center
-                = s_form.input :default, as: :boolean, label: false
-              td.right
-                = s_form.input :time_living,
-                  input_html: { value:  setting.time_living / 60 },
-                  label:      false
+            th.lpadding16= t("activerecord.models.arch")
+            th.lpadding16= t("activerecord.attributes.platform_arch_setting.default")
+            th.lpadding16= t("activerecord.attributes.platform_arch_setting.time_living")
+        tbody
+          - platform_arch_settings(@platform).each do |setting|
+            tr
+              = f.fields_for :platform_arch_settings, setting do |s_form|
+                td
+                  = setting.arch.name
+                  = s_form.hidden_field :arch_id
+                td.center
+                  = s_form.input :default, as: :boolean, label: false
+                td.right
+                  = s_form.input :time_living,
+                    input_html: { value:  setting.time_living / 60 },
+                    label:      false
 
 
 .button_block
