@@ -172,7 +172,8 @@ module BuildListsHelper
             save_to_repositories:  save_to_repositories(project, params),
             project_versions:      build_list_project_versions(project),
             arches:                arches(params),
-            extra_repositories:    extra_repositories(project)
+            default_extra_repos:   default_extra_repos(project),
+            extra_repos:           extra_repos(params)
           }
     res.to_json
   end
@@ -257,9 +258,21 @@ module BuildListsHelper
     end
   end
 
-  def extra_repositories(project)
+  def default_extra_repos(project)
     project.repositories.joins(:platform).accessible_by(current_ability, :read)
            .where(platforms: { platform_type: 'personal' }).map do |extra|
+      {
+        id:              extra.id,
+        platform_id:     extra.platform.id,
+        platform_name:   extra.platform.name,
+        repository_name: extra.name,
+        path:            url_for([extra.platform, extra])
+      }
+    end
+  end
+
+  def extra_repos(params)
+    Repository.where(id: params[:build_list].try(:[], :extra_repositories) ).map do |extra|
       {
         id:              extra.id,
         platform_name:   extra.platform.name,

@@ -1,12 +1,11 @@
-.col-md-5.col-md-offset-2
-  %h4= t 'activerecord.attributes.build_list.build_for_platform'
-  .boffset20{ 'ng-repeat' => 'platform in newBuildCtrl.platforms',
-             'ng-hide' => 'newBuildCtrl.hidePlatform(platform)' }
-    %div
-      %h5 {{ platform.name }}
-      .loffset10.checkbox{ 'ng-repeat' => 'repo in platform.repositories' }
-        %label
-          %input{ type:            'checkbox',
-                  'ng-model' =>    'repo.checked',
-                  name:            'build_list[include_repos][]' }
-          {{ repo.name }}
+%h4= t 'activerecord.attributes.build_list.build_for_platform'
+.boffset20{ 'ng-repeat' => 'platform in newBuildCtrl.platforms',
+           'ng-hide' => 'newBuildCtrl.hidePlatform(platform)' }
+  %div
+    %h5 {{ platform.name }}
+    .loffset10.checkbox{ 'ng-repeat' => 'repo in platform.repositories' }
+      %label
+        %input{ type:            'checkbox',
+                'ng-model' =>    'repo.checked',
+                name:            'build_list[include_repos][]' }
+        {{ repo.name }}

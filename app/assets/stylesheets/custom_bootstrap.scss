@@ -64,14 +64,15 @@ footer {
   }
 }
 
-.offset10 { margin-top: 10px; }
-.offset20 { margin-top: 20px; }
-.offset0 { margin-top: 0; }
+.offset5   { margin-top: 10px; }
+.offset10  { margin-top: 10px; }
+.offset20  { margin-top: 20px; }
+.offset0   { margin-top: 0; }
 .boffset20 { margin-bottom: 20px; }
 .boffset10 { margin-bottom: 10px; }
-.loffset5 { margin-left: 5px; }
+.loffset5  { margin-left: 5px; }
 .loffset10 { margin-left: 10px; }
-.roffset5 { margin-right: 5px; }
+.roffset5  { margin-right: 5px; }
 .boffset_auto { margin-bottom: auto; }
 
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {

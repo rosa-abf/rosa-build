@@ -55,6 +55,14 @@ NewBuildListController = (dataservice, $http) ->
         a.checked = _.contains(vm.save_to_repository.default_arches, a.id)
       )
 
+    getExtraRepos = ->
+      return null if !vm.default_extra_repos || vm.is_build_for_main_platform
+
+      result = _.select(vm.default_extra_repos, (e) ->
+        e.platform_id is vm.build_for_platform_id
+      )
+      return result
+
     vm.build_for_platform_id = vm.save_to_repository.platform_id
     vm.is_build_for_main_platform = isBuildForMainPlatform()
     vm.project_version_name = vm.save_to_repository.platform_name
@@ -62,6 +70,8 @@ NewBuildListController = (dataservice, $http) ->
     vm.project_version = setProjectVersion() if vm.is_build_for_main_platform
     changeStatusRepositories()
     updateDefaultArches()
+    vm.extra_repositories = getExtraRepos()
+    true
 
   vm.selectProjectVersion = ->
     return unless vm.project_versions
@@ -78,6 +88,12 @@ NewBuildListController = (dataservice, $http) ->
     return $http.get(path).then (response) ->
       response.data
 
+  vm.removeExtraRepo = (id) ->
+    vm.extra_repositories = _.reject(vm.extra_repositories, (repo) ->
+      return repo.id is id
+    )
+    false
+
   init = (dataservice) ->
 
     vm.build_for_platform_id      = dataservice.build_for_platform_id
@@ -90,8 +106,8 @@ NewBuildListController = (dataservice, $http) ->
     vm.save_to_repository_id      = dataservice.save_to_repository_id
     vm.save_to_repository         = defaultSaveToRepository()
 
-    vm.default_extra_repos        = dataservice.extra_repositories
-    vm.extra_repositories         = vm.default_extra_repos;
+    vm.default_extra_repos        = dataservice.default_extra_repos
+    vm.extra_repositories         = dataservice.extra_repos
 
     vm.arches                     = dataservice.arches
 

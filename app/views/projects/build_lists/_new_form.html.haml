@@ -1,8 +1,9 @@
 = form_for [@project, @build_list], html: { class: :form, method: :post } do |f|
   .row
-    = render 'include_repos'
+    .col-md-4.col-md-offset-2
+      = render 'include_repos'
 
-    .col-md-5
+    .col-md-4
       %h4= t 'activerecord.attributes.build_list.save_to_repository'
       %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.save_to_repository',
         'ng-options' => 'save_in_repo.name for save_in_repo in newBuildCtrl.save_to_repositories',

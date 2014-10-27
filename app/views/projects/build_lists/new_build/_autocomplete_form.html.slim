@@ -1,0 +1,35 @@
+- modal_id = "#{field}Modal"
+- field_name = field.to_s.underscore
+
+h4
+  = t "activerecord.attributes.build_list.#{field}"
+  a<[ class='fa fa-question-circle' href='#' data-toggle='modal' data-target="##{modal_id}" ]
+
+  .modal.fade[ id=modal_id tabindex='-1' role='dialog'
+       aria-labelledby="#{modal_id}Label" aria-hidden='true' ]
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button[ class='close' type='button' data-dismiss='modal' ]
+            span[ aria-hidden='true' ] &times;
+            span.sr-only Close
+          h4.modal-titleLabel[ id=modal_id ]= t "activerecord.attributes.build_list.#{field}"
+        .modal-body== render "shared/autocomplete_docs/#{field_name}"
+
+input[ class = 'form-control'
+  type                   = 'text'
+  ng-model               = "newBuildCtrl.async_#{field}_selected"
+  placeholder            = placeholder
+  typeahead              = "extra.label for extra in newBuildCtrl.get#{field}($viewValue)"
+  typeahead-loading      = "newBuildCtrl.loading#{field}"
+  typeahead-on-select    = "newBuildCtrl.select#{field}($item, $model, $label)" ]
+button[ class='btn' ng-click='newBuildCtrl.addExtraRepo()' ]
+/i[ class='glyphicon glyphicon-refresh' ng-show="newBuildCtrl.loading#{field}" ]
+
+table.table.offset5
+  tr[ ng-repeat="el in newBuildCtrl.#{field_name}" ]
+    td
+      a[ ng-href='{{ el.path }}' ] {{ el.platform_name + '/' + el.repository_name }}
+    td
+      a[ class='fa fa-times-circle text-danger' href='' ng-click='newBuildCtrl.removeExtraRepo(el.id)' ]
+
