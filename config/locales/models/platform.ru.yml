@@ -95,3 +95,12 @@ ru:
         visibility_types:
           open: Публичный
           hidden: Приватный
+
+  simple_form:
+    labels:
+      platform:
+        term:       Искать
+        admin_id:   Владелец
+    placeholders:
+      platform:
+        term:       Введите имя файла или папки здесь.

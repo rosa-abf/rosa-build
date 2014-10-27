@@ -3,7 +3,6 @@ en:
     platforms:
       contents: Contents
       contents_of: Contents of
-      search_contents: Search name of file/folder...
       admin_id: Owner
       build_all: Build all
       list: List
@@ -95,3 +94,15 @@ en:
         visibility_types:
           open: Public
           hidden: Private
+
+  simple_form:
+    labels:
+      platform:
+        term:       Search
+        admin_id:   Owner
+    placeholders:
+      platform:
+        term:       Enter the name of file or folder here.
+
+
+

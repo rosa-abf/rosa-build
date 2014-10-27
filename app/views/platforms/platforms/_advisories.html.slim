@@ -1,0 +1,7 @@
+table.table.table-striped
+  thead
+    tr
+      th= t("activerecord.attributes.advisory.advisory_id")
+      th= t("activerecord.attributes.advisory.description")
+  tbody
+    = render partial: 'advisory', collection: @advisories, as: :advisory

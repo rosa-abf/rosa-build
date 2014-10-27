@@ -1,7 +1,0 @@
-%table#myTable.tablesorter.advisories{cellspacing: "0", cellpadding: "0"}
-  %thead
-    %tr
-      %th.th1= t("activerecord.attributes.advisory.advisory_id")
-      %th.th2= t("activerecord.attributes.advisory.description")
-  %tbody
-    = render partial: 'advisory', collection: @advisories, as: :advisory

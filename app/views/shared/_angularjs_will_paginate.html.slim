@@ -1,0 +1,20 @@
+/ Add to controller something like:
+/ $scope.goToPage = (number) ->
+/   $location.search('page', number)
+ul.pagination ng-show='pages'
+  li ng-class="{'disabled': !page.active}" ng-repeat='page in pages' ng-switch='page.type'
+    a ng-switch-when='previous_page' ng-hide='page.active'
+      = t('datatables.previous_label')
+    a ng-switch-when='previous_page' ng-show='page.active' ng-click='goToPage(page.number)'
+      = t('datatables.previous_label')
+    a ng-switch-when='first'
+      | {{page.number}}
+    a ng-switch-when='page' ng-click='goToPage(page.number)'
+      | {{page.number}}
+    a ng-switch-when='more' ng-click='goToPage(page.number)' …
+    a ng-switch-when='last' ng-click='goToPage(page.number)'
+      | {{page.number}}
+    a ng-switch-when='next_page' ng-hide='page.active'
+      = t('datatables.next_label')
+    a ng-switch-when='next_page' ng-show='page.active' ng-click='goToPage(page.number)'
+      = t('datatables.next_label')

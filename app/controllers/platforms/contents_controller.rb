@@ -1,5 +1,6 @@
 class Platforms::ContentsController < Platforms::BaseController
   include PaginateHelper
+  layout 'bootstrap'
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: :index if APP_CONFIG['anonymous_access']
