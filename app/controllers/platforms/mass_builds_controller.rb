@@ -1,5 +1,6 @@
 class Platforms::MassBuildsController < Platforms::BaseController
   include DatatableHelper
+  layout 'bootstrap'
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :get_list] if APP_CONFIG['anonymous_access']
@@ -42,16 +43,9 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def index
-    respond_to do |format|
-      format.html {}
-      format.json {
-        @mass_builds        = @platform.mass_builds
-        @total_mass_builds  = @mass_builds.count
-        @mass_builds        = @mass_builds.order("id #{sort_dir}")
-                                .search(params[:sSearch])
-                                .paginate(page: page, per_page: per_page)
-      }
-    end
+    @mass_build  = MassBuild.new(params[:mass_build])
+    @mass_builds = @platform.mass_builds.search(@mass_build.description).
+      order(id: :desc).paginate(page: params[:page])
   end
 
   def cancel
