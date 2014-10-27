@@ -132,7 +132,7 @@ class Ability
         can(:regenerate_metadata, Platform) {|platform| owner?(platform) || local_admin?(platform)}
         can([:settings, :destroy, :edit, :update], Repository) {|repository| owner? repository.platform}
 
-        can([:create, :destroy], KeyPair) {|key_pair| owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
+        can([:create, :destroy], KeyPair) {|key_pair| key_pair.repository.blank? || owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
 
         can([:read, :create, :withdraw], Token) {|token| local_admin?(token.subject)}
 

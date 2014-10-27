@@ -27,6 +27,8 @@ class Platform < ActiveRecord::Base
   belongs_to :owner, polymorphic: true
 
   has_many :repositories, dependent: :destroy
+  has_many :key_pairs, through: :repositories
+
   has_many :products, dependent: :destroy
   has_many :tokens, as: :subject, dependent: :destroy
   has_many :platform_arch_settings, dependent: :destroy
@@ -35,6 +37,7 @@ class Platform < ActiveRecord::Base
   has_many :relations, as: :target, dependent: :destroy
   has_many :actors, as: :target, class_name: 'Relation', dependent: :destroy
   has_many :members, through: :actors, source: :actor, source_type: 'User'
+
 
   has_and_belongs_to_many :advisories
 

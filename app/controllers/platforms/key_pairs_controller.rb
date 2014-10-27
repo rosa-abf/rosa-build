@@ -1,20 +1,25 @@
 class Platforms::KeyPairsController < Platforms::BaseController
+  layout 'bootstrap'
+
   before_filter :authenticate_user!
 
-  load_and_authorize_resource :platform, only: [:index]
+  load_and_authorize_resource :platform
   load_and_authorize_resource only: [:create, :destroy]
+
+  def index
+    @key_pair = KeyPair.new
+  end
 
   def create
     @key_pair.user_id = current_user.id
 
     if @key_pair.save
       flash[:notice] = t('flash.key_pairs.saved')
+      redirect_to platform_key_pairs_path(@key_pair.repository.platform) and return
     else
       flash[:error] = t('flash.key_pairs.save_error')
-      flash[:warning] = @key_pair.errors.full_messages.join('. ') unless @key_pair.errors.blank?
     end
-
-    redirect_to platform_key_pairs_path(@key_pair.repository.platform)
+    render :index
   end
 
   def destroy
