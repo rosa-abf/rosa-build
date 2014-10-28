@@ -44,11 +44,12 @@ class MassBuild < ActiveRecord::Base
   scope :outdated,    ->     { where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME) }
   scope :search,      -> (q) { where("#{table_name}.description ILIKE ?", "%#{q}%") if q.present? }
 
-  attr_accessor :arches
+  attr_accessor :arches, :repositories
   attr_accessible :arches, :auto_publish_status, :projects_list, :build_for_platform_id,
                   :extra_repositories, :extra_build_lists, :increase_release_tag,
                   :use_cached_chroot, :use_extra_tests, :description, :extra_mass_builds,
-                  :include_testing_subrepository, :auto_create_container, :external_nodes
+                  :include_testing_subrepository, :auto_create_container, :external_nodes,
+                  :repositories
 
   validates :save_to_platform_id,
             :build_for_platform_id,

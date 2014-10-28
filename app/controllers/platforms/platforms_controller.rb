@@ -40,7 +40,6 @@ class Platforms::PlatformsController < Platforms::BaseController
       redirect_to @platform
     else
       flash[:error] = I18n.t("flash.platform.create_error")
-      flash[:warning] = @platform.errors.full_messages.join('. ')
       render action: :new
     end
   end
@@ -61,7 +60,6 @@ class Platforms::PlatformsController < Platforms::BaseController
           redirect_to @platform
         else
           flash[:error] = I18n.t("flash.platform.save_error")
-          flash[:warning] = @platform.errors.full_messages.join('. ')
           render action: :edit
         end
       end

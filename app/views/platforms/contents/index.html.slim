@@ -10,28 +10,13 @@
   #contents ng-controller='ContentsController'
 
     = simple_form_for @platform, html: { 'ng-submit' => 'search()', id: 'search_contents_form' } do |f|
-      fieldset
-        = f.hidden_field :name
-        = hidden_field_tag 'path'
-        = hidden_field_tag 'page'
-        = f.input :term
+      = f.hidden_field :name
+      = hidden_field_tag 'path'
+      = hidden_field_tag 'page'
+      = f.input :term
 
-      .button_block
-        button type="submit" class="btn btn-default" data-disable-with=t('layout.processing')
-          = t('layout.search.header')
-
-      / input name='term' type='text' placeholder=t('layout.platforms.search_contents')
-      / | &nbsp;
-      / = f.submit t('layout.search.header'), data: {'disable-with' => t('layout.processing')}, class: 'btn btn-sm btn-primary'
-
-    / = form_for @platform, html: { class: :form, 'ng-submit' => 'search()', id: 'search_contents_form' } do |f|
-    /   = f.hidden_field :name
-    /   = hidden_field_tag 'path'
-    /   = hidden_field_tag 'page'
-    /   input name='term' type='text' placeholder=t('layout.platforms.search_contents')
-    /   | &nbsp;
-    /   = f.submit t('layout.search.header'), data: {'disable-with' => t('layout.processing')}, class: 'btn btn-sm btn-primary'
-    br
+      = f.button :submit, t('layout.search.header')
+    hr
 
     .path
       a ng-repeat='folder in folders'

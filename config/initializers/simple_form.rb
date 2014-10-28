@@ -22,9 +22,9 @@ SimpleForm.setup do |config|
     b.use :placeholder
 
     ## Optional extensions
-    # They are disabled unless you pass `f.input EXTENSION_NAME => :lookup`
+    # They are disabled unless you pass `f.input EXTENSION_NAME => true`
     # to the input. If so, they will retrieve the values from the model
-    # if any exists. If you want to enable the lookup for any of those
+    # if any exists. If you want to enable any of those
     # extensions by default, you can change `b.optional` to `b.use`.
 
     # Calculates maxlength from length validations for string inputs
@@ -43,18 +43,22 @@ SimpleForm.setup do |config|
     b.use :label_input
     b.use :hint,  wrap_with: { tag: :span, class: :hint }
     b.use :error, wrap_with: { tag: :span, class: :error }
+
+    ## full_messages_for
+    # If you want to display the full error message for the attribute, you can
+    # use the component :full_error, like:
+    #
+    # b.use :full_error, wrap_with: { tag: :span, class: :error }
   end
 
   # The default wrapper to be used by the FormBuilder.
-  # config.default_wrapper = :default
-  config.default_wrapper = :bootstrap
+  config.default_wrapper = :default
 
   # Define the way to render check boxes / radio buttons with labels.
   # Defaults to :nested for bootstrap config.
   #   inline: input + label
   #   nested: label > input
-  # config.boolean_style = :nested
-  config.boolean_style = :inline
+  config.boolean_style = :nested
 
   # Default class for buttons
   config.button_class = 'btn'
@@ -68,7 +72,7 @@ SimpleForm.setup do |config|
   config.error_notification_tag = :div
 
   # CSS class to add for error notification helper.
-  config.error_notification_class = 'alert alert-error'
+  config.error_notification_class = 'error_notification'
 
   # ID to add for error notification helper.
   # config.error_notification_id = nil
@@ -94,14 +98,13 @@ SimpleForm.setup do |config|
   # config.item_wrapper_class = nil
 
   # How the label text should be generated altogether with the required text.
-  # config.label_text = lambda { |label, required| "#{required} #{label}" }
+  # config.label_text = lambda { |label, required, explicit_label| "#{required} #{label}" }
 
   # You can define the class to use on all labels. Default is nil.
-  config.label_class = 'col-sm-2 control-label'
+  # config.label_class = nil
 
   # You can define the class to use on all forms. Default is simple_form.
   # config.form_class = :simple_form
-  config.form_class = 'well form-horizontal'
 
   # You can define which elements should obtain additional classes
   # config.generate_additional_classes_for = [:wrapper, :label, :input]
@@ -128,6 +131,10 @@ SimpleForm.setup do |config|
   # type as key and the wrapper that will be used for all inputs with specified type.
   # config.wrapper_mappings = { string: :prepend }
 
+  # Namespaces where SimpleForm should look for custom input classes that
+  # override default inputs.
+  # config.custom_inputs_namespaces << "CustomInputs"
+
   # Default priority for time_zone inputs.
   # config.time_zone_priority = nil
 
@@ -145,5 +152,24 @@ SimpleForm.setup do |config|
 
   # Default class for inputs
   # config.input_class = nil
-  config.input_class = 'form-control'
+
+  # Define the default class of the input wrapper of the boolean input.
+  config.boolean_label_class = 'checkbox'
+
+  # Defines if the default input wrapper class should be included in radio
+  # collection wrappers.
+  # config.include_default_input_wrapper_class = true
+
+  # Defines which i18n scope will be used in Simple Form.
+  # config.i18n_scope = 'simple_form'
+end
+
+# See: http://www.railsonmaui.com/blog/2014/02/23/simple-form-and-disable-processing-by-default
+SimpleForm::FormBuilder.class_eval do
+  def submit_with_override(field, options = {})
+    data_disable_with = { disable_with: I18n.t('layout.processing') }
+    options[:data] = data_disable_with.merge(options[:data] || {})
+    submit_without_override(field, options)
+  end
+  alias_method_chain :submit, :override
 end

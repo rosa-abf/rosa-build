@@ -5,8 +5,8 @@
   .row
     = simple_form_for @platform do |f|
       = render 'form', f: f
-
-  .row.well
+    hr
+  .row
 
     - if can? :regenerate_metadata, @platform
       h4= t('layout.platforms.metadata')

@@ -56,7 +56,7 @@ gem 'jquery-rails', '~> 2.3'
 gem 'jquery-migrate-rails'
 gem 'ruby-haml-js', '~> 0.0.5'
 gem 'slim'
-gem 'simple_form'
+gem 'simple_form', '3.1.0.rc2'
 gem 'friendly_id', '~> 5.0'
 
 gem 'rack-throttle', '~> 0.3.0'

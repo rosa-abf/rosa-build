@@ -3,5 +3,7 @@
 
 .container
   .row
-    = render 'new' if can? :edit, @platform
+    - if can? :edit, @platform
+      = render 'new'
+      hr
     = render 'list'
