@@ -1,5 +1,11 @@
 module PlatformsHelper
 
+  def platform_options
+    Platform.main.each do |p|
+      [ p.name, p.id ]
+    end
+  end
+
   def platform_visibility_options
     Platform::VISIBILITIES.map do |v|
       [ I18n.t("activerecord.attributes.platform.visibility_types.#{v}"), v ]

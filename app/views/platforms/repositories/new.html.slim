@@ -1,0 +1,9 @@
+-set_meta_tags title: [title_object(@platform), t('layout.repositories.new')]
+= render 'submenu'
+
+.container
+  h3
+    = t("layout.repositories.new_header")
+  .row
+    = simple_form_for @repository, url: platform_repositories_path(@platform) do |f|
+      = render 'form', f: f

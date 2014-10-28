@@ -127,3 +127,13 @@ en:
       project:
         uname: The name can only use lower case Latin letters (a-z), numbers (0-9) and underscore (_)
         default_branch: Wrong branch
+
+  simple_form:
+    labels:
+      project:
+        name:       Project name
+        owner:      Owner
+    placeholders:
+      project:
+        name:       Enter the name of project here.
+        owner:      Enter the nickname of owner here.

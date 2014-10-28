@@ -2,6 +2,9 @@ class Platforms::RepositoriesController < Platforms::BaseController
   include DatatableHelper
   include FileStoreHelper
   include RepositoriesHelper
+  include PaginateHelper
+
+  layout 'bootstrap'
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
@@ -75,7 +78,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
       redirect_to platform_repository_path(@platform, @repository)
     else
       flash[:error] = t('flash.repository.save_error')
-      flash[:warning] = @repository.errors.full_messages.join('. ')
       render action: :new
     end
   end
@@ -123,11 +125,12 @@ class Platforms::RepositoriesController < Platforms::BaseController
       @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
       @projects = @projects.opened if @repository.platform.main? && !@repository.platform.hidden?
     end
-    @projects = @projects.paginate(page: page, per_page: per_page)
+    # @projects = @projects.paginate(page: page, per_page: per_page)
 
-    @total_projects = @projects.count
+    # @total_projects = @projects.count
     @projects = @projects.by_owner(params[:owner_name]).
-      search(params[:sSearch]).order("projects.name #{sort_dir}")
+      search(params[:project_name]).order("projects.name #{sort_dir}").
+      paginate(paginate_params)
 
     respond_to do |format|
       format.json {

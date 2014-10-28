@@ -40,7 +40,7 @@
                     = arch.name
           .col-md-6
             - if @platform.personal?
-              = f.input :build_for_platform_id, collection: mass_build_platform_options
+              = f.input :build_for_platform_id, collection: platform_options
 
             
       = f.button :submit, t('layout.projects.build_button')

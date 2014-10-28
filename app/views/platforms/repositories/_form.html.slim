@@ -1,0 +1,15 @@
+- if %w(edit update).exclude? controller.action_name
+  = f.input :name
+
+= f.input :description, as: :text
+= f.input :publish_without_qa, as: :boolean, wrapper: :vertical_boolean
+= f.input :synchronizing_publications, as: :boolean, wrapper: :vertical_boolean
+- if @platform.main?
+  = f.input :publish_builds_only_from_branch
+
+= f.button :submit, t('layout.save')
+| &nbsp;
+= t('layout.or')
+| &nbsp;
+a href=(@repository.new_record? ? platform_repositories_path(@platform) : platform_repository_path(@platform, @repository))
+  = t('layout.cancel')

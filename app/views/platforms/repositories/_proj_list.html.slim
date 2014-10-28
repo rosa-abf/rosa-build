@@ -1,0 +1,37 @@
+div ng-controller='RepositoryProjectsController'
+  = simple_form_for :project, html: { 'ng-submit' => 'search()', id: 'search_projects_form', class: 'well' } do |f|
+    = hidden_field_tag :added, controller.action_name.to_sym == :show
+    = hidden_field_tag :repository_id, @repository.id
+    = hidden_field_tag :platform_id, @repository.platform_id
+    = hidden_field_tag :page
+    = f.input :name
+    = f.input :owner
+    = f.button :submit, t('layout.search.header')
+
+  table.table.table-striped
+    thead
+      tr
+        th= t("activerecord.attributes.project.name")
+        th= t("activerecord.attributes.project.description")
+        th
+    tbody ng-hide='processing'
+      tr ng-repeat='project in projects'
+
+        td
+          i.fa ng-class='project.visibility_class'
+          | &nbsp;
+          a ng-href='{{project.path}}'
+            | {{project.name}}
+        td
+          | {{project.description}}
+        td
+          a ng-href='{{project.add_path}}' ng-show='project.add_path'
+            = t('layout.add')
+          a[ng-href         = '{{project.remove_path}}'
+            ng-show         = 'project.remove_path'
+            method          = 'delete'
+            data-confirm    = t('layout.confirm')]
+            span.glyphicon.glyphicon-remove
+              | &nbsp;
+
+  = render 'shared/angularjs_will_paginate'

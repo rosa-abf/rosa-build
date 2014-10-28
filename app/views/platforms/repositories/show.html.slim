@@ -1,0 +1,32 @@
+-set_meta_tags title: title_object(@repository)
+= render 'submenu'
+
+.container
+  .row
+    h3 
+      = t("layout.repositories.about")
+      | &nbsp;
+      i
+        = @repository.name
+
+    p= @repository.description
+  .row
+    - if can? :update, @repository
+      a.btn.btn-primary href=edit_platform_repository_path(@platform, @repository)
+        = t("layout.edit")
+      | &nbsp;
+    - if can? :destroy, @repository
+      = link_to t('layout.delete'), platform_repository_path(@platform, @repository), method: 'delete', class: 'btn btn-danger', data: { confirm: t("layout.repositories.confirm_delete") }
+  .row
+    hr
+    h3= t("layout.projects.list_header")
+    - if can? :add_project, @repository
+      a.btn.btn-primary href=add_project_platform_repository_path(@platform, @repository)
+        = t('layout.projects.add')
+      | &nbsp;
+    - if can? :remove_project, @repository
+      a.btn.btn-primary href=remove_project_platform_repository_path(@platform, @repository)
+        = t('layout.repositories.mass_delete')
+  .row
+    hr
+    = render 'proj_list'

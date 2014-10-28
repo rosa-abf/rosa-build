@@ -35,10 +35,11 @@ class Repository < ActiveRecord::Base
                   :description,
                   :publish_without_qa,
                   :synchronizing_publications,
-                  :publish_builds_only_from_branch
+                  :publish_builds_only_from_branch,
+                  :build_for_platform_id
 
   attr_readonly :name, :platform_id
-  attr_accessor :projects_list
+  attr_accessor :projects_list, :build_for_platform_id
 
   def regenerate(build_for_platform_id = nil)
     build_for_platform = Platform.main.find build_for_platform_id if platform.personal?

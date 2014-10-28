@@ -1,0 +1,13 @@
+= render 'submenu'
+
+.container
+  h3= raw "#{t("layout.repositories.add_projects_to")}: #{link_to @repository.name, platform_repository_path(@platform, @repository)}"
+
+  .row
+    = simple_form_for :repository, url: add_project_platform_repository_path(@platform, @repository), html: { method: :put } do |f|
+      = f.input :projects_list, as: :text
+      = f.button :submit, t('layout.add')
+    hr
+
+  .row
+    = render 'proj_list', object: @projects

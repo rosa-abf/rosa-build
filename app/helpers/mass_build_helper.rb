@@ -24,12 +24,6 @@ module MassBuildHelper
     }
   ]
 
-  def mass_build_platform_options
-    Platform.main.each do |p|
-      [ p.name, p.id ]
-    end
-  end
-
   def link_to_list platform, mass_build, which
     link_to t("layout.mass_builds.#{which}"),
       get_list_platform_mass_build_path(platform, mass_build, kind: which, format: :txt),
