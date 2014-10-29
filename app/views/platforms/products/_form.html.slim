@@ -1,7 +1,7 @@
 = f.input :name
 = f.input :description, as: :text
 
-/ TODO: fix autocomplete + project_version
+/ TODO: autocomplete + project_version
 = f.input :project,
   url:        autocomplete_project_platform_products_path(@platform),
   as:         :autocomplete,

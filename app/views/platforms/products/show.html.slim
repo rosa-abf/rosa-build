@@ -15,18 +15,15 @@
       a.btn.btn-primary href=edit_platform_product_path(@platform, @product)
         = t('layout.edit')
       | &nbsp;
-      / = link_to image_tag("code.png", alt: t("layout.edit")) + " " + t("layout.edit"), edit_platform_product_path(@platform, @product), class: "button"
     - if can? :destroy, @product
       a.btn.btn-danger[ href          = platform_product_path(@platform, @product)
                         method        = 'delete'
                         data-confirm  = t('layout.products.confirm_delete') ]
         = t('layout.delete')
       | &nbsp;
-      / = link_to image_tag("x.png", alt: t("layout.delete")) + " " + t("layout.delete"), platform_product_path(@platform, @product), method: "delete", class: "button", data: { confirm: t("layout.products.confirm_delete") }
     - if can?(:create, @product.product_build_lists.build)
       a.btn.btn-primary href=new_platform_product_product_build_list_path(@platform, @product)
         = t('layout.products.build')
-      / = link_to t("layout.products.build"), new_platform_product_product_build_list_path(@platform, @product), class: "button"
 
     hr
 

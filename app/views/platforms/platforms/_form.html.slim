@@ -14,6 +14,7 @@
 
 - unless @platform.personal?
   = f.input :released, as: :boolean
+  / TODO: autocomplete
   = f.input :admin_id,
     url:        autocomplete_user_uname_autocompletes_path,
     as:         :autocomplete,

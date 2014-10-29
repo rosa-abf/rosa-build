@@ -53,7 +53,7 @@ class ProductBuildList < ActiveRecord::Base
   validates :status, inclusion: { in: STATUSES }
   validates :main_script, :params, length: { maximum: 255 }
 
-  attr_accessor :base_url
+  attr_accessor :base_url, :product_name
   attr_accessible :status,
                   :base_url,
                   :branch,
@@ -63,16 +63,20 @@ class ProductBuildList < ActiveRecord::Base
                   :project_version,
                   :commit_hash,
                   :product_id,
-                  :not_delete
+                  :not_delete,
+                  :product_name
+
   attr_readonly :product_id
   serialize :results, Array
 
 
-  scope :default_order, -> { order(updated_at: :desc) }
-  scope :for_status, ->(status) { where(status: status) }
-  scope :for_user, ->(user) { where(user_id: user.id) }
-  scope :scoped_to_product_name, ->(product_name) { joins(:product).where('products.name LIKE ?', "%#{product_name}%") }
-  scope :recent, -> { order(updated_at: :desc) }
+  scope :default_order,           -> { order(updated_at: :desc) }
+  scope :for_status,              -> (status) { where(status: status) if status.present? }
+  scope :for_user,                -> (user) { where(user_id: user.id) }
+  scope :scoped_to_product_name,  -> (product_name) {
+    joins(:product).where('products.name LIKE ?', "%#{product_name}%") if product_name.present?
+  }
+  scope :recent,                  -> { order(updated_at: :desc) }
   scope :outdated, -> {
     where(not_delete: false).
     where("(#{table_name}.created_at < ? AND #{table_name}.autostarted is TRUE) OR #{table_name}.created_at < ?",

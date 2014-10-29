@@ -1,5 +1,6 @@
 class Platforms::ProductBuildListsController < Platforms::BaseController
   include FileStoreHelper
+  layout 'bootstrap'
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show, :log] if APP_CONFIG['anonymous_access']
@@ -73,11 +74,14 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def index
-    if params[:product_id].present?
-      @product_build_lists = @product_build_lists.where(id: params[:product_id])
+    @product_build_list = ProductBuildList.new(params[:product_build_list])
+    @product_build_list.status = nil if params[:product_build_list].blank?
+    if @product_build_list.product_id.present?
+      @product_build_lists = @product_build_lists.where(id: @product_build_list.product_id)
     else
-      @product_build_lists = @product_build_lists.scoped_to_product_name(params[:product_name]) if params[:product_name].present?
-      @product_build_lists = @product_build_lists.for_status(params[:status]) if params[:status].present?
+      @product_build_lists = @product_build_lists.
+        scoped_to_product_name(@product_build_list.product_name).
+        for_status(@product_build_list.status)
     end
     @product_build_lists = @product_build_lists.recent.paginate page: params[:page]
     @build_server_status = AbfWorkerStatusPresenter.new.products_status
