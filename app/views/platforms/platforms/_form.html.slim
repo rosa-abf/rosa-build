@@ -13,7 +13,7 @@
     include_blank:  false
 
 - unless @platform.personal?
-  = f.input :released, as: :boolean, wrapper: :vertical_boolean
+  = f.input :released, as: :boolean, wrapper: :horizontal_boolean
   = f.input :admin_id,
     url:        autocomplete_user_uname_autocompletes_path,
     as:         :autocomplete,
@@ -57,9 +57,7 @@
                   input_html: { value:  setting.time_living / 60 },
                   label:      false
 
-= f.button :submit, t('layout.save')
-| &nbsp;
-= t('layout.or')
-| &nbsp;
-a href=(@platform.new_record? ? root_path : platform_path(@platform))
-  = t('layout.cancel')
+.col-sm-offset-3.col-sm-9
+  => f.button :submit, t('layout.save')
+  a.btn.btn-primary href=(@platform.new_record? ? root_path : platform_path(@platform))
+    = t('layout.cancel')

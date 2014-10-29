@@ -1,8 +1,10 @@
 
 .container
   .row
-    h3
-      = title t("layout.platforms.new_header")
-
-    = simple_form_for @platform do |f|
-      = render 'form', f: f
+    .col-md-offset-2.col-md-8
+      = simple_form_for @platform, html: { class: 'form-horizontal' },
+                                   wrapper: :horizontal_form do |f|
+        .col-sm-offset-3.col-sm-9
+          h3
+            = title t("layout.platforms.new_header")
+        = render 'form', f: f
