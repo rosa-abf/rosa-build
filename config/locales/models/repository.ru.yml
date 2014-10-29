@@ -73,3 +73,16 @@ ru:
         synchronizing_publications: Публиковать сборочные листы только при успешной сборке под каждую архитектуру (проверка по хэшу коммита)
         publish_builds_only_from_branch: "Публикация сборок только из ветки"
 
+  simple_form:
+    labels:
+      repository:
+        projects_list:                  Список проектов
+    placeholders:
+      repository:
+        projects_list:                  Введите названия проектов здесь.
+    hints:
+      repository:
+        remove_project:
+          projects_list_html:           "Например: <i>project-name</i>"
+        add_project:
+          projects_list_html:           "Например: <i>my/project-name</i>"

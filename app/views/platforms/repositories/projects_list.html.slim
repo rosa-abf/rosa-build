@@ -1,6 +1,6 @@
 = render 'submenu'
 
-.container
+.container.col-md-offset-2.col-md-8
   h3= raw "#{t("layout.repositories.add_projects_to")}: #{link_to @repository.name, platform_repository_path(@platform, @repository)}"
 
   .row

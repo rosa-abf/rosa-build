@@ -1,0 +1,47 @@
+-set_meta_tags title: title_object(@product)
+= render 'submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+
+    h3
+      = t('layout.products.about')
+      | &nbsp;
+      = @product.name
+
+    p= @product.description
+
+    - if can? :update, @product
+      a.btn.btn-primary href=edit_platform_product_path(@platform, @product)
+        = t('layout.edit')
+      | &nbsp;
+      / = link_to image_tag("code.png", alt: t("layout.edit")) + " " + t("layout.edit"), edit_platform_product_path(@platform, @product), class: "button"
+    - if can? :destroy, @product
+      a.btn.btn-danger[ href          = platform_product_path(@platform, @product)
+                        method        = 'delete'
+                        data-confirm  = t('layout.products.confirm_delete') ]
+        = t('layout.delete')
+      | &nbsp;
+      / = link_to image_tag("x.png", alt: t("layout.delete")) + " " + t("layout.delete"), platform_product_path(@platform, @product), method: "delete", class: "button", data: { confirm: t("layout.products.confirm_delete") }
+    - if can?(:create, @product.product_build_lists.build)
+      a.btn.btn-primary href=new_platform_product_product_build_list_path(@platform, @product)
+        = t('layout.products.build')
+      / = link_to t("layout.products.build"), new_platform_product_product_build_list_path(@platform, @product), class: "button"
+
+    hr
+
+    h3= t("layout.products.build_lists_monitoring")
+
+    table.table.table-striped
+      thead
+        tr
+          th= t("activerecord.attributes.product_build_list.id")
+          th= t("activerecord.attributes.product_build_list.status")
+          th= t("activerecord.attributes.product_build_list.container_path")
+          th= t("activerecord.attributes.product_build_list.product")
+          th= t("layout.product_build_lists.action")
+          th= t("activerecord.attributes.product_build_list.notified_at")
+      tbody
+        = render partial: 'platforms/product_build_lists/product_build_list',
+          collection: @product_build_lists
+    = will_paginate @product_build_lists

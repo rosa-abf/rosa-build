@@ -1,6 +1,6 @@
 - set_meta_tags title: [title_object(@platform), t('layout.tokens.header')]
 = render 'submenu'
-.container
+.container.col-md-offset-2.col-md-8
   .row
     a.btn.btn-primary href=new_platform_token_path(@platform)
       = t('layout.tokens.new')

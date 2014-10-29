@@ -1,0 +1,24 @@
+tr
+  - pbl = product_build_list
+  - product = pbl.product
+  - platform = product.platform
+  - if pbl.project
+    td
+      a href=platform_product_product_build_list_path(platform, product, pbl)
+        = pbl.id
+  - else
+    td= pbl.id
+  td= pbl.human_status
+  td
+    - unless pbl.project
+      = link_to(nil, pbl.container_path)
+  td
+    a href=platform_product_path(platform, product)
+      = pbl.product.name
+  td.text-center
+    - if can?(:destroy, pbl) && pbl.can_destroy? && !pbl.project
+      = link_to platform_product_product_build_list_path(platform, product, pbl), method: :delete, data: { confirm: t('layout.confirm') } do
+        span.glyphicon.glyphicon-remove
+
+  td
+    = datetime_moment pbl.updated_at

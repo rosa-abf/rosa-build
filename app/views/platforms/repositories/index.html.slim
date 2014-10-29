@@ -1,7 +1,7 @@
 - set_meta_tags title: [title_object(@platform), t('layout.repositories.list_header')]
 = render 'submenu' if params[:platform_id]
 
-.container
+.container.col-md-offset-2.col-md-8
   - if can? :create, @platform.repositories.build
     .row
       a.btn.btn-primary href=new_platform_repository_path(@platform)

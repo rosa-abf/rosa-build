@@ -1,7 +1,7 @@
 - set_meta_tags title: [title_object(@platform), t('layout.key_pairs.header')]
 = render 'platforms/base/submenu'
 
-.container
+.container.col-md-offset-2.col-md-8
   .row
     - if can? :edit, @platform
       = render 'new'

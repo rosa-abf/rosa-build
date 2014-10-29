@@ -1,8 +1,0 @@
-- [:main_script, :params].each do |el|
-  .leftlist= f.label el, t("activerecord.attributes.product_build_list.#{el}"), class: :label
-  .rightlist= f.text_field el
-  .both
-
-.leftlist= f.label :time_living, t("activerecord.attributes.product_build_list.time_living"), class: :label
-.rightlist= f.text_field :time_living, value: (@product.time_living.to_i / 60)
-.both

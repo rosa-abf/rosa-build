@@ -1,7 +1,7 @@
 -set_meta_tags title: title_object(@mass_build)
 = render 'submenu'
 
-.container
+.container.col-md-offset-2.col-md-8
   .row
     h3
       = t('activerecord.models.mass_build')
@@ -129,20 +129,20 @@
             method: :post,
             data:   { confirm: t("layout.confirm") },
             class:  'btn btn-success'
-          | &nbsp;
+          hr
         = link_to t('layout.mass_builds.publish_test_failed'),
           publish_platform_mass_build_path(@platform, @mass_build.id, status: 'test_failed'),
           method: :post,
           data:   { confirm: t("layout.confirm") },
           class:  'btn btn-warning'
-        | &nbsp;
+        hr
       - if can?(:cancel, @mass_build)
         = link_to t('layout.cancel'),
           cancel_platform_mass_build_path(@platform, @mass_build.id),
           method: :post,
           class:  'btn btn-danger',
           data:   { confirm: t('layout.mass_builds.cancel_confirm') }
-        | &nbsp;
+        hr
       - if can? :create, @mass_build
         = link_to t('layout.mass_builds.recreate'),
           new_platform_mass_build_path(@platform, mass_build_id: @mass_build.id),

@@ -13,7 +13,7 @@
     include_blank:  false
 
 - unless @platform.personal?
-  = f.input :released, as: :boolean, wrapper: :horizontal_boolean
+  = f.input :released, as: :boolean
   = f.input :admin_id,
     url:        autocomplete_user_uname_autocompletes_path,
     as:         :autocomplete,

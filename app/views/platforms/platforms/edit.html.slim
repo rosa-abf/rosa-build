@@ -1,9 +1,9 @@
 - set_meta_tags title: [title_object(@platform), t('layout.platforms.edit')]
 = render 'submenu'
 
-.container
+.container.col-md-offset-2.col-md-8
   .row
-    = simple_form_for @platform do |f|
+    = simple_form_for @platform, wrapper_mappings: { boolean: :vertical_boolean } do |f|
       = render 'form', f: f
     hr
   .row

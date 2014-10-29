@@ -41,3 +41,11 @@ en:
         projects_list: Projects list
         build_for_platform: Build for platform
         external_nodes: External nodes
+
+  simple_form:
+    labels:
+      mass_build:
+        description:       Description
+    placeholders:
+      mass_build:
+        description:       Enter the description of mass build here.

@@ -1,5 +1,7 @@
 class Platforms::ProductsController < Platforms::BaseController
   include GitHelper
+  layout 'bootstrap'
+
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
 
@@ -42,6 +44,8 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def show
+    @product_build_lists = @product.product_build_lists.default_order.
+      paginate(page: params[:page])
   end
 
   def destroy

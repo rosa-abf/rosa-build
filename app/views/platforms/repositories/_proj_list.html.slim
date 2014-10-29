@@ -1,12 +1,20 @@
 div ng-controller='RepositoryProjectsController'
-  = simple_form_for :project, html: { 'ng-submit' => 'search()', id: 'search_projects_form', class: 'well' } do |f|
+  = simple_form_for :project,
+    html: { ng_submit:  'search()',
+            id:         'search_projects_form',
+            class:      'well' } do |f|
+
     = hidden_field_tag :added, controller.action_name.to_sym == :show
     = hidden_field_tag :repository_id, @repository.id
     = hidden_field_tag :platform_id, @repository.platform_id
     = hidden_field_tag :page
-    = f.input :name
-    = f.input :owner
-    = f.button :submit, t('layout.search.header')
+    .row
+      .col-md-5
+        = f.input :owner, label: false
+      .col-md-5
+        = f.input :name, label: false
+      .col-md-2
+        = f.button :submit, t('layout.search.header')
 
   table.table.table-striped
     thead

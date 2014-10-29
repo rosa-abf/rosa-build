@@ -1,12 +1,16 @@
 = simple_form_for @maintainer, url: platform_maintainers_path(@platform), method: :get do |f|
-  = f.input :name
+  .row
+    .col-md-6
+      = f.input :name, label: false
+    .col-md-6
+      = f.button :submit, t('layout.search.header')
+      | &nbsp;
+      = t('layout.or')
+      | &nbsp;
+      a href=platform_maintainers_path(@platform)
+        = t('layout.clear')
 
-  = f.button :submit, t('layout.search.header')
-  | &nbsp;
-  = t('layout.or')
-  | &nbsp;
-  a href=platform_maintainers_path(@platform)
-    = t('layout.clear')
+
 hr
 table.table.table-striped
   thead

@@ -1,0 +1,25 @@
+= f.input :name
+= f.input :description, as: :text
+
+/ TODO: fix autocomplete + project_version
+= f.input :project,
+  url:        autocomplete_project_platform_products_path(@platform),
+  as:         :autocomplete,
+  id_element: '#src_project_id',
+  input_html: { value:  @product.project.try(:name_with_owner),
+                name:   'src_project',
+                class:  'form-control' }
+
+= f.input :project_version, collection: versions_for_group_select(@product.project)
+
+= render 'def_fields', f: f
+
+= f.input :autostart_status, collection: Product::AUTOSTART_STATUSES.collect{|status| [Product.human_autostart_status(status), status]}
+
+= f.button :submit, t('layout.save')
+| &nbsp;
+= t('layout.or')
+| &nbsp;
+a href=( @product.new_record? ? platform_path(@platform) : platform_product_path(@platform, @product) )
+  = t('layout.cancel')
+
