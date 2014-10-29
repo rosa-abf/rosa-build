@@ -38,6 +38,9 @@
                field:       :ExtraBuildLists,
                placeholder: '1000000'
 
+      = render 'projects/build_lists/new_build/extra_params_and_preferences',
+               params: params,
+               f:      f
 
       = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
       = f.submit t('layout.projects.build_button'),

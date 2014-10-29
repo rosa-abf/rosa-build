@@ -1,0 +1,26 @@
+h3= t('activerecord.attributes.build_list.extra_params.label')
+- BuildList::EXTRA_PARAMS.each do |field|
+  - text = params[:build_list].try(:[], :extra_params).try(:[], field)
+  = text_field_tag "build_list[extra_params][#{field}]", text,
+      placeholder: t("activerecord.attributes.build_list.extra_params.#{field}"),
+      class: 'form-control'
+
+h3.offset20= t("activerecord.attributes.build_list.preferences")
+- selected = params[:build_list].try(:[], :auto_publish_status) ? {selected: params[:build_list][:auto_publish_status]} : {}
+.form-group
+  = f.label :auto_publish_status
+  = f.select :auto_publish_status, auto_publish_statuses, selected,
+             class: 'form-control'
+
+- %i(auto_create_container include_testing_subrepository use_cached_chroot use_extra_tests save_buildroot).each do |kind|
+  .checkbox
+    label
+      - checked = params[:build_list].try(:[], kind)
+      - checked = @build_list.send(kind) if checked.nil?
+      = f.check_box kind, checked: checked
+      = BuildList.human_attribute_name kind
+
+- selected = params[:build_list].try(:[], :external_nodes) ? {selected: params[:build_list][:external_nodes]} : {}
+= f.label :external_nodes
+= f.select :external_nodes, external_nodes, selected.merge(include_blank: true),
+           class: 'form-control'
