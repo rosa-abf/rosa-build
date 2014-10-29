@@ -7,5 +7,6 @@
       %label
         %input{ type:            'checkbox',
                 'ng-model' =>    'repo.checked',
-                name:            'build_list[include_repos][]' }
+                name:            'build_list[include_repos][]',
+                'ng-value' =>    'repo.id' }
         {{ repo.name }}

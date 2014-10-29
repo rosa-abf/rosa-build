@@ -11,7 +11,7 @@ NewBuildListController = (dataservice, $http) ->
     return vm.save_to_repositories[0] unless vm.save_to_repository_id
 
     result = _.select(vm.save_to_repositories, (e) ->
-      e.repo_id is vm.save_to_repository_id
+      e.id is vm.save_to_repository_id
     )
     return vm.save_to_repositories[0] if result.length is 0
     result[0]
@@ -77,6 +77,10 @@ NewBuildListController = (dataservice, $http) ->
     return unless vm.project_versions
     vm.selectSaveToRepository() unless vm.is_build_for_main_platform
 
+  vm.selectExtraRepository = (item, model, label) ->
+    vm.selected_extra_repository = item
+    false
+
   vm.getExtraRepositories = (val) ->
     path = Routes.autocomplete_extra_repositories_autocompletes_path(
       {
@@ -88,10 +92,39 @@ NewBuildListController = (dataservice, $http) ->
     return $http.get(path).then (response) ->
       response.data
 
-  vm.removeExtraRepo = (id) ->
+  vm.removeExtraRepository = (id) ->
     vm.extra_repositories = _.reject(vm.extra_repositories, (repo) ->
       return repo.id is id
     )
+    false
+
+  vm.addExtraRepository = ->
+    vm.extra_repositories = _.union(vm.extra_repositories, [vm.selected_extra_repository])
+    false
+
+  vm.selectExtraBuildList = (item, model, label) ->
+    vm.selected_extra_build_list = item
+    false
+
+  vm.getExtraBuildLists = (val) ->
+    path = Routes.autocomplete_extra_build_list_autocompletes_path(
+      {
+        platform_id: vm.build_for_platform_id,
+        term:        val
+      }
+    )
+
+    return $http.get(path).then (response) ->
+      response.data
+
+  vm.removeExtraBuildList = (id) ->
+    vm.extra_build_lists = _.reject(vm.extra_build_lists, (repo) ->
+      return repo.id is id
+    )
+    false
+
+  vm.addExtraBuildList = ->
+    vm.extra_build_lists = _.union(vm.extra_build_lists, [vm.selected_extra_build_list])
     false
 
   init = (dataservice) ->
@@ -108,6 +141,7 @@ NewBuildListController = (dataservice, $http) ->
 
     vm.default_extra_repos        = dataservice.default_extra_repos
     vm.extra_repositories         = dataservice.extra_repos
+    vm.extra_build_lists          = dataservice.extra_build_lists
 
     vm.arches                     = dataservice.arches
 

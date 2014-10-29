@@ -173,7 +173,8 @@ module BuildListsHelper
             project_versions:      build_list_project_versions(project),
             arches:                arches(params),
             default_extra_repos:   default_extra_repos(project),
-            extra_repos:           extra_repos(params)
+            extra_repos:           extra_repos(params),
+            extra_build_lists:     extra_build_lists(params)
           }
     res.to_json
   end
@@ -187,9 +188,8 @@ module BuildListsHelper
   def save_to_repositories(project, params)
     project.repositories.map do |r|
       {
+        id:                 r.id,
         name:               "#{r.platform.name}/#{r.name}",
-        #selected:           selected_save_to_repositories(project, r.id, r.platform.name, params),
-        repo_id:            r.id,
         publish_without_qa: r.publish_without_qa?,
         platform_id:        r.platform.id,
         platform_name:      r.platform.name,
@@ -264,8 +264,7 @@ module BuildListsHelper
       {
         id:              extra.id,
         platform_id:     extra.platform.id,
-        platform_name:   extra.platform.name,
-        repository_name: extra.name,
+        label:           "#{extra.platform.name}/#{extra.name}",
         path:            url_for([extra.platform, extra])
       }
     end
@@ -274,10 +273,19 @@ module BuildListsHelper
   def extra_repos(params)
     Repository.where(id: params[:build_list].try(:[], :extra_repositories) ).map do |extra|
       {
-        id:              extra.id,
-        platform_name:   extra.platform.name,
-        repository_name: extra.name,
-        path:            url_for([extra.platform, extra])
+        id:    extra.id,
+        label: "#{extra.platform.name}/#{extra.name}",
+        path:  url_for([extra.platform, extra])
+      }
+    end
+  end
+
+  def extra_build_lists(params)
+    BuildList.where(id: params[:build_list].try(:[], :extra_build_lists) ).map do |extra|
+      {
+        id:    extra.id,
+        label: "#{extra.id} (#{extra.project.name} - #{extra.arch.name})",
+        path:  url_for(extra)
       }
     end
   end

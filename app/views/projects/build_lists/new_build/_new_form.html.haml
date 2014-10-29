@@ -1,25 +1,29 @@
 = form_for [@project, @build_list], html: { class: :form, method: :post } do |f|
   .row
     .col-md-4.col-md-offset-2
-      = render 'include_repos'
+      = render 'projects/build_lists/new_build/include_repos'
 
     .col-md-4
       %h4= t 'activerecord.attributes.build_list.save_to_repository'
       %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.save_to_repository',
-        'ng-options' => 'save_in_repo.name for save_in_repo in newBuildCtrl.save_to_repositories',
-        'ng-change' => 'newBuildCtrl.selectSaveToRepository()' }
+        'ng-options' => 'r.name for r in newBuildCtrl.save_to_repositories track by r.id',
+        'ng-change' =>  'newBuildCtrl.selectSaveToRepository()',
+        name:           'build_list[save_to_repository_id]' }
 
       %h4= t 'activerecord.attributes.build_list.project_version'
       %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.project_version',
-        'ng-options' => 'version.name group by version.kind for version in newBuildCtrl.project_versions',
-        'ng-change' => 'newBuildCtrl.selectProjectVersion()' }
+        'ng-options' => 'v.name group by v.kind for v in newBuildCtrl.project_versions track by v.name',
+        'ng-change' =>  'newBuildCtrl.selectProjectVersion()',
+        'ng-value' =>   'newBuildCtrl.project_version',
+        name:           'build_list[project_version]' }
 
       %h4= t 'activerecord.attributes.build_list.arch'
       .checkbox{ 'ng-repeat' => 'arch in newBuildCtrl.arches' }
         %label
-          %input{ type:            'checkbox',
-                  'ng-model' =>    'arch.checked',
-                  name:            'arches[]' }
+          %input{ type:         'checkbox',
+                  'ng-model' => 'arch.checked',
+                  'ng-value' => 'arch.id',
+                  name:         'arches[]' }
           {{ arch.name }}
 
       %h4.offset20= t 'activerecord.attributes.build_list.update_type'
@@ -27,10 +31,18 @@
       = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control boffset20'
 
       = render 'projects/build_lists/new_build/autocomplete_form',
-        field:             :ExtraRepositories,
-        placeholder:       'uxteam_personal',
-        subject:           @build_list,
-        autocomplete_path: autocomplete_extra_repositories_autocompletes_path
+               field:       :ExtraRepositories,
+               placeholder: 'uxteam_personal'
+
+      = render 'projects/build_lists/new_build/autocomplete_form',
+               field:       :ExtraBuildLists,
+               placeholder: '1000000'
+
+
+      = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
+      = f.submit t('layout.projects.build_button'),
+          data: {'disable-with' => t('layout.processing')},
+          class: 'btn btn-primary'
 
 - content_for :additional_scripts do
   = render 'projects/build_lists/new_build/init_service.js.erb'
