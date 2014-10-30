@@ -174,7 +174,9 @@ module BuildListsHelper
             arches:                arches(params),
             default_extra_repos:   default_extra_repos(project),
             extra_repos:           extra_repos(params),
-            extra_build_lists:     extra_build_lists(params)
+            extra_build_lists:     extra_build_lists(params),
+            auto_create_container: default_auto_create_container(params, build_list),
+            auto_publish_status:   params[:build_list][:auto_publish_status]
           }
     res.to_json
   end
@@ -288,5 +290,11 @@ module BuildListsHelper
         path:  url_for(extra)
       }
     end
+  end
+
+  def default_auto_create_container(params, build_list)
+    checked = params[:build_list].try(:[], :auto_create_container)
+    checked = build_list.auto_create_container if checked.nil?
+    checked
   end
 end

@@ -9,10 +9,19 @@ h3.offset20= t("activerecord.attributes.build_list.preferences")
 - selected = params[:build_list].try(:[], :auto_publish_status) ? {selected: params[:build_list][:auto_publish_status]} : {}
 .form-group
   = f.label :auto_publish_status
-  = f.select :auto_publish_status, auto_publish_statuses, selected,
-             class: 'form-control'
+  = f.select :auto_publish_status, auto_publish_statuses, {},
+             class: 'form-control', 'ng-value' => 'newBuildCtrl.auto_publish_status',
+             'ng-model' => 'newBuildCtrl.auto_publish_status',
+             'ng-disabled' => '!newBuildCtrl.save_to_repository.publish_without_qa'
 
-- %i(auto_create_container include_testing_subrepository use_cached_chroot use_extra_tests save_buildroot).each do |kind|
+.checkbox
+  label
+    = f.check_box :auto_create_container,
+                  'ng-model' => 'newBuildCtrl.auto_create_container',
+                  'ng-value' => 'newBuildCtrl.auto_create_container'
+    = BuildList.human_attribute_name :auto_create_container
+
+- %i(include_testing_subrepository use_cached_chroot use_extra_tests save_buildroot).each do |kind|
   .checkbox
     label
       - checked = params[:build_list].try(:[], kind)

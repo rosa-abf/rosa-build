@@ -63,6 +63,14 @@ NewBuildListController = (dataservice, $http) ->
       )
       return result
 
+    setAutoCreateContainerAndAutoPublish = ->
+      vm.auto_create_container = false if !vm.is_build_for_main_platform
+      if vm.save_to_repository.publish_without_qa
+        vm.auto_publish_status = 'default'
+      else
+        vm.auto_publish_status   = 'none'
+        vm.auto_create_container = true
+
     vm.build_for_platform_id = vm.save_to_repository.platform_id
     vm.is_build_for_main_platform = isBuildForMainPlatform()
     vm.project_version_name = vm.save_to_repository.platform_name
@@ -71,6 +79,7 @@ NewBuildListController = (dataservice, $http) ->
     changeStatusRepositories()
     updateDefaultArches()
     vm.extra_repositories = getExtraRepos()
+    setAutoCreateContainerAndAutoPublish()
     true
 
   vm.selectProjectVersion = ->
@@ -133,6 +142,9 @@ NewBuildListController = (dataservice, $http) ->
     vm.platforms                  = dataservice.platforms
     vm.save_to_repositories       = dataservice.save_to_repositories
     vm.project_versions           = dataservice.project_versions
+
+    vm.auto_publish_status        = dataservice.auto_publish_status
+    vm.auto_create_container      = dataservice.auto_create_container
 
     vm.project_version_name       = dataservice.project_version
     vm.project_version            = defaultProjectVersion()
