@@ -5,7 +5,7 @@ RosaABF.controller 'RepositoryProjectsController', ['$scope', '$http', '$locatio
   $scope.repository_id  = $('#repository_id').val()
   $scope.processing     = true
   $scope.projects       = []
-  $scope.pages          = []
+  $scope.total_items    = null
 
   # Fixes: redirect to page after form submit
   $("#search_projects_form").on 'submit', ->
@@ -23,12 +23,12 @@ RosaABF.controller 'RepositoryProjectsController', ['$scope', '$http', '$locatio
 
     path = Routes.projects_list_platform_repository_path $scope.platform_id, $scope.repository_id
     $http.get(path, params: params).success (data) ->
-      $scope.projects   = data.projects
-      $scope.pages      = data.pages
-      $scope.processing = false
+      $scope.projects    = data.projects
+      $scope.total_items = data.total_items
+      $scope.processing  = false
     .error ->
-      $scope.projects   = []
-      $scope.processing = false
+      $scope.projects    = []
+      $scope.processing  = false
 
     true
 

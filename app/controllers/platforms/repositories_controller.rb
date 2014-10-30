@@ -14,12 +14,13 @@ class Platforms::RepositoriesController < Platforms::BaseController
   before_filter :set_members, only: [:edit, :update]
 
   def index
-    @repositories = Repository.custom_sort(@repositories).paginate(page: params[:page])
+    @repositories = Repository.custom_sort(@repositories).paginate(page: current_page)
   end
 
   def show
+    params[:per_page] = 30
     @projects = @repository.projects.recent.search(params[:query])
-                           .paginate(page: params[:project_page], per_page: 30)
+                           .paginate(page: params[:project_page])
   end
 
   def edit
@@ -129,8 +130,10 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
     # @total_projects = @projects.count
     @projects = @projects.by_owner(params[:owner_name]).
-      search(params[:project_name]).order("projects.name #{sort_dir}").
-      paginate(paginate_params)
+      search(params[:project_name]).order("projects.name #{sort_dir}")
+
+    @total_items = @projects.count
+    @projects    = @projects.paginate(paginate_params)
 
     respond_to do |format|
       format.json {

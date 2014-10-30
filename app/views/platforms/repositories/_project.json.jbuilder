@@ -1,3 +1,5 @@
+json.total_items @total_items
+
 json.projects @projects do |project|
   json.visibility_class fa_visibility_icon(project)
   json.path             project_path(project.name_with_owner)
@@ -7,5 +9,3 @@ json.projects @projects do |project|
     json.remove_path       remove_project_platform_repository_path(@platform, @repository, project_id: project.id)
   end
 end
-
-json.pages angularjs_will_paginate(@projects)

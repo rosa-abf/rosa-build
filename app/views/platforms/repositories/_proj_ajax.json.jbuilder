@@ -6,4 +6,4 @@ json.projects @projects do |project|
   json.add_path         url_for(controller: :repositories, action: :add_project, project_id: project.id)
 end
 
-json.pages angularjs_will_paginate(@projects)
+json.total_items @total_items
