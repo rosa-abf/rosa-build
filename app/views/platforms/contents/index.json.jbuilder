@@ -22,4 +22,4 @@ end
 
 json.back paths.size == 1 ? '/' : paths[0...-1].join('/')
 
-json.pages angularjs_will_paginate(@contents)
+json.total_items @total_items

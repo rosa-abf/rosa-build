@@ -20,10 +20,9 @@ module PaginateHelper
   end
 
   def angularjs_paginate(options = {})
-    return if options[:per_page].blank?
-
     options.reverse_merge!(
       {
+        per_page:    25,
         total_items: 'total_items',
         page:        'page',
         select_page: "goToPage(page)"
