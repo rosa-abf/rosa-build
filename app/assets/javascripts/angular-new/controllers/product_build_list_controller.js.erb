@@ -1,0 +1,40 @@
+RosaABF.controller('ProductBuildListController', ['$scope', '$http', '$timeout', 'SoundNotificationsHelper', function($scope, $http, $timeout, SoundNotificationsHelper) {
+
+  $scope.id       = $('#product_build_list_id').val();
+  $scope.pbl      = null;
+  $scope.subject  = {}; // See: shared/build_results
+
+  $scope.getProductBuildList = function() {
+    $http.get(Routes.product_build_list_path($scope.id, {format: 'json'})).success(function(results) {
+      var product_build_list = results.product_build_list;
+      if ($scope.pbl && $scope.pbl.status != product_build_list.status)
+        SoundNotificationsHelper.buildStatusChanged();
+      $scope.pbl = $scope.subject = product_build_list;
+    });
+  }
+
+  $scope.cancelRefresh = null;
+  $scope.refresh = function() {
+    if (!$scope.pbl || 
+        !(
+          $scope.pbl.status == <%=ProductBuildList::BUILD_COMPLETED%> ||
+          $scope.pbl.status == <%=ProductBuildList::BUILD_FAILED%> ||
+          $scope.pbl.status == <%=ProductBuildList::BUILD_CANCELED%>
+        )
+      ) {
+      $scope.getProductBuildList();
+    }
+    $scope.cancelRefresh = $timeout($scope.refresh, 10000);
+  }
+  $scope.refresh();
+
+  $scope.updateStatus = function() {
+    $http.put(
+      Routes.product_build_list_path($scope.id),
+      {product_build_list: {not_delete: $scope.pbl.not_delete}, format: 'json'}
+    ).success(function(results) {
+      $scope.pbl = $scope.subject = results.product_build_list;
+    });
+  }
+
+}]);

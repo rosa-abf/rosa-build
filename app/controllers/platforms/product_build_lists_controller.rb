@@ -41,9 +41,9 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   def log
     worker_log = @product_build_list.abf_worker_log
-
+    worker_log = "\n1111\n2222" * 100
     render json: {
-      log: ( Pygments.highlight(worker_log, lexer: 'sh') rescue worker_log),
+      log: (Pygments.highlight(worker_log, lexer: 'sh') rescue worker_log),
       building: @product_build_list.build_started?
     }
   end

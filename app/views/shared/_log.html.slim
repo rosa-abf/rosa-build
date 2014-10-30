@@ -1,0 +1,9 @@
+/ params: get_log_path
+
+accordion close-others='false' ng-cloak=true
+  accordion-group is-open='$parent.isOpenBuildLog'
+    accordion-heading
+      = t('layout.build_lists.log.build_log')
+      span.pull-right.fa ng-class="{'fa-chevron-down': isOpenBuildLog, 'fa-chevron-up': !isOpenBuildLog}"
+    .row.build-log ng-controller='BuildLogController' ng-init="init('#{ get_log_path }')"
+      .col-md-12 ng-bind-html='log'
