@@ -45,7 +45,7 @@
       = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
       = f.submit t('layout.projects.build_button'),
           data: {'disable-with' => t('layout.processing')},
-          class: 'btn btn-primary'
+          class: 'btn btn-primary offset20'
 
 - content_for :additional_scripts do
   = render 'projects/build_lists/new_build/init_service.js.erb'
