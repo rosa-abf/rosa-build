@@ -4,40 +4,41 @@
 - func_name  = field.to_s.singularize
 - title      = t "activerecord.attributes.build_list.#{field_name}"
 
-h4
-  = title
-  a<[ class='fa fa-question-circle' href='#' data-toggle='modal' data-target="##{modal_id}" ]
+div[ ng-hide = "#{field == :ExtraRepositories ? "newBuildCtrl.is_build_for_main_platform" : ''}" ]
+  h4
+    = title
+    a<[ class='fa fa-question-circle' href='#' data-toggle='modal' data-target="##{modal_id}" ]
 
-  .modal.fade[ id=modal_id tabindex='-1' role='dialog'
-       aria-labelledby="#{modal_id}Label" aria-hidden='true' ]
-    .modal-dialog
-      .modal-content
-        .modal-header
-          button[ class='close' type='button' data-dismiss='modal' ]
-            span[ aria-hidden='true' ] &times;
-            span.sr-only Close
-          h4.modal-title[ id=modal_id ]= title
-        .modal-body== render "shared/autocomplete_docs/#{field_name}"
-.row
-  .col-md-8
-    input[ class = 'form-control'
-      type                = 'text'
-      ng-model            = "newBuildCtrl.selected_#{var_name}"
-      placeholder         = placeholder
-      typeahead           = "extra.label for extra in newBuildCtrl.get#{field}($viewValue)"
-      typeahead-on-select = "newBuildCtrl.select#{func_name}($item, $model, $label)" ]
-  .col-md-4
-    button[ class='btn btn-default' type='button'
-            ng-click="newBuildCtrl.add#{func_name}()" ]
-      = t('layout.add')
+    .modal.fade[ id=modal_id tabindex='-1' role='dialog'
+         aria-labelledby="#{modal_id}Label" aria-hidden='true' ]
+      .modal-dialog
+        .modal-content
+          .modal-header
+            button[ class='close' type='button' data-dismiss='modal' ]
+              span[ aria-hidden='true' ] &times;
+              span.sr-only Close
+            h4.modal-title[ id=modal_id ]= title
+          .modal-body== render "shared/autocomplete_docs/#{field_name}"
+  .row
+    .col-md-8
+      input[ class = 'form-control'
+        type                = 'text'
+        ng-model            = "newBuildCtrl.selected_#{var_name}"
+        placeholder         = placeholder
+        typeahead           = "extra.label for extra in newBuildCtrl.get#{field}($viewValue)"
+        typeahead-on-select = "newBuildCtrl.select#{func_name}($item, $model, $label)" ]
+    .col-md-4
+      button[ class='btn btn-default' type='button'
+              ng-click="newBuildCtrl.add#{func_name}()" ]
+        = t('layout.add')
 
-table.table.offset5
-  tr[ ng-repeat="el in newBuildCtrl.#{field_name}" ]
-    td
-      a[ ng-href='{{ el.path }}' ] {{ el.label }}
-    td
-      a[ class='fa fa-times-circle text-danger' href=''
-         ng-click="newBuildCtrl.remove#{func_name}(el.id)" ]
-      input[ name="build_list[#{field_name}][]" type='hidden'
-             ng-model='el.id' ng-value='el.id' ]
+  table.table.offset5
+    tr[ ng-repeat="el in newBuildCtrl.#{field_name}" ]
+      td
+        a[ ng-href='{{ el.path }}' ] {{ el.label }}
+      td
+        a[ class='fa fa-times-circle text-danger' href=''
+           ng-click="newBuildCtrl.remove#{func_name}(el.id)" ]
+        input[ name="build_list[#{field_name}][]" type='hidden'
+               ng-model='el.id' ng-value='el.id' ]
 
