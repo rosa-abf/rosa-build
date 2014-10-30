@@ -45,8 +45,7 @@
                 %a{ 'ng-href' => '{{issue.assignee.link}}',
                     'title' => "#{t('layout.issues.assigned_to')} {{issue.assignee.fullname}}" }
                   %img{ 'ng-src' => '{{issue.assignee.image}}' }
-          = paginate( total_items: "#{kind}_tab.pagination.total_items",
-                      page:        "#{kind}_tab.pagination.page",
-                      per_page:    Issue.per_page,
-                      ng_show:     "#{kind}_tab.pagination.total_items > #{Issue.per_page}",
-                      select_page: "selectPage('#{kind}', page)" )
+          = angularjs_paginate( total_items: "#{kind}_tab.pagination.total_items",
+                                page:        "#{kind}_tab.pagination.page",
+                                per_page:    Issue.per_page,
+                                select_page: "selectPage('#{kind}', page)" )
