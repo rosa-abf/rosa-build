@@ -19,8 +19,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
   def show
     params[:per_page] = 30
-    @projects = @repository.projects.recent.search(params[:query])
-                           .paginate(page: params[:project_page])
   end
 
   def edit
