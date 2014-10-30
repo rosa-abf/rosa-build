@@ -13,5 +13,4 @@ json.projects do
   end
 end
 
-json.page              params[:page]
-json.projects_count   @projects_count
+json.pages angularjs_will_paginate(@projects)
