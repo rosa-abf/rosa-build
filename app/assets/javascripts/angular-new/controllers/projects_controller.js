@@ -16,7 +16,7 @@ RosaABF.controller('ProjectsCtrl', ['$scope', '$http', function($scope, $http) {
                    users: $scope.filter_users, groups: $scope.filter_groups };
     $http.get(Routes.projects_path(params)).then(function(res) {
       $scope.page        = res.data.page;
-      $scope.total_items = parseInt(res.data.projects_count, 10);
+      $scope.total_items = res.data.projects_count;
       $scope.projects    = res.data.projects;
     });
   };

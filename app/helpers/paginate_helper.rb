@@ -19,23 +19,18 @@ module PaginateHelper
     super *[collection_or_options, options].compact
   end
 
-  def angularjs_will_paginate(collection_or_options = nil, options = {})
-    if collection_or_options.is_a? Hash
-      options, collection_or_options = collection_or_options, nil
-    end
-    options.merge!(renderer: AngularjsLinkRenderer) unless options[:renderer]
-    options.merge!(next_label: I18n.t('datatables.next_label')) unless options[:next_label]
-    options.merge!(previous_label: I18n.t('datatables.previous_label')) unless options[:previous_label]
-    will_paginate *[collection_or_options, options].compact
-  end
+  def angularjs_paginate(options = {})
+    return if options[:per_page].blank?
 
-  def paginate(options)
-    return nil if options.blank?
-    render 'shared/paginate',
-      total_items: options[:total_items],
-      page:        options[:page],
-      per_page:    options[:per_page],
-      ng_show:     options[:ng_show],
-      select_page: options[:select_page]
+    options.reverse_merge!(
+      {
+        total_items: 'total_items',
+        page:        'page',
+        ng_show:     "total_items > #{options[:per_page]}",
+        select_page: "goToPage(page)"
+      }
+    )
+
+    render 'shared/angularjs_paginate', options
   end
 end

@@ -13,5 +13,5 @@ json.projects do
   end
 end
 
-json.page              params[:page]
+json.page             params[:page]
 json.projects_count   @projects_count
