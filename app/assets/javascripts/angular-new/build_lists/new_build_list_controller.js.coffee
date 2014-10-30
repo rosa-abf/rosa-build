@@ -109,6 +109,7 @@ NewBuildListController = (dataservice, $http) ->
 
   vm.addExtraRepository = ->
     vm.extra_repositories = _.union(vm.extra_repositories, [vm.selected_extra_repository])
+    vm.selected_extra_repository = null
     false
 
   vm.selectExtraBuildList = (item, model, label) ->
@@ -134,6 +135,7 @@ NewBuildListController = (dataservice, $http) ->
 
   vm.addExtraBuildList = ->
     vm.extra_build_lists = _.union(vm.extra_build_lists, [vm.selected_extra_build_list])
+    vm.selected_extra_build_list = null
     false
 
   init = (dataservice) ->
