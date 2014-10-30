@@ -38,7 +38,7 @@ json.dictionary  do
   end
 end
 
-json.server_status     @build_server_status
-json.filter            @filter.try(:options)
-json.page              params[:page]
-json.build_lists_count @bls.count
+json.server_status @build_server_status
+json.filter        @filter.try(:options)
+json.page          params[:page]
+json.total_items   @bls.count

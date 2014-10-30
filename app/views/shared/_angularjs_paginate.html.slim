@@ -10,5 +10,5 @@ pagination[ boundary-links = 'true'
             items-per-page = per_page
             max-size       = 5
             rotate         = 'false'
-            ng-show        = ng_show
+            ng-show        = "#{total_items} > #{per_page}"
             ng-change      = select_page ]

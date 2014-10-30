@@ -133,8 +133,9 @@ RosaABF.controller('BuildListsController',
       _.each(to_open, function(bl){ $scope.showRelated(bl, true); });
 
       // Render pagination
-      $scope.page              = results.page;
-      $scope.build_lists_count = results.build_lists_count;
+      $scope.page        = results.page;
+      $scope.total_items = results.total_items;
+
       // Enable 'Search' button
       $scope.isRequest = false;
     }).error(function(data, status, headers, config) {

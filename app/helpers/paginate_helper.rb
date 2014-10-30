@@ -26,7 +26,6 @@ module PaginateHelper
       {
         total_items: 'total_items',
         page:        'page',
-        ng_show:     "total_items > #{options[:per_page]}",
         select_page: "goToPage(page)"
       }
     )

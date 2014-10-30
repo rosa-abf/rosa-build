@@ -70,10 +70,6 @@
             / updated_at
             %td{'am-time-ago' => 'bl.updated_at', title: "{{bl.updated_at | amDateFormat:'ddd, LLL'}}"}
 
-      = paginate( total_items: 'build_lists_count',
-                  page:        'page',
-                  per_page:    'params.per_page',
-                  ng_show:     "build_lists_count > params.per_page",
-                  select_page: "goToPage(page)" )
+      = angularjs_paginate( per_page: 'params.per_page' )
 
 = render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'
