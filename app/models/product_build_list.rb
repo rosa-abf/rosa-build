@@ -49,6 +49,7 @@ class ProductBuildList < ActiveRecord::Base
             :status,
             :project_id,
             :main_script,
+            :project_version,
             :arch_id, presence: true
   validates :status, inclusion: { in: STATUSES }
   validates :main_script, :params, length: { maximum: 255 }

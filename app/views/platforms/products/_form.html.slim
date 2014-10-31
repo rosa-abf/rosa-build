@@ -12,7 +12,9 @@
 
 = f.input :project_version, collection: versions_for_group_select(@product.project)
 
-= render 'def_fields', f: f
+= f.input :main_script
+= f.input :params
+= f.input :time_living, input_html: { value: (@product.time_living.to_i / 60) }
 
 = f.input :autostart_status, collection: Product::AUTOSTART_STATUSES.collect{|status| [Product.human_autostart_status(status), status]}
 

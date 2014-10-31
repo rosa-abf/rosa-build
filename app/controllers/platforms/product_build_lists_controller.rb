@@ -59,7 +59,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
       redirect_to [@platform, @product]
     else
       flash[:error] = t('flash.product.build_error')
-      flash[:warning] = pbl.errors.full_messages.join('. ')
+      @product_build_list = pbl
       render action: :new
     end
   end

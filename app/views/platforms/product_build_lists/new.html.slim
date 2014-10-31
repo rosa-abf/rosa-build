@@ -1,0 +1,35 @@
+- set_meta_tags title: [title_object(@product), t('layout.product_build_lists.new')]
+= render 'submenu'
+
+
+.container.col-md-offset-2.col-md-8
+  .row
+    - pbl = @product_build_list
+    = simple_form_for @product_build_list, url: platform_product_product_build_lists_path(@platform, @product) do |f|
+      = f.input :project,
+        input_html: { value: pbl.project.name_with_owner },
+        disabled:   true
+      = f.input :project_version,
+        collection: versions_for_group_select(pbl.project)
+
+      = f.input :main_script
+      = f.input :params
+      = f.input :time_living, input_html: { value: (pbl.time_living.to_i / 60) }
+
+      = f.button :submit, t('layout.projects.build_button')
+
+  .row
+    hr
+    h4= t('layout.product_build_lists.work_env')
+    pre
+      i
+        = '/home/vagrant/iso_builder - '
+      = t('layout.product_build_lists.iso_builder_folder')
+    pre
+      i
+        = '/home/vagrant/results - '
+      = t('layout.product_build_lists.results_folder')
+    pre
+      i
+        = '/home/vagrant/archives - '
+      = t('layout.product_build_lists.archives_folder')
