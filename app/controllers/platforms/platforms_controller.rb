@@ -7,11 +7,14 @@ class Platforms::PlatformsController < Platforms::BaseController
   load_and_authorize_resource
 
   def index
-    @platforms = @platforms.accessible_by(current_ability, :related)
-    @platforms_count = @platforms.count
     respond_to do |format|
       format.html {}
-      format.json { @platforms = @platforms.paginate(page: current_page, per_page: Platform.per_page) }
+
+      format.json {
+        @platforms = @platforms.accessible_by(current_ability, :related)
+        @platforms_count = @platforms.count
+        @platforms = @platforms.paginate(page: current_page, per_page: Platform.per_page)
+      }
     end
   end
 
