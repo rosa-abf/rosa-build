@@ -13,7 +13,7 @@
           - %w(open closed).each do |status|
             - count_issues = "({{#{kind}_tab.filter.#{status}_count}})"
             %tab{ 'heading' => "#{t "layout.issues.statuses.#{status}"} #{count_issues}",
-                  'active' => "#{kind}_tab.status.#{status}.active",
+                  'active' => "#{kind}_tab.status == '#{status}'",
                   'ng-click' => "setIssuesStatus('#{kind}', '#{status}')" }
 
           .pull-right.boffset10
