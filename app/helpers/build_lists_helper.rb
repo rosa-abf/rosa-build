@@ -106,15 +106,39 @@ module BuildListsHelper
     end
   end
 
-  def build_list_version_link(bl, str_version = false)
+  def build_list_version_name(bl)
+    hash_size=5
+    if bl.commit_hash.present?
+      if bl.last_published_commit_hash.present? && bl.last_published_commit_hash != bl.commit_hash
+        "#{shortest_hash_id bl.last_published_commit_hash, hash_size}...#{shortest_hash_id bl.commit_hash, hash_size}"
+      else
+        shortest_hash_id(bl.commit_hash, hash_size)
+      end
+    else
+      bl.project_version
+    end
+  end
+
+  def get_build_list_version_path(bl)
+    if bl.commit_hash.present?
+      if bl.last_published_commit_hash.present? && bl.last_published_commit_hash != bl.commit_hash
+        diff_path(bl.project, bl.last_published_commit_hash) + "...#{bl.commit_hash}"
+      else
+        commit_path(bl.project, bl.commit_hash)
+      end
+    else
+      nil
+    end
+  end
+
+  def build_list_version_link(bl)
     hash_size=5
     if bl.commit_hash.present?
       if bl.last_published_commit_hash.present? && bl.last_published_commit_hash != bl.commit_hash
         link_to "#{shortest_hash_id bl.last_published_commit_hash, hash_size}...#{shortest_hash_id bl.commit_hash, hash_size}",
                 diff_path(bl.project, bl.last_published_commit_hash) + "...#{bl.commit_hash}"
       else
-        link_to str_version ? "#{shortest_hash_id bl.commit_hash, hash_size}" : shortest_hash_id(bl.commit_hash, hash_size),
-          commit_path(bl.project, bl.commit_hash)
+        link_to shortest_hash_id(bl.commit_hash, hash_size), commit_path(bl.project, bl.commit_hash)
       end
     else
       bl.project_version
@@ -164,6 +188,7 @@ module BuildListsHelper
   def new_build_list_data(build_list, project, params)
     res = {
             build_list_id:         params[:build_list_id],
+            name_with_owner:       project.name_with_owner,
             build_for_platform_id: params[:build_list].try(:[], :build_for_platform_id),
             save_to_repository_id: save_to_repository_id(params),
             project_version:       project_version(project, params),
@@ -176,7 +201,7 @@ module BuildListsHelper
             extra_repos:           extra_repos(params),
             extra_build_lists:     extra_build_lists(params),
             auto_create_container: default_auto_create_container(params, build_list),
-            auto_publish_status:   params[:build_list][:auto_publish_status]
+            auto_publish_status:   params[:build_list].try(:[], :auto_publish_status)
           }
     res.to_json
   end

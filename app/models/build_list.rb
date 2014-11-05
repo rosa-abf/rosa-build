@@ -6,6 +6,8 @@ class BuildList < ActiveRecord::Base
   include BuildListObserver
   include EventLoggable
 
+  self.per_page = 25
+
   belongs_to :project
   belongs_to :arch
   belongs_to :save_to_platform,   class_name: 'Platform'

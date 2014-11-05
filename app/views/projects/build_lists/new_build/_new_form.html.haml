@@ -8,14 +8,16 @@
       %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.save_to_repository',
         'ng-options' => 'r.name for r in newBuildCtrl.save_to_repositories track by r.id',
         'ng-change' =>  'newBuildCtrl.selectSaveToRepository()',
-        name:           'build_list[save_to_repository_id]' }
+        name:           'build_list[save_to_repository_id]',
+        required:       true }
 
       %h4= t 'activerecord.attributes.build_list.project_version'
       %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.project_version',
         'ng-options' => 'v.name group by v.kind for v in newBuildCtrl.project_versions track by v.name',
         'ng-change' =>  'newBuildCtrl.selectProjectVersion()',
         'ng-value' =>   'newBuildCtrl.project_version',
-        name:           'build_list[project_version]' }
+        name:           'build_list[project_version]',
+        required:       true }
 
       %h4= t 'activerecord.attributes.build_list.arch'
       .checkbox{ 'ng-repeat' => 'arch in newBuildCtrl.arches' }

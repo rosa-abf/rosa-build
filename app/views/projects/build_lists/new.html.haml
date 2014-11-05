@@ -2,5 +2,5 @@
 .container{ 'ng-controller' => 'NewBuildListController as newBuildCtrl', 'ng-cloak' => true }
   #new_form= render 'projects/build_lists/new_build/new_form', project: @project, build_list: @build_list
   %br
-  =# render 'last_build_lists', project: @project
+  = render 'projects/build_lists/new_build/last_build_lists', project: @project
   = render 'projects/base/submenu'

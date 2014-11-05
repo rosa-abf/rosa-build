@@ -7,7 +7,7 @@ NewBuildListController = (dataservice, $http) ->
     result.length is 1
 
   defaultSaveToRepository = ->
-    return null unless vm.save_to_repositories
+    return {} unless vm.save_to_repositories
     return vm.save_to_repositories[0] unless vm.save_to_repository_id
 
     result = _.select(vm.save_to_repositories, (e) ->
@@ -17,13 +17,14 @@ NewBuildListController = (dataservice, $http) ->
     result[0]
 
   defaultProjectVersion = ->
-    return null unless vm.project_versions
+    return {} unless vm.project_versions
 
     result = _.select(vm.project_versions, (e) ->
       e.name is vm.project_version_name
     )
     return vm.project_versions[0] if result.length is 0
     result[0]
+
 
   vm = this
 
@@ -44,7 +45,9 @@ NewBuildListController = (dataservice, $http) ->
           if pl.id isnt vm.build_for_platform_id
             r.checked = false
           if pl.id is vm.build_for_platform_id or
-             (!vm.is_build_for_main_platform and vm.project_version.name is pl.name)
+             (!vm.is_build_for_main_platform and
+              vm.project_version and
+              vm.project_version.name is pl.name)
             r.checked = true if r.name == 'main' or r.name == 'base'
         )
       )
@@ -138,8 +141,32 @@ NewBuildListController = (dataservice, $http) ->
     vm.selected_extra_build_list = null
     false
 
+  vm.updateFilterOwner = ->
+    vm.last_build_lists_filter.owner = !vm.last_build_lists_filter.owner;
+    vm.updateLastBuilds()
+
+  vm.updateFilterStatus = ->
+    vm.last_build_lists_filter.status = !vm.last_build_lists_filter.status;
+    vm.updateLastBuilds()
+
+  vm.updateLastBuilds = ->
+    path = Routes.list_project_build_lists_path(
+      {
+        name_with_owner: vm.name_with_owner,
+        page:            vm.last_build_lists_filter.page
+        owner_filter:    vm.last_build_lists_filter.owner
+        status_filter:   vm.last_build_lists_filter.status
+      }
+    )
+
+    $http.get(path).then (response) ->
+      vm.last_build_lists = response.data.build_lists
+      vm.total_items      = response.data.total_items
+    false
+
   init = (dataservice) ->
 
+    vm.name_with_owner            = dataservice.name_with_owner
     vm.build_for_platform_id      = dataservice.build_for_platform_id
     vm.platforms                  = dataservice.platforms
     vm.save_to_repositories       = dataservice.save_to_repositories
@@ -163,6 +190,10 @@ NewBuildListController = (dataservice, $http) ->
       vm.is_build_for_main_platform and platform.id isnt vm.build_for_platform_id
 
     vm.is_build_for_main_platform = isBuildForMainPlatform()
+
+    vm.last_build_lists           = []
+    vm.last_build_lists_filter    = { owner: true, status: true, page: 1 }
+    vm.updateLastBuilds()
 
   init(dataservice)
   vm.selectSaveToRepository() if !dataservice.build_list_id

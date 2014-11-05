@@ -185,11 +185,12 @@ class Projects::BuildListsController < Projects::BaseController
 
   def list
     @build_lists = @project.build_lists
-    @build_lists = @build_lists.paginate(page: page, per_page: per_page)
-    @total_build_lists = @build_lists.count
     @build_lists = @build_lists.where(user_id: current_user) if params[:owner_filter] == 'true'
     @build_lists = @build_lists.where(status: [BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH]) if params[:status_filter] == 'true'
-    @build_lists = @build_lists.order("build_lists.updated_at #{sort_dir}")
+
+    @total_build_lists = @build_lists.count
+
+    @build_lists = @build_lists.recent.paginate(page: current_page)
 
     render partial: 'build_lists_ajax', layout: false
   end
