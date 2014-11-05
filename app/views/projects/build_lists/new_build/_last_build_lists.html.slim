@@ -33,7 +33,7 @@ table.table
       td
         a[ ng-href = '{{ last.path }}' ] {{ last.id }}
         br
-        a[ ng-click = 'cloneBuildList(last.id)' ]= t 'layout.clone'
+        a[ ng-click = 'newBuildCtrl.cloneBuildList(last.id)' href = '#new_build_list' ]= t 'layout.clone'
       td[] {{ last.human_status }}
       td
         a[ ng-href = '{{ last.version.path }}' ] {{ last.version.name }}
@@ -47,4 +47,7 @@ table.table
         span[ am-time-ago = 'last.updated_at'
               title = "{{ last.updated_at | amDateFormat:'ddd, LLL' }}" ]
 
-= angularjs_paginate( per_page: BuildList.per_page )
+= angularjs_paginate( per_page:    BuildList.per_page,
+                      total_items: 'newBuildCtrl.total_items',
+                      page:        'newBuildCtrl.page',
+                      select_page: 'newBuildCtrl.goToPage(newBuildCtrl.page)' )

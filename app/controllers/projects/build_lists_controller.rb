@@ -1,5 +1,6 @@
 class Projects::BuildListsController < Projects::BaseController
   include FileStoreHelper
+  include BuildListsHelper
 
   layout 'bootstrap', only: [:index, :show, :new]
 
@@ -48,7 +49,7 @@ class Projects::BuildListsController < Projects::BaseController
 
   def new
     if params[:show] == 'inline' && params[:build_list_id].present?
-      render '_new_form', layout: false, locals: { project: @project, build_list: @build_list }
+      render json: new_build_list_data(@build_list, @project, params), layout: false
     else
       render :new
     end

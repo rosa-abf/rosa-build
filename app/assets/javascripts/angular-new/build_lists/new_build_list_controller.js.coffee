@@ -143,13 +143,13 @@ NewBuildListController = (dataservice, $http) ->
 
   vm.updateFilterOwner = ->
     vm.last_build_lists_filter.owner = !vm.last_build_lists_filter.owner;
-    vm.updateLastBuilds()
+    updateLastBuilds()
 
   vm.updateFilterStatus = ->
     vm.last_build_lists_filter.status = !vm.last_build_lists_filter.status;
-    vm.updateLastBuilds()
+    updateLastBuilds()
 
-  vm.updateLastBuilds = ->
+  updateLastBuilds = ->
     path = Routes.list_project_build_lists_path(
       {
         name_with_owner: vm.name_with_owner,
@@ -164,10 +164,27 @@ NewBuildListController = (dataservice, $http) ->
       vm.total_items      = response.data.total_items
     false
 
+  vm.goToPage = (page) ->
+    vm.last_build_lists_filter.page = page
+    updateLastBuilds()
+
+  vm.cloneBuildList = (id) ->
+    path = Routes.new_project_build_list_path(
+      {
+        name_with_owner: vm.name_with_owner,
+        build_list_id:   id,
+        show:            'inline'
+      }
+    )
+
+    $http.get(path).then (response) ->
+      init(response.data)
+      true
+
+
   init = (dataservice) ->
 
     vm.name_with_owner            = dataservice.name_with_owner
-    vm.build_for_platform_id      = dataservice.build_for_platform_id
     vm.platforms                  = dataservice.platforms
     vm.save_to_repositories       = dataservice.save_to_repositories
     vm.project_versions           = dataservice.project_versions
@@ -179,6 +196,8 @@ NewBuildListController = (dataservice, $http) ->
     vm.project_version            = defaultProjectVersion()
     vm.save_to_repository_id      = dataservice.save_to_repository_id
     vm.save_to_repository         = defaultSaveToRepository()
+    if vm.save_to_repository
+      vm.build_for_platform_id    = vm.save_to_repository.platform_id
 
     vm.default_extra_repos        = dataservice.default_extra_repos
     vm.extra_repositories         = dataservice.extra_repos
@@ -186,14 +205,15 @@ NewBuildListController = (dataservice, $http) ->
 
     vm.arches                     = dataservice.arches
 
+    vm.is_build_for_main_platform = isBuildForMainPlatform()
     vm.hidePlatform               = (platform) ->
       vm.is_build_for_main_platform and platform.id isnt vm.build_for_platform_id
 
-    vm.is_build_for_main_platform = isBuildForMainPlatform()
 
-    vm.last_build_lists           = []
-    vm.last_build_lists_filter    = { owner: true, status: true, page: 1 }
-    vm.updateLastBuilds()
+    if !vm.last_build_lists
+      vm.last_build_lists           = []
+      vm.last_build_lists_filter    = { owner: true, status: true, page: 1 }
+      updateLastBuilds()
 
   init(dataservice)
   vm.selectSaveToRepository() if !dataservice.build_list_id
