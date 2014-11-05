@@ -1,5 +1,5 @@
 atom_feed do |feed|
-  feed.title(t("layout.advisories.atom_title"))
+  feed.title t('layout.advisories.atom_title')
   feed.updated(@advisories.first.created_at) if @advisories.length > 0
 
   @advisories.each do |advisory|
