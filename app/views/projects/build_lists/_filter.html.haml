@@ -80,6 +80,6 @@
             -if @project and can?(:create, @project.build_lists.build)
               .btn-group
                 %button.btn.btn-default{ id: 'filter_new_build', type: 'button',
-                  onclick: "location.href='#{new_project_build_list_path(@project)}'",
-                  value: t('layout.build_lists.new_header') }
+                  onclick: "location.href='#{new_project_build_list_path(@project)}'" }
+                  = t('layout.build_lists.new_header')
           = hidden_field_tag :name_with_owner, @project.try(:name_with_owner)
