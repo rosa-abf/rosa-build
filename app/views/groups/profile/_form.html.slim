@@ -1,0 +1,6 @@
+- act = controller.action_name.to_sym
+- if [:new, :create].include? act
+  = f.input :uname
+= f.input :description, as: :text
+= render 'shared/avatar_form', subject: @group, f: f
+= f.button :submit, t('layout.save')

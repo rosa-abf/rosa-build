@@ -1,0 +1,39 @@
+-set_meta_tags title: [title_object(@group), t('layout.groups.edit')]
+
+= render 'groups/base/submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+    = simple_form_for @group,
+      url:              profile_group_path(@group),
+      wrapper:          :horizontal_form,
+      wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+
+      = render 'form', f: f
+
+  - if can? :destroy, @group
+    .row
+      hr
+      .alert.alert-danger
+        = t('layout.groups.delete_warning')
+      = link_to t('layout.delete'),
+        profile_group_path(@group),
+        method: :delete,
+        data: { confirm: t("layout.groups.confirm_delete") },
+        class: 'btn btn-danger'
+
+
+/ = form_for @group, url: profile_group_path(@group) do |f|
+/   = render "form", f: f
+
+/ .hr
+/ .groups-profile= image_tag('code.png')
+/ .groups-profile= link_to t("layout.groups.public_profile"), @group
+/ .both
+/ .hr
+/ .leftside= t("layout.groups.delete_warning")
+/ .rightside
+/   = link_to t("layout.delete"), profile_group_path(@group), method: :delete, data: { confirm: t("layout.groups.confirm_delete") }, class: 'button' if can? :destroy, @group
+/ .both
+
+/ - content_for :sidebar, render('sidebar')

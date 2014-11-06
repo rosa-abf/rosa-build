@@ -43,11 +43,24 @@ ru:
   activerecord:
     models:
       group: Группа
-    attributes:
+
+  simple_form:
+    labels:
       group:
-        name: Название
-        uname: Псевдоним
-        owner: Владелец
-        created_at: Создана
-        updated_at: Обновлена
-        description: Описание
+        uname:          Название
+        owner:          Владелец
+        created_at:     Создана
+        updated_at:     Обновлена
+        avatar:         Аватар
+        delete_avatar:  Удалить аватар
+        description:    Описание
+    placeholders:
+      group:
+        uname:          Введите название здесь.
+        description:    Введите описание здесь.
+    hints:
+      group:
+        uname:          Введите название группы.
+        description:    Введите описание группы.
+
+
