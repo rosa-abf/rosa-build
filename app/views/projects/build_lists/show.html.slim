@@ -490,4 +490,5 @@ div[class         = 'container col-md-offset-2 col-md-8'
 
     - if @build_list.new_core?
       hr
-      = render 'shared/build_results', subject: @build_list
+      .row
+        = render 'shared/build_results', subject: @build_list
