@@ -2,7 +2,7 @@ class Projects::BuildListsController < Projects::BaseController
   include FileStoreHelper
   include BuildListsHelper
 
-  layout 'bootstrap', only: [:index, :show, :new]
+  layout 'bootstrap', only: [:index, :show, :new, :create]
 
   NESTED_ACTIONS = [:index, :new, :create]
 
