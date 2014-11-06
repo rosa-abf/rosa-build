@@ -1,0 +1,63 @@
+- set_meta_tags title: [title_object(@build_list.project), t('activerecord.models.build_list')]
+
+= render 'submenu'
+
+.container.col-md-offset-2.col-md-8
+  h3
+    = t('.title')
+  .row
+    = simple_form_for @build_list,
+      url:              dependent_projects_build_list_path(@build_list),
+      html:             { method: :post },
+      wrapper:          :horizontal_form,
+      wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+
+      .col-md-6
+        .row
+          .col-sm-offset-3.col-sm-9
+            h4
+              = t('.projects')
+          - @build_list.packages.each do |package|
+            - dependent_projects(package).each do |project, packages|
+              .col-sm-offset-3.col-sm-9
+                .checkbox
+                  label
+                    input[type    = "checkbox"
+                          value   = 1
+                          name    = "build_list[projects][#{project.id}]"
+                          checked = true]
+                      = link_to project.name_with_owner, project_path(project.name_with_owner)
+                span.help-block
+                  => t('.packages')
+                  = packages * ', '
+      .col-md-6
+        .row
+          .col-sm-offset-3.col-sm-9
+            h4
+              = t('.architecture')
+          - arches = @build_list.build_for_platform.platform_arch_settings.by_default.pluck(:arch_id)
+          - Arch.recent.each do |arch|
+            .col-sm-offset-3.col-sm-9
+              .checkbox
+                label
+                  input[type    = 'checkbox'
+                        value   = 1
+                        name    = "build_list[arches][#{arch.id}]"
+                        checked = arches.include?(arch.id)]
+                    = arch.name
+        .row
+          .col-sm-offset-3.col-sm-9
+            h4
+              = t('.preferences')
+          = f.input :auto_publish_status, as: :boolean
+          = f.input :auto_create_container, as: :boolean
+          = f.input :include_testing_subrepository, as: :boolean
+          = f.input :use_cached_chroot, as: :boolean
+          = f.input :use_extra_tests, as: :boolean
+
+        .row
+          .col-sm-offset-3.col-sm-9
+            hr
+            => f.button :submit, t('layout.create')
+            a.btn.btn-primary href=build_list_path(@build_list)
+              = t('layout.cancel')
