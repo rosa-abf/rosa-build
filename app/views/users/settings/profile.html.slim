@@ -1,0 +1,22 @@
+- set_meta_tags title: t('.title')
+
+= render 'users/base/submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+    h3
+      = @user.uname
+
+    = simple_form_for @user,
+      url:              profile_settings_path,
+      wrapper:          :horizontal_form,
+      wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+
+      = render 'form', f: f
+
+  .row
+    hr
+    .alert.alert-danger
+      = t('layout.users.public_data_edit_warning')
+    .alert.alert-danger
+      = t('layout.avatars.avatar_notice')

@@ -1,8 +1,9 @@
 class Users::SshKeysController < Users::BaseController
+  layout 'bootstrap'
   skip_before_filter :find_user
 
   def index
-    @ssh_keys = current_user.ssh_keys
+    @ssh_key  = SshKey.new
   end
 
   def create
@@ -10,11 +11,12 @@ class Users::SshKeysController < Users::BaseController
 
     if @ssh_key.save
       flash[:notice] = t 'flash.ssh_keys.saved'
+      redirect_to ssh_keys_path
     else
       flash[:error] = t 'flash.ssh_keys.save_error'
-      flash[:warning] = @ssh_key.errors.full_messages.join('. ') unless @ssh_key.errors.blank?
+      # flash[:warning] = @ssh_key.errors.full_messages.join('. ') unless @ssh_key.errors.blank?
+      render :index
     end
-    redirect_to ssh_keys_path
   end
 
   def destroy

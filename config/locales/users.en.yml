@@ -55,3 +55,10 @@ en:
         avatar: Avatar
         avatar_file_size:  Avatar file size
         authentication_token: API token
+
+  simple_form:
+    labels:
+      user:
+        delete_avatar: Delete avatar
+    placeholders:
+      user:

@@ -1,0 +1,10 @@
+= f.input :avatar,
+  as:   :file,
+  hint: t("layout.avatars.avatar_with_size", max: number_to_human_size(Avatar::MAX_AVATAR_SIZE))
+
+.form-group
+  label.col-sm-3.control-label
+  .col-sm-9
+    = image_tag(avatar_url(subject, :medium))
+
+= f.input :delete_avatar, as: :boolean, input_html: { name: 'delete_avatar' }

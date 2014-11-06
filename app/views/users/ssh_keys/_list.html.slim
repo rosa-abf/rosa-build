@@ -1,0 +1,15 @@
+table.table.table-striped
+  thead
+    tr
+      th= t('ssh_keys')
+      th= t('layout.delete')
+  tbody
+    - current_user.ssh_keys.each do |key|
+      tr
+        td= "#{key.name} (#{key.fingerprint})"
+        td.buttons
+          = link_to ssh_key_path(key),
+            method: :delete,
+            data: { confirm: t('layout.confirm') } do
+
+            span.glyphicon.glyphicon-remove

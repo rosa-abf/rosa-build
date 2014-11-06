@@ -55,3 +55,10 @@ ru:
         avatar: Аватар
         avatar_file_size: Размер аватара
         authentication_token: API токен
+
+  simple_form:
+    labels:
+      user:
+        delete_avatar: Удалить аватар
+    placeholders:
+      user:

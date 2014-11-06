@@ -1,0 +1,7 @@
+h3
+  = t("layout.key_pairs.header")
+
+= simple_form_for @ssh_key, url: ssh_keys_path do |f|
+  = f.input :name
+  = f.input :key, as: :text
+  = f.button :submit, t('layout.save')

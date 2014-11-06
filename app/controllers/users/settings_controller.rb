@@ -1,5 +1,6 @@
 class Users::SettingsController < Users::BaseController
   include AvatarHelper
+  layout 'bootstrap'
   before_filter :set_current_user
 
   def profile

@@ -1,0 +1,25 @@
+- if current_user.admin?
+  = f.input :role,
+    collection:     User::ROLES,
+    input_html:     { name: 'role' },
+    include_blank:  false
+
+  - if @user.new_record?
+    = f.input :uname
+  = f.input :password
+  = f.input :password_confirmation
+
+= f.input :name
+= f.input :email
+= f.input :hide_email, as: :boolean
+= f.input :site
+= f.input :language, collection: User::LANGUAGES_FOR_SELECT, include_blank: false
+= f.input :company
+= f.input :location
+
+= render 'shared/avatar_form', subject: @user, f: f
+
+= f.input :professional_experience, as: :text
+= f.input :sound_notifications, as: :boolean
+
+= f.button :submit, t('layout.save')
