@@ -89,6 +89,7 @@ RosaABF.controller 'BuildListController', ['$scope', '$http', '$timeout', 'Sound
       $scope.updateUpdateType()
 
     $('#build_list_update_type .nonadvisoriable').attr('disabled', ($scope.attach_advisory != 'no'))
+    true
 
   $scope.updateUpdateType = ->
     params =
