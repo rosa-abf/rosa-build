@@ -246,6 +246,7 @@ div[class         = 'row'
         table.table.table-hover
           thead
             tr
+              th
               th= t('activerecord.attributes.build_list/package.fullname')
               th= t('activerecord.attributes.build_list/package.name')
               th= t('activerecord.attributes.build_list/package.epoch')
@@ -253,19 +254,19 @@ div[class         = 'row'
               th= t('activerecord.attributes.build_list/package.release')
           tbody
             tr ng-repeat-start='package in build_list.packages'
-              td.package
+              td
                 a.expand ng-show='package.dependent_projects'
-                  span.icon-chevron-up[
+                  span.fa.fa-chevron-up[
                     ng-show   = 'package.show_dependent_projects'
                     ng-click  = 'package.show_dependent_projects = false' ]
-                  span.icon-chevron-down[
+                  span.fa.fa-chevron-down[
                     ng-hide   = 'package.show_dependent_projects'
                     ng-click  = 'package.show_dependent_projects = true' ]
+              td
                 div ng-if='!package.url'
                   | {{package.fullname}}
                 a ng-if='package.url' ng-href="{{package.url}}"
                   | {{package.fullname}}
-
               td
                 | {{package.name}}
               td
@@ -275,10 +276,11 @@ div[class         = 'row'
               td
                 | {{package.release}}
 
-              tr[
+            tr[
                 ng-repeat-end = ''
                 ng-show       = 'package.show_dependent_projects'
                 ng-repeat     = 'project in package.dependent_projects' ]
+              td
               td
                 a ng-href="{{project.url}}"
                   | {{project.name}}
@@ -290,6 +292,6 @@ div[class         = 'row'
                   = t('layout.build_lists.create_build_list')
 
       - if @build_list.new_core?
-        hr
         .row
+          hr
           = render 'shared/build_results', subject: @build_list
