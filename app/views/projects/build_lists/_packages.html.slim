@@ -1,0 +1,51 @@
+.row ng-show='build_list.packages'
+  hr
+  h3
+    = t('layout.build_lists.packages_header')
+  table.table.table-hover
+    thead
+      tr
+        th
+        th= t('activerecord.attributes.build_list/package.fullname')
+        th= t('activerecord.attributes.build_list/package.name')
+        th= t('activerecord.attributes.build_list/package.epoch')
+        th= t('activerecord.attributes.build_list/package.version')
+        th= t('activerecord.attributes.build_list/package.release')
+    tbody
+      tr ng-repeat-start='package in build_list.packages'
+        td
+          a.expand ng-show='package.dependent_projects'
+            span.fa.fa-chevron-up[
+              ng-show   = 'package.show_dependent_projects'
+              ng-click  = 'package.show_dependent_projects = false' ]
+            span.fa.fa-chevron-down[
+              ng-hide   = 'package.show_dependent_projects'
+              ng-click  = 'package.show_dependent_projects = true' ]
+        td
+          div ng-if='!package.url'
+            | {{package.fullname}}
+          a ng-if='package.url' ng-href="{{package.url}}"
+            | {{package.fullname}}
+        td
+          | {{package.name}}
+        td
+          | {{package.epoch}}
+        td
+          | {{package.version}}
+        td
+          | {{package.release}}
+
+      tr[
+          ng-repeat-end = ''
+          ng-show       = 'package.show_dependent_projects'
+          ng-repeat     = 'project in package.dependent_projects' ]
+        td
+        td
+          a ng-href="{{project.url}}"
+            | {{project.name}}
+        td
+          p ng-repeat='package in project.dependent_packages'
+            | {{package}}
+        td colspan=3
+          a ng-href='{{project.new_url}}'
+            = t('layout.build_lists.create_build_list')
