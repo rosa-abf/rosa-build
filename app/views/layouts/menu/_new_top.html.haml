@@ -24,10 +24,11 @@
           %li
             .avatar= image_tag avatar_url(current_user), alt: 'avatar', class: 'img-responsive'
           %li.dropdown
-            %a.dropdown-toggle{ "data-toggle" => "dropdown", href: "#" }
+            %a.dropdown{ 'data-toggle' => 'dropdown', href: '#', id: 'userMenuLabel',
+                         'aria-haspopup' => 'true',  'aria-expanded' => 'false' }
               = current_user.uname
               %b.caret
-            %ul.dropdown-menu
+            %ul.dropdown-menu{ role: 'menu', 'aria-labelledby' => 'userMenuLabel' }
               %li= link_to current_user.uname, current_user
               %li= link_to t('layout.settings.label'), profile_settings_path
               %li.divider
