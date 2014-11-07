@@ -58,7 +58,3 @@ en:
       group:
         uname:          Enter the name here.
         description:    Enter the description here.
-    hints:
-      group:
-        description:    Enter the description of group.
-

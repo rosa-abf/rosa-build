@@ -5,9 +5,11 @@
 .container.col-md-offset-2.col-md-8
   .row
     = simple_form_for @group,
+      html:             { class: 'form-horizontal' },
       url:              profile_group_path(@group),
       wrapper:          :horizontal_form,
-      wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+      wrapper_mappings: { boolean: :horizontal_boolean,
+                          file:    :horizontal_file_input } do |f|
 
       = render 'form', f: f
 

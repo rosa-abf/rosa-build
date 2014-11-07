@@ -3,8 +3,10 @@
     h3
       = title t('layout.groups.new_header')
     = simple_form_for @group,
+      html:             { class: 'form-horizontal' },
       wrapper:          :horizontal_form,
-      wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+      wrapper_mappings: { boolean: :horizontal_boolean,
+                          file:    :horizontal_file_input } do |f|
 
       = render 'form', f: f
 
