@@ -2,7 +2,7 @@
   %img{ alt: 'avatar', src: presenter.image }
 .pull-left
   %strong= presenter.header
-  = "(#{datetime_moment(presenter.date, tag: :strong)})".html_safe
+  = datetime_moment(presenter.date, tag: :strong)
   .clearfix
   %span= presenter.caption
   - if presenter.expandable? and presenter.content?
