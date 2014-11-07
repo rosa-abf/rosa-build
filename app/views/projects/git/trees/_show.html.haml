@@ -31,8 +31,11 @@
           %a{ 'ng-href' => '{{el.node.url}}', 'ng-click' => 'getTree($event, el.node.path)' } {{el.node.name}}
         %td{ 'ng-show' => 'el.commit' }
           %a{ 'ng-href' => '{{el.commit.url}}' } {{el.commit.short_message}}
-        %td{ 'ng-show' => 'el.commit' }
-          %span{ 'am-time-ago' => 'el.commit.committed_date', title: "{{issue.committed_date | amDateFormat:'ddd, LLL'}}" }
+        %td{ 'ng-show' => 'el.commit',
+             title: '{{el.commit.committed_date | amDateFormat:\'YYYY-MM-DD HH:mm:ss UTC\'}}' }
+          {{ el.commit.committed_date | amDateFormat:'YYYY-MM-DD HH:mm' }} (
+          %span{ 'am-time-ago' => 'el.commit.committed_date' }
+          )
         %td{ 'ng-hide' => 'el.commit' }
         %td{ 'ng-hide' => 'el.commit' }
 
