@@ -35,6 +35,8 @@
 
 //= require zeroclipboard
 
+//= require lib/Chart
+
 //= require_self
 
 function setCookie (name, value, expires, path, domain, secure) {

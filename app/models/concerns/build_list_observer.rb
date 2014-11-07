@@ -11,7 +11,7 @@ module BuildListObserver
   def update_statistic
     Statistic.statsd_increment(
       activity_at:  Time.now,
-      key:          "build_list.#{status}",
+      key:          "#{Statistic::KEY_BUILD_LIST}.#{status}",
       project_id:   project_id,
       user_id:      user_id,
     ) if status_changed?

@@ -291,7 +291,7 @@ describe BuildList do
 
   end
 
-  describe '#can_publish?' do
+  context '#can_publish?' do
     let(:build_list) { FactoryGirl.create(:build_list) }
 
     before do
@@ -319,7 +319,7 @@ describe BuildList do
     end
   end
 
-  describe '#can_publish_into_testing?' do
+  context '#can_publish_into_testing?' do
     let(:build_list) { FactoryGirl.create(:build_list) }
 
     before do
@@ -334,6 +334,16 @@ describe BuildList do
     it 'returns false if branch invalid' do
       allow(build_list).to receive(:valid_branch_for_publish?).and_return(false)
       expect(build_list.can_publish_into_testing?).to be_false
+    end
+  end
+
+  context '#prepare_extra_params' do
+    let(:build_list) { FactoryGirl.build(:build_list) }
+
+    it 'removes unsafe symbols' do
+      build_list.extra_params = { 'build_rpm' => '--test \'001\' --define "cross armv7hl"{(@' }
+      build_list.send :prepare_extra_params
+      expect(build_list.extra_params['build_rpm']).to eq '--test 001 --define "cross armv7hl"'
     end
   end
 

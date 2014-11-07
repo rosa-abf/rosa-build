@@ -4,6 +4,13 @@ class AutocompletesController < ApplicationController
   autocomplete :group,  :uname
   autocomplete :user,   :uname
 
+  def autocomplete_user_or_group
+    results = []
+    results << User.opened.search(params[:term]).search_order.limit(5).pluck(:uname)
+    results << Group.search(params[:term]).search_order.limit(5).pluck(:uname)
+    render json: results.flatten.sort.map{ |r| { label: r } }
+  end
+
   def autocomplete_extra_build_list
     bl = BuildList.for_extra_build_lists(params[:term], current_ability, save_to_platform).first
     results << {  :id     => bl.id,

@@ -12,4 +12,10 @@ describe BuildListObserver do
     expect(build_list.started_at).to_not be_nil
   end
 
+  it 'updates styatistics' do
+    expect do
+      build_list
+    end.to change(Statistic, :count).by(1)
+  end
+
 end

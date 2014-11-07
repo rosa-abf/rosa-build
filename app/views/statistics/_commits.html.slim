@@ -1,0 +1,26 @@
+.row
+  .col-md-12
+    h3.text-info
+      = t('.header')
+
+.row
+  .col-md-8
+    .graph-wrapper
+      h4
+        span.graph-key-color1>
+        = t('.commits_title')
+      .text-center.graph-loading ng-show='loading'
+        = image_tag 'loading-large.gif'
+      .text-center.no-data ng-hide='loading || statistics.commits'
+        = t('.no_data')
+      canvas#commits_chart ng-show='statistics.commits'
+
+  .col-md-3
+    .panel-wrapper
+      h4
+        = t('.total_commits')
+      .panel-data
+        = image_tag 'loading-small.gif', ng_show: 'loading'
+        .no-data ng-hide='loading || statistics.commits.commits_count >= 0'
+          = t('.no_data')
+        | {{ statistics.commits.commits_count | number }}

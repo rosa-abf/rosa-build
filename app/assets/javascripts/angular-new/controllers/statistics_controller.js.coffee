@@ -20,6 +20,10 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
   ]
   $scope.charts                   = {}
 
+  $scope.dateOptions =
+    formatYear:   'yy'
+    startingDay:  1
+
   $('#users_or_groups').on 'autocompleteselect', (e) ->
     $timeout($scope.update, 100)
 
@@ -32,6 +36,18 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
 
     $scope.update()
     true
+
+  $scope.openRangeStart = ($event) ->
+    return if $scope.loading
+    $event.preventDefault()
+    $event.stopPropagation()
+    $scope.range_start_opened = true
+
+  $scope.openRangeEnd = ($event) ->
+    return if $scope.loading
+    $event.preventDefault()
+    $event.stopPropagation()
+    $scope.range_end_opened = true
 
   $scope.prepareRange = ->
     range_start = new Date($scope.range_start)

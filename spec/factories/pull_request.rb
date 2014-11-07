@@ -1,9 +1,9 @@
 FactoryGirl.define do
   factory :pull_request do
-    title { FactoryGirl.generate(:string) }
-    body { FactoryGirl.generate(:string) }
-    association :project, factory: :project
-    association :user, factory: :user
-    association :assignee, factory: :user
+    association :issue,         factory: :issue
+    association :from_project,  factory: :project
+    association :to_project,    factory: :project
+    from_ref  { FactoryGirl.generate(:string) }
+    to_ref    { FactoryGirl.generate(:string) }
   end
 end

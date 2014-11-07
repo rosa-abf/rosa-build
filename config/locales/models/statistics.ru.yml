@@ -9,18 +9,51 @@ ru:
       range_start_placeholder:                    "Выберите начальную дату"
       range_separator:                            " и "
       range_end_placeholder:                      "Выберите конечную дату"
-      no_data:                                    "Нет данных"
+
+      users_or_groups_label:                      "для пользователей или групп"
+      refresh:                                    "обновить"
+      users_or_groups_placeholder:                "Введите никнейм здесь."
 
     build_lists:
+      header:                                     "Сборочные листы"
       build_started_title:                        "Cобирается"
       success_title:                              "Cобрано"
       build_error_title:                          "Ошибка сборки"
       build_published_title:                      "Опубликовано"
 
-      total_build_started:                        "Всего собирается"
+      total_build_started:                        "Всего запущено"
       total_success:                              "Всего собрано"
       total_build_error:                          "Всего ошибок сборки"
       total_build_published:                      "Всего опубликовано"
+      no_data:                                    "Нет данных"
+
+    commits:
+      header:                                     "Коммиты"
+      commits_title:                              "Коммиты"
+      total_commits:                              "Всего коммитов"
+      no_data:                                    "Нет данных"
+
+    issues:
+      header:                                     "Задачи"
+      open_title:                                 "Открыто"
+      reopen_title:                               "Переоткрыто"
+      closed_title:                               "Закрыто"
+
+      total_open:                                 "Всего открыто"
+      total_reopen:                               "Всего переоткрыто"
+      total_closed:                               "Всего закрыто"
+      no_data:                                    "Нет данных"
+
+    pull_requests:
+      header:                                     "Пулл реквесты"
+      open_title:                                 "Открыто"
+      merged_title:                               "Принято"
+      closed_title:                               "Закрыто"
+
+      total_open:                                 "Всего открыто"
+      total_merged:                               "Всего принято"
+      total_closed:                               "Всего закрыто"
+      no_data:                                    "Нет данных"
 
     helper:
       period:

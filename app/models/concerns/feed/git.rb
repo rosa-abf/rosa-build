@@ -20,9 +20,9 @@ module Feed::Git
           last_commits, commits = [[record.newrev, record.message.truncate(70, omission: '…')]], []
           all_commits = last_commits
         else
-          commits = record.project.repo.commits_between(record.oldrev, record.newrev)
-          all_commits = commits.collect { |commit| [commit.sha, commit.message.truncate(70, omission: '…')] }
-          last_commits = all_commits.last(3).reverse
+          commits       = record.project.repo.commits_between(record.oldrev, record.newrev)
+          all_commits   = commits.collect { |commit| [commit.sha, commit.message.truncate(70, omission: '…')] }
+          last_commits  = all_commits.last(3).reverse
         end
 
         kind = 'git_new_push_notification'
@@ -32,7 +32,17 @@ module Feed::Git
           commits = commits[0...-3]
           options.merge!({other_commits_count: commits.count, other_commits: "#{commits[0].sha[0..9]}...#{commits[-1].sha[0..9]}"})
         end
-        Comment.create_link_on_issues_from_item(record, all_commits) if all_commits.count > 0
+
+        if all_commits.count > 0
+          Statistic.statsd_increment(
+            activity_at:  Time.now,
+            key:          Statistic::KEY_COMMIT,
+            project_id:   record.project.id,
+            user_id:      record.user.id,
+            counter:      all_commits.count
+          )
+          Comment.create_link_on_issues_from_item(record, all_commits)
+        end
       end
       options.merge!({user_id: record.user.id, user_name: record.user.name, user_email: record.user.email}) if record.user
 

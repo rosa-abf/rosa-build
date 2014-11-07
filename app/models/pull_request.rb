@@ -1,10 +1,40 @@
 class PullRequest < ActiveRecord::Base
-  STATUSES = %w(ready already blocked merged closed)
-  belongs_to :issue, autosave: true, dependent: :destroy, touch: true, validate: true
-  belongs_to :to_project, class_name: 'Project', foreign_key: 'to_project_id'
-  belongs_to :from_project, class_name: 'Project', foreign_key: 'from_project_id'
-  delegate :user, :user_id, :title, :body, :serial_id, :assignee, :status, :to_param,
-    :created_at, :updated_at, :comments, :status=, to: :issue, allow_nil: true
+  STATUSES = [
+    STATUS_OPEN     = 'open',
+    STATUS_READY    = 'ready',
+    STATUS_ALREADY  = 'already',
+    STATUS_BLOCKED  = 'blocked',
+    STATUS_MERGED   = 'merged',
+    STATUS_CLOSED   = 'closed'
+  ]
+
+  belongs_to :issue,
+              autosave:     true,
+              dependent:    :destroy,
+              touch:        true,
+              validate:     true
+
+  belongs_to :to_project,
+              class_name:   'Project',
+              foreign_key:  'to_project_id'
+
+  belongs_to :from_project,
+              class_name:   'Project',
+              foreign_key:  'from_project_id'
+
+  delegate  :user,
+            :user_id,
+            :title,
+            :body,
+            :serial_id,
+            :assignee,
+            :status,
+            :to_param,
+            :created_at,
+            :updated_at,
+            :comments,
+            :status=,
+            to: :issue, allow_nil: true
 
   validates :from_project, :to_project, presence: true
   validate :uniq_merge, if: ->(pull) { pull.to_project.present? }
@@ -19,9 +49,9 @@ class PullRequest < ActiveRecord::Base
   accepts_nested_attributes_for :issue
   attr_accessible :issue_attributes, :to_ref, :from_ref
 
-  scope :needed_checking, -> { includes(:issue).where(issues: {status: ['open', 'blocked', 'ready']}) }
-  scope :not_closed_or_merged, -> { needed_checking }
-  scope :closed_or_merged, -> { where(issues: {status: ['closed', 'merged']}) }
+  scope :needed_checking,       -> { includes(:issue).where(issues: { status: [STATUS_OPEN, STATUS_BLOCKED, STATUS_READY] }) }
+  scope :not_closed_or_merged,  -> { needed_checking }
+  scope :closed_or_merged,      -> { where(issues: { status: [STATUS_CLOSED, STATUS_MERGED] }) }
 
   state_machine :status, initial: :open do
     event :ready do
@@ -53,8 +83,8 @@ class PullRequest < ActiveRecord::Base
     FileUtils.mv path(old_from_project_name), path, force: true if old_from_project_name
     return unless Dir.exists?(path)
     Dir.chdir(path) do
-      system 'git', 'remote', 'set-url', 'origin', to_project.path
-      system 'git', 'remote', 'set-url', 'head', from_project.path if cross_pull?
+      system 'git', 'remote', 'set-url', 'origin',  to_project.path
+      system 'git', 'remote', 'set-url', 'head',    from_project.path if cross_pull?
     end
   end
   later :update_relations, queue: :middle
@@ -87,7 +117,7 @@ class PullRequest < ActiveRecord::Base
       new_status == 'already' ? (ready; merging) : send(new_status)
       self.update_inline_comments
     else
-      self.status = new_status == 'block' ? 'blocked' : new_status
+      self.status = new_status == 'block' ? STATUS_BLOCKED : new_status
     end
   end
 
@@ -140,7 +170,7 @@ class PullRequest < ActiveRecord::Base
 
   def set_user_and_time user
     issue.closed_at = Time.now.utc
-    issue.closer = user
+    issue.closer    = user
   end
 
   def self.check_ref(record, attr, value)
@@ -163,8 +193,7 @@ class PullRequest < ActiveRecord::Base
   end
 
   def repo
-    return @repo if @repo.present? #&& !id_changed?
-    @repo = Grit::Repo.new path
+    @repo ||= Grit::Repo.new(path)
   end
 
   def from_commit
@@ -243,6 +272,6 @@ class PullRequest < ActiveRecord::Base
 
   def set_add_data
     self.from_project_owner_uname = from_project.owner.uname
-    self.from_project_name = from_project.name
+    self.from_project_name        = from_project.name
   end
 end
