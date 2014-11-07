@@ -68,7 +68,8 @@
               %a{'ng-href' => '{{bl.user.url}}' } {{bl.user.fullname}}
 
             / updated_at
-            %td{'am-time-ago' => 'bl.updated_at', title: "{{bl.updated_at | amDateFormat:'ddd, LLL'}}"}
+            %td{ title: '{{bl.updated_at_utc}}' }
+              {{ bl.updated_at | amDateFormat:'YYYY-MM-DD HH:mm' }}
 
       = angularjs_paginate( per_page: 'params.per_page' )
 

@@ -13,7 +13,7 @@ div[class         = 'row'
         | {{build_list.human_status | i18n}}
 
     p.alert.alert-info.pull-right.submenu title = '{{build_list.updated_at_utc}}'
-      | {{ build_list.updated_at | amDateFormat:'llll' }} (
+      | {{ build_list.updated_at | amDateFormat:'ddd, D MMM YYYY, HH:mm' }} (
       span am-time-ago = 'build_list.updated_at'
       | )
 

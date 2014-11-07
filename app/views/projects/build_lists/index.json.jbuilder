@@ -11,7 +11,10 @@ json.build_lists @build_lists do |build_list|
   end
 
   json.version_release get_version_release(build_list)
-  json.updated_at build_list.updated_at
+
+  json.updated_at     build_list.updated_at
+  json.updated_at_utc build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
+
   users         |= [build_list.user]
   projects      |= [build_list.project]
   platforms     |= [build_list.build_for_platform, build_list.save_to_platform]
