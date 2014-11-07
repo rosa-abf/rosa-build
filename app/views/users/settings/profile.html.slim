@@ -11,7 +11,8 @@
       html:             { class: 'form-horizontal' },
       url:              profile_settings_path,
       wrapper:          :horizontal_form,
-      wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+      wrapper_mappings: { boolean: :horizontal_boolean,
+                          file:    :horizontal_file_input } do |f|
 
       = render 'form', f: f
 
