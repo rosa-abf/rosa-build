@@ -84,7 +84,8 @@ footer {
   display: none !important;
 }
 
-table tbody {
+table {
+  tbody {
     td.build-list-statuses {
         background: #FFF !important;
 
@@ -107,6 +108,11 @@ table tbody {
     tr.group-end td {
         border-bottom: 2px solid #125687;
     }
+  }
+
+  thead > tr > th.icon {
+    width: 12px;
+  }
 }
 
 table.table-borderless > tbody > tr > td,

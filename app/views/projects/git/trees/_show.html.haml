@@ -7,27 +7,36 @@
   %table.table.table-hover
     %thead
       %tr
-        %th= t 'layout.projects.filename'
-        %th.col-md-8= t 'layout.projects.message'
-        %th= t 'layout.projects.age'
+        %th.icon
+        %th.col-xs-3= t 'layout.projects.filename'
+        %th= t 'layout.projects.message'
+        %th.col-xs-3= t 'layout.projects.age'
+
     %tbody{ 'ng-hide' => 'processing' }
       %tr{ 'ng-show' => 'path' }
         %td
           %span= fa_icon 'folder', class: 'text-primary'
+        %td
           %a{ 'ng-href' => '{{root_path}}', 'ng-click' => 'getTree($event, root_path)' } ..
         %td &nbsp;
         %td &nbsp;
+
       %tr{ 'ng-repeat' => 'el in tree' }
         %td{ 'ng-show' => 'el.submodule && el.submodule.url' }
           %span= fa_icon 'folder-open', class: 'text-info'
+        %td{ 'ng-show' => 'el.submodule && el.submodule.url' }
           %a{ 'ng-href' => '{{el.submodule.url}}' } {{el.submodule.name}}
           @
           %a{ 'ng-href' => '{{el.submodule.tree_url}}' } {{el.submodule.id}}
+
+        %td{ 'ng-show' => 'el.is_submodule && !el.submodule.url' }
         %td{ 'ng-show' => 'el.is_submodule && !el.submodule.url' }
           {{el.submodule.name+' @ '+el.submodule.id}}
+
         %td{ 'ng-show' => '!el.submodule' }
           %span
             %i.fa.text-primary{ 'ng-class' => 'el.node.class_name' }
+        %td{ 'ng-show' => '!el.submodule' }
           %a{ 'ng-href'  => '{{el.node.url}}',
               'ng-click' => 'getTree($event, el.node.path)',
               'ng-show'  => '!el.node.is_blob' }
@@ -35,13 +44,16 @@
           %a{ 'ng-href'  => '{{el.node.url}}',
               'ng-show'  => 'el.node.is_blob' }
             {{el.node.name}}
+
         %td{ 'ng-show' => 'el.commit' }
           %a{ 'ng-href' => '{{el.commit.url}}' } {{el.commit.short_message}}
+
         %td{ 'ng-show' => 'el.commit',
              title: '{{el.commit.committed_date | amDateFormat:\'YYYY-MM-DD HH:mm:ss UTC\'}}' }
           {{ el.commit.committed_date | amDateFormat:'YYYY-MM-DD HH:mm' }} (
           %span{ 'am-time-ago' => 'el.commit.committed_date' }
           )
+
         %td{ 'ng-hide' => 'el.commit' }
         %td{ 'ng-hide' => 'el.commit' }
 
