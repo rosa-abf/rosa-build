@@ -1,10 +1,8 @@
 %h3= t("layout.projects.files_in_project")
 .files
-  .l= render 'whereami'
-  = render 'fork'
-.both
-
-.file
-  .top= render 'top'
-  .data= render "render_as_#{@blob.render_as}"
-
+  .pull-left= render 'whereami'
+  .pull-right= render 'fork'
+.clearfix
+.panel.panel-default
+  .panel-heading= render 'top'
+  .panel-body= render "render_as_#{@blob.render_as}"

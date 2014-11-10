@@ -1,11 +1,11 @@
-.l
+.pull-left
   = @blob.mode
   \|
   - if @blob.render_as == :text
     #{@blob.loc} lines (#{@blob.sloc} sloc)
     \|
   = number_to_human_size @blob.size
-.r
+.pull-right
   - if @blob.render_as == :text && can?(:write, @project) && @branch.present?
     = link_to "Edit", edit_blob_path(@project, @treeish, @path)
     \|
@@ -19,4 +19,4 @@
     = link_to "Blame", blame_path(@project, @treeish, @path)
     \|
   = link_to "History", commits_path(@project, @treeish, @path)
-.both
+.clearfix
