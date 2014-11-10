@@ -108,9 +108,9 @@ module GitHelper
   def blob_highlight(blob)
     return if blob.nil? || blob.data.blank?
     result = if blob.mime_type == 'text/rpm-spec'
-               Pygments.highlight blob.data, lexer: 'spec'
+               Pygments.highlight blob.data, lexer: 'spec', options: {linenos: true}
              else
-               blob.colorize
+               blob.colorize(options: {linenos: true, lineanchors: 'lc', linespans: 'ln', anchorlinenos: true})
              end
     result.present? ? result.html_safe : blob.data
   rescue MentosError, Yajl::ParseError => e

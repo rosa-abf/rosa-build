@@ -1,4 +1,6 @@
 class Projects::Git::BlobsController < Projects::Git::BaseController
+  layout 'bootstrap', only: [:show]
+
   before_filter :set_blob
   before_filter -> {authorize! :write, @project}, only: [:edit, :update]
 

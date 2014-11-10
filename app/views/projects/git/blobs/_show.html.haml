@@ -5,4 +5,5 @@
 .clearfix
 .panel.panel-default
   .panel-heading= render 'top'
-  .panel-body= render "render_as_#{@blob.render_as}"
+
+= render "render_as_#{@blob.render_as}"

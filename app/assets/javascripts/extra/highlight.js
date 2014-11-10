@@ -4,7 +4,7 @@ $(document).ready(function() {
     var hash = location.hash;
     if (/^#(diff|discussion)-F[0-9]+(L|R)[0-9]+/.test(hash)) {
       highlightDiff(hash);
-    } else if (/^#L[0-9]+/.test(hash)) {
+    } else if (/^#lc-[0-9]+/.test(hash)) {
       highlightShow(hash);
     }
   });
@@ -17,9 +17,9 @@ $(document).ready(function() {
 
 
 function highlightShow(id) {
-  $('.highlight-line').remove();
-  var from = to = id.substring(2);
-  if (/[0-9]+\-L[0-9]+$/.test(from)) {
+  $('td.code span.highlight-line').removeClass('highlight-line');
+  var from = to = id.substring(4);
+  if (/[0-9]+\-lc-[0-9]+$/.test(from)) {
     var index = to.indexOf('-');
     to    = to.substring(index + 2);
     from  = from.substring(0, index);
@@ -30,13 +30,13 @@ function highlightShow(id) {
     if (from > to) {
       var x = to; to = from; from = x;
     }
-    var el = $('#L' + from);
+    var el = $('#ln-' + from);
     $(document).scrollTop( el.offset().top );
     while (el.length > 0) {
-      el.append('<div class="highlight-line"></div>');
+      $('td.code span#ln-'+from).addClass('highlight-line');
       if (from == to) { return true; }
       from += 1;
-      el = $('#L' + from);
+      el = $('#ln-' + from);
     }
   }
 }

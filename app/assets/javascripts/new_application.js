@@ -36,6 +36,7 @@
 //= require zeroclipboard
 
 //= require lib/Chart
+//= require extra/highlight
 
 //= require_self
 

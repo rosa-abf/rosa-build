@@ -185,3 +185,22 @@ form#clone_url {
 p.navbar-text.navbar-right.current_branch {
   margin-right: 0;
 }
+
+#output.formatted {
+  overflow-x: auto;
+}
+
+table.highlighttable {
+  width: 100%;
+  max-width: 100%;
+
+  td.linenos {
+    min-width: 52px;
+    width: 2%;
+    cursor: pointer;
+  }
+
+  .highlight-line {
+    background-color: #FF9900;
+  }
+}
