@@ -12,7 +12,7 @@ else
   page = params[:page].to_i
 
   json.tree do
-    json.array!@project.tree_info(@tree, @treeish, @path, page).each do |node, node_path, commit|
+    json.array! @project.tree_info(@tree, @treeish, @path, page).each do |node, node_path, commit|
       if node.is_a? Grit::Submodule
         url = submodule_url(node, @treeish)
         json.submodule do
@@ -31,6 +31,7 @@ else
           else
             json.class_name 'fa-file-text-o'
             json.url        blob_path(*options)
+            json.is_blob    true
           end
           json.name         node.name
           json.path         node_path

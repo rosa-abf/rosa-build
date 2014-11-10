@@ -28,7 +28,13 @@
         %td{ 'ng-show' => '!el.submodule' }
           %span
             %i.fa.text-primary{ 'ng-class' => 'el.node.class_name' }
-          %a{ 'ng-href' => '{{el.node.url}}', 'ng-click' => 'getTree($event, el.node.path)' } {{el.node.name}}
+          %a{ 'ng-href'  => '{{el.node.url}}',
+              'ng-click' => 'getTree($event, el.node.path)',
+              'ng-show'  => '!el.node.is_blob' }
+            {{el.node.name}}
+          %a{ 'ng-href'  => '{{el.node.url}}',
+              'ng-show'  => 'el.node.is_blob' }
+            {{el.node.name}}
         %td{ 'ng-show' => 'el.commit' }
           %a{ 'ng-href' => '{{el.commit.url}}' } {{el.commit.short_message}}
         %td{ 'ng-show' => 'el.commit',
