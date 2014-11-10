@@ -36,6 +36,8 @@
 //= require zeroclipboard
 
 //= require lib/Chart
+//= require lib/bootstrap-typeahead
+//= require lib/custom-bootstrap-typeahead
 //= require extra/highlight
 
 //= require_self

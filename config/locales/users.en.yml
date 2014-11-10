@@ -59,6 +59,7 @@ en:
   simple_form:
     labels:
       user:
-        delete_avatar: Delete avatar
+        delete_avatar:  Delete avatar
     placeholders:
       user:
+        uname:          Enter the nickname here.

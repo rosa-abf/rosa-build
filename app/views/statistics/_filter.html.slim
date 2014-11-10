@@ -58,7 +58,15 @@
       .form-group>
         label.control-label>
           = t('.users_or_groups_label')
-        = autocomplete_field_tag 'users_or_groups', nil,autocomplete_user_or_group_autocompletes_path, multiple: true, 'data-delimiter' => ', ', ng_model: 'users_or_groups', placeholder: t('.users_or_groups_placeholder'), ng_disabled: 'loading', class: 'form-control'
+
+        input#users_or_groups[
+          name        = 'users_or_groups'
+          type        = 'text'
+          data-ajax   = autocomplete_user_or_group_autocompletes_path
+          ng-model    = 'users_or_groups'
+          placeholder = t('.users_or_groups_placeholder')
+          ng-disabled = 'loading'
+          class       = 'form-control typeahead' ]
 
       a href='#' ng-click='update()'
         b

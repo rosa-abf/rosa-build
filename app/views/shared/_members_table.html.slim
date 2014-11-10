@@ -33,9 +33,16 @@
 
 - if can? :add_member, editable_object
   hr
-  / TODO: autocomplete
-  = form_tag add_member_path do
-    .admin-search
-      = autocomplete_field_tag 'member_id', params[:member_id], autocomplete_user_uname_autocompletes_path, id_element: '#member_id_field'
+
+  = simple_form_for :user,  url:      add_member_path,
+                            html:     { class: 'form-inline' },
+                            wrapper:  :inline_form do |f|
+
     = hidden_field_tag 'member_id', nil, id: 'member_id_field'
-    = submit_tag t('layout.add'), class: 'button', data: {'disable-with' => t('layout.processing')}
+    = f.input :uname,
+      input_html: { 'data-ajax' =>  autocomplete_user_uname_autocompletes_path,
+                    'data-id'   =>  '#member_id_field',
+                    class:          'typeahead' }
+
+    | &nbsp;
+    = f.button :submit, t('layout.add')

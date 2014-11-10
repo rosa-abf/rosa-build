@@ -59,6 +59,7 @@ ru:
   simple_form:
     labels:
       user:
-        delete_avatar: Удалить аватар
+        delete_avatar:  Удалить аватар
     placeholders:
       user:
+        uname:          Введите никнейм здесь.
