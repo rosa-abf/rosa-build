@@ -6,36 +6,26 @@ class Groups::MembersController < Groups::BaseController
   end
 
   def update
-    params['user'].keys.each do |user_id|
-      role = params['user'][user_id]
-      if relation = @group.actors.where(actor_id: user_id, actor_type: 'User')
-        relation.update_all(role: role) if @group.owner.id.to_s != user_id
-      else
-        relation = @group.actors.build(actor_id: user_id, actor_type: 'User', role: role)
-        relation.save!
-      end
-    end if params['user']
-    if @group.save
-      flash[:notice] = t("flash.members.successfully_changed")
-    else
-      flash[:error] = t("flash.members.error_in_changing")
-    end
+    raise CanCan::AccessDenied if @group.owner_id.to_s == params[:member_id]
+
+    relation   = @group.actors.where(actor_id: params[:member_id], actor_type: 'User').first
+    relation ||= @group.actors.build(actor_id: params[:member_id], actor_type: 'User')
+    relation.role = params[:role]
+    relation.save!
+
+    flash[:notice] = t("flash.members.successfully_changed")
     redirect_to group_members_path(@group)
   end
 
   def remove
-    all_user_ids = []
-    params['user_remove'].each do |user_id, remove|
-      all_user_ids << user_id if remove == ["1"]
-    end if params['user_remove']
-    User.where(id: all_user_ids).each do |user|
+    User.where(id: params[:members]).each do |user|
       @group.remove_member(user)
     end
     redirect_to group_members_path(@group)
   end
 
   def add
-    @user = User.find_by uname: params[:user_uname]
+    @user = User.where(id: params[:member_id]).first
     if !@user
       flash[:error] = t("flash.collaborators.wrong_user", uname: params[:user_uname])
     elsif @group.add_member(@user, params[:role])

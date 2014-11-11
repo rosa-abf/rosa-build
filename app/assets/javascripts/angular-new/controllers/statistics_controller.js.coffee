@@ -24,9 +24,6 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
     formatYear:   'yy'
     startingDay:  1
 
-  $('#users_or_groups').on 'autocompleteselect', (e) ->
-    $timeout($scope.update, 100)
-
   $scope.init = ->
     $('#statistics-form .date_picker').datepicker
       'dateFormat': 'yy-mm-dd'

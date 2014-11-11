@@ -1,0 +1,12 @@
+-set_meta_tags title: [title_object(@group), t('layout.groups.members')]
+
+= render 'groups/base/submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+    = render 'shared/members_table',
+      remove_members_path:  remove_group_members_path(@group),
+      add_member_path:      add_group_members_path(@group),
+      members:              @members,
+      update_roles_path:    group_members_path(@group),
+      editable_object:      @group

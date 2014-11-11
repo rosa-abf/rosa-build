@@ -1,6 +1,5 @@
 class Groups::ProfileController < Groups::BaseController
   include AvatarHelper
-  layout 'bootstrap'
 
   load_and_authorize_resource class: Group, instance_name: 'group'
   skip_before_filter :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']

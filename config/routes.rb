@@ -169,9 +169,8 @@ Rosa::Application.routes.draw do
         put    :clear
         get    :clone
         get    :members
-        post   :remove_members # fixme: change post to delete
+        delete :remove_members
         post   :change_visibility
-        delete :remove_member
         post   :add_member
         post   :make_clone
         get    :advisories
@@ -198,8 +197,7 @@ Rosa::Application.routes.draw do
           get     :remove_project
           delete  :remove_project
           get     :projects_list
-          post    :remove_members # fixme: change post to delete
-          delete  :remove_member
+          delete  :remove_members
           post    :add_member
           put     :regenerate_metadata
           put     :sync_lock_file
@@ -229,7 +227,6 @@ Rosa::Application.routes.draw do
   resources :autocompletes, only: [] do
     collection do
       get :autocomplete_user_uname
-      get :autocomplete_group_uname
       get :autocomplete_extra_build_list
       get :autocomplete_extra_mass_build
       get :autocomplete_extra_repositories
@@ -267,8 +264,8 @@ Rosa::Application.routes.draw do
       delete :remove_user, on: :member
       resources :members, only: [:index] do
         collection do
-          post :add
-          post :update
+          post   :add
+          put    :update
           delete :remove
         end
       end

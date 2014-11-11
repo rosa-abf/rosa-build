@@ -53,11 +53,9 @@ module ProjectsHelper
   end
 
   def options_for_collaborators_roles_select
-    options_for_select(
-      Relation::ROLES.collect { |role|
-        [t("layout.collaborators.role_names.#{ role }"), role]
-      }
-    )
+    Relation::ROLES.map do |role|
+      [t("layout.collaborators.role_names.#{ role }"), role]
+    end
   end
 
   def visibility_icon(visibility)

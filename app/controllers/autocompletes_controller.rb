@@ -1,8 +1,6 @@
 class AutocompletesController < ApplicationController
   before_filter :authenticate_user!
 
-  autocomplete :group,  :uname
-
   def autocomplete_user_uname
     results = User.opened.search(params[:query]).search_order.limit(5)
     render json: results.map{ |u| { id: u.id, name: u.uname } }

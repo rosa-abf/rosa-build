@@ -36,14 +36,9 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_members
-    user_ids = params[:user_remove] ?
-      params[:user_remove].map{ |k, v| k if v.first == '1' }.compact : []
-    User.where(id: user_ids).each{ |user| @repository.remove_member(user) }
-    redirect_to edit_platform_repository_path(@platform, @repository)
-  end
-
-  def remove_member
-    User.where(id: params[:member_id]).each{ |user| @repository.remove_member(user) }
+    User.where(id: params[:members]).each do |user|
+      @repository.remove_member(user)
+    end
     redirect_to edit_platform_repository_path(@platform, @repository)
   end
 

@@ -70,7 +70,6 @@
     - if @platform.main?
       = render "shared/members_table",
         remove_members_path: remove_members_platform_repository_path(@platform, @repository),
-        remove_member_path: remove_member_platform_repository_path(@platform, @repository),
-        add_member_path: add_member_platform_repository_path(@platform, @repository),
-        members: @members,
-        editable_object: @repository
+        add_member_path:     add_member_platform_repository_path(@platform, @repository),
+        members:             @members,
+        editable_object:     @repository

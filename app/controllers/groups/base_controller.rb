@@ -1,4 +1,6 @@
 class Groups::BaseController < ApplicationController
+  layout 'bootstrap'
+
   before_filter :authenticate_user!
   before_filter :find_group
 
