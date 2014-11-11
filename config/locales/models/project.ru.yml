@@ -113,7 +113,7 @@ ru:
         updated_at: Обновлен
         has_issues: Включить трэкер
         has_wiki: Включить Wiki
-        srpm: Импортировать код из src.rpm (опционально)
+        srpm: Импортировать код из src.rpm
         who_owns:
           me: Я
           group: Группа
@@ -137,3 +137,6 @@ ru:
       project:
         name:       Введите название проекта здесь.
         owner:      Введите никнейм владельца здесь.
+    hints:
+      project:
+        srpm:       Опционально

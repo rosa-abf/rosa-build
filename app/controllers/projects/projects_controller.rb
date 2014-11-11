@@ -1,7 +1,7 @@
 class Projects::ProjectsController < Projects::BaseController
   include DatatableHelper
   include ProjectsHelper
-  layout 'bootstrap', only: [:index]
+  layout 'bootstrap', only: [:index, :new, :create]
   before_filter :authenticate_user!
   load_and_authorize_resource id_param: :name_with_owner # to force member actions load
   before_filter :who_owns, only: [:new, :create, :mass_import, :run_mass_import]
@@ -156,7 +156,7 @@ class Projects::ProjectsController < Projects::BaseController
     term, limit = params[:term], params[:limit] || 10
     items = User.member_of_project(@project)
                 .where("users.name ILIKE ? OR users.uname ILIKE ?", "%#{term}%", "%#{term}%")
-                .limit(limit).map { |u| {value: u.fullname, label: u.fullname, id: u.id} }
+                .limit(limit).map { |u| {name: u.fullname, id: u.id} }
     render json: items
   end
 

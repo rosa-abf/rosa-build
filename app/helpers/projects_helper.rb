@@ -84,4 +84,23 @@ module ProjectsHelper
     image, color = project.public? ? ['unlock-alt', 'text-success fa-fw'] : ['lock', 'text-danger fa-fw']
     fa_icon(image, class: color)
   end
+
+  def project_ownership_options
+    [
+      [ I18n.t('activerecord.attributes.project.who_owns.me'), 'me' ],
+      [ I18n.t('activerecord.attributes.project.who_owns.group'), 'group' ]
+    ]
+  end
+
+  def project_visibility_options
+    Project::VISIBILITIES.map do |v|
+      [ I18n.t("activerecord.attributes.project.visibilities.#{v}"), v ]
+    end
+  end
+
+  def project_owner_groups_options
+    Group.can_own_project(current_user).map do |g|
+      [ g.name, g.id ]
+    end
+  end
 end

@@ -1,0 +1,14 @@
+= f.input         :owner,
+  collection:     project_ownership_options,
+  include_blank:  false,
+  input_html:    { name:           'who_owns',
+                   'ng-model'   => 'owner',
+                   'ng-value'   => 'owner',
+                   'ng-change'  => 'OwnerChanged()' }
+
+= f.input         :owner_id,
+  label:          Group.model_name.human,
+  collection:     project_owner_groups_options,
+  include_blank:  false,
+  input_html:    { name:            'owner_id',
+                   'ng-disabled' => "owner == 'me'" }
