@@ -1,0 +1,13 @@
+h3.bpadding10= title t("layout.projects.new")
+
+.container
+  .row
+    .col-md-offset-2.col-md-8
+      = simple_form_for @project,  html:              { class: 'form-horizontal' },
+                                    wrapper:          :horizontal_form,
+                                    wrapper_mappings: { boolean: :horizontal_boolean,
+                                                        file:    :horizontal_file_input } do |f|
+        .col-sm-offset-3.col-sm-9
+          h3
+            = title t('layout.projects.new')
+        = render 'form', f: f

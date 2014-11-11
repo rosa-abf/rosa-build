@@ -113,7 +113,7 @@ en:
         updated_at: Updated on
         has_issues: Issues tracker enabled
         has_wiki:  Wiki enabled
-        srpm: Import code from src.rpm (optional)
+        srpm: Import code from src.rpm
         who_owns:
           me: Myself
           group: Group
@@ -137,3 +137,6 @@ en:
       project:
         name:       Enter the name of project here.
         owner:      Enter the nickname of owner here.
+    hints:
+      project:
+        srpm:       Optional

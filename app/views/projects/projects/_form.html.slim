@@ -1,0 +1,60 @@
+- act = controller.action_name.to_sym
+div ng-controller = 'ProjectFromController'
+  = f.input :name
+  = f.input :description, as: :text
+
+  - if [:new, :create].include? act
+    = render 'owner', f: f
+
+  = f.input         :visibility,
+    collection:     project_visibility_options,
+    include_blank:  false
+
+  = f.input :is_package, as: :boolean,
+    'ng-model'  => 'project.is_package',
+    'ng-change' => 'project.publish_i686_into_x86_64 = false'
+
+  = f.input :architecture_dependent, as: :boolean,
+    'ng-model' => 'project.architecture_dependent'
+
+  - unless [:new, :create].include? act
+    = f.input :publish_i686_into_x86_64, as: :boolean,
+      'ng-model' => 'project.publish_i686_into_x86_64',
+      'ng-show'  => 'project.is_package'
+
+  - if [:edit, :update].include? act
+    = f.input :default_branch,
+      collection: options_from_collection_for_select( @project.repo.branches,
+                                                      :name, :name, @project.default_branch)
+
+    = f.hidden_field :maintainer_id, value: @project.maintainer_id
+
+    .form-group ng-show = 'project.is_package'
+      label.control-label= t('.users_or_groups_label')
+
+      input.form-control.typeahead[
+        name        = 'project[maintainer_id]'
+        type        = 'text'
+        data-ajax   = autocomplete_maintainers_path(@project)
+        placeholder = t('.users_or_groups_placeholder')
+        ng-disabled = 'loading'
+      ]
+
+  - if [:new, :create].include? act
+    = f.input :srpm, as: :file
+
+  .col-sm-offset-3.col-sm-9
+    = f.button :submit, t('layout.save')
+
+- content_for :additional_scripts do
+  javascript:
+    RosaABF.controller('ProjectFromController', ['$scope', function($scope) {
+      $scope.project = {
+        is_package:               #{@project.is_package},
+        publish_i686_into_x86_64: #{@project.publish_i686_into_x86_64}
+      }
+      $scope.owner    = '#{@who_owns}';
+      $scope.OwnerChanged = function() {
+        var tmp = $scope.owner;
+      }
+    }]);
