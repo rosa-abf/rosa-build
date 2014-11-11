@@ -2,7 +2,6 @@ class AutocompletesController < ApplicationController
   before_filter :authenticate_user!
 
   autocomplete :group,  :uname
-  # autocomplete :user,   :uname
 
   def autocomplete_user_uname
     results = User.opened.search(params[:query]).search_order.limit(5)
@@ -10,7 +9,6 @@ class AutocompletesController < ApplicationController
   end
 
   def autocomplete_user_or_group
-    results = []
     results << User.opened.search(params[:query]).search_order.limit(5).pluck(:uname)
     results << Group.search(params[:query]).search_order.limit(5).pluck(:uname)
     render json: results.flatten.sort.map{ |r| { id: r, name: r } }

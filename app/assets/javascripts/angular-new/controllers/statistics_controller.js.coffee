@@ -58,20 +58,12 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
       $scope.range_start  = $scope.range_end
       $scope.range_end    = tmp
 
-  # $scope.prepareUsersOrGroups = ->
-  #   if $scope.users_or_groups
-  #     items = _.uniq $('#users_or_groups').val().replace(/\s/g, '').split(/,/)
-  #     items = _.reject items, (i) ->
-  #       _.isEmpty(i)
-  #     $scope.users_or_groups = _.first(items, 3).join(', ') + ', '
-
   $scope.update = ->
     return if $scope.loading
     $scope.loading    = true
     $scope.statistics = {}
 
     $scope.prepareRange()
-    # $scope.prepareUsersOrGroups()
     $('.doughnut-legend').remove()
 
     params = 

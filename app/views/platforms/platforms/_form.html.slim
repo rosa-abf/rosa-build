@@ -14,13 +14,13 @@
 
 - unless @platform.personal?
   = f.input :released, as: :boolean
-  / TODO: autocomplete
-  = f.input :admin_id,
-    url:        autocomplete_user_uname_autocompletes_path,
-    as:         :autocomplete,
-    id_element: '#admin_id_field',
-    input_html: { value:  @admin_uname, class: 'form-control' }
+
   = hidden_field_tag 'admin_id', @admin_id, id: 'admin_id_field'
+  = f.input :admin_id,
+    input_html: { 'data-ajax' =>  autocomplete_user_uname_autocompletes_path,
+                  'data-id'   =>  '#admin_id_field',
+                  value:          @admin_uname,
+                  class:          'typeahead' }
 
 - if %w(edit update).include? controller.action_name
 
@@ -41,7 +41,7 @@
     table.table
       thead
         tr
-          th.lpadding16= t("activerecord.models.arch")
+          th.lpadding16= t("activerecord.models.arch.name")
           th.lpadding16= t("activerecord.attributes.platform_arch_setting.default")
           th.lpadding16= t("activerecord.attributes.platform_arch_setting.time_living")
       tbody

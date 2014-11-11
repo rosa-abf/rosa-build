@@ -1,16 +1,33 @@
 = f.input :name
 = f.input :description, as: :text
 
-/ TODO: autocomplete + project_version
-= f.input :project,
-  url:        autocomplete_project_platform_products_path(@platform),
-  as:         :autocomplete,
-  id_element: '#src_project_id',
-  input_html: { value:  @product.project.try(:name_with_owner),
-                name:   'src_project',
-                class:  'form-control' }
+= f.input :project_id, as: :string,
+  input_html: { 'data-ajax' =>  autocomplete_project_platform_products_path(@platform),
+                value:          @product.project.try(:name_with_owner) }
+= hidden_field_tag 'product[project_id]', @product.project_id, id: 'src_project_id'
 
-= f.input :project_version, collection: versions_for_group_select(@product.project)
+- content_for :additional_scripts do
+  coffee:
+    product_projects = []
+
+    $('#product_project_id').typeahead
+      val:          'data'
+      ajax:
+        url:        $('#product_project_id').data('ajax')
+        preProcess: (data) ->
+          product_projects = data
+      onSelect:     (i) ->
+        $('#src_project_id').val i.value
+        project = _.find product_projects, (p) ->
+          p.id.toString() == i.value
+        if project
+          $('#product_project_version').html project.project_versions
+
+= f.input :project_version,
+  as:             :grouped_select,
+  collection:     versions_for_group_select(@product.project),
+  group_method:   :last,
+  include_blank:  false
 
 = f.input :main_script
 = f.input :params

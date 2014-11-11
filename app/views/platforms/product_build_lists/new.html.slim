@@ -9,8 +9,12 @@
       = f.input :project,
         input_html: { value: pbl.project.name_with_owner },
         disabled:   true
+
       = f.input :project_version,
-        collection: versions_for_group_select(pbl.project)
+        as:             :grouped_select,
+        collection:     versions_for_group_select(pbl.project),
+        group_method:   :last,
+        include_blank:  false
 
       = f.input :main_script
       = f.input :params
