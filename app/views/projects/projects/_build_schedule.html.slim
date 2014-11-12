@@ -1,0 +1,28 @@
+.col-sm-9.col-sm-offset-3[ ng-controller = 'ProjectScheduleController'
+                           ng-init       = "name_with_owner = '#{@project.name_with_owner}'"
+                           ng-cloak      = 'true' ]
+
+  h3= t("layout.projects.build_schedule")
+
+  => t('activerecord.attributes.project.autostart_status')
+
+  select[ ng-options = 'k as (v | i18n) for (k, v) in statuses'
+          ng-model   = 'autostart_status'
+          ng-change  = 'updateStatus()'
+          ng-init    = "autostart_status = '#{@project.autostart_status}'" ]
+    option[ value = '' ]
+
+  table.table.table-condensed.offset20
+    thead
+      tr
+        th= t('activerecord.attributes.repository.name')
+        th= t('activerecord.attributes.build_list.auto_publish_status')
+        th= t('activerecord.attributes.project_to_repository.enabled')
+    tbody[ ng-init = "items = #{available_project_to_repositories(@project)}" ]
+      tr[ ng-repeat = "item in items" ]
+        td
+          a[ ng-href = '{{item.repository_path}}' ] {{item.repository_name}}
+        td
+          input[ type = 'checkbox' ng-model = "item.auto_publish" ng-change = 'updateSchedule(item)' ]
+        td
+          input[ type = 'checkbox' ng-model = "item.enabled"      ng-change = 'updateSchedule(item)' ]

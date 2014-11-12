@@ -1,5 +1,5 @@
 - act = controller.action_name.to_sym
-div ng-controller = 'ProjectFromController'
+div ng-controller = 'ProjectFromController' ng-cloak = 'true'
   = f.input :name
   = f.input :description, as: :text
 
@@ -10,35 +10,37 @@ div ng-controller = 'ProjectFromController'
     collection:     project_visibility_options,
     include_blank:  false
 
+  - if [:edit, :update].include? act
+    = f.input :default_branch,
+      collection: @project.repo.branches.map(&:name),
+      selected: @project.default_branch
+
   = f.input :is_package, as: :boolean,
-    'ng-model'  => 'project.is_package',
-    'ng-change' => 'project.publish_i686_into_x86_64 = false'
+    input_html: { 'ng-model'  => 'project.is_package',
+                  'ng-change' => 'project.publish_i686_into_x86_64 = false' }
 
   = f.input :architecture_dependent, as: :boolean,
-    'ng-model' => 'project.architecture_dependent'
+    wrapper_html: { 'ng-show'  => 'project.is_package' }
 
   - unless [:new, :create].include? act
     = f.input :publish_i686_into_x86_64, as: :boolean,
-      'ng-model' => 'project.publish_i686_into_x86_64',
-      'ng-show'  => 'project.is_package'
+      wrapper_html: { 'ng-show'  => 'project.is_package' },
+      input_html:   { 'ng-model' => 'project.publish_i686_into_x86_64' }
 
   - if [:edit, :update].include? act
-    = f.input :default_branch,
-      collection: options_from_collection_for_select( @project.repo.branches,
-                                                      :name, :name, @project.default_branch)
-
     = f.hidden_field :maintainer_id, value: @project.maintainer_id
 
     .form-group ng-show = 'project.is_package'
-      label.control-label= t('.users_or_groups_label')
+      label.control-label.col-sm-3= Project.human_attribute_name :maintainer
 
-      input.form-control.typeahead[
-        name        = 'project[maintainer_id]'
-        type        = 'text'
-        data-ajax   = autocomplete_maintainers_path(@project)
-        placeholder = t('.users_or_groups_placeholder')
-        ng-disabled = 'loading'
-      ]
+      .col-sm-9
+        input.form-control.typeahead[
+          name        = 'project[maintainer_id]'
+          type        = 'text'
+          data-ajax   = autocomplete_maintainers_path(@project)
+          ng-disabled = 'loading'
+          data-id     = '#project_maintainer_id'
+          value       = @project.maintainer.try(:fullname) ]
 
   - if [:new, :create].include? act
     = f.input :srpm, as: :file
