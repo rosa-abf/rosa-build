@@ -1,0 +1,18 @@
+= hidden_field_tag 'hook[name]', @hook.name
+- Hook::SCHEMA[@hook.name.to_sym].each do |type, field|
+  - name, value = "hook[data][#{field}]", @hook.data[field]
+  .form-group
+    - if type != :boolean
+      label.control-label.col-sm-3
+        = t("activerecord.attributes.hook.data.#{field}")
+      .col-sm-9
+        - if type == :password
+          = password_field name, value, class: 'form-control'
+        - else
+          = text_field_tag name, value, class: 'form-control'
+    - else
+      .col-sm-offset-3.col-sm-9
+        .checkbox
+          label
+            = check_box_tag name, value, 1
+            = t("activerecord.attributes.hook.data.#{field}")

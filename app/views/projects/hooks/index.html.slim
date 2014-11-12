@@ -1,0 +1,25 @@
+-set_meta_tags title: [title_object(@project), t('layout.projects.hooks')]
+= render 'submenu'
+
+.container
+  .row
+    .col-md-offset-2.col-md-8= render 'settings_menu'
+    .col-md-6.col-md-offset-3
+      h1= t('layout.projects.hooks')
+
+      table.table
+        thead
+          tr
+            th= t('attributes.name')
+            th
+        tbody
+          - Hook::NAMES.each do |name|
+            tr
+              td
+                = link_to project_hooks_path(@project, name: name) do
+                  = t("layout.hooks.services.#{name}")
+                  = "(#{@hooks.where(name: name).count})"
+              td
+                = link_to t('layout.create'),
+                          new_project_hook_path(@project, hook: {name: name}),
+                          class: 'btn btn-primary pull-right'

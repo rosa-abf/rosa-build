@@ -1,0 +1,36 @@
+-set_meta_tags title: [title_object(@project), t('layout.projects.hooks')]
+= render 'submenu'
+
+.container
+  .row
+    .col-md-offset-2.col-md-8= render 'settings_menu'
+    .col-md-6.col-md-offset-3
+
+      h1
+        = t("layout.hooks.services.#{@name}")
+
+      = link_to t('layout.create'),
+                new_project_hook_path(@project, hook: {name: @name}),
+                class: 'btn btn-primary boffset20'
+      .clearfix
+
+
+      - @hooks.all.each do |hook|
+        - schema = Hook::SCHEMA[hook.name.to_sym]
+        - hook.data.each do |field, value|
+          .col-sm-3= t("activerecord.attributes.hook.data.#{field}")
+          .col-sm-9
+            - if schema.find{ |type, attr| type == :password && field.to_sym == attr }
+              = '******'
+            - else
+              = value
+          .clearfix.boffset10
+
+        .col-sm-9.col-sm-offset-3.offset10
+          = link_to t('layout.edit'), edit_project_hook_path(@project, hook),
+                    class: 'btn btn-primary roffset5'
+          = link_to t('layout.delete'), project_hook_path(@project, hook), method: :delete,
+            data: { confirm: t('layout.confirm') }, class: 'btn btn-primary'
+        hr.col-sm-12
+        .clearfix
+
