@@ -1,5 +1,6 @@
 class Groups::ProfileController < Groups::BaseController
   include AvatarHelper
+  include PaginateHelper
 
   load_and_authorize_resource class: Group, instance_name: 'group'
   skip_before_filter :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
@@ -10,20 +11,23 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
-    @path, page = group_path(@group), params[:page].to_i
-    @projects = @group.own_projects.search(params[:search]).recent
-    if request.xhr?
-      if params[:visibility] != 'hidden'
-        @projects = @projects.opened
-        @hidden = true
-      else
-        @projects = @projects.by_visibilities('hidden').accessible_by(current_ability, :read)
+    respond_to do |format|
+      format.html do
+        @members = @group.members.order(:uname)
       end
-      render partial: 'shared/profile_projects', layout: nil, locals: {projects: paginate_projects(page)}
-    else
-      @projects = @projects.opened
-      @projects = paginate_projects(page)
+      format.json do
+        @projects = @group.own_projects.search(params[:term]).recent
+        case params[:visibility]
+        when 'hidden'
+          @projects = @projects.by_visibilities('hidden').accessible_by(current_ability, :read)
+        else
+          @projects = @projects.opened
+        end
+        @total_items  = @projects.count
+        @projects     = @projects.paginate(paginate_params)
+      end
     end
+
   end
 
   def new

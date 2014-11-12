@@ -1,0 +1,73 @@
+- set_meta_tags title: title_object(@group)
+
+= render 'groups/base/submenu'
+
+.row
+  .col-md-2.col-md-offset-1
+    - size = User::AVATAR_SIZES[:big]
+    = image_tag avatar_url(@group, :big),
+      alt: @group.uname, height: size, width: size
+  .col-md-8
+      h2
+        = @group.uname
+      h4
+        = t('activerecord.attributes.group.description')
+      p
+        = @group.description
+hr
+.row
+  .col-md-8.col-md-offset-1 ng-controller='Groups::ProfileController'
+
+    = simple_form_for :project, html: { 'ng-submit' => 'search()', id: 'search_projects_form' } do |f|
+      = hidden_field_tag 'group_uname', @group.uname
+      = hidden_field_tag 'page'
+
+      .row
+        - if current_user
+          .col-md-2
+
+            = f.input :visibility,
+              label:          false,
+              collection:     project_visibility_options,
+              include_blank:  false,
+              input_html:     { ng_model: 'visibility' }
+        .col-md-5
+          = f.input :name,
+            label:          false,
+            input_html:     { ng_model: 'term' }
+
+        .col-md-5
+          => f.button :submit, t('layout.search.header')
+          => t('layout.or')
+          a href=group_path(@group)
+            = t('layout.clear')
+    hr
+
+    table.table.table-striped ng-show='!processing'
+      thead
+        tr
+          th
+      tbody
+        tr ng-repeat='project in projects'
+          td
+            h4
+              a ng-href='project.path'
+                | {{project.name}}
+            p
+              | {{project.description}}
+
+    = angularjs_paginate
+
+
+  .col-md-2
+    .panel.panel-default
+      .panel-heading
+        b
+          = t('layout.collaborators.members')
+      .panel-body
+        - size = User::AVATAR_SIZES[:micro]
+        - @members.each do |member|
+          p
+            => image_tag avatar_url(member, :micro), alt: member.uname, height: size, width: size
+            = link_to member.uname.truncate(20), member
+
