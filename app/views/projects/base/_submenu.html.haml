@@ -38,7 +38,7 @@
               = link_to t('project_menu.wiki'), project_wiki_index_path(@project)
           %li=# link_to t('project_menu.readme'), '#' #pending
           - if can? :update, @project
-            %li{ class: ('active' if act == :edit && contr == :projects) }
+            %li{ class: ('active' if act.in?(%i[edit update sections]) && contr == :projects) }
               = link_to t('project_menu.settings'), edit_project_path(@project)
       / /.navbar-collapse
     / /.container-fluid

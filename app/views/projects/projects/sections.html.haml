@@ -1,25 +1,20 @@
 -set_meta_tags title: [title_object(@project), t('layout.projects.sections')]
 = render 'submenu'
-= render 'sidebar'
 
-= form_for @project, url: sections_project_path(@project), method: :post, html: { class: :form, multipart: true } do |f|
-  .leftside.w25
-    %span.niceCheck-main{onclick: "changeCheck(this)"}= f.check_box :has_issues
-  .leftside.w420
-    = t("activerecord.attributes.project.has_issues")
-    %br
-    %span{style: "font-size: 11px;"}= t("layout.projects.has_issue_description")
-  .both
-  .leftside.w25
-    %span.niceCheck-main{onclick: "changeCheck(this)"}= f.check_box :has_wiki, class: 'niceCheck-main'
-  .leftside.w420
-    = t("activerecord.attributes.project.has_wiki")
-    %br
-    %span{style: "font-size: 11px;"}= t("layout.projects.has_wiki_description")
-  .both
-  .padd25= submit_tag t('layout.save'), class: 'button', data: {'disable-with' => t('layout.saving')}
-  .both
+.container.col-md-offset-2.col-md-8
+  .row
+    = render 'settings_menu'
 
-:javascript
-  // TODO: Replace this temporary hack by something more true
-  $('.right').addClass('bigpadding');
+    = simple_form_for @project, url:              sections_project_path(@project),
+                                html:             { class: 'form-horizontal' },
+                                wrapper:          :horizontal_form,
+                                wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+
+      = f.input :has_issues, as: :boolean,
+        hint: t('layout.projects.has_issue_description')
+
+      = f.input :has_wiki, as: :boolean,
+        hint: t('layout.projects.has_wiki_description')
+
+      .col-sm-offset-3.col-sm-9
+        = f.button :submit, t('layout.save'), data: {'disable-with' => t('layout.saving')}

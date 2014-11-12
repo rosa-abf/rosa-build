@@ -1,7 +1,7 @@
 class Projects::ProjectsController < Projects::BaseController
   include DatatableHelper
   include ProjectsHelper
-  layout 'bootstrap', only: [:index, :new, :create, :edit, :update]
+  layout 'bootstrap', only: [:index, :new, :create, :edit, :update, :sections]
   before_filter :authenticate_user!
   load_and_authorize_resource id_param: :name_with_owner # to force member actions load
   before_filter :who_owns, only: [:new, :create, :mass_import, :run_mass_import]
@@ -130,7 +130,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def sections
-    if request.post?
+    if request.patch?
       if @project.update_attributes(params[:project])
         flash[:notice] = t('flash.project.saved')
         redirect_to sections_project_path(@project)

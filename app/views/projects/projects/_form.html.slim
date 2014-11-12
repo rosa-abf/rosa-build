@@ -46,7 +46,7 @@ div ng-controller = 'ProjectFromController' ng-cloak = 'true'
     = f.input :srpm, as: :file
 
   .col-sm-offset-3.col-sm-9
-    = f.button :submit, t('layout.save')
+    = f.button :submit, t('layout.save'), data: {'disable-with' => t('layout.saving')}
 
 - content_for :additional_scripts do
   javascript:
