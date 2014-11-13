@@ -7,7 +7,7 @@ html
     = display_meta_tags site: APP_CONFIG['project_name'], reverse: true, separator: '-'
     - if user_signed_in?
       = auto_discovery_link_tag :atom, atom_activity_feeds_path(format: 'atom', token: current_user.authentication_token), title: t("layout.atom_link_tag_title", nickname: current_user.uname, app_name: APP_CONFIG['project_name'])
-    == stylesheet_link_tag 'new_application'
+    == stylesheet_link_tag 'new_application', cache: 'application'
 
   body[ ng-app='RosaABF' ng-controller='RosaABFController'
         ng-init="init('#{I18n.locale}', #{!!current_user.try(:sound_notifications)})" ]
@@ -28,8 +28,8 @@ html
     article.container-fluid.offset20
       == yield
     == render 'layouts/menu/new_bottom'
-    == javascript_include_tag 'new_application'
+    == javascript_include_tag 'new_application', cache: 'application'
     - if I18n.locale == :ru
-      == javascript_include_tag 'moment/ru.js'
-      == javascript_include_tag 'angular-locale_ru-ru'
+      == javascript_include_tag 'moment/ru.js', cache: 'moment'
+      == javascript_include_tag 'angular-locale_ru-ru', cache: 'angular-locale'
     == yield :additional_scripts if content_for?(:additional_scripts)
