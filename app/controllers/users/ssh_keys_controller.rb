@@ -1,6 +1,6 @@
 class Users::SshKeysController < Users::BaseController
   layout 'bootstrap'
-  skip_before_filter :find_user
+  before_filter :set_current_user
 
   def index
     @ssh_key  = SshKey.new
@@ -28,4 +28,5 @@ class Users::SshKeysController < Users::BaseController
     end
     redirect_to ssh_keys_path
   end
+
 end
