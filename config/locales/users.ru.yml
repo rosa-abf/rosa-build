@@ -56,6 +56,18 @@ ru:
         avatar_file_size: Размер аватара
         authentication_token: API токен
 
+  users:
+    profile:
+      projects:
+        visibilities:
+          all:          Все
+          open:         Публичный
+          hidden:       Приватный
+        search:         Искать
+        or:             или
+        clear:          Очистить
+        updated:        "Обновлен:"
+
   simple_form:
     labels:
       user:

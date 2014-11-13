@@ -11,10 +11,12 @@ class Users::ProfileController < Users::BaseController
       format.json do
         @projects = @user.own_projects.search(params[:term]).recent
         case params[:visibility]
+        when 'open'
+          @projects = @projects.opened
         when 'hidden'
           @projects = @projects.by_visibilities('hidden').accessible_by(current_ability, :read)
         else
-          @projects = @projects.opened
+          @projects = @projects.accessible_by(current_ability, :read)
         end
         @total_items  = @projects.count
         @projects     = @projects.paginate(paginate_params)

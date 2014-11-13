@@ -7,7 +7,7 @@ RosaABF.controller 'ProfileController', ['$scope', '$http', '$location', ($scope
   $scope.total_items = null
 
   $scope.term        = null
-  $scope.visibility  = 'open'
+  $scope.visibility  = 'all'
 
   # Fixes: redirect to page after form submit
   $("#search_projects_form").on 'submit', ->

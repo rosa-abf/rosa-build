@@ -54,7 +54,7 @@
           = t('top_menu.statistics')
 
     .offset20 ng-show="tab == 'projects'" ng-controller='ProfileController'
-      = render 'projects'
+      = render 'projects', subject: @user
     #manage-statistics.offset20 ng-show="tab == 'statistics'" ng-controller='StatisticsController' ng-init='init()'
       = render 'statistics'
 

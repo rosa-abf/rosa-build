@@ -1,25 +1,44 @@
 = simple_form_for :project, html: { 'ng-submit' => 'search()', id: 'search_projects_form' } do |f|
-  = hidden_field_tag 'subject_uname', @user.uname
+  = hidden_field_tag 'subject_uname', subject.uname
 
   .row
     - if current_user
-      .col-md-3
+      .col-md-2
+        .dropdown
+          button.btn.btn-default.dropdown-toggle type="button" id="dropdownVisibility"  aria-expanded="true"
+            span> ng-show="visibility == 'all'"
+              = t('.visibilities.all')
+            span> ng-show="visibility == 'open'"
+              i.fa.fa-unlock-alt.text-success>
+              = t('.visibilities.open')
+            span> ng-show="visibility == 'hidden'"
+              i.fa.fa-lock.text-danger>
+              = t('.visibilities.hidden')
+            span.caret
 
-        = f.input :visibility,
-          label:          false,
-          collection:     project_visibility_options,
-          include_blank:  false,
-          input_html:     { ng_model: 'visibility' }
-    .col-md-4
+          ul.dropdown-menu role="menu" aria-labelledby="dropdownVisibility"
+            li role="presentation"
+              a.btn-link role="menuitem" tabindex="-1" ng-click="visibility = 'all'"
+                = t('.visibilities.all')
+            li role="presentation"
+              a.btn-link role="menuitem" tabindex="-1" ng-click="visibility = 'open'"
+                i.fa.fa-unlock-alt.text-success>
+                = t('.visibilities.open')
+            li role="presentation"
+              a.btn-link role="menuitem" tabindex="-1" ng-click="visibility = 'hidden'"
+                i.fa.fa-lock.text-danger>
+                = t('.visibilities.hidden')
+
+
+    .col-md-5
       = f.input :name,
         label:          false,
         input_html:     { ng_model: 'term' }
 
     .col-md-5
-      => f.button :submit, t('layout.search.header')
-      => t('layout.or')
-      a href=user_path(@user)
-        = t('layout.clear')
+      => f.button :submit, t('.search')
+      => t('.or')
+      = link_to t('.clear'), subject
 hr
 
 table.table.table-striped ng-show='!processing'
@@ -30,9 +49,14 @@ table.table.table-striped ng-show='!processing'
     tr ng-repeat='project in projects'
       td
         h4
+          i.fa.fa-unlock-alt.text-success> ng-if='project.public'
+          i.fa.fa-lock.text-danger> ng-if='!project.public'
           a ng-href='{{project.path}}'
             | {{project.name}}
         p
           | {{project.description}}
+        .help-block
+          => t('.updated')
+          | {{project.updated}}
 
 = angularjs_paginate
