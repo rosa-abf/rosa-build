@@ -34,6 +34,7 @@ class Ability
     can :possible_forks, Project
 
     if user.guest? # Guest rights
+      cannot :index, Project
       # can [:new, :create], RegisterRequest
     else # Registered user rights
       if user.admin?

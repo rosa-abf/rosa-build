@@ -1,0 +1,12 @@
+.row
+  .col-md-8.col-md-offset-2
+    .row
+      = image_tag "tour-top#{I18n.locale == :en ? '-eng' : ''}.png", alt: 'ABF', class: 'img-responsive center-block'
+    
+    .row.offset20
+      = render 'pages/tour/submenu'
+    .offset20
+
+    - @entries.each_with_index do |el, ind|
+      = render partial: 'pages/tour/entry', locals: {entry: el, is_left: ind.odd?}
+      hr

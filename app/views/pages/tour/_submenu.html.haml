@@ -1,4 +1,0 @@
-%ul
-  -%w(projects sources builds).each do |entry|
-    %li
-      =link_to t("tour.#{entry}"), tour_inside_path(entry), class: params[:id] == entry ? 'active' : ''

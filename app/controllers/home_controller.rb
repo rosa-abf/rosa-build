@@ -2,7 +2,7 @@ class HomeController < ApplicationController
   before_filter :authenticate_user!, only: [:activity, :issues, :pull_requests]
 
   def root
-    render 'pages/tour/abf-tour-project-description-1', layout: 'tour'
+    render 'pages/tour/abf-tour-project-description-1'
   end
 
   def activity

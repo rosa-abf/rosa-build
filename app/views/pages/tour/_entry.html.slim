@@ -1,0 +1,28 @@
+.row
+
+  - if is_left
+    .col-md-6
+      h3.text-primary
+        = t("tour.#{entry}")
+      p.text-muted
+        = t("tour.#{entry}_description_html")
+
+    .col-md-6
+      a.btn-link data-toggle="modal" data-target="##{entry}Modal"
+        = image_tag "tour/#{entry}.png", class: 'img-responsive center-block'
+  - else
+    .col-md-6
+      a.btn-link data-toggle="modal" data-target="##{entry}Modal"
+        = image_tag "tour/#{entry}.png", class: 'img-responsive center-block'
+
+    .col-md-6
+      h3.text-primary
+        = t("tour.#{entry}")
+      p.text-muted
+        = t("tour.#{entry}_description_html")
+
+  .modal.fade id="#{entry}Modal" tabindex="-1" role="dialog" aria-hidden="true"
+    .modal-dialog
+      .modal-content
+        .modal-body
+          = image_tag "tour/big/#{entry}.png", class: 'img-responsive center-block'
