@@ -16,11 +16,10 @@
         = @group.description
 hr
 .row
-  .col-md-8.col-md-offset-1 ng-controller='Groups::ProfileController'
+  .col-md-8.col-md-offset-1 ng-controller='ProfileController'
 
     = simple_form_for :project, html: { 'ng-submit' => 'search()', id: 'search_projects_form' } do |f|
-      = hidden_field_tag 'group_uname', @group.uname
-      = hidden_field_tag 'page'
+      = hidden_field_tag 'subject_uname', @group.uname
 
       .row
         - if current_user
@@ -51,7 +50,7 @@ hr
         tr ng-repeat='project in projects'
           td
             h4
-              a ng-href='project.path'
+              a ng-href='{{project.path}}'
                 | {{project.name}}
             p
               | {{project.description}}

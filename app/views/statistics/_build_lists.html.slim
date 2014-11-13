@@ -6,7 +6,7 @@
 .row
   .col-md-8
     .graph-wrapper
-      h4
+      b
         span.graph-key-color1>
         = t('.build_started_title')
         span.graph-key-color2>
@@ -23,7 +23,7 @@
 
   .col-md-3
     .panel-wrapper
-      h4
+      b
         = t('.total_build_started')
       .panel-data
         = image_tag 'loading-small.gif', ng_show: 'loading'
@@ -32,7 +32,7 @@
         | {{ statistics.build_lists.build_started_count | number }}
 
     .panel-wrapper
-      h4
+      b
         = t('.total_success')
       .panel-data
         = image_tag 'loading-small.gif', ng_show: 'loading'
@@ -41,7 +41,7 @@
         | {{ statistics.build_lists.success_count | number }}
 
     .panel-wrapper
-      h4
+      b
         = t('.total_build_error')
       .panel-data
         = image_tag 'loading-small.gif', ng_show: 'loading'
@@ -50,7 +50,7 @@
         | {{ statistics.build_lists.build_error_count | number }}
 
     .panel-wrapper
-      h4
+      b
         = t('.total_build_published')
       .panel-data
         = image_tag 'loading-small.gif', ng_show: 'loading'

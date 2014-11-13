@@ -135,7 +135,12 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
       options =
         responsive: true
 
-      context           = $(id)[0].getContext('2d')
+      chart = $(id)
+      chart.attr
+        width:  chart.parent().width()
+        height: chart.parent().outerHeight()
+
+      context           = chart[0].getContext('2d')
       $scope.charts[id] = new Chart(context).Line(data, options)
 
   $scope.initBuildListsChart = ->

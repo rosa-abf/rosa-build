@@ -6,7 +6,7 @@
 .row
   .col-md-8
     .graph-wrapper
-      h4
+      b
         span.graph-key-color1>
         = t('.open_title')
         span.graph-key-color2>
@@ -21,7 +21,7 @@
 
   .col-md-3
     .panel-wrapper
-      h4
+      b
         = t('.total_open')
       .panel-data
         = image_tag 'loading-small.gif', ng_show: 'loading'
@@ -30,7 +30,7 @@
         | {{ statistics.issues.open_count | number }}
 
     .panel-wrapper
-      h4
+      b
         = t('.total_reopen')
       .panel-data
         = image_tag 'loading-small.gif', ng_show: 'loading'
@@ -39,7 +39,7 @@
         | {{ statistics.issues.reopen_count | number }}
 
     .panel-wrapper
-      h4
+      b
         = t('.total_closed')
       .panel-data
         = image_tag 'loading-small.gif', ng_show: 'loading'

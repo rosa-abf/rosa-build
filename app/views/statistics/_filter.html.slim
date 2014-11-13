@@ -1,3 +1,4 @@
+- user ||= false
 .row
   .col-md-12
 
@@ -55,18 +56,22 @@
               i.glyphicon.glyphicon-calendar
 
         | &nbsp;
-      .form-group>
-        label.control-label>
-          = t('.users_or_groups_label')
 
-        input#users_or_groups[
-          name        = 'users_or_groups'
-          type        = 'text'
-          data-ajax   = autocomplete_user_or_group_autocompletes_path
-          ng-model    = 'users_or_groups'
-          placeholder = t('.users_or_groups_placeholder')
-          ng-disabled = 'loading'
-          class       = 'form-control typeahead' ]
+      - if user
+        .form-group ng-init="users_or_groups = '#{user.uname}'"
+      - else
+        .form-group>
+          label.control-label>
+            = t('.users_or_groups_label')
+
+          input#users_or_groups[
+            name        = 'users_or_groups'
+            type        = 'text'
+            data-ajax   = autocomplete_user_or_group_autocompletes_path
+            ng-model    = 'users_or_groups'
+            placeholder = t('.users_or_groups_placeholder')
+            ng-disabled = 'loading'
+            class       = 'form-control typeahead' ]
 
       a href='#' ng-click='update()'
         b

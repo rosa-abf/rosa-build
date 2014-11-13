@@ -1,6 +1,6 @@
-RosaABF.controller 'Groups::ProfileController', ['$scope', '$http', '$location', ($scope, $http, $location) ->
+RosaABF.controller 'ProfileController', ['$scope', '$http', '$location', ($scope, $http, $location) ->
 
-  $scope.group       = $('#group_uname').val()
+  $scope.subject     = $('#subject_uname').val()
   $scope.processing  = true
   $scope.projects    = []
   $scope.page        = null
@@ -22,7 +22,7 @@ RosaABF.controller 'Groups::ProfileController', ['$scope', '$http', '$location',
       page:         $scope.page
       format:       'json'
 
-    $http.get Routes.user_path($scope.group), params: params
+    $http.get Routes.user_path($scope.subject), params: params
     .success (data) ->
       $scope.projects    = data.projects
       $scope.total_items = data.total_items

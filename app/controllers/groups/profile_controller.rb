@@ -27,7 +27,6 @@ class Groups::ProfileController < Groups::BaseController
         @projects     = @projects.paginate(paginate_params)
       end
     end
-
   end
 
   def new

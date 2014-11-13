@@ -1,0 +1,38 @@
+= simple_form_for :project, html: { 'ng-submit' => 'search()', id: 'search_projects_form' } do |f|
+  = hidden_field_tag 'subject_uname', @user.uname
+
+  .row
+    - if current_user
+      .col-md-3
+
+        = f.input :visibility,
+          label:          false,
+          collection:     project_visibility_options,
+          include_blank:  false,
+          input_html:     { ng_model: 'visibility' }
+    .col-md-4
+      = f.input :name,
+        label:          false,
+        input_html:     { ng_model: 'term' }
+
+    .col-md-5
+      => f.button :submit, t('layout.search.header')
+      => t('layout.or')
+      a href=user_path(@user)
+        = t('layout.clear')
+hr
+
+table.table.table-striped ng-show='!processing'
+  thead
+    tr
+      th
+  tbody
+    tr ng-repeat='project in projects'
+      td
+        h4
+          a ng-href='{{project.path}}'
+            | {{project.name}}
+        p
+          | {{project.description}}
+
+= angularjs_paginate
