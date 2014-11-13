@@ -1,5 +1,4 @@
 class Users::SshKeysController < Users::BaseController
-  layout 'bootstrap'
   before_filter :set_current_user
 
   def index

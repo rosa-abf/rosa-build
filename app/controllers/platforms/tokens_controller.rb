@@ -1,6 +1,4 @@
 class Platforms::TokensController < Platforms::BaseController
-  layout 'bootstrap'
-
   before_filter :authenticate_user!
 
   load_resource :platform

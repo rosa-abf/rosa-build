@@ -1,6 +1,4 @@
 class StatisticsController < ApplicationController
-  layout 'bootstrap'
-
   RANGES = [
     RANGE_TWENTY_FOUR_HOURS = 'twenty_four_hours',
     RANGE_LAST_7_DAYS       = 'last_7_days',

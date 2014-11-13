@@ -2,8 +2,6 @@ class Projects::BuildListsController < Projects::BaseController
   include FileStoreHelper
   include BuildListsHelper
 
-  layout 'bootstrap'
-
   NESTED_ACTIONS = [:index, :new, :create]
 
   before_filter :authenticate_user!

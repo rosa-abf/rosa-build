@@ -12,7 +12,7 @@ class Ability
     @user = user
 
     # Shared rights between guests and registered users
-    can [:show, :archive], Project, visibility: 'open'
+    can [:show, :archive, :read], Project, visibility: 'open'
     can :get_id,  Project, visibility: 'open' # api
     can(:refs_list, Project) {|project| can? :show, project}
     can :read, Issue, project: { visibility: 'open' }

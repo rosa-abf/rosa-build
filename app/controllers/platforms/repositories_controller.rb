@@ -4,8 +4,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
   include RepositoriesHelper
   include PaginateHelper
 
-  layout 'bootstrap'
-
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
 

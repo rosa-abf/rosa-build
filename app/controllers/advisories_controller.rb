@@ -1,6 +1,4 @@
 class AdvisoriesController < ApplicationController
-  layout 'bootstrap'
-
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user! if APP_CONFIG['anonymous_access']
   load_resource find_by: :advisory_id

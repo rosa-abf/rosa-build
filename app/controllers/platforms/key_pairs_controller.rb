@@ -1,6 +1,4 @@
 class Platforms::KeyPairsController < Platforms::BaseController
-  layout 'bootstrap'
-
   before_filter :authenticate_user!
 
   load_and_authorize_resource :platform

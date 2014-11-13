@@ -1,5 +1,4 @@
 class HomeController < ApplicationController
-  layout 'bootstrap'
   before_filter :authenticate_user!, only: [:activity, :issues, :pull_requests]
 
   def root

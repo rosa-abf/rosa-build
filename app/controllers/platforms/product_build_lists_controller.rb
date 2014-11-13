@@ -1,6 +1,5 @@
 class Platforms::ProductBuildListsController < Platforms::BaseController
   include FileStoreHelper
-  layout 'bootstrap'
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show, :log] if APP_CONFIG['anonymous_access']

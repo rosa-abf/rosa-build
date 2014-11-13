@@ -1,5 +1,4 @@
 class Projects::Git::CommitsController < Projects::Git::BaseController
-  layout 'bootstrap', only: [:index]
 
   def index
     if @path.present?
