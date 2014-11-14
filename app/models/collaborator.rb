@@ -87,6 +87,10 @@ class Collaborator
     end
   end
 
+  def actor_uname
+    @actor.uname
+  end
+
   def project_id
     @project.try(:id)
   end

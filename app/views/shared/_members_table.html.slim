@@ -15,7 +15,7 @@
             = t("layout.remove")
     tbody
       - if update_roles_path
-        - actors = editable_object.actors.where(actor_id: members.map(&:id), actor_type: 'User').to_a
+        - actors ||= editable_object.actors
       - members.each do |user|
         tr
           - if can? :remove_members, editable_object
@@ -63,8 +63,9 @@
                             wrapper:  :inline_form do |f|
 
     = hidden_field_tag 'member_id', nil, id: 'member_id_field'
+    - autocomplete_path ||= autocomplete_user_uname_autocompletes_path
     = f.input :uname,
-      input_html: { 'data-ajax' =>  autocomplete_user_uname_autocompletes_path,
+      input_html: { 'data-ajax' =>  autocomplete_path,
                     'data-id'   =>  '#member_id_field',
                     class:          'typeahead' }
 

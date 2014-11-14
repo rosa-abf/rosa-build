@@ -213,7 +213,7 @@ GEM
     inherited_resources (1.4.1)
       has_scope (~> 0.6.0.rc)
       responders (~> 1.0.0.rc)
-    jbuilder (2.1.3)
+    jbuilder (2.2.4)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
     jquery-migrate-rails (1.2.1)
@@ -563,7 +563,7 @@ DEPENDENCIES
   haml-rails (~> 0.5)
   highline (~> 1.6.20)
   hirb
-  jbuilder (~> 2.1)
+  jbuilder (~> 2.2)
   jquery-migrate-rails
   jquery-rails (~> 2.3)
   js-routes

@@ -47,7 +47,7 @@ gem 'wikicloth'
 gem 'newrelic_rpm'
 gem 'whenever', '~> 0.9.0', require: false
 
-gem 'jbuilder', '~> 2.1'
+gem 'jbuilder', '~> 2.2'
 gem 'rails3-jquery-autocomplete'
 gem 'will_paginate', '~> 3.0'
 gem 'meta-tags', '~> 2.0', require: 'meta_tags'

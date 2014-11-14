@@ -1,0 +1,10 @@
+-set_meta_tags title: [title_object(@project), t('layout.projects.members')]
+= render 'submenu'
+
+.container
+  .row
+    .col-md-offset-2.col-md-8= render 'settings_menu'
+    .col-md-9.col-md-offset-2[ ng-controller = 'CollaboratorsController as membersCtrl'
+                               ng-cloak      = 'true' ]
+
+      = render 'members_table'

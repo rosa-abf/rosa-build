@@ -1,1 +1,1 @@
-json.partial! 'collaborators', collaborators: @collaborators
+json.partial! 'collaborators.json', collaborators: @collaborators

@@ -17,24 +17,22 @@ class Projects::CollaboratorsController < Projects::BaseController
     users = User.not_member_of(@project)
     groups = Group.not_member_of(@project)
     if params[:term].present?
-      users = users.search(params[:term])
-      groups = groups.search(params[:term])
+      users = users.search(params[:term]).first(5)
+      groups = groups.search(params[:term]).first(5)
     end
     @collaborators = (users | groups).map{|act| Collaborator.new(actor: act, project: @project)}
-    respond_with @collaborators do |format|
-      format.json { render 'index' }
-    end
+    respond_with @collaborators
   end
 
   def create
     @collaborator = Collaborator.new(params[:collaborator])
     @collaborator.project = @project
-    if @collaborator.save
-      respond_with @collaborator do |format|
+    respond_to do |format|
+      if @collaborator.save
         format.json { render partial: 'collaborator', locals: {collaborator: @collaborator} }
+      else
+        format.json { render text: 'error', status: 422 }
       end
-    else
-      raise
     end
   end
 

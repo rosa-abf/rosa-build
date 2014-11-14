@@ -1,0 +1,66 @@
+table.table.table-striped
+  thead
+    tr
+      th
+      th
+        = t('layout.collaborators.members')
+      th.buttons.text-center colspan=3
+        = t('layout.collaborators.roles')
+      th.buttons
+        = t('layout.remove')
+  tbody
+    tr ng-repeat = 'member in membersCtrl.collaborators'
+      td
+        = check_box_tag 'members[]', 'true', false,
+          'ng-model' => 'member.check_delete',
+          'ng-value' => 'member.check_delete'
+      td
+        span
+          img ng-src = '{{ member.avatar_path }}' size = '30x30'
+          | &nbsp;
+          a[ ng-href = 'member.path' ] {{ member.actor_name }}
+      - Relation::ROLES.each do |role|
+        td
+          input[
+            type      = 'radio'
+            ng-model  = 'member.role'
+            value     = role ]
+          | &nbsp;
+          = t("layout.collaborators.role_names.#{ role }")
+      td
+        a[ ng-click         = 'membersCtrl.updateCollaborator(member)'
+           ng-confirm-click = t('layout.confirm') ]
+
+          span.glyphicon.glyphicon-ok
+            | &nbsp;
+
+        a[ ng-click         = 'membersCtrl.removeCollaborator(member)'
+           ng-confirm-click = t('layout.confirm') ]
+          span.glyphicon.glyphicon-remove
+            | &nbsp;
+
+
+= submit_tag t('layout.delete'), class: 'btn btn-danger',
+  'ng-click' => 'membersCtrl.RemoveCollaborators()'
+
+hr
+
+= simple_form_for :user,  url:      '',
+                          html:     { class: 'form-inline' },
+                          wrapper:  :inline_form do |f|
+
+  => f.input :uname,
+      input_html: {'ng-model' => 'membersCtrl.selected_new_collaborator.actor_uname',
+                  'typeahead' => 'member.actor_uname for member in membersCtrl.getCollaborators($viewValue)',
+        'typeahead-on-select' => 'membersCtrl.selectCollaborator($item, $model, $label)' }
+
+  => f.input :role,
+    collection:     options_for_collaborators_roles_select,
+    input_html:     { name: :role, 'ng-model' => 'membersCtrl.new_role' },
+    include_blank:  false
+
+  = f.button :submit, t('layout.add'), 'ng-click' => 'membersCtrl.addCollaborator()',
+    'ng-disabled' => '!membersCtrl.selected_new_collaborator'
+
+- content_for :additional_scripts do
+  = render 'init_service.js.erb'
