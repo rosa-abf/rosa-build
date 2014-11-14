@@ -1,0 +1,27 @@
+- set_meta_tags title: t('layout.contact.page_header')
+
+.row
+  .col-md-10.col-md-offset-1
+    h1= t('layout.contact.header')
+    p= t('layout.contact.subheader')
+    hr
+
+    .row
+      .col-md-6
+        = simple_form_for @form, url: contact_path do |f|
+          = f.input :name
+          = f.input :email
+          = f.input :subject
+          = f.input :message, as: :text
+          = f.button :submit, t('layout.contact.send_request')
+
+      .col-md-6
+
+        h4= t('layout.contact.info.header')
+        ul
+          - t("layout.contact.info.items").try(:each) do |item|
+            li= item
+
+        hr
+          p= t('layout.contact.questions_info')
+
