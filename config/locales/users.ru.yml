@@ -60,18 +60,24 @@ ru:
     profile:
       projects:
         visibilities:
-          all:          Все
-          open:         Публичный
-          hidden:       Приватный
-        search:         Искать
-        or:             или
-        clear:          Очистить
-        updated:        "Обновлен:"
+          all:                                Все
+          open:                               Публичный
+          hidden:                             Приватный
+        search:                               Искать
+        or:                                   или
+        clear:                                Очистить
+        updated:                              "Обновлен:"
 
   simple_form:
     labels:
       user:
-        delete_avatar:  Удалить аватар
+        delete_avatar:                        Удалить аватар
+        remember_me_html:                     "Запомнить меня&nbsp;"
     placeholders:
       user:
-        uname:          Введите никнейм здесь.
+        uname:                                Введите никнейм здесь.
+        name:                                 Введите имя здесь.
+        email:                                Введите email здесь.
+        password:                             Введите пароль здесь.
+        password_confirmation:                Повторите пароль здесь.
+

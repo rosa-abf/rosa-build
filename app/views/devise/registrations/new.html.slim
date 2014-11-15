@@ -1,0 +1,20 @@
+
+.panel.panel-default
+  .panel-heading
+    h4= t('layout.devise.shared_links.sign_up')
+  .panel-body
+
+    = simple_form_for resource, url: registration_path(resource_name) do |f|
+      = hidden_field_tag :invitation_token, @invitation_token
+
+      = f.input :uname
+      = f.input :name
+      = f.input :email
+      = f.input :password
+      = f.input :password_confirmation
+
+      hr
+      .pull-right
+        = f.button :submit, t('layout.devise.shared_links.sign_up')
+  .panel-footer
+    == render 'devise/shared/providers'

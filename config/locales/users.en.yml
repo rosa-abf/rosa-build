@@ -60,18 +60,24 @@ en:
     profile:
       projects:
         visibilities:
-          all:          All
-          open:         Public
-          hidden:       Private
-        search:         Search
-        or:             or
-        clear:          Clear
-        updated:        "Updated:"
+          all:                                All
+          open:                               Public
+          hidden:                             Private
+        search:                               Search
+        or:                                   or
+        clear:                                Clear
+        updated:                              "Updated:"
 
   simple_form:
     labels:
       user:
-        delete_avatar:  Delete avatar
+        delete_avatar:                        Delete avatar
+        remember_me_html:                     "Remember me&nbsp;"
     placeholders:
       user:
-        uname:          Enter the nickname here.
+        uname:                                Enter the nickname here.
+        name:                                 Enter the name here.
+        email:                                Enter the email address here.
+        password:                             Enter the password here.
+        password_confirmation:                Enter the Confirm Password here.
+
