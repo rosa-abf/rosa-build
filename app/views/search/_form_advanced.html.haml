@@ -1,5 +1,0 @@
-= form_tag search_index_path, method: 'get' do
-  .leftside= text_field_tag 'query', @query, placeholder: t("layout.search.header"), class: 'exsearch'
-  .lineForm.leftside.rmargin10= select_tag 'type', options_for_select(t('layout.search.types').invert, @type), class: 'sel80 cusel', id: 'selSearch'
-  .leftside= submit_tag t('layout.search.header'), class: 'button width100', data: {'disable-with' => t('layout.processing')}
-.both

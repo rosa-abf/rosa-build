@@ -1,0 +1,12 @@
+h4
+  - size = User::AVATAR_SIZES[:small]
+  => image_tag avatar_url(user, :small), alt: user.uname, height: size, width: size
+  a href=user_path(user)
+    = user.fullname
+.help-block
+  - if user.location.present?
+    i.fa.fa-map-marker>
+    => user.location
+  - unless user.hide_email
+    i.fa.fa-envelope-o>
+    => mail_to user.email, user.email, class: 'text-muted'

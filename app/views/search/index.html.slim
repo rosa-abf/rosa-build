@@ -1,0 +1,42 @@
+.row
+  .col-md-3.col-md-offset-1
+    h3
+      = t('.advanced')
+  .col-md-7.offset20
+    = simple_form_for @search, url: search_index_path, method: :get do |f|
+      .row
+        .col-md-6
+          =hidden_field_tag :type, @type
+          = f.input :query, label: false, input_html: { name: 'query' }
+        .col-md-6
+          = f.button :submit, t('.submit')
+          | &nbsp;
+          = t('layout.or')
+          | &nbsp;
+          a href=search_index_path
+            = t('layout.clear')
+
+
+.row
+  .col-md-3.col-md-offset-1
+    .panel.panel-default
+      .panel-body
+        ul.nav.nav-pills.nav-stacked
+          - t('.types').each do |k, v|
+            li class=('active' if k.to_s == @type)
+              a href=search_index_path(params.merge(type: k, page: 1))
+                span.badge.pull-right
+                  = @search.send(k).count
+                = v
+
+
+  .col-md-7
+    table.table.table-striped
+      thead
+        tr
+          th
+      tbody
+        - @collection.each do |c|
+          tr
+            td= render @type.singularize, @type.singularize.to_sym => c
+    = will_paginate @collection

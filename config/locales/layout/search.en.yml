@@ -2,12 +2,21 @@ en:
   layout:
     search:
       header: Search
+  search:
+    index:
+      submit: Search
       advanced: Advanced search
-      all: Show All
-      no_results: Nothing found for "%{query}".
+      no_results: 'Nothing found for "%{query}".'
       types:
-        all: All
         projects: Projects
         users: Users
         groups: Groups
         platforms: Platforms
+
+    project:
+      updated:                              "Updated:"
+
+  simple_form:
+    placeholders:
+      search:
+        query:                              "Search"
