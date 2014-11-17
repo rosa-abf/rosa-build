@@ -6,6 +6,12 @@ class Relation < ActiveRecord::Base
 
   validates :role, inclusion: { in: ROLES }
 
+  validates :target,
+    presence: true
+
+  validates :actor,
+    presence: true
+
 #  validate { errors.add(:actor, :taken) if Relation.where(actor_type: self.actor_type, actor_id: self.actor_id).present? }
   before_validation :add_default_role
 
