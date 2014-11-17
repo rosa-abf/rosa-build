@@ -3,6 +3,16 @@ CollaboratorsController = (dataservice, Collaborator, $http) ->
 
   vm.new_role = 'reader'
 
+  vm.confirmMessage = ->
+    confirm('<%= I18n.t 'layout.confirm' %>')
+
+  vm.isDisabledDeleteAllButton = ->
+    is_selected = true
+    result = _.select(vm.collaborators, (c) ->
+      is_selected = false if c.check_delete
+    )
+    is_selected
+
   vm.getCollaborators = (val) ->
     return [] if val.length <= 2
     Collaborator.find(vm.name_with_owner, val)
@@ -20,6 +30,24 @@ CollaboratorsController = (dataservice, Collaborator, $http) ->
       vm.collaborators.push data
 
     vm.selected_new_collaborator = null
+    false
+
+  vm.removeCollaborator = (member) ->
+    promise = Collaborator.remove(vm.name_with_owner, member.id)
+    promise.success (data) ->
+      vm.collaborators = _.reject(vm.collaborators, (c) ->
+        c.id is member.id
+      )
+    false
+
+  vm.removeCollaborators = ->
+    _.each(vm.collaborators, (c) ->
+      vm.removeCollaborator(c) if c.check_delete
+    )
+    false
+
+  vm.updateCollaborator = (member) ->
+    Collaborator.update(vm.name_with_owner, member)
     false
 
   init = (dataservice) ->

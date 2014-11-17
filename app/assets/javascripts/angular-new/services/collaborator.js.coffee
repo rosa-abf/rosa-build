@@ -25,6 +25,21 @@ collaboratorService = ($http) ->
       )
 
       $http.post(path)
+
+    remove: (name_with_owner, member_id) ->
+      path = Routes.project_collaborator_path(name_with_owner, member_id)
+
+      $http.delete(path)
+
+    update: (name_with_owner, member) ->
+      path = Routes.project_collaborator_path(
+        name_with_owner,
+        member.id,
+        {
+          collaborator: { role: member.role }
+        }
+      )
+      $http.put(path)
     }
 
 angular
