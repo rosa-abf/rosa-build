@@ -34,6 +34,12 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
     $scope.update()
     true
 
+  $scope.$on "activate_stats_tab", (event, args) ->
+    if Object.keys($scope.statistics).length is 0
+      $timeout $scope.init, 1000
+
+    true
+
   $scope.openRangeStart = ($event) ->
     return if $scope.loading
     $event.preventDefault()
@@ -63,7 +69,7 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
     $scope.prepareRange()
     $('.doughnut-legend').remove()
 
-    params = 
+    params =
       range:            $scope.range
       range_start:      $scope.range_start
       range_end:        $scope.range_end

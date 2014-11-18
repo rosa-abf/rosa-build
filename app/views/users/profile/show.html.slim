@@ -49,13 +49,15 @@
           = t('top_menu.projects')
       li[ role='presentation'
           ng-class="{ active: tab == 'statistics' }"
-          ng-click="tab = 'statistics'" ]
+          ng-click="tab = 'statistics'; $broadcast('activate_stats_tab')" ]
         a href="#"
           = t('top_menu.statistics')
 
-    .offset20 ng-show="tab == 'projects'" ng-controller='ProfileController'
+    .offset20 ng-show="tab == 'projects'" ng-controller='ProfileController' ng-cloak = true
       = render 'projects', subject: @user
-    #manage-statistics.offset20 ng-show="tab == 'statistics'" ng-controller='StatisticsController' ng-init='init()'
+    #manage-statistics.offset20[ ng-show       = "tab == 'statistics'"
+                                 ng-controller = 'StatisticsController'
+                                 ng-cloak      = true ]
       = render 'statistics'
 
 
