@@ -1,0 +1,14 @@
+- set_meta_tags title: [title_object(@project), t('wiki.pages')]
+
+== render 'submenu'
+
+.row
+  .col-md-2.col-md-offset-1
+    == render 'sidebar'
+  .col-md-8
+    - if can? :write, @project
+      a.btn.btn-primary href=project_wiki_index_path(@project)
+        = t("wiki.new_page")
+    hr
+
+    == render "results"
