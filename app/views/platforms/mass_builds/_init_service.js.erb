@@ -1,0 +1,5 @@
+<script>
+  angular.module('RosaABF').service('newMassBuildInitializer', function(){
+    return <%= new_mass_build_data(@mass_build, @platform, params).html_safe %>;
+  });
+</script>

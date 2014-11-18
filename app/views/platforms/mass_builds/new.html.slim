@@ -2,105 +2,72 @@
 
 = render 'platforms/base/submenu'
 
-.container.col-md-offset-2.col-md-8
+.container
 
-  .row
+  .row[ ng-controller = 'NewMassBuildController as newMassBuildCtrl'
+        ng-cloak      = true ]
     = simple_form_for @mass_build, url: platform_mass_builds_path(@platform) do |f|
-      .col-md-6
-        .row
-          .col-md-6
-            b
-              = t('layout.mass_builds.repositories')
-            - @platform.repositories.each do |rep|
-              .checkbox
-                label
-                  input[type    = "checkbox"
-                        value   = rep.id
-                        name    = 'repositories[]'
-                        checked = @mass_build.repositories.include?(rep.id.to_s)]
-                    = rep.name
-          / = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), id: "repositories_#{rep.id}", href: "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
-          / = label_tag "repositories_#{rep.id}", rep.name
-          .col-md-6
-            = f.input :projects_list, as: :text
-        .row
-          .col-md-12
-            = f.input :description, as: :text
+      .col-md-4.col-md-offset-2
+        = f.input :description, as: :text, input_html: { class: 'resize-vertical' }
 
-      .col-md-6
-        .row
-          .col-md-6
-            b
-              = t("activerecord.attributes.build_list.arch")
-            - Arch.recent.each do |arch|
-              .checkbox
-                label
-                  input[type="checkbox" value=arch.id name='arches[]'
-                        checked=@mass_build.arches.include?(arch.id.to_s)]
-                    = arch.name
-          .col-md-6
-            - if @platform.personal?
-              = f.input :build_for_platform_id, collection: platform_options
+        b
+          = t('layout.mass_builds.repositories')
 
-            
-      = f.button :submit, t('layout.projects.build_button')
+        .checkbox ng-repeat = 'repo in newMassBuildCtrl.repositories'
+          label
+            input[ type        = 'checkbox'
+                   name        = 'repositories[]'
+                   ng-model    = 'repo.checked'
+                   ng-value    = 'repo.id'
+                   ng-disabled = 'newMassBuildCtrl.isDisabledRepo(repo)'
+                   ng-click    = 'newMassBuildCtrl.selectRepository(repo)' ]
+              | {{ repo.name }}
 
-/ = form_for [@platform, @mass_build], html: { class: 'form mass_build', method: :post } do |f|
-/   %section.left
-/     %h3=t('layout.mass_builds.repositories')
-/     - @platform.repositories.each do |rep|
-/       .both
-/         = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), id: "repositories_#{rep.id}", href: "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
-/         = label_tag "repositories_#{rep.id}", rep.name
-/     %h3=t('activerecord.attributes.mass_build.description')
-/     = f.text_area :description
-/     %br
-/     %h3=t('layout.mass_builds.projects_list')
-/     = f.text_area :projects_list
-/     %br
-/     = f.submit t('layout.projects.build_button'), data: {'disable-with' => t('layout.processing')}
-/   %section.right
-/     %h3= t("activerecord.attributes.build_list.arch")
-/     - Arch.recent.each do |arch|
-/       .lefter
-/         = check_box_tag "arches[]", arch.id, @mass_build.arches.include?(arch.id.to_s), id: "arches_#{arch.id}"
-/         = label_tag "arches_#{arch.id}", arch.name
-/       .both
-/     - if @platform.personal?
-/       %h3= t('activerecord.attributes.build_list.build_for_platform')
-/       = f.collection_select :build_for_platform_id, Platform.main, :id, :name
-/       .both
-/       = hidden_field_tag :autocomplete_extra_repos_path,
-/         "#{autocomplete_extra_repositories_autocompletes_path}?#{{platform_id: @mass_build.save_to_platform.try(:id)}.to_param}"
-/       = render 'shared/autocomplete_form',
-/         field: :extra_repositories,
-/         field_class: Repository,
-/         placeholder: 'uxteam_personal',
-/         subject: @mass_build,
-/         autocomplete_path: autocomplete_extra_repositories_autocompletes_path
-/     = render 'shared/autocomplete_form',
-/       field: :extra_mass_builds,
-/       field_class: MassBuild,
-/       placeholder: '1000000',
-/       subject: @mass_build,
-/       autocomplete_path: autocomplete_extra_mass_build_autocompletes_path
-/     = render 'shared/autocomplete_form',
-/       field: :extra_build_lists,
-/       field_class: BuildList,
-/       placeholder: '1000000',
-/       subject: @mass_build,
-/       autocomplete_path: autocomplete_extra_build_list_autocompletes_path
-/     %h3= t("activerecord.attributes.build_list.preferences")
-/     .both
-/     = f.select :auto_publish_status, auto_publish_statuses
-/     = f.label :auto_publish_status
-/     - %i(auto_create_container increase_release_tag include_testing_subrepository use_cached_chroot use_extra_tests).each do |field|
-/       .both
-/         = f.check_box field
-/         = f.label field
+        = f.input :projects_list, as: :text,
+          input_html: { class:          'resize-vertical',
+                        rows:           20,
+                        'ng-model' =>   'newMassBuildCtrl.projects_list',
+                        'ng-change' =>  'newMassBuildCtrl.changeProjectsList()' }
 
-/     .both
-/     = f.select :external_nodes, external_nodes, include_blank: true
-/     = f.label :external_nodes
+      .col-md-4
+        b
+          = t("activerecord.attributes.build_list.arch")
+        - Arch.recent.map do |arch|
+          .checkbox
+            label
+              input[ type    = 'checkbox'
+                     name    = 'arches[]'
+                     value   = arch.id
+                     checked = @mass_build.arches.include?(arch.id.to_s) ]
+                = arch.name
 
-/ .both
+        - if @platform.personal?
+          = render 'autocomplete_form',
+                   field:       :ExtraRepositories,
+                   placeholder: 'uxteam_personal'
+
+        = render 'autocomplete_form',
+                 field:       :ExtraMassBuilds,
+                 placeholder: '1000'
+
+        = render 'autocomplete_form',
+                 field:       :ExtraBuildLists,
+                 placeholder: '1000000'
+
+        h3= t('activerecord.attributes.build_list.preferences')
+
+        = f.input :auto_publish_status, collection: auto_publish_statuses
+
+        - %i(auto_create_container increase_release_tag include_testing_subrepository use_cached_chroot use_extra_tests).each do |field|
+          .checkbox
+            label
+              = f.check_box field
+              = MassBuild.human_attribute_name field
+
+        = f.input :external_nodes, collection: external_nodes, include_blank: true
+
+        = f.button :submit, t('layout.projects.build_button'),
+          data: {'disable-with' => t('layout.processing')}
+
+- content_for :additional_scripts do
+  = render 'init_service.js.erb'
