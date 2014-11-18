@@ -55,8 +55,10 @@ table.table.table-striped ng-show='!processing'
             | {{project.name}}
         p
           | {{project.description}}
-        .help-block
+        .help-block title = '{{project.updated_at_utc}}'
           => t('.updated')
-          | {{project.updated}}
+          | {{project.updated_at | amDateFormat:'YYYY-MM-DD HH:mm'}} (
+          span am-time-ago = 'project.updated_at'
+          | )
 
 = angularjs_paginate
