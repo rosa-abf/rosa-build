@@ -1,0 +1,21 @@
+.container.col-md-offset-2.col-md-8
+  h3
+    = title t("layout.projects.mass_import")
+  .row ng-init="owner = 'me'"
+    = simple_form_for @project, url: run_mass_import_projects_path do |f|
+      = f.hidden_field :mass_import
+      = f.input :url
+      = f.input :srpms_list, as: :text
+      = f.input :add_to_repository_id,
+        as:             :grouped_select,
+        collection:     mass_import_repositories_for_group_select,
+        group_method:   :last,
+        include_blank:  false
+
+      = render 'owner', f: f
+
+      = f.input         :visibility,
+        collection:     project_visibility_options,
+        include_blank:  false
+
+      = f.button :submit, t('layout.add')

@@ -31,13 +31,13 @@ module ProjectsHelper
     end.to_a.to_json
   end
 
-  def repositories_grouped_by_platform
+  def mass_import_repositories_for_group_select
     groups = {}
     Platform.accessible_by(current_ability, :related).order(:name).each do |platform|
       next unless can?(:local_admin_manage, platform)
       groups[platform.name] = Repository.custom_sort(platform.repositories).map{ |r| [r.name, r.id] }
     end
-    groups
+    groups.to_a
   end
 
   def git_repo_url(name)

@@ -43,7 +43,6 @@ class Projects::ProjectsController < Projects::BaseController
       flash[:notice] = t('flash.project.mass_import_added_to_queue')
       redirect_to projects_path
     else
-      flash[:warning] = @project.errors.full_messages.join('. ')
       render :mass_import
     end
   end
