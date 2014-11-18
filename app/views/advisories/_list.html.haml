@@ -9,6 +9,7 @@
       %th= t 'activerecord.attributes.advisory.advisory_id'
       %th= t 'layout.advisories.affected_versions'
       %th= t 'activerecord.attributes.advisory.description'
+      %th= t 'layout.advisories.project_names'
   %tbody
     %tr{ 'ng-repeat' => 'item in advisories' }
       %td
@@ -17,6 +18,10 @@
         %p{ 'ng-repeat' => 'pl in item.platforms' }
           %a{ 'ng-href' => '{{pl.link}}' } {{pl.name}}
       %td {{item.description}}
+      %td
+        %ul.list-unstyled
+          %li{ 'ng-repeat' => 'project in item.projects' }
+            %a{ 'ng-href' => '{{project.link}}' } {{ project.name }}
 
     %tr{ 'ng-show' => 'advisories.length === 0' }
       %td{ colspan: 3 } {{'no_results_for_search' | i18n:q}}

@@ -10,6 +10,12 @@ json.advisories do
           json.link platform_path(pl)
         end
       end
+      json.projects do
+        json.array!(item.projects) do |pr|
+          json.name pr.name
+          json.link project_path(pr)
+        end
+      end
     end
   end
 end
