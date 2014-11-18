@@ -42,17 +42,20 @@
                 = arch.name
 
         - if @platform.personal?
-          = render 'autocomplete_form',
+          = render 'shared/autocomplete_form',
                    field:       :ExtraRepositories,
-                   placeholder: 'uxteam_personal'
+                   placeholder: 'uxteam_personal',
+                   ctrl_as:     'newMassBuildCtrl'
 
-        = render 'autocomplete_form',
+        = render 'shared/autocomplete_form',
                  field:       :ExtraMassBuilds,
-                 placeholder: '1000'
+                 placeholder: '1000',
+                 ctrl_as:     'newMassBuildCtrl'
 
-        = render 'autocomplete_form',
+        = render 'shared/autocomplete_form',
                  field:       :ExtraBuildLists,
-                 placeholder: '1000000'
+                 placeholder: '1000000',
+                 ctrl_as:     'newMassBuildCtrl'
 
         h3= t('activerecord.attributes.build_list.preferences')
 

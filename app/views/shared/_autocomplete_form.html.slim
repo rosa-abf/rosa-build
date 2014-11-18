@@ -1,9 +1,15 @@
+/
+  Variables:
+    field
+    placeholder
+    ctrl_as       angularjs controllerAs
+
 - modal_id   = "#{field}Modal"
 - field_name = field.to_s.underscore
 - var_name   = field_name.singularize
 - func_name  = field.to_s.singularize
 - title      = t "activerecord.attributes.build_list.#{field_name}"
-
+- ctrl_as    = "#{ctrl_as}."
 
 h4
   = title
@@ -23,22 +29,21 @@ h4
   .col-md-8
     input[ class = 'form-control'
       type                = 'text'
-      ng-model            = "newMassBuildCtrl.selected_#{var_name}"
+      ng-model            = "#{ctrl_as}selected_#{var_name}"
       placeholder         = placeholder
-      typeahead           = "extra.label for extra in newMassBuildCtrl.get#{field}($viewValue)"
-      typeahead-on-select = "newMassBuildCtrl.select#{func_name}($item, $model, $label)" ]
+      typeahead           = "extra.label for extra in #{ctrl_as}get#{field}($viewValue)"
+      typeahead-on-select = "#{ctrl_as}select#{func_name}($item, $model, $label)" ]
   .col-md-4
     button[ class='btn btn-default' type='button'
-            ng-click="newMassBuildCtrl.add#{func_name}()" ]
+            ng-click="#{ctrl_as}add#{func_name}()" ]
       = t('layout.add')
 
 table.table.offset5
-  tr[ ng-repeat="el in newMassBuildCtrl.#{field_name}" ]
+  tr[ ng-repeat="el in #{ctrl_as}#{field_name}" ]
     td
       a[ ng-href='{{ el.path }}' ] {{ el.label }}
     td
       a[ class='fa fa-times-circle text-danger' href=''
-         ng-click="newMassBuildCtrl.remove#{func_name}(el.id)" ]
+         ng-click="#{ctrl_as}remove#{func_name}(el.id)" ]
       input[ name="mass_build[#{field_name}][]" type='hidden'
              ng-model='el.id' ng-value='el.id' ]
-

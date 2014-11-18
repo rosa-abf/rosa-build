@@ -32,13 +32,16 @@
       - selected = params[:build_list].try(:[], :update_type) ? {selected: params[:build_list][:update_type]} : {}
       = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control boffset20'
 
-      = render 'projects/build_lists/new_build/autocomplete_form',
-               field:       :ExtraRepositories,
-               placeholder: 'uxteam_personal'
+      %div{ 'ng-hide' => 'newBuildCtrl.is_build_for_main_platform' }
+        = render 'shared/autocomplete_form',
+                 field:       :ExtraRepositories,
+                 placeholder: 'uxteam_personal',
+                 ctrl_as:     'newBuildCtrl'
 
-      = render 'projects/build_lists/new_build/autocomplete_form',
+      = render 'shared/autocomplete_form',
                field:       :ExtraBuildLists,
-               placeholder: '1000000'
+               placeholder: '1000000',
+               ctrl_as:     'newBuildCtrl'
 
       = render 'projects/build_lists/new_build/extra_params_and_preferences',
                params: params,
