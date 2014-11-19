@@ -20,10 +20,10 @@ class Projects::WikiController < Projects::BaseController
   end
 
   def show
-    @name = CGI.unescape(params['id'])
+    @name = CGI.unescape(params[:id])
     redirect_to project_wiki_index_path(@project) and return if @name == 'Home'
 
-    ref = params['ref'] ? params['ref'] : @wiki.ref
+    ref = params[:ref].presence || @wiki.ref
     @page = @wiki.page(@name, ref)
     if !@page && @wiki.page(@name)
       flash[:error] = t('flash.wiki.ref_not_exist')
@@ -45,13 +45,13 @@ class Projects::WikiController < Projects::BaseController
   end
 
   def update
-    @name = CGI.unescape(params[:id])
-    @page = @wiki.page(@name)
-    name = params[:rename] || @name
+    @name     = CGI.unescape(params[:id])
+    @page     = @wiki.page(@name)
+    name      = wiki_page_params[:rename] || @name
 
-    update_wiki_page(@wiki, @page, params[:content], {committer: committer}, name, params[:format])
-    update_wiki_page(@wiki, @page.footer, params[:footer], {committer: committer}) if params[:footer]
-    update_wiki_page(@wiki, @page.sidebar, params[:sidebar], {committer: committer}) if params[:sidebar]
+    update_wiki_page(@wiki, @page, wiki_page_params[:content], {committer: committer}, name, wiki_page_params[:format])
+    update_wiki_page(@wiki, @page.footer, wiki_page_params[:footer], {committer: committer}) if wiki_page_params[:footer]
+    update_wiki_page(@wiki, @page.sidebar, wiki_page_params[:sidebar], {committer: committer}) if wiki_page_params[:sidebar]
 
     committer.commit
 
@@ -61,17 +61,18 @@ class Projects::WikiController < Projects::BaseController
 
   def new
     @name = ''
+    @new  = true
   end
 
   def create
-    @name = CGI.unescape(params['page'])
-    format = params['format'].intern
+    @name = CGI.unescape(wiki_page_params[:page])
+    format = wiki_page_params[:format].intern
     begin
-      @wiki.write_page(@name, format, params['content'] || '', {committer: committer}).commit
+      @wiki.write_page(@name, format, wiki_page_params[:content] || '', {committer: committer}).commit
       redirect_to project_wiki_path(@project, CGI.escape(@name))
     rescue Gollum::DuplicatePageError => e
       flash[:error] = t("flash.wiki.duplicate_page", name: @name)
-      render action: :new
+      render :new
     end
   end
 
@@ -183,8 +184,8 @@ class Projects::WikiController < Projects::BaseController
   end
 
   def preview
-    @name = params['page']
-    @page = @wiki.preview_page(@name, params['content'], params['format'])
+    @name = wiki_page_params[:page]
+    @page = @wiki.preview_page(@name, wiki_page_params[:content], wiki_page_params[:format])
     @content = @page.formatted_data
     @editable = false
     render :show
@@ -234,9 +235,8 @@ class Projects::WikiController < Projects::BaseController
     end
 
     def commit_message
-      if params['message'] and !params['message'].empty?
-        msg = params['message']
-      else
+      msg = wiki_page_params[:message].presence
+      unless msg
         msg = case action_name.to_s
           when 'create'      then "Created page #{@name.to_s}"
           when 'update'      then "Updated page #{@name.to_s}"
@@ -244,7 +244,7 @@ class Projects::WikiController < Projects::BaseController
           when 'revert'      then "Reverted page #{@name.to_s}"
           when 'revert_wiki' then "Reverted wiki"
         end
-        msg << " (#{params['format']})" if params['format']
+        msg << " (#{wiki_page_params[:format]})" if wiki_page_params[:format]
       end
       msg = 'Unhandled action' if !msg || msg.empty?
       { message: msg }
@@ -272,6 +272,10 @@ class Projects::WikiController < Projects::BaseController
       else
         redirect_to action: :index #forbidden_path
       end
+    end
+
+    def wiki_page_params
+      @wiki_page_params ||= params[:wiki_page] || {}
     end
 
     def authorize_read_actions
