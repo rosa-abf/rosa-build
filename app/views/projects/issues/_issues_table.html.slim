@@ -1,57 +1,35 @@
-tabset.boffset10
-  tab[ heading  = "#{t "layout.issues.statuses.open"} (#{@opened_issues.count})"
-       active   = 'issuesCtrl.filter.status_open'
-       ng-click = "issuesCtrl.setIssuesStatus('open')" ]
-  tab[ heading  = "#{t "layout.issues.statuses.closed"} (#{@closed_issues.count})"
-       active   = 'issuesCtrl.filter.status_closed'
-       ng-click = "issuesCtrl.setIssuesStatus('closed')" ]
+table.table
+  tr ng-repeat = "issue in issuesCtrl.issues"
+    td
+      a ng-href = "{{issue.path}}"
+        | {{issue.title}}
+      span.label.small.loffset5[ ng-repeat = "label in issue.labels"
+                                 ng-style  = "{background: label.color}" ]
+        | {{label.name}}
+      .small
+        = t 'layout.issues.created_by'
+        a>[ ng-href = "{{issue.user.path}}" ] {{issue.user.uname}}
+        span.text-muted[ ng-show = 'issuesCtrl.filter.sort == "submitted"'
+                         title   = "{{issue.created_at_utc}}" ]
+          | {{issue.created_at | amDateFormat:'YYYY-MM-DD HH:mm'}} (
+          span am-time-ago = 'issue.created_at'
+          | )
+        span> class = 'text-muted' ng-show = 'issuesCtrl.filter.sort == "updated"'
+          = t 'layout.issues.updated_at'
+        span.text-muted[ ng-show = 'issuesCtrl.filter.sort == "updated"'
+                         title   = "{{issue.updated_at_utc}}" ]
+          | {{issue.updated_at | amDateFormat:'YYYY-MM-DD HH:mm'}} (
+          span am-time-ago = 'issue.updated_at'
+          | )
 
-  .pull-right.boffset10
-    button.btn.btn-default.roffset5[ type     = 'button'
-                                     ng-click = "issuesCtrl.setIssuesSort('updated')" ]
-      span.fa ng-class = "issuesCtrl.updated_class"
-        => t('layout.issues.sort.updated')
-    button.btn.btn-default[ type     = 'button'
-                            ng-click = "issuesCtrl.setIssuesSort('submitted')" ]
-      span.fa ng-class = "issuesCtrl.submitted_class"
-        => t('layout.issues.sort.submitted')
+    td
+      span.text-muted.roffset5
+        | {{'#' + issue.serial_id}}
+      a[ ng-href = '{{issue.assignee.path}}'
+         title   = "#{t('layout.issues.assigned_to')} {{issue.assignee.fullname}}" ]
+        img ng-src = '{{issue.assignee.image}}'
 
-  table.table
-    tr ng-repeat = "issue in issuesCtrl.issues"
-      td
-        a ng-href = "{{issue.path}}"
-          | {{issue.title}}
-        span.label.small.loffset5[ ng-repeat = "label in issue.labels"
-                                   ng-style  = "{background: label.color}" ]
-          | {{label.name}}
-        .small
-          = t 'layout.issues.created_by'
-          a>[ ng-href = "{{issue.user.path}}" ] {{issue.user.uname}}
-          span.text-muted[ ng-show = 'issuesCtrl.filter.sort == "submitted"'
-                           title   = "{{issue.created_at_utc}}" ]
-            | {{issue.created_at | amDateFormat:'YYYY-MM-DD HH:mm'}} (
-            span am-time-ago = 'issue.created_at'
-            | )
-          span> class = 'text-muted' ng-show = 'issuesCtrl.filter.sort == "updated"'
-            = t 'layout.issues.updated_at'
-          span.text-muted[ ng-show = 'issuesCtrl.filter.sort == "updated"'
-                           title   = "{{issue.updated_at_utc}}" ]
-            | {{issue.updated_at | amDateFormat:'YYYY-MM-DD HH:mm'}} (
-            span am-time-ago = 'issue.updated_at'
-            | )
-
-      td
-        span.text-muted.roffset5
-          | {{'#' + issue.serial_id}}
-        a[ ng-href = '{{issue.assignee.path}}'
-           title   = "#{t('layout.issues.assigned_to')} {{issue.assignee.fullname}}" ]
-          img ng-src = '{{issue.assignee.image}}'
-
-  = angularjs_paginate( per_page: Issue.per_page,
-                        page:     'issuesCtrl.filter.page',
-                        select_page: 'issuesCtrl.goToPage(issuesCtrl.filter.page)',
-                        total_items: 'issuesCtrl.filter.total_items' )
-
-- content_for :additional_scripts do
-  = render 'init_service.js.erb'
-
+= angularjs_paginate( per_page: Issue.per_page,
+                      page:     'issuesCtrl.filter.page',
+                      select_page: 'issuesCtrl.goToPage(issuesCtrl.filter.page)',
+                      total_items: 'issuesCtrl.filter.filtered_count' )

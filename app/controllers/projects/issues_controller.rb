@@ -17,6 +17,7 @@ class Projects::IssuesController < Projects::BaseController
       all_issues = @project.issues.without_pull_requests
     end
 
+    @all_issues      = all_issues
     @created_issues  = all_issues.where(user_id: current_user)
     @assigned_issues = all_issues.where(assignee_id: current_user.id)
 

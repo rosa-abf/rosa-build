@@ -3,8 +3,16 @@ IssuesController = (dataservice, $http, $location, Issue) ->
   getIssues = ->
     promise = Issue.getIssues(vm.project, vm.filter)
     promise.then (response) ->
-      vm.issues             = response.data.issues
-      vm.filter.total_items = response.data.total_items
+      vm.issues                = response.data.issues
+
+      vm.filter.page           = response.data.page
+      vm.filter.all_count      = response.data.all_count
+      vm.filter.created_count  = response.data.created_count
+      vm.filter.assigned_count = response.data.assigned_count
+      vm.filter.opened_count   = response.data.opened_count
+      vm.filter.closed_count   = response.data.closed_count
+      vm.filter.filtered_count = response.data.filtered_count
+
     true
 
   setSortClass = ->
@@ -29,7 +37,7 @@ IssuesController = (dataservice, $http, $location, Issue) ->
     vm.filter[filter]  = true
     vm.filter.name     = filter
 
-    vm.getIssues()
+    getIssues()
 
   vm.setIssuesSort = (issues_sort) ->
     if vm.filter.sort_direction is 'desc'
@@ -50,9 +58,11 @@ IssuesController = (dataservice, $http, $location, Issue) ->
     getIssues()
 
   init = (dataservice) ->
-    vm.project     = dataservice.project
-    vm.issues      = dataservice.issues
-    vm.filter      = dataservice.filter
+    vm.project        = dataservice.project
+    vm.issues         = dataservice.issues
+    vm.filter         = dataservice.filter
+
+    vm.filter[dataservice.filter.filter] = true
 
     if vm.filter.status == "closed"
       vm.filter.status_closed = true
