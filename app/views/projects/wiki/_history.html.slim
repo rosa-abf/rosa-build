@@ -1,11 +1,12 @@
 = form_tag compare_path(@project, @name), name: "compare-versions", id: "version-form" do
-  table.table
+  
+  input.btn.btn-primary name='commit' type='submit' value=t('wiki.compare_revisions') ng-disabled='selected != 2'
+  hr
+  table.table ng-init='selected = 0'
     - @versions.each do |v|
       tr
         td
-          / span#niceCheckbox1.niceCheck-main onclick="changeCheck(this)"
-          /   = check_box_tag "versions[]", v.id, html: {class: 'history_cbx'}
-          input type='checkbox' id='versions_' name='versions[]' value=v.id class='history_cbx'
+          input type='checkbox' id='versions_' name='versions[]' value=v.id class='history_cbx' ng-model="versions.#{v.id}" ng-change='versions.#{v.id} ? (selected = selected + 1) : (selected = selected - 1)'
         td
           - user = User.where(email: v.author.email).first
           => link_to user_path_by_user(user) do
@@ -15,23 +16,10 @@
               span.username
                 = user.present? ? user.fullname : v.author.name
         td
-          = datetime_moment v.committed_date, tag: :span, class: 'wiki-gray'
-          = v.message
+          => v.message
           - if @name
             = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), title: t("wiki.view_commit")}]"
           - else
             = "[#{v.id[0..6]}]"
-
-/ - content_for :javascript do
-/   coffee:
-/     $('.niceCheck-main').click ->
-/       count = 0
-/       $('input.history_cbx').each (i,el) ->
-/         if $(el).is(':checked')
-/           count = count + 1
-
-/       if count > 2
-/         cbx = $( $(this).find('input.history_cbx')[0] )
-/         if cbx.is(':checked')
-/           $(this).css('background-position', '0pt 0px')
-/           cbx.removeAttr('checked')
+          .help-block
+            = datetime_moment v.committed_date, tag: :span, class: 'wiki-gray'

@@ -7,7 +7,7 @@
     == render 'sidebar'
   .col-md-8
     - if can? :write, @project
-      a.btn.btn-primary href=project_wiki_index_path(@project)
+      a.btn.btn-primary href=new_project_wiki_path(@project)
         = t("wiki.new_page")
     hr
 

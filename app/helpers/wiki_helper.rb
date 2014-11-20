@@ -41,14 +41,14 @@ module WikiHelper
   end
 
   def footer
-    if @footer.nil?
+    if @footer.nil? && @page
       @footer = !!@page.footer ? @page.footer : false
     end
     @footer
   end
 
   def sidebar
-    if @sidebar.nil?
+    if @sidebar.nil? && @page
       @sidebar = !!@page.sidebar ? @page.sidebar : false
     end
     @sidebar
@@ -101,6 +101,6 @@ module WikiHelper
   end
 
   def format
-    @new ? 'markdown' : @page.format
+    @page.try(:format) || 'markdown'
   end
 end
