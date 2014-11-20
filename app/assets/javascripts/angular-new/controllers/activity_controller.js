@@ -191,11 +191,11 @@ RosaABF.controller('ActivityCtrl', ['$scope', '$http', '$timeout', '$q', '$filte
     $scope.setIssuesStatus = function(kind, issues_status) {
       var tab = getIssuesTab(kind);
       tab.status = issues_status;
+      tab.pagination.page = 1;
       $scope.getIssuesContent();
     };
 
     $scope.selectPage = function(kind, page) {
-      getIssuesTab(kind).pagination.page = page;
       $scope.getIssuesContent();
     };
 }]);
