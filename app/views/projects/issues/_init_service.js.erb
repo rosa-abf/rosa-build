@@ -1,0 +1,9 @@
+<script>
+  angular.module('RosaABF').service('IssuesInitializer', function(){
+    return {
+      project: '<%= @project.name_with_owner %>',
+      filter: <%= render('filter.json', all_issues: @all_issues, params: params).html_safe %>,
+      issues: <%= render('issues.json', issues: @issues).html_safe %>
+    };
+  });
+</script>

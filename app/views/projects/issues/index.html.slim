@@ -1,0 +1,12 @@
+-set_meta_tags title: [title_object(@project), t('.title')]
+-render 'submenu'
+
+div[ ng-controller = 'IssuesController as issuesCtrl'
+     ng-cloak      = true ]
+  .row
+    .col-md-offset-2.col-md-8
+      = render 'issues_table', issues: @issues
+
+-#render 'index_sidebar'
+
+

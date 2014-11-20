@@ -10,27 +10,75 @@ class Projects::IssuesController < Projects::BaseController
   layout false, only: [:update, :search_collaborators]
 
   def index(status = 200)
-    @labels = params[:labels] || []
-    @issues = @project.issues.without_pull_requests
-    @issues = @issues.where(assignee_id: current_user.id) if @is_assigned_to_me = params[:filter] == 'assigned'
-    @issues = @issues.joins(:labels).where(labels: {name: @labels}) unless @labels == []
-    # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
-    @issues = @issues.search(params[:search_issue]) if params[:search_issue] !~ /#{t('layout.issues.search')}/
-
-    @opened_issues, @closed_issues = @issues.not_closed_or_merged, @issues.closed_or_merged
-    @status = params[:status] == 'closed' ? :closed : :open
-    @issues = @issues.send( (@status == :closed) ? :closed_or_merged : :not_closed_or_merged )
-
-    @sort       = params[:sort] == 'updated' ? :updated : :created
-    @direction  = params[:direction] == 'asc' ? :asc : :desc
-    @issues = @issues.order("issues.#{@sort}_at #{@direction}")
-    @issues = @issues.preload(:assignee, :user, :pull_request).uniq
-                     .paginate per_page: 20, page: params[:page]
-    if status == 200
-      render 'index', layout: request.xhr? ? 'with_sidebar' : 'application'
+    if params[:kind] == 'pull_requests'
+      all_issues = @project.issues.joins(:pull_request)
     else
-      render status: status, nothing: true
+      params[:kind] = 'issues'
+      all_issues = @project.issues.without_pull_requests
     end
+
+    @created_issues  = all_issues.where(user_id: current_user)
+    @assigned_issues = all_issues.where(assignee_id: current_user.id)
+
+    # TODO: Add search & labels
+
+    case params[:filter]
+    when 'created'
+      @issues = @created_issues
+    when 'assigned'
+      @issues = @assigned_issues
+    else
+      params[:filter] = 'all' # default
+      @issues = all_issues
+    end
+    @opened_issues, @closed_issues = @issues.not_closed_or_merged, @issues.closed_or_merged
+
+    params[:status] = params[:status] == 'closed' ? :closed : :open
+    @issues = @issues.send( params[:status] == :closed ? :closed_or_merged : :not_closed_or_merged )
+
+    params[:direction] = params[:direction] == 'asc' ? :asc : :desc
+    if params[:sort] == 'submitted'
+      @issues = @issues.order(created_at: params[:direction])
+    else
+      params[:sort] = :updated
+      @issues = @issues.order(updated_at: params[:direction])
+    end
+
+    @issues = @issues.includes(:assignee, :user, :pull_request).uniq
+                     .paginate(page: current_page)
+
+    respond_to do |format|
+      format.html {}
+      format.json {}
+    end
+
+
+    # @labels = params[:labels] || []
+    # @issues = @project.issues.without_pull_requests
+    # @issues = @issues.where(assignee_id: current_user.id) if @is_assigned_to_me = params[:filter] == 'assigned'
+    # @issues = @issues.joins(:labels).where(labels: {name: @labels}) unless @labels == []
+    # # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
+    # @issues = @issues.search(params[:search_issue]) if params[:search_issue] !~ /#{t('layout.issues.search')}/
+
+    # @opened_issues, @closed_issues = @issues.not_closed_or_merged, @issues.closed_or_merged
+    # @status = params[:status] == 'closed' ? :closed : :open
+    # @issues = @issues.send( (@status == :closed) ? :closed_or_merged : :not_closed_or_merged )
+
+    # params[:direction]  = params[:direction] == 'asc' ? :asc : :desc
+    # if params[:sort] == 'submitted'
+    #   @issues = @issues.order(created_at: params[:direction])
+    # else
+    #   params[:sort] = :updated
+    #   @issues = @issues.order(updated_at: params[:direction])
+    # end
+
+    # @issues = @issues.preload(:assignee, :user, :pull_request).uniq
+    #                  .paginate per_page: 20, page: params[:page]
+    # if status == 200
+    #   render 'index', layout: request.xhr? ? 'with_sidebar' : 'application'
+    # else
+    #   render status: status, nothing: true
+    # end
   end
 
   def new

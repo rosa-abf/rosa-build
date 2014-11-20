@@ -62,7 +62,7 @@ en:
       done: Done
 
       created_by: 'Created by '
-      updated_at: ' updated'
+      updated_at: 'updated '
       assigned_to: 'Assigned to'
 
   flash:

@@ -62,7 +62,7 @@ ru:
       done: Обновить
 
       created_by: 'Создано '
-      updated_at: ' обновлено'
+      updated_at: 'обновлено '
       assigned_to: 'Назначен'
 
   flash:
