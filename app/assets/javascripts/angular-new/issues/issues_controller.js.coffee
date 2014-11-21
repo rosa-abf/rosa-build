@@ -1,6 +1,7 @@
 IssuesController = (dataservice, $http, $location, Issue) ->
 
   getIssues = ->
+    prepareLabelsFilter()
     promise = Issue.getIssues(vm.project, vm.filter)
     promise.then (response) ->
       vm.issues                = response.data.issues
@@ -27,6 +28,12 @@ IssuesController = (dataservice, $http, $location, Issue) ->
     else
       vm.updated_class   = null
       vm.submitted_class = sort_class
+
+  prepareLabelsFilter = ->
+    vm.filter.labels = []
+    _.each(vm.labels, (l) ->
+      vm.filter.labels.push(l.name) if l.selected
+    )
 
   vm = this
 
@@ -57,10 +64,19 @@ IssuesController = (dataservice, $http, $location, Issue) ->
   vm.goToPage = (page) ->
     getIssues()
 
+  vm.toggleLabelFilter = (label) ->
+    label.selected = !label.selected
+    if label.selected
+      label.style = label.default_style
+    else
+      label.style = {}
+    getIssues()
+
   init = (dataservice) ->
-    vm.project        = dataservice.project
-    vm.issues         = dataservice.issues
-    vm.filter         = dataservice.filter
+    vm.project = dataservice.project
+    vm.issues  = dataservice.issues
+    vm.filter  = dataservice.filter
+    vm.labels  = dataservice.labels
 
     vm.filter[dataservice.filter.filter] = true
 

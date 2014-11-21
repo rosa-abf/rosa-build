@@ -21,8 +21,6 @@ class Projects::IssuesController < Projects::BaseController
     @created_issues  = all_issues.where(user_id: current_user)
     @assigned_issues = all_issues.where(assignee_id: current_user.id)
 
-    # TODO: Add search & labels
-
     case params[:filter]
     when 'created'
       @issues = @created_issues
@@ -32,6 +30,13 @@ class Projects::IssuesController < Projects::BaseController
       params[:filter] = 'all' # default
       @issues = all_issues
     end
+
+    if params[:labels].is_a?(Array) && params[:labels].present?
+      @issues = @issues.joins(:labels).where(labels: {name: params[:labels]})
+    else
+      params[:labels] = []
+    end
+
     @opened_issues, @closed_issues = @issues.not_closed_or_merged, @issues.closed_or_merged
 
     params[:status] = params[:status] == 'closed' ? :closed : :open

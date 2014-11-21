@@ -1,0 +1,14 @@
+ul.nav.nav-pills.nav-stacked
+  - %w(all assigned created).each do |kind_filter|
+    li ng-class = "{ active: issuesCtrl.filter.#{kind_filter} }"
+      a ng-click = "issuesCtrl.setIssuesFilter('#{kind_filter}')"
+        span.badge.pull-right= "{{ issuesCtrl.filter.#{kind_filter}_count }}"
+        - kind = params[:kind] == 'issues' ? 'tracker' : 'pull_requests'
+        = "{{'#{kind}.filter.#{kind_filter}' | i18n}}"
+
+- if can? :new, @project.issues.new
+  hr
+  = link_to t('layout.issues.new'), new_project_issue_path(@project), class: 'btn btn-primary'
+hr
+
+= render 'filter_labels', project: @project

@@ -7,6 +7,7 @@ issueService = ($http) ->
                   sort:      filter.sort
                   direction: filter.sort_direction
                   status:    filter.status
+                  labels:    filter.labels
                   page:      filter.page
                 }
 

@@ -4,13 +4,7 @@
 .container ng-controller = 'IssuesController as issuesCtrl' ng-cloak = true
   .row
     .col-md-3.col-sm-4.offset20
-      ul.nav.nav-pills.nav-stacked
-        - %w(all assigned created).each do |kind_filter|
-          li ng-class = "{ active: issuesCtrl.filter.#{kind_filter} }"
-            a ng-click = "issuesCtrl.setIssuesFilter('#{kind_filter}')"
-              span.badge.pull-right= "{{ issuesCtrl.filter.#{kind_filter}_count }}"
-              - kind = params[:kind] == 'issues' ? 'tracker' : 'pull_requests'
-              = "{{'#{kind}.filter.#{kind_filter}' | i18n}}"
+      = render 'index_sidebar', project: @project
     .col-md-9.col-sm-8.offset20
       tabset.boffset10
         tab[ heading  = "#{t "layout.issues.statuses.open"} ({{issuesCtrl.filter.opened_count}})"
