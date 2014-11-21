@@ -21,13 +21,16 @@ table.table
           | {{issue.updated_at | amDateFormat:'YYYY-MM-DD HH:mm'}} (
           span am-time-ago = 'issue.updated_at'
           | )
-
     td
+      a ng-href = "{{issue.path + '#comments'}}"
+        span.fa.fa-comments.text-primary
+          = " {{issue.comments_count}}"
+    td
+      a>[ ng-href = '{{issue.assignee.path}}'
+          title   = "#{t('layout.issues.assigned_to')} {{issue.assignee.fullname}}" ]
+        img ng-src = '{{issue.assignee.image}}'
       span.text-muted.roffset5
         | {{'#' + issue.serial_id}}
-      a[ ng-href = '{{issue.assignee.path}}'
-         title   = "#{t('layout.issues.assigned_to')} {{issue.assignee.fullname}}" ]
-        img ng-src = '{{issue.assignee.image}}'
 
 = angularjs_paginate( per_page: Issue.per_page,
                       page:     'issuesCtrl.filter.page',

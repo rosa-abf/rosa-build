@@ -29,3 +29,5 @@ else
   json.assignee do
   end
 end
+
+json.comments_count issue.comments.where(automatic: false).count
