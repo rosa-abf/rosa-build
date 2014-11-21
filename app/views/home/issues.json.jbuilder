@@ -12,8 +12,12 @@ json.content do
     json.project_name issue.project.name
     json.title issue.title
     json.issue_url polymorphic_path [@project || issue.project, issue.pull_request ? issue.pull_request : issue]
-    json.updated_at issue.updated_at
-    json.created_at issue.created_at
+
+    json.updated_at     issue.updated_at
+    json.updated_at_utc issue.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
+    json.created_at     issue.created_at
+    json.created_at_utc issue.created_at.strftime('%Y-%m-%d %H:%M:%S UTC')
+
     json.user do
       json.link user_path(issue.user) if issue.user
       json.uname issue.user.uname  if issue.user
@@ -29,5 +33,6 @@ json.content do
         json.color "##{label.color}"
       end
     end
+    json.comments_count issue.comments.where(automatic: false).count
   end
 end
