@@ -12,3 +12,6 @@ ul.nav.nav-pills.nav-stacked
 hr
 
 = render 'filter_labels', project: @project
+
+- if can? :write, @project
+  = render 'manage_labels', project: @project

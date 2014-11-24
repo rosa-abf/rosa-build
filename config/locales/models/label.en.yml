@@ -1,0 +1,8 @@
+en:
+  activerecord:
+    models:
+      label: Label
+    attributes:
+      label:
+        name: Name
+        color: Color

@@ -1,0 +1,56 @@
+div ng-controller = 'LabelsController as labelsCtrl' ng-cloak = true
+  hr
+  button.btn.btn-primary ng-click = 'labelsCtrl.vis_manage_block = !labelsCtrl.vis_manage_block'
+    =t('layout.issues.label_manage')
+
+  .offset5 ng-show = 'labelsCtrl.vis_manage_block'
+    .row ng-repeat = "label in labelsCtrl.labels"
+      .col-md-10
+        .update-label.lpadding-5[ ng-style = 'label.default_style'
+                                  ng-click = 'labelsCtrl.selectCurrentLabel(label)' ]
+          span[ ng-style = 'label.default_style' ] {{ label.name }}
+      .col-md-1.boffset10
+        a[ class='fa fa-times-circle text-danger' href=''
+           ng-click="labelsCtrl.removeLabel(label)" ]
+
+    form role = 'form'
+      .form-group
+        label[ for = 'label_name' ng-show = 'labelsCtrl.is_new_label' ]
+          = t('layout.issues.new_label')
+        label[ for = 'label_name' ng-show = '!labelsCtrl.is_new_label' ]
+          => t('layout.issues.update_label')
+          a.small[ href = '' ng-click = 'labelsCtrl.is_new_label = true' ]
+            = t('layout.issues.switch_to_new_label')
+        input[ id        = 'label_name'
+               type      = 'text'
+               class     = 'form-control'
+               ng-model  = 'labelsCtrl.label.name'
+               required  = true
+               maxlength = 20 ]
+
+      = render 'colors_chooser'
+      .form-group
+        input[ id        = 'label_color'
+               type      = 'text'
+               class     = 'form-control'
+               ng-model  = 'labelsCtrl.label.color'
+               ng-trim   = 'false'
+               maxlength = 6
+               required  = true ]
+      .form-group
+        .row
+          .col-md-6
+            td= "#{t 'layout.preview'}:"
+          .col-md-6
+            .lpadding-5[ ng-style = 'labelsCtrl.colorPreviewStyle()' ]
+              span[ ng-style = 'labelsCtrl.colorPreviewStyle()' ] {{ labelsCtrl.label.name }}
+
+      p.text-warning ng-repeat = 'error in labelsCtrl.errors'
+        | {{ error }}
+
+      button.btn.btn-primary[ type        = 'submit'
+                              ng-click    = 'labelsCtrl.saveLabel()'
+                              ng-disabled = 'labelsCtrl.processing' ]
+        div[ ng-show = 'labelsCtrl.processing' ]= t('layout.processing')
+        div[ ng-show = '!labelsCtrl.processing && labelsCtrl.is_new_label' ]= t('layout.add')
+        div[ ng-show = '!labelsCtrl.processing && !labelsCtrl.is_new_label' ]= t('layout.update')
