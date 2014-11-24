@@ -8,4 +8,11 @@
       issues: <%= render('issues.json', issues: @issues).html_safe %>
     };
   });
+
+  angular.module('RosaABF').service('LabelsInitializer', function(){
+    return {
+      project: '<%= @project.name_with_owner %>',
+      labels: <%= render('labels.json', project: @project).html_safe %>
+    };
+  });
 </script>

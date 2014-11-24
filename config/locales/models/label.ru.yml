@@ -1,0 +1,8 @@
+ru:
+  activerecord:
+    models:
+      label: Метка
+    attributes:
+      label:
+        name: Название
+        color: Цвет

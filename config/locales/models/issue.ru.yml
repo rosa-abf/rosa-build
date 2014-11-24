@@ -48,6 +48,7 @@ ru:
       labels: Метки
       invalid_labels: Неверный hex код
       new_label: Название новой метки
+      switch_to_new_label: новая метка
       update_label: Обновить метку
       label_custom_color: Свой цвет
       label_manage: Управление метками

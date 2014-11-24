@@ -57,34 +57,6 @@ class Projects::IssuesController < Projects::BaseController
       format.html {}
       format.json {}
     end
-
-
-    # @labels = params[:labels] || []
-    # @issues = @project.issues.without_pull_requests
-    # @issues = @issues.where(assignee_id: current_user.id) if @is_assigned_to_me = params[:filter] == 'assigned'
-    # @issues = @issues.joins(:labels).where(labels: {name: @labels}) unless @labels == []
-    # # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
-    # @issues = @issues.search(params[:search_issue]) if params[:search_issue] !~ /#{t('layout.issues.search')}/
-
-    # @opened_issues, @closed_issues = @issues.not_closed_or_merged, @issues.closed_or_merged
-    # @status = params[:status] == 'closed' ? :closed : :open
-    # @issues = @issues.send( (@status == :closed) ? :closed_or_merged : :not_closed_or_merged )
-
-    # params[:direction]  = params[:direction] == 'asc' ? :asc : :desc
-    # if params[:sort] == 'submitted'
-    #   @issues = @issues.order(created_at: params[:direction])
-    # else
-    #   params[:sort] = :updated
-    #   @issues = @issues.order(updated_at: params[:direction])
-    # end
-
-    # @issues = @issues.preload(:assignee, :user, :pull_request).uniq
-    #                  .paginate per_page: 20, page: params[:page]
-    # if status == 200
-    #   render 'index', layout: request.xhr? ? 'with_sidebar' : 'application'
-    # else
-    #   render status: status, nothing: true
-    # end
   end
 
   def new
@@ -142,15 +114,32 @@ class Projects::IssuesController < Projects::BaseController
   # end
 
   def create_label
-    index(@project.labels.create!(name: params[:name], color: params[:color]) ? 200 : 500)
+    @label = @project.labels.new(name: params[:name], color: params[:color])
+    respond_to do |format|
+      if @label.save
+        format.json { render partial: 'labels', locals: {project: @project} }
+      else
+        format.json { render text: @label.errors.full_messages, status: 422 }
+      end
+    end
   end
 
   def update_label
-    index(@label.update_attributes(name: params[:name], color: params[:color]) ? 200 : 500)
+    respond_to do |format|
+      if @label.update_attributes(name: params[:name], color: params[:color])
+        format.json { render partial: 'labels', locals: {project: @project} }
+      else
+        format.json { render text: @label.errors.full_messages, status: 422 }
+      end
+    end
   end
 
   def destroy_label
-    index((@label && @label_destroy) ? 200 : 500)
+    if @label.destroy
+      format.json { render partial: 'labels', locals: {project: @project} }
+    else
+      render json: @label.errors.full_messages, status: 422
+    end
   end
 
   def search_collaborators
@@ -160,7 +149,7 @@ class Projects::IssuesController < Projects::BaseController
   private
 
   def load_and_authorize_label
-    @label = Label.find(params[:label_id]) if params[:label_id]
     authorize! :write, @project
+    @label = Label.find(params[:label_id]) if params[:label_id]
   end
 end

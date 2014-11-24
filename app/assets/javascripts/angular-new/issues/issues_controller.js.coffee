@@ -1,6 +1,6 @@
-IssuesController = (dataservice, $http, $location, Issue) ->
+IssuesController = (dataservice, $http, $location, Issue, $rootScope) ->
 
-  getIssues = ->
+  getIssues = () ->
     prepareLabelsFilter()
     promise = Issue.getIssues(vm.project, vm.filter)
     promise.then (response) ->
@@ -14,6 +14,7 @@ IssuesController = (dataservice, $http, $location, Issue) ->
       vm.filter.closed_count   = response.data.closed_count
       vm.filter.filtered_count = response.data.filtered_count
 
+      vm.labels                = response.data.labels
     true
 
   setSortClass = ->
@@ -29,7 +30,7 @@ IssuesController = (dataservice, $http, $location, Issue) ->
       vm.updated_class   = null
       vm.submitted_class = sort_class
 
-  prepareLabelsFilter = ->
+  prepareLabelsFilter = () ->
     vm.filter.labels = []
     _.each(vm.labels, (l) ->
       vm.filter.labels.push(l.name) if l.selected
@@ -72,10 +73,14 @@ IssuesController = (dataservice, $http, $location, Issue) ->
       label.style = {}
     getIssues()
 
+  $rootScope.$on "updateIssues", (event, args) ->
+    getIssues()
+
   init = (dataservice) ->
     vm.project = dataservice.project
     vm.issues  = dataservice.issues
     vm.filter  = dataservice.filter
+
     vm.labels  = dataservice.labels
 
     vm.filter[dataservice.filter.filter] = true
@@ -94,4 +99,4 @@ angular
   .module("RosaABF")
   .controller "IssuesController", IssuesController
 
-IssuesController.$inject = ['IssuesInitializer', '$http', '$location', 'Issue']
+IssuesController.$inject = ['IssuesInitializer', '$http', '$location', 'Issue', '$rootScope']
