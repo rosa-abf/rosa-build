@@ -128,26 +128,11 @@ shared_examples_for 'platform user with member rights' do
     end
   end
 
-  context 'platform user with remove_member rights' do
-    let(:member) { FactoryGirl.create(:user) }
-    before do
-      @platform.add_member(member)
-      delete :remove_member, {member_id: member.id, id: @platform.id}
-    end
-
-    it 'should be able to perform remove_member action' do
-      response.should redirect_to(members_platform_path(@platform))
-    end
-    it 'ensures that member has been removed from platform' do
-      @platform.members.should_not include(member)
-    end
-  end
-
   context 'platform user with remove_members rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @platform.add_member(member)
-      post :remove_members, {user_remove: {member.id => [1]}, id: @platform.id}
+      post :remove_members, members: [member.id], id: @platform.id
     end
 
     it 'should be able to perform remove_members action' do
@@ -176,26 +161,11 @@ shared_examples_for 'platform user without member rights' do |guest = false|
     end
   end
 
-  context 'platform user without remove_member rights' do
-    let(:member) { FactoryGirl.create(:user) }
-    before do
-      @platform.add_member(member)
-      delete :remove_member, {member_id: member.id, id: @platform.id}
-    end
-
-    it 'should not be able to perform remove_member action' do
-      response.should redirect_to(guest ? new_user_session_path : forbidden_path)
-    end
-    it 'ensures that member has not been removed from platform' do
-      @platform.members.should include(member)
-    end
-  end
-
   context 'platform user without remove_members rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @platform.add_member(member)
-      post :remove_members, {user_remove: {member.id => [1]}, id: @platform.id}
+      post :remove_members, members: [member.id], id: @platform.id
     end
 
     it 'should not be able to perform remove_members action' do
