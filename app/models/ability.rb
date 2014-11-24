@@ -52,7 +52,7 @@ class Ability
       if user.user?
         can :edit, User, id: user.id
         can [:read, :create], Group
-        can [:update, :manage_members, :members, :add_member, :remove_members, :update_member], Group do |group|
+        can [:update, :manage_members, :members, :add_member, :remove_member, :remove_members, :update_member], Group do |group|
           group.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin') # or group.owner_id = user.id
         end
         can :write, Group do |group|
@@ -69,7 +69,7 @@ class Ability
         # can([:read, :archive, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
         can([:read, :archive, :membered, :get_id], Project, read_relations_with_projects) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
-        can [:update, :sections, :manage_collaborators, :autocomplete_maintainers, :add_member, :remove_members, :update_member, :members, :schedule], Project do |project|
+        can [:update, :sections, :manage_collaborators, :autocomplete_maintainers, :add_member, :remove_member, :remove_members, :update_member, :members, :schedule], Project do |project|
           local_admin? project
         end
         can(:fork, Project) {|project| can? :read, project}
@@ -117,7 +117,7 @@ class Ability
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can [:read, :related], Platform, id: user.repositories.pluck(:platform_id)
         can([:update, :destroy, :change_visibility], Platform) {|platform| owner?(platform) }
-        can([:local_admin_manage, :members, :add_member, :remove_members, :remove_file] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
+        can([:local_admin_manage, :members, :add_member, :remove_member, :remove_members, :remove_file] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
 
         can([:create, :publish], MassBuild) {|mass_build| owner?(mass_build.save_to_platform) || local_admin?(mass_build.save_to_platform)}
         can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.save_to_platform) || local_admin?(mass_build.save_to_platform)) && !mass_build.stop_build}
@@ -127,7 +127,7 @@ class Ability
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories')) {|repository| can? :show, repository.platform}
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
         can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project, :regenerate_metadata, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository) {|repository| local_admin? repository.platform}
-        can([:remove_members, :add_member, :signatures, :packages], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
+        can([:remove_member, :remove_members, :add_member, :signatures, :packages], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
         can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(id: user.id)}
         can(:clear, Platform) {|platform| owner?(platform) && platform.personal?}
         can(:regenerate_metadata, Platform) {|platform| owner?(platform) || local_admin?(platform)}
@@ -170,12 +170,12 @@ class Ability
       cannot [:regenerate_metadata, :destroy], Platform, platform_type: 'personal'
       cannot [:create, :destroy], Repository, platform: {platform_type: 'personal'}, name: 'main'
       cannot [:packages], Repository, platform: {platform_type: 'personal'}
-      cannot [:remove_members, :add_member, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository, platform: {platform_type: 'personal'}
+      cannot [:remove_member, :remove_members, :add_member, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository, platform: {platform_type: 'personal'}
 
       cannot :clear, Platform, platform_type: 'main'
       cannot :destroy, Issue
 
-      cannot [:members, :add_member, :remove_members], Platform, platform_type: 'personal'
+      cannot [:members, :add_member, :remove_member, :remove_members], Platform, platform_type: 'personal'
 
       cannot [:create, :update, :destroy, :clone], Product, platform: {platform_type: 'personal'}
       cannot [:clone], Platform, platform_type: 'personal'
