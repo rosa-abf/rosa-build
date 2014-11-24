@@ -120,7 +120,7 @@ describe Projects::HooksController do
       end
 
       context 'group member user with reader role' do
-        before { create_actor_relation(@group, @auser, 'reader') }
+        before { create_actor_relation(@group, @user, 'reader') }
 
         it_should_behave_like 'hooks user without project admin rights'
 
