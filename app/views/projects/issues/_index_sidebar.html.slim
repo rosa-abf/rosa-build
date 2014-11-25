@@ -1,10 +1,17 @@
 ul.nav.nav-pills.nav-stacked
-  - %w(all assigned created).each do |kind_filter|
-    li ng-class = "{ active: issuesCtrl.filter.#{kind_filter} }"
-      a ng-click = "issuesCtrl.setIssuesFilter('#{kind_filter}')"
-        span.badge.pull-right= "{{ issuesCtrl.filter.#{kind_filter}_count }}"
-        - kind = params[:kind] == 'issues' ? 'tracker' : 'pull_requests'
-        = "{{'#{kind}.filter.#{kind_filter}' | i18n}}"
+  li ng-class = "{ active: issuesCtrl.filter.all }"
+    a ng-click = "issuesCtrl.setIssuesFilter('all')"
+      span.badge.pull-right= "{{ issuesCtrl.filter.all_count }}"
+      - kind = params[:kind] == 'issues' ? 'tracker' : 'pull_requests'
+      = "{{'#{kind}.filter.all' | i18n}}"
+
+  - if current_user
+    - %w(assigned created).each do |kind_filter|
+      li ng-class = "{ active: issuesCtrl.filter.#{kind_filter} }"
+        a ng-click = "issuesCtrl.setIssuesFilter('#{kind_filter}')"
+          span.badge.pull-right= "{{ issuesCtrl.filter.#{kind_filter}_count }}"
+          - kind = params[:kind] == 'issues' ? 'tracker' : 'pull_requests'
+          = "{{'#{kind}.filter.#{kind_filter}' | i18n}}"
 
 - if can? :new, @project.issues.new
   hr
