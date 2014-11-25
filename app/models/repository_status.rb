@@ -28,7 +28,7 @@ class RepositoryStatus < ActiveRecord::Base
   belongs_to :platform
   belongs_to :repository
 
-  validates :repository_id, :platform_id, presence: true
+  validates :repository, :platform, presence: true
   validates :repository_id, uniqueness: { scope: :platform_id }
 
   attr_accessible :platform_id, :repository_id

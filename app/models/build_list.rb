@@ -38,13 +38,13 @@ class BuildList < ActiveRecord::Base
     AUTO_PUBLISH_STATUS_TESTING = 'testing'
   ]
 
-  validates :project_id,
+  validates :project,
             :project_version,
             :arch,
             :include_repos,
-            :build_for_platform_id,
-            :save_to_platform_id,
-            :save_to_repository_id,
+            :build_for_platform,
+            :save_to_platform,
+            :save_to_repository,
             presence: true
   validates_numericality_of :priority, greater_than_or_equal_to: 0
   validates :external_nodes, inclusion: { in:  EXTERNAL_NODES }, allow_blank: true

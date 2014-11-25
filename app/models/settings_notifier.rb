@@ -1,7 +1,7 @@
 class SettingsNotifier < ActiveRecord::Base
   belongs_to :user
 
-  validates :user_id, presence: true
+  validates :user, presence: true
 
   attr_accessible :can_notify,
                   :update_code,
@@ -9,7 +9,7 @@ class SettingsNotifier < ActiveRecord::Base
                   :new_comment_commit_repo_owner,
                   :new_comment_commit_commentor,
                   :new_comment,
-                  :new_comment_reply, 
+                  :new_comment_reply,
                   :new_issue,
                   :issue_assign,
                   :new_build,
