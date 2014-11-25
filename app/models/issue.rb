@@ -36,7 +36,7 @@ class Issue < ActiveRecord::Base
 
   has_one :pull_request#, dependent: :destroy
 
-  validates :title, :body, :project_id, presence: true
+  validates :title, :body, :project, presence: true
 
   after_create :set_serial_id
   after_create :subscribe_users

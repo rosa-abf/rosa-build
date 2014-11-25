@@ -7,7 +7,7 @@ class PlatformArchSetting < ActiveRecord::Base
   belongs_to :arch
   belongs_to :platform
 
-  validates :arch_id, :platform_id, presence: true
+  validates :arch, :platform, presence: true
   validates :platform_id, uniqueness: { scope: :arch_id }
   validate lambda {
     errors.add(:platform, I18n.t('flash.platform_arch_settings.wrong_platform')) unless platform.main?
