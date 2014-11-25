@@ -6,8 +6,8 @@ describe ProjectStatistic do
     it { should belong_to(:project) }
     it { should belong_to(:arch) }
 
-    it { should validate_presence_of(:project_id) }
-    it { should validate_presence_of(:arch_id) }
+    it { should validate_presence_of(:project) }
+    it { should validate_presence_of(:arch) }
     it { should validate_presence_of(:average_build_time) }
     it { should validate_presence_of(:build_count) }
 
