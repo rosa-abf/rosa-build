@@ -51,6 +51,18 @@ shared_examples_for 'create build list via api' do
   it 'should not create without existing commit hash in project' do
     lambda{ post :create, @create_params.deep_merge(build_list: {commit_hash: 'wrong'})}.should change{@project.build_lists.count}.by(0)
   end
+
+  it 'should not create without existing arch' do
+    lambda{ post :create, @create_params.deep_merge(build_list: {arch_id: -1})}.should change{@project.build_lists.count}.by(0)
+  end
+
+  it 'should not create without existing save_to_platform' do
+    lambda{ post :create, @create_params.deep_merge(build_list: {save_to_platform_id: -1})}.should change{@project.build_lists.count}.by(0)
+  end
+
+  it 'should not create without existing save_to_repository' do
+    lambda{ post :create, @create_params.deep_merge(build_list: {save_to_repository_id: -1})}.should change{@project.build_lists.count}.by(0)
+  end
 end
 
 shared_examples_for 'not create build list via api' do
