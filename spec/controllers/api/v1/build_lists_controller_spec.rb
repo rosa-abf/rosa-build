@@ -57,7 +57,9 @@ shared_examples_for 'create build list via api' do
   end
 
   it 'should not create without existing save_to_platform' do
-    lambda{ post :create, @create_params.deep_merge(build_list: {save_to_platform_id: -1})}.should change{@project.build_lists.count}.by(0)
+    lambda{
+      post :create, @create_params.deep_merge(build_list: {save_to_platform_id: -1, save_to_repository_id: -1})
+    }.should change{@project.build_lists.count}.by(0)
   end
 
   it 'should not create without existing save_to_repository' do
