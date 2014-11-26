@@ -9,7 +9,8 @@ class BuildList::Package < ActiveRecord::Base
 
   attr_accessible :fullname, :name, :release, :version, :sha1, :epoch, :dependent_packages
 
-  validates :build_list_id, :project_id, :platform_id, :fullname,
+  validates :build_list, :build_list_id, :project, :project_id,
+            :platform, :platform_id, :fullname,
             :package_type, :name, :release, :version,
             presence: true
   validates :package_type, inclusion: PACKAGE_TYPES

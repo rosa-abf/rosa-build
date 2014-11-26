@@ -8,7 +8,7 @@ class Product < ActiveRecord::Base
   has_many :product_build_lists, dependent: :destroy
 
   validates :name, presence: true, uniqueness: { scope: :platform_id }
-  validates :project_id, presence: true
+  validates :project, presence: true
   validates :main_script, :params, length: { maximum: 255 }
 
   scope :recent, -> { order(:name) }

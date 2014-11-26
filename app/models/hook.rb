@@ -6,7 +6,7 @@ class Hook < ActiveRecord::Base
   belongs_to :project
 
   before_validation :cleanup_data
-  validates :project_id, :data, presence: true
+  validates :project, :data, presence: true
   validates :name, presence: true, inclusion: {in: NAMES}
 
   attr_accessible :data, :name

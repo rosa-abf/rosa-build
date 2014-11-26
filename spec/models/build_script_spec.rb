@@ -12,7 +12,7 @@ describe BuildScript do
   context 'ensures that validations and associations exist' do
     it { should belong_to(:project) }
 
-    it { should validate_presence_of(:project_id) }
+    it { should validate_presence_of(:project) }
     it { should validate_presence_of(:treeish) }
 
     context 'uniqueness' do
