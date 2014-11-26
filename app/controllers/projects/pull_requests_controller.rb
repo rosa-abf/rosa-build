@@ -96,27 +96,9 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def index(status = 200)
-    @issues_with_pull_request = @project.issues.joins(:pull_request)
-    @issues_with_pull_request = @issues_with_pull_request.where(assignee_id: current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
-    @issues_with_pull_request = @issues_with_pull_request.search(params[:search_pull_request]) if params[:search_pull_request] !~ /#{t('layout.pull_requests.search')}/
-
-    @opened_issues, @closed_issues = @issues_with_pull_request.not_closed_or_merged.count, @issues_with_pull_request.closed_or_merged.count
-
-    @status = params[:status] == 'closed' ? :closed : :open
-    @issues_with_pull_request = @issues_with_pull_request.send( (@status == :closed) ? :closed_or_merged : :not_closed_or_merged )
-
-    @sort       = params[:sort] == 'updated' ? :updated : :created
-    @direction  = params[:direction] == 'asc' ? :asc : :desc
-    @issues_with_pull_request = @issues_with_pull_request.order("issues.#{@sort}_at #{@direction}")
-
-    @issues_with_pull_request = @issues_with_pull_request.
-      includes(:assignee, :user, :pull_request).uniq.
-      paginate per_page: 20, page: params[:page]
-    if status == 200
-      render 'index', layout: request.xhr? ? 'with_sidebar' : 'application'
-    else
-      render status: status, nothing: true
-    end
+    params[:kind]     = 'pull_requests'
+    params[:filter] ||= 'all'
+    params[:sort]   ||= :updated
   end
 
   def autocomplete_to_project

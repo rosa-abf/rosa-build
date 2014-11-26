@@ -91,6 +91,7 @@ IssuesController = (dataservice, $http, $location, Issue, $rootScope) ->
       vm.filter.status_open   = true
 
     setSortClass()
+    getIssues()
 
   init(dataservice)
   true

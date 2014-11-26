@@ -10,54 +10,55 @@ class Projects::IssuesController < Projects::BaseController
   layout false, only: [:update, :search_collaborators]
 
   def index(status = 200)
-    if params[:kind] == 'pull_requests'
-      all_issues = @project.issues.joins(:pull_request)
-    else
-      params[:kind] = 'issues'
-      all_issues = @project.issues.without_pull_requests
-    end
-
-    @all_issues        = all_issues
-    if current_user
-      @created_issues  = all_issues.where(user_id: current_user)
-      @assigned_issues = all_issues.where(assignee_id: current_user)
-    end
-
-    case params[:filter]
-    when 'created'
-      @issues = @created_issues
-    when 'assigned'
-      @issues = @assigned_issues
-    else
-      params[:filter] = 'all' # default
-      @issues = all_issues
-    end
-
-    if params[:labels].is_a?(Array) && params[:labels].present?
-      @issues = @issues.joins(:labels).where(labels: {name: params[:labels]})
-    else
-      params[:labels] = []
-    end
-
-    @opened_issues, @closed_issues = @issues.not_closed_or_merged, @issues.closed_or_merged
-
-    params[:status] = params[:status] == 'closed' ? :closed : :open
-    @issues = @issues.send( params[:status] == :closed ? :closed_or_merged : :not_closed_or_merged )
-
-    params[:direction] = params[:direction] == 'asc' ? :asc : :desc
-    if params[:sort] == 'submitted'
-      @issues = @issues.order(created_at: params[:direction])
-    else
-      params[:sort] = :updated
-      @issues = @issues.order(updated_at: params[:direction])
-    end
-
-    @issues = @issues.includes(:assignee, :user, :pull_request).uniq
-                     .paginate(page: current_page)
+    params[:kind]   ||= 'issues'
+    params[:filter] ||= 'all'
+    params[:sort]   ||= :updated
 
     respond_to do |format|
       format.html {}
-      format.json {}
+      format.json do
+        if params[:kind] == 'pull_requests'
+          all_issues = @project.issues.joins(:pull_request)
+        else
+          all_issues = @project.issues.without_pull_requests
+        end
+
+        @all_issues        = all_issues
+        if current_user
+          @created_issues  = all_issues.where(user_id: current_user)
+          @assigned_issues = all_issues.where(assignee_id: current_user)
+        end
+
+        case params[:filter]
+        when 'created'
+          @issues = @created_issues
+        when 'assigned'
+          @issues = @assigned_issues
+        else
+          @issues = all_issues
+        end
+
+        if params[:labels].is_a?(Array) && params[:labels].present?
+          @issues = @issues.joins(:labels).where(labels: {name: params[:labels]})
+        else
+          params[:labels] = []
+        end
+
+        @opened_issues, @closed_issues = @issues.not_closed_or_merged, @issues.closed_or_merged
+
+        params[:status] = params[:status] == 'closed' ? :closed : :open
+        @issues = @issues.send( params[:status] == :closed ? :closed_or_merged : :not_closed_or_merged )
+
+        params[:direction] = params[:direction] == 'asc' ? :asc : :desc
+        if params[:sort] == 'submitted'
+          @issues = @issues.order(created_at: params[:direction])
+        else
+          @issues = @issues.order(updated_at: params[:direction])
+        end
+
+        @issues = @issues.includes(:assignee, :user, :pull_request).uniq
+                         .paginate(page: current_page)
+      end
     end
   end
 

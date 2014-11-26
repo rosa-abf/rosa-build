@@ -5,6 +5,6 @@ json.issues do
 end
 
 json.labels do
-  all_issue_ids = @all_issues.not_closed_or_merged.ids
+  all_issue_ids = @all_issues.not_closed_or_merged.pluck(:id)
   json.partial! 'labels', project: @project, all_issue_ids: all_issue_ids
 end

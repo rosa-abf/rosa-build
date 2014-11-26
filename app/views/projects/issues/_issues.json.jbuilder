@@ -1,3 +1,3 @@
 json.array!(issues) do |issue|
-  json.partial! 'issue.json', issue: issue
+  json.partial! 'projects/issues/issue.json', issue: issue
 end

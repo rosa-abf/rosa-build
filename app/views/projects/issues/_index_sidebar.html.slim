@@ -13,12 +13,13 @@ ul.nav.nav-pills.nav-stacked
           - kind = params[:kind] == 'issues' ? 'tracker' : 'pull_requests'
           = "{{'#{kind}.filter.#{kind_filter}' | i18n}}"
 
-- if can? :new, @project.issues.new
+- if params[:kind] == 'issues'
+  - if can? :new, @project.issues.new
+    hr
+    = link_to t('layout.issues.new'), new_project_issue_path(@project), class: 'btn btn-primary'
   hr
-  = link_to t('layout.issues.new'), new_project_issue_path(@project), class: 'btn btn-primary'
-hr
 
-= render 'filter_labels', project: @project
+  = render 'filter_labels', project: @project
 
-- if can? :write, @project
-  = render 'manage_labels', project: @project
+  - if can? :write, @project
+    = render 'manage_labels', project: @project

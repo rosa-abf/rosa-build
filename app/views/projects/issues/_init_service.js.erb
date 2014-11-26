@@ -3,17 +3,14 @@
     angular.module('RosaABF').service('IssuesInitializer', function(){
       return {
         project: '<%= @project.name_with_owner %>',
-        <% all_issue_ids = @all_issues.not_closed_or_merged.ids %>
-        labels: <%= render('labels.json', project: @project, all_issue_ids: all_issue_ids).html_safe %>,
-        filter: <%= render('filter.json', all_issues: @all_issues, params: params).html_safe %>,
-        issues: <%= render('issues.json', issues: @issues).html_safe %>
+        filter: <%= render('projects/issues/filter.json', params: params).html_safe %>
       };
     });
   <% elsif action_name.in?(['new', 'create']) %>
     angular.module('RosaABF').service('IssueInitializer', function(){
       return {
         project: '<%= @project.name_with_owner %>',
-        labels: <%= render('labels.json', project: @project).html_safe %>,
+        labels: <%= render('projects/issues/labels.json', project: @project).html_safe %>,
       };
     });
   <% end %>
@@ -21,7 +18,7 @@
   angular.module('RosaABF').service('LabelsInitializer', function(){
     return {
       project: '<%= @project.name_with_owner %>',
-      labels: <%= render('labels.json', project: @project).html_safe %>
+      labels: <%= render('projects/issues/labels.json', project: @project).html_safe %>
     };
   });
 </script>
