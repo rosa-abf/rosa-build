@@ -160,7 +160,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def preview
-    render inline: view_context.markdown(params[:text] || ''), layout: false
+    render inline: view_context.markdown(params[:text]), layout: false
   end
 
   def refs_list

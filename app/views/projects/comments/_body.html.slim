@@ -1,0 +1,15 @@
+tabset
+  tab heading = t('layout.edit')
+    .offset10
+      = f.input_field :body,
+                      class:        'form-control',
+                      rows:         10,
+                      'ng-model' => 'issueCtrl.body'
+
+  tab[ heading = t('layout.preview')
+       select  = 'issueCtrl.previewBody()' ]
+    .offset10
+      i.fa.fa-spinner.fa-spin.fa-lg ng-show = 'issueCtrl.processing'
+
+      div[ ng-bind-html = 'issueCtrl.preview_body'
+           ng-show      = '!issueCtrl.processing' ]

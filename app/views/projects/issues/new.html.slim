@@ -1,0 +1,17 @@
+-set_meta_tags title: [title_object(@project), t('layout.issues.create_header')]
+-render 'submenu'
+-render 'manage_sidebar'
+
+.container ng-controller = 'IssueController as issueCtrl' ng-cloak = true
+  .row
+    .col-md-3.col-sm-4.offset20
+      = render 'manage_labels', project: @project
+    .col-md-9.col-sm-8.offset20
+      = simple_form_for @issue do |f|
+        h3= title t('layout.issues.create_header')
+        = render 'form', f: f
+
+  = render 'projects/comments/markdown_help'
+
+- content_for :additional_scripts do
+  = render 'init_service.js.erb'

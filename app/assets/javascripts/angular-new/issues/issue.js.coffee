@@ -13,7 +13,8 @@ issueService = ($http) ->
 
       path = Routes.project_issues_path(project, params)
       $http.get(path)
-    }
+
+  }
 
 angular
   .module("RosaABF")

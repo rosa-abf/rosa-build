@@ -45,8 +45,7 @@ div ng-controller = 'LabelsController as labelsCtrl' ng-cloak = true
             .lpadding-5[ ng-style = 'labelsCtrl.colorPreviewStyle()' ]
               span[ ng-style = 'labelsCtrl.colorPreviewStyle()' ] {{ labelsCtrl.label.name }}
 
-      p.text-warning ng-repeat = 'error in labelsCtrl.errors'
-        | {{ error }}
+      p.text-warning[ ng-repeat = 'error in labelsCtrl.errors' ] {{ error }}
 
       button.btn.btn-primary[ type        = 'submit'
                               ng-click    = 'labelsCtrl.saveLabel()'
