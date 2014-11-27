@@ -14,7 +14,7 @@
       };
     });
   <% end %>
-  <% if action_name == 'index' %>
+  <% if action_name.in?(['new', 'create', 'index']) %>
     angular.module('RosaABF').service('LabelsInitializer', function(){
       return {
         project: '<%= @project.name_with_owner %>',
