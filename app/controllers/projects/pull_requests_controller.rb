@@ -95,12 +95,6 @@ class Projects::PullRequestsController < Projects::BaseController
     end
   end
 
-  def index(status = 200)
-    params[:kind]     = 'pull_requests'
-    params[:filter] ||= 'all'
-    params[:sort]   ||= :updated
-  end
-
   def autocomplete_to_project
     items = []
     term = params[:term].to_s.strip.downcase

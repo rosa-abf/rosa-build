@@ -1,9 +1,12 @@
 <script>
-  <% if action_name == 'index' %>
+  <% if action_name.in?(['index', 'pull_requests']) %>
     angular.module('RosaABF').service('IssuesInitializer', function(){
       return {
         project: '<%= @project.name_with_owner %>',
-        filter: <%= render('projects/issues/filter.json', params: params).html_safe %>
+        <% all_issue_ids = @all_issues.not_closed_or_merged.pluck(:id) %>
+        labels: <%= render('labels.json', project: @project, all_issue_ids: all_issue_ids).html_safe %>,
+        filter: <%= render('filter.json', all_issues: @all_issues, params: params).html_safe %>,
+        issues: <%= render('issues.json', issues: @issues).html_safe %>
       };
     });
   <% elsif action_name.in?(['new', 'create']) %>
@@ -14,11 +17,12 @@
       };
     });
   <% end %>
-
-  angular.module('RosaABF').service('LabelsInitializer', function(){
-    return {
-      project: '<%= @project.name_with_owner %>',
-      labels: <%= render('projects/issues/labels.json', project: @project).html_safe %>
-    };
-  });
+  <% if action_name == 'index' %>
+    angular.module('RosaABF').service('LabelsInitializer', function(){
+      return {
+        project: '<%= @project.name_with_owner %>',
+        labels: <%= render('projects/issues/labels.json', project: @project).html_safe %>
+      };
+    });
+  <% end %>
 </script>

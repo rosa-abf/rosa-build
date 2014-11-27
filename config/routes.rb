@@ -327,6 +327,8 @@ Rosa::Application.routes.draw do
             get :search_collaborators
           end
         end
+        get 'pull_requests' => 'issues#pull_requests', as: :pull_requests
+
         post "/labels/:label_id" => "issues#destroy_label", as: :issues_delete_label
         post "/labels/:label_id/update" => "issues#update_label", as: :issues_update_label
 
@@ -337,7 +339,7 @@ Rosa::Application.routes.draw do
           get :find, on: :collection
         end
         resources :hooks, except: :show
-        resources :pull_requests, except: :destroy do
+        resources :pull_requests, except: [:index, :destroy] do
           get :autocomplete_to_project, on: :collection
           put :merge, on: :member
         end

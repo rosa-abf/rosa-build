@@ -29,9 +29,9 @@
               = link_to t('project_menu.builds'), project_build_lists_path(@project)
 
           - if @project.has_issues
-            %li{ class: ('active' if contr == :issues) }
+            %li{ class: ('active' if contr == :issues && act == :index) }
               = link_to t('project_menu.tracker', count: @opened_issues_count), project_issues_path(@project)
-          %li{ class: ('active' if contr == :pull_requests) }
+          %li{ class: ('active' if contr == :issues && act == :pull_requests) }
             =link_to t('project_menu.pull_requests', count: @opened_pull_requests_count), project_pull_requests_path(@project)
           - if @project.has_wiki
             %li{ class: ('active' if contr == :wiki) }
