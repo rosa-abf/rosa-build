@@ -78,9 +78,7 @@ IssuesController = (dataservice, $http, $location, Issue, $rootScope) ->
 
   init = (dataservice) ->
     vm.project = dataservice.project
-    vm.issues  = dataservice.issues
     vm.filter  = dataservice.filter
-
     vm.labels  = dataservice.labels
 
     vm.filter[dataservice.filter.filter] = true
@@ -91,6 +89,7 @@ IssuesController = (dataservice, $http, $location, Issue, $rootScope) ->
       vm.filter.status_open   = true
 
     setSortClass()
+    getIssues()
 
   init(dataservice)
   true
