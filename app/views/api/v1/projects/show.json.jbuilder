@@ -5,7 +5,9 @@ json.project do
   json.updated_at @project.updated_at.to_i
   json.partial! 'api/v1/shared/owner', owner: @project.owner
   json.maintainer do
-    json.partial! 'api/v1/shared/member', member: @project.maintainer
+    if @project.maintainer
+      json.partial! 'api/v1/maintainers/maintainer', maintainer: @project.maintainer
+    end
   end
 
   json.project_statistics @project.project_statistics do |statistic|
