@@ -1,21 +1,6 @@
 -set_meta_tags title: [title_object(@project), @issue.title]
 - render 'submenu'
 - render 'manage_sidebar'
-/ -content_for :right_nopadding do
-/   dummy
-
-/ .container.col-md-offset-1.col-md-10
-/   == render 'header'
-/   == render 'status'
-
-/   ==  render "projects/comments/list", list: @issue.comments, project: @project, commentable: @issue
-/   br
-/   == render "projects/comments/add", project: @project, commentable: @issue if current_user
-
-/   =hidden_field_tag :preview_url, project_md_preview_path(@project)
-
-
-
 == render 'projects/comments/markdown_help'
 .container ng-controller = 'IssueController as issueCtrl' ng-cloak = true
   .row
