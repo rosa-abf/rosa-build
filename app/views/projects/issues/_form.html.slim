@@ -1,7 +1,11 @@
-=render 'title_body', f: f, id: 'new'
+= render 'title_body', f: f, id: 'new'
 = submit_tag t(@issue.new_record? ? 'layout.create' : 'layout.update'),
              class: 'btn btn-primary',
              data: {'disable-with' => t('layout.processing')}
+
+- unless @issue.new_record?
+  a< href='#' ng-click='edit = false'
+    = t('layout.issues.cancel_button')
 
 /
   - if can?(:write, @project)

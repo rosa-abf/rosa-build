@@ -48,10 +48,10 @@ h3
     .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body
 .both
 br
-- if can? :update, @issue
-  =link_to t('layout.edit'), '#', id: 'edit_issue_content', class: 'button'
-  =form_for :issue, url: [@project, @issue], method: :put, html: { class: 'edit_form issue', style: 'display:none;' } do |f|
-    =render 'projects/issues/title_body', f: f, id: 'update'
-    =f.submit t('layout.update'), id: 'update_issue_content'
-    =link_to t('layout.issues.cancel_button'), '#', id: 'cancel_edit_issue_content', class: 'button'
-br
+/ - if can? :update, @issue
+/   =link_to t('layout.edit'), '#', id: 'edit_issue_content', class: 'button'
+/   =form_for :issue, url: [@project, @issue], method: :put, html: { class: 'edit_form issue', style: 'display:none;' } do |f|
+/     =render 'projects/issues/title_body', f: f, id: 'update'
+/     =f.submit t('layout.update'), id: 'update_issue_content'
+/     =link_to t('layout.issues.cancel_button'), '#', id: 'cancel_edit_issue_content', class: 'button'
+/ br

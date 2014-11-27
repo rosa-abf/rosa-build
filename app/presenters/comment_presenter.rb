@@ -56,12 +56,12 @@ class CommentPresenter < ApplicationPresenter
     project, commentable = options[:project], options[:commentable]
     path = helpers.project_commentable_comment_path(project, commentable, comment)
 
-    res = [link_to(t('layout.link'), "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}", class: "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment").html_safe]
+    res = [link_to(content_tag(:i, nil, class: 'fa fa-link'), "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}", class: "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment").html_safe]
     if controller.can? :update, @comment
-      res << link_to(t('layout.edit'), path, id: "comment-#{comment.id}", class: "edit_comment").html_safe
+      res << link_to(content_tag(:i, nil, class: 'fa fa-edit'), path, id: "comment-#{comment.id}", class: "edit_comment").html_safe
     end
     if controller.can? :destroy, @comment
-      res << link_to(t('layout.delete'), path, method: "delete",
+      res << link_to(content_tag(:i, nil, class: 'fa fa-close'), path, method: "delete",
                      data: { confirm: t('layout.comments.confirm_delete') }).html_safe
     end
     res

@@ -1,8 +1,8 @@
 tabset
   tab heading = t('layout.edit')
-    .offset10
+    .offset10 ng-init="issueCtrl.body = '#{f.object.body}'"
       = f.input :body, label: false,
-        input_html: { rows: 10 }
+        input_html: { rows: 10, ng_model: 'issueCtrl.body' }
 
   tab[ heading = t('layout.preview')
        select  = 'issueCtrl.previewBody()' ]

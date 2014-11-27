@@ -6,7 +6,7 @@
         filter: <%= render('filter.json', all_issues: @all_issues, params: params).html_safe %>
       };
     });
-  <% elsif action_name.in?(['new', 'create']) %>
+  <% elsif action_name.in? %w(new create show) %>
     angular.module('RosaABF').service('IssueInitializer', function(){
       return {
         project: '<%= @project.name_with_owner %>',
@@ -14,7 +14,7 @@
       };
     });
   <% end %>
-  <% if action_name.in?(['new', 'create', 'index']) %>
+  <% if action_name.in? %w(new create index show) %>
     angular.module('RosaABF').service('LabelsInitializer', function(){
       return {
         project: '<%= @project.name_with_owner %>',

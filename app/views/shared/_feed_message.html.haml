@@ -6,7 +6,9 @@
       .pull-left
         %strong= presenter.header
         - if presenter.buttons?
-          %span.pull-right= raw presenter.buttons.join(' | ').html_safe
+          %span.pull-right
+            &nbsp;
+            = raw presenter.buttons.join('  ').html_safe
 
         = "(#{datetime_moment(presenter.date, tag: :strong)})".html_safe
         - if presenter.caption?
