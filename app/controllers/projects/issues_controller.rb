@@ -10,7 +10,7 @@ class Projects::IssuesController < Projects::BaseController
   layout false, only: [:update, :search_collaborators]
 
   def index
-    params[:kind]      = params[:kind] == 'issues' ? 'issues' : 'pull_requests'
+    params[:kind]      = params[:kind] == 'pull_requests' ? 'pull_requests' : 'issues'
     params[:filter]    = params[:filter].in?(['created', 'assigned']) ? params[:filter] : 'all'
     params[:sort]      = params[:sort] == 'submitted' ? 'submitted' : 'updated'
     params[:direction] = params[:direction] == 'asc' ? :asc : :desc
