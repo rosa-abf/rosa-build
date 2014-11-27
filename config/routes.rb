@@ -327,10 +327,11 @@ Rosa::Application.routes.draw do
             get :search_collaborators
           end
         end
-        get 'pull_requests' => 'issues#pull_requests', as: :pull_requests
 
-        post "/labels/:label_id" => "issues#destroy_label", as: :issues_delete_label
-        post "/labels/:label_id/update" => "issues#update_label", as: :issues_update_label
+        get 'pull_requests'            => 'issues#pull_requests', as: :pull_requests
+        get 'labels'                   => 'issues#labels',        as: :labels
+        post 'labels/:label_id'        => 'issues#destroy_label', as: :issues_delete_label
+        post 'labels/:label_id/update' => 'issues#update_label',  as: :issues_update_label
 
         resources :build_lists, only: [:index, :new, :create] do
           get :list, on: :collection

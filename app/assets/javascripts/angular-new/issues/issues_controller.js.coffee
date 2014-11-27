@@ -73,7 +73,7 @@ IssuesController = (dataservice, $http, $location, Issue, $rootScope) ->
       label.style = {}
     getIssues()
 
-  $rootScope.$on "updateIssues", (event, args) ->
+  $rootScope.$on "updateLabels", (event, args) ->
     getIssues()
 
   init = (dataservice) ->

@@ -41,7 +41,7 @@ LabelsController = (dataservice, $http, Label, $rootScope, $scope) ->
     promise.success( (data) ->
       vm.labels = data
       vm.errors = []
-      $rootScope.$broadcast('updateIssues')
+      $rootScope.$broadcast('updateLabels')
     ).error( (data) ->
       vm.errors = data
     )
@@ -52,24 +52,24 @@ LabelsController = (dataservice, $http, Label, $rootScope, $scope) ->
     return false unless confirmMessage()
     promise = Label.remove(vm.project, l)
     promise.success (data) ->
-      $rootScope.$broadcast('updateIssues')
+      $rootScope.$broadcast('updateLabels')
 
     false
 
 
   init = (dataservice) ->
-    vm.project          = dataservice.project
-    vm.labels           = dataservice.labels
-    vm.vis_manage_block = false
+    vm.project                   = dataservice.project
+    vm.labels                    = dataservice.labels
+    vm.is_collapsed_manage_block = true
 
-    vm.default_colors   = Label.default_colors
-    vm.label            = {
-                            id:    null
-                            name:  null
-                            color: vm.default_colors[0]
-                          }
-    vm.is_new_label     = true
-    vm.processing       = false
+    vm.default_colors            = Label.default_colors
+    vm.label                     = {
+                                     id:    null
+                                     name:  null
+                                     color: vm.default_colors[0]
+                                   }
+    vm.is_new_label              = true
+    vm.processing                = false
 
   init(dataservice)
   true

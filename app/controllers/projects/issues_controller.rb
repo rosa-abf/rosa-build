@@ -69,6 +69,10 @@ class Projects::IssuesController < Projects::BaseController
     index
   end
 
+  def labels
+    render partial: 'projects/issues/labels.json', locals: {project: @project}, layout: false
+  end
+
   def new
   end
 
@@ -145,10 +149,12 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def destroy_label
-    if @label.destroy
-      format.json { render partial: 'labels', locals: {project: @project} }
-    else
-      render json: @label.errors.full_messages, status: 422
+    respond_to do |format|
+      if @label.destroy
+        format.json { render partial: 'labels', locals: {project: @project} }
+      else
+        format.json { render json: @label.errors.full_messages, status: 422 }
+      end
     end
   end
 

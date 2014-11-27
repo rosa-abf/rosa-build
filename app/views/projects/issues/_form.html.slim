@@ -1,4 +1,7 @@
 =render 'title_body', f: f, id: 'new'
+= submit_tag t(@issue.new_record? ? 'layout.create' : 'layout.update'),
+             class: 'btn btn-primary',
+             data: {'disable-with' => t('layout.processing')}
 
 /
   - if can?(:write, @project)

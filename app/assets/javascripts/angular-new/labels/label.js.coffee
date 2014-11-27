@@ -31,7 +31,11 @@ labelService = ($http) ->
     remove: (project, label) ->
       path = Routes.project_issues_delete_label_path(project, label.id)
       $http.post(path)
-    }
+
+    get_labels: (project) ->
+      path = Routes.project_labels_path(project)
+      $http.get(path)
+  }
 
 angular
   .module("RosaABF")

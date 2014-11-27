@@ -1,4 +1,19 @@
-IssueController = (dataservice, $http, Issue, $rootScope, Preview) ->
+IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label) ->
+
+  getLabels = ->
+    promise = Label.get_labels(vm.project)
+    promise.then (response) ->
+      old_labels = vm.labels
+      vm.labels = response.data
+      _.each(vm.labels, (l) ->
+        _.each(old_labels, (ol) ->
+          if l.id is ol.id
+            l.selected    = ol.selected
+            l.style       = ol.style
+            l.selected_id = ol.selected_id
+        )
+      )
+    true
 
   vm = this
 
@@ -22,6 +37,18 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview) ->
     vm.processing = false
     false
 
+  vm.toggleLabel = (label) ->
+    label.selected = !label.selected
+    if label.selected
+      label.style       = label.default_style
+      label.selected_id = label.id
+    else
+      label.selected_id = null
+      label.style = {}
+
+  $rootScope.$on "updateLabels", (event, args) ->
+    getLabels()
+
   init = (dataservice) ->
     vm.project = dataservice.project
     vm.labels  = dataservice.labels
@@ -34,4 +61,4 @@ angular
   .module("RosaABF")
   .controller "IssueController", IssueController
 
-IssueController.$inject = ['IssueInitializer', '$http', 'Issue', '$rootScope', 'Preview']
+IssueController.$inject = ['IssueInitializer', '$http', 'Issue', '$rootScope', 'Preview', 'Label']

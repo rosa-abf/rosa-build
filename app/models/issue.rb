@@ -46,7 +46,8 @@ class Issue < ActiveRecord::Base
   before_update :update_statistic
 
   attr_accessible :labelings_attributes, :title, :body, :assignee_id
-  accepts_nested_attributes_for :labelings, allow_destroy: true
+  accepts_nested_attributes_for :labelings,
+    reject_if: lambda {|attributes| attributes['label_id'].blank?}
 
   scope :opened, -> { where(status: [STATUS_OPEN, STATUS_REOPEN]) }
   scope :closed, -> { where(status: STATUS_CLOSED) }

@@ -1,9 +1,9 @@
 div ng-controller = 'LabelsController as labelsCtrl' ng-cloak = true
   hr
-  button.btn.btn-primary ng-click = 'labelsCtrl.vis_manage_block = !labelsCtrl.vis_manage_block'
-    =t('layout.issues.label_manage')
+  button.btn.btn-primary[ ng-click = 'labelsCtrl.is_collapsed_manage_block = !labelsCtrl.is_collapsed_manage_block'
+                          type     = 'button' ]= t('layout.issues.label_manage')
 
-  .offset5 ng-show = 'labelsCtrl.vis_manage_block'
+  .offset5 collapse = 'labelsCtrl.is_collapsed_manage_block'
     .row ng-repeat = "label in labelsCtrl.labels"
       .col-md-10
         .update-label.lpadding-5[ ng-style = 'label.default_style'
@@ -47,7 +47,7 @@ div ng-controller = 'LabelsController as labelsCtrl' ng-cloak = true
 
       p.text-warning[ ng-repeat = 'error in labelsCtrl.errors' ] {{ error }}
 
-      button.btn.btn-primary[ type        = 'submit'
+      button.btn.btn-primary[ type        = 'button'
                               ng-click    = 'labelsCtrl.saveLabel()'
                               ng-disabled = 'labelsCtrl.processing' ]
         div[ ng-show = 'labelsCtrl.processing' ]= t('layout.processing')

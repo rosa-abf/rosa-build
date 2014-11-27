@@ -1,0 +1,12 @@
+h4=t('layout.issues.labels')
+ul.nav.nav-pills.nav-stacked
+  li[ role = 'presentation' ng-repeat = 'label in issueCtrl.labels' ]
+    a[ href = '#'
+       ng-click = 'issueCtrl.toggleLabel(label)'
+       ng-style = 'label.style' ]
+      .label-flag[ ng-style = 'label.default_style'
+                   ng-show  = '!label.selected' ] &nbsp;
+      | {{label.name}}
+    input.hidden[ name     = 'issue[labelings_attributes][][label_id]'
+                  ng-model = 'label.selected_id'
+                  ng-value = 'label.selected_id' ]
