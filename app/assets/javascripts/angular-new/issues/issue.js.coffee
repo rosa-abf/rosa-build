@@ -14,6 +14,10 @@ issueService = ($http) ->
       path = Routes.project_issues_path(project, params)
       $http.get(path)
 
+    getAssignees: (project, val) ->
+      path = Routes.search_collaborators_project_issues_path(project, {search_user: val})
+      $http.get(path)
+
   }
 
 angular

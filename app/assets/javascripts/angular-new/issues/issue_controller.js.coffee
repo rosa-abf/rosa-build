@@ -45,14 +45,33 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label) ->
     else
       label.selected_id = null
       label.style = {}
+    true
+
+  vm.getAssignees = (val) ->
+    promise = Issue.getAssignees(vm.project, val)
+    promise.then (response) ->
+      response.data
+
+  vm.selectAssignee = (item, model, label) ->
+    vm.assignee = item
+    vm.toggle_manage_assignee = false
+    false
+
+  vm.removeAssignee = () ->
+    vm.assignee = {}
+    vm.toggle_manage_assignee = false
+    false
 
   $rootScope.$on "updateLabels", (event, args) ->
     getLabels()
 
   init = (dataservice) ->
-    vm.project = dataservice.project
-    vm.labels  = dataservice.labels
-    vm.processing = false
+    vm.project                = dataservice.project
+    vm.assignee               = {}
+    vm.labels                 = dataservice.labels
+    vm.toggle_manage_assignee = false
+
+    vm.processing             = false
 
   init(dataservice)
   true

@@ -6,7 +6,6 @@
     .row
       .col-md-3.col-sm-4.offset20
         - if can?(:write, @project)
-
           == render 'select_labels'
           == render 'manage_labels'
 

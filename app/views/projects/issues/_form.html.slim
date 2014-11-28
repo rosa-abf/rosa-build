@@ -1,4 +1,6 @@
-= render 'title_body', f: f, id: 'new'
+== render 'title_body', f: f, id: 'new'
+== render 'choose_assignee'
+
 = submit_tag t(@issue.new_record? ? 'layout.create' : 'layout.update'),
              class: 'btn btn-primary',
              data: {'disable-with' => t('layout.processing')}
@@ -6,19 +8,3 @@
 - unless @issue.new_record?
   a< href='#' ng-click='edit = false'
     = t('layout.issues.cancel_button')
-
-/
-  - if can?(:write, @project)
-    .leftlist= t('activerecord.attributes.issue.assignee') + ':'
-    #assigned-container.rightlist
-      =render 'user_container', user: @issue.assignee
-    .both
-    .leftlist= t('layout.issues.labels') + ':'
-    .rightlist
-      %span#flag-span.small-text= t('layout.issues.choose_labels_on_left')
-      #issue_labels
-    .both
-  .leftlist
-  .rightlist
-    = submit_tag t(@issue.new_record? ? 'layout.create' : 'layout.update'), data: {'disable-with' => t('layout.processing')}
-  .both

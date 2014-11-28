@@ -159,7 +159,6 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def search_collaborators
-    render partial: 'search_collaborators'
   end
 
   private

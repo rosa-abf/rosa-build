@@ -1,0 +1,21 @@
+== render 'user_container'
+
+-if can?(:write, @project)
+  .col-md-8
+    .panel.panel-info ng-show = 'issueCtrl.toggle_manage_assignee'
+      .panel-heading
+        = t('layout.issues.assign_someone')
+      .panel-body
+        span.fa.fa-times[ ng-click = 'issueCtrl.removeAssignee()'
+                          ng-show  = 'issueCtrl.assignee.id' ]
+          =< t('layout.issues.clear_assignee')
+
+        input[ class                  = 'form-control offset10'
+               type                   = 'text'
+               ng-model               = "issueCtrl.selected_assignee"
+               placeholder            = t('layout.issues.search_user')
+               typeahead              = "extra.label for extra in issueCtrl.getAssignees($viewValue)"
+               typeahead-on-select    = "issueCtrl.selectAssignee($item, $model, $label)"
+               typeahead-template-url = "search_collaborators.html" ]
+  .clearfix
+.offset20
