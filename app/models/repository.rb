@@ -21,9 +21,14 @@ class Repository < ActiveRecord::Base
 
   has_many :build_lists, foreign_key: :save_to_repository_id, dependent: :destroy
 
-  validates :description, presence: true
-  validates :name, uniqueness: { scope: :platform_id, case_sensitive: false }, presence: true,
-            format: { with: /\A[a-z0-9_\-]+\z/ }
+  validates :description, presence: true,
+            length: { maximum: 100 }
+
+  validates :name, uniqueness: { scope: :platform_id, case_sensitive: false },
+            presence: true,
+            format: { with: /\A[a-z0-9_\-]+\z/ },
+            length: { maximum: 100 }
+
   validates :publish_builds_only_from_branch, length: { maximum: 255 }
 
   scope :recent, -> { order(:name) }

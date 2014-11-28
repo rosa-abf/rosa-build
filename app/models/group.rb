@@ -15,7 +15,11 @@ class Group < Avatar
   has_many :own_platforms, as: :owner, class_name: 'Platform', dependent: :destroy
 
   validates :owner, presence: true
-  validates :uname, presence: true, uniqueness: {case_sensitive: false}, format: {with: /\A[a-z0-9_]+\z/}, reserved_name: true
+  validates :uname, presence: true,
+            uniqueness: {case_sensitive: false},
+            format: {with: /\A[a-z0-9_]+\z/},
+            reserved_name: true,
+            length: { maximum: 100 }
   validate { errors.add(:uname, :taken) if User.by_uname(uname).present? }
 
   scope :opened, -> { all }

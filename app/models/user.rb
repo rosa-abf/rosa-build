@@ -44,8 +44,13 @@ class User < Avatar
   has_many :key_pairs
   has_many :ssh_keys, dependent: :destroy
 
-  validates :uname, presence: true, uniqueness: { case_sensitive: false },
-            format: { with: /\A#{NAME_REGEXP.source}\z/ }, reserved_name: true
+  validates :uname, presence: true,
+            uniqueness: { case_sensitive: false },
+            format: { with: /\A#{NAME_REGEXP.source}\z/ },
+            reserved_name: true,
+            length: { maximum: 30 }
+  validates :name, length: { maximum: 100 }
+
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
   validates :role, inclusion: { in: EXTENDED_ROLES }, allow_blank: true
   validates :language, inclusion: { in: LANGUAGES }, allow_blank: true

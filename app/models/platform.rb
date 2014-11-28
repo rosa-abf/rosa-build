@@ -46,7 +46,8 @@ class Platform < ActiveRecord::Base
   has_many :mass_builds, foreign_key: :save_to_platform_id
 
   validates :description,
-    presence: true
+    presence: true,
+    length: { maximum: 10000 }
 
   validates :visibility,
     presence:   true,
@@ -63,7 +64,8 @@ class Platform < ActiveRecord::Base
   validates :name,
     uniqueness: { case_sensitive: false },
     presence:   true,
-    format:     { with: /\A#{NAME_PATTERN}\z/ }
+    format:     { with: /\A#{NAME_PATTERN}\z/ },
+    length: { maximum: 100 }
 
   validates :distrib_type,
     presence:   true,
