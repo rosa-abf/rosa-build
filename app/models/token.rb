@@ -5,6 +5,7 @@ class Token < ActiveRecord::Base
 
   validates :creator_id, :subject_id, :subject_type, presence: true
   validates :authentication_token, presence: true, uniqueness: { case_sensitive: true }
+  validates :description, length: { maximum: 1000 }
 
   default_scope { order(created_at: :desc) }
   scope :by_active, -> { where(status: 'active') }

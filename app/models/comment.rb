@@ -13,6 +13,7 @@ class Comment < ActiveRecord::Base
   serialize :data
 
   validates :body, :user, :commentable_id, :commentable_type, :project_id, presence: true
+  validates :body, length: { maximum: 10000 }
 
   scope :for_commit, ->(c) { where(commentable_id: c.id.hex, commentable_type: c.class) }
   default_scope { order(:created_at) }

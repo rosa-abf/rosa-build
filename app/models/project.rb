@@ -40,7 +40,8 @@ class Project < ActiveRecord::Base
   validates :name, uniqueness: { scope: [:owner_id, :owner_type], case_sensitive: false },
                    presence: true,
                    format: { with: /\A#{NAME_REGEXP.source}\z/,
-                             message: I18n.t("activerecord.errors.project.uname") }
+                             message: I18n.t("activerecord.errors.project.uname") },
+                   length: { maximum: 100 }
   validates :maintainer, presence: true, unless: :new_record?
   validates :url, presence: true, format: { with: /\Ahttps?:\/\/[\S]+\z/ }, if: :mass_import
   validates :add_to_repository, presence: true, if: :mass_import
