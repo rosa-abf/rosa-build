@@ -73,6 +73,14 @@ IssuesController = (dataservice, $http, $location, Issue, $rootScope) ->
       label.style = {}
     getIssues()
 
+  vm.selectLabelFilter = (name) ->
+    label = null
+    _.each(vm.labels, (l) ->
+      l.selected = false
+      label = l if l.name is name
+    )
+    vm.toggleLabelFilter(label) if label
+
   $rootScope.$on "updateLabels", (event, args) ->
     getIssues()
 

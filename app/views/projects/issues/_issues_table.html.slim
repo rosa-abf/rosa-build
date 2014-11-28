@@ -5,7 +5,7 @@ table.table
         | {{issue.title}}
       span.label.small.loffset5[ ng-repeat = "label in issue.labels"
                                  ng-style  = "{background: label.color}" ]
-        | {{label.name}}
+        span.update-label[ ng-click = 'issuesCtrl.selectLabelFilter(label.name)' ] {{label.name}}
       .small
         = t 'layout.issues.created_by'
         a>[ ng-href = "{{issue.user.path}}" ] {{issue.user.uname}}
