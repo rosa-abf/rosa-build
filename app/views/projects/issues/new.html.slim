@@ -4,12 +4,13 @@
 .container ng-controller = 'IssueController as issueCtrl' ng-cloak = true
   = simple_form_for @issue, url: project_issues_path(@project) do |f|
     .row
-      .col-md-3.col-sm-4.offset20
-        - if can?(:write, @project)
+      - can_write = can?(:write, @project)
+      - if can_write
+        .col-md-3.col-sm-4.offset20
           == render 'select_labels'
           == render 'manage_labels'
 
-      .col-md-9.col-sm-8.offset20
+      .col-md-9.col-sm-8.offset20[ class = "#{'col-md-offset-2' unless can_write}" ]
         h3= title t('layout.issues.create_header')
         == render 'form', f: f
 
