@@ -5,14 +5,15 @@
 .container ng-controller = 'IssueController as issueCtrl' ng-cloak = true
   .row
     .col-md-3.col-sm-4.offset20
-      = simple_form_for @issue, url: project_issue_path(@project, @issue) do |f|
-        - if can?(:write, @project)
-
+      - if can?(:write, @project)
+        = simple_form_for @issue, url: project_issue_path(@project, @issue) do |f|
           == render 'select_labels'
           == render 'manage_labels'
+      - else
+        == render 'select_labels'
 
-    .col-md-9.col-sm-8.offset20 ng-hide='edit'
-      h3
+    .col-md-9.col-sm-8.offset20 ng-hide='issueCtrl.edit'
+      h3#issue_title_text
         = @issue.title
       .panel.panel-default
         .panel-body
@@ -21,22 +22,31 @@
           - if can? :update, @issue
             .pull-right
               a href='#'
-                i.fa.fa-edit ng-click='edit = true'
+                i.fa.fa-edit ng-click='issueCtrl.edit = true'
           .pull-left
             - if @issue.user
               strong
                 => link_to(@issue.user.fullname, user_path(@issue.user))
                 = datetime_moment @issue.created_at, tag: :span
-              .clearfix
-            = markdown @issue.body
+          .clearfix
+          #issue_body_text.offset10= markdown @issue.body
+      == render 'choose_assignee'
+
       ==  render "projects/comments/list", list: @issue.comments, project: @project, commentable: @issue
       - if current_user
         hr
         == render "projects/comments/add", project: @project, commentable: @issue if current_user
-    .col-md-9.col-sm-8.offset20 ng-show='edit'
+    .col-md-9.col-sm-8.offset20 ng-show='issueCtrl.edit'
       h3= title t('layout.issues.edit_header')
       = simple_form_for @issue, url: project_issue_path(@project, @issue) do |f|
-        == render 'form', f: f
+        == render 'title_body', f: f
+        button.btn.btn-primary[ ng-disabled = 'issueCtrl.processing || issueCtrl.is_form_changed'
+                                type        = 'button'
+                                ng-click    = 'issueCtrl.updateIssue("title_body")' ]
+          = t('layout.update')
+
+        a< href='#' ng-click='issueCtrl.edit = false'
+          = t('layout.issues.cancel_button')
 
 - content_for :additional_scripts do
   == render 'init_service.js.erb'

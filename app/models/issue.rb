@@ -49,7 +49,8 @@ class Issue < ActiveRecord::Base
 
   attr_accessible :labelings_attributes, :title, :body, :assignee_id
   accepts_nested_attributes_for :labelings,
-    reject_if: lambda {|attributes| attributes['label_id'].blank?}
+    reject_if: lambda {|attributes| attributes['label_id'].blank?},
+    allow_destroy: true
 
   scope :opened, -> { where(status: [STATUS_OPEN, STATUS_REOPEN]) }
   scope :closed, -> { where(status: STATUS_CLOSED) }

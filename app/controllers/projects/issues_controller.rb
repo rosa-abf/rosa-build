@@ -98,26 +98,26 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def update
-    unless can?(:write, @project)
-      params.delete :update_labels
-      [:assignee_id, :labelings, :labelings_attributes].each do |k|
-        params[:issue].delete k
-      end if params[:issue]
-    end
-    @issue.labelings.destroy_all if params[:update_labels]
-    if params[:issue] && status = params[:issue][:status]
-      @issue.set_close(current_user) if status == 'closed'
-      @issue.set_open if status == 'open'
-      render partial: 'status', status: (@issue.save ? 200 : 400)
-    elsif params[:issue]
-      status, message = if @issue.update_attributes(params[:issue])
-        [200, view_context.markdown(@issue.body)]
-      else
-        [400, view_context.local_alert(@issue.errors.full_messages.join('. '))]
-      end
-      render inline: message, status: status
-    else
-      render nothing: true, status: 200
+    respond_to do |format|
+      format.html { render nothing: true, status: 200 }
+
+      format.json {
+        status = 200
+        unless can?(:write, @project)
+          params.delete :update_labels
+          [:assignee_id, :labelings, :labelings_attributes].each do |k|
+            params[:issue].delete k
+          end if params[:issue]
+        end
+        @issue.labelings.destroy_all if params[:update_labels].present?
+        if params[:issue] && status = params[:issue][:status]
+          @issue.set_close(current_user) if status == 'closed'
+          @issue.set_open if status == 'open'
+        else
+          status = 422 unless @issue.update_attributes(params[:issue])
+        end
+        render status: status
+      }
     end
   end
 

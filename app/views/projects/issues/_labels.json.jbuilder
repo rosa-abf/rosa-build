@@ -24,4 +24,12 @@ json.array!(project.labels) do |label|
                 }
                ).count
   end
+  if defined?(issue) && issue.persisted?
+    selected = issue.labelings.pluck(:label_id).include?(label.id)
+    json.selected selected
+    json.style do
+      json.set! 'background-color', "##{label.color}"
+      json.color                    '#FFF'
+    end if selected
+  end
 end

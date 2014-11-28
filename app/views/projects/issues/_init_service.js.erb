@@ -9,8 +9,11 @@
   <% elsif action_name.in? %w(new create show) %>
     angular.module('RosaABF').service('IssueInitializer', function(){
       return {
-        project: '<%= @project.name_with_owner %>',
-        labels: <%= render('projects/issues/labels.json', project: @project).html_safe %>,
+        project:   '<%= @project.name_with_owner %>',
+        serial_id:  <%= @issue.serial_id || 0 %>,
+        labels:     <%= render('projects/issues/labels.json', project: @project, issue: @issue).html_safe %>,
+        action:    '<%= action_name %>',
+        assignee:   <%= render('projects/issues/user.json', user: @issue.assignee).html_safe %>
       };
     });
   <% end %>
