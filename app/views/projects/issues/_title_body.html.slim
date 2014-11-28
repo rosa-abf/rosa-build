@@ -5,6 +5,6 @@
     h3.panel-title
       - t('activerecord.attributes.issue.body')
       = f.label :body
-      .small.pull-right= render 'projects/comments/button_md_help'
+      .pull-right= render 'projects/comments/button_md_help'
   .panel-body
     = render 'projects/comments/body', f: f
