@@ -207,7 +207,7 @@ module BuildListsHelper
   end
 
   def is_repository_checked(repo, params)
-    include_repos(params).include? repo.id
+    include_repos(params).include? repo.id.to_s
   end
 
   private
@@ -244,18 +244,15 @@ module BuildListsHelper
   end
 
   def include_repos(params)
-    return @include_repos if @include_repos
-    @include_repos = params.try(:[], :build_list).try(:[], :include_repos) || []
+    @include_repos ||= params.try(:[], :build_list).try(:[], :include_repos) || []
   end
 
   def save_to_repository_id(params)
-    return @save_to_repository_id if @save_to_repository_id
-    @save_to_repository_id = params[:build_list].try(:[], :save_to_repository_id)
+    @save_to_repository_id ||= params[:build_list].try(:[], :save_to_repository_id).to_i
   end
 
   def project_version(project, params)
-    return @project_version if @project_version
-    @project_version = params[:build_list].try(:[], :project_version) || project.default_branch
+    @project_version ||= params[:build_list].try(:[], :project_version) || project.default_branch
   end
 
   def build_list_project_versions(project)

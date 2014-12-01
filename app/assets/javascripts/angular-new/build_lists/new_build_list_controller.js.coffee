@@ -137,7 +137,8 @@ NewBuildListController = (dataservice, $http) ->
     false
 
   vm.addExtraBuildList = ->
-    vm.extra_build_lists = _.union(vm.extra_build_lists, [vm.selected_extra_build_list])
+    if vm.selected_extra_build_list && vm.selected_extra_build_list.id
+      vm.extra_build_lists = _.union(vm.extra_build_lists, [vm.selected_extra_build_list])
     vm.selected_extra_build_list = null
     false
 
