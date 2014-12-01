@@ -104,7 +104,7 @@ en:
         description: Description
         owner: Owner
         visibility: Visibility
-        visibility_types:
+        visibilities:
           open: Public
           hidden: Private
         repository_id: Repository
