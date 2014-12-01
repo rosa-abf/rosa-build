@@ -13,6 +13,7 @@
         serial_id:  <%= @issue.serial_id || 0 %>,
         labels:     <%= render('projects/issues/labels.json', project: @project, issue: @issue).html_safe %>,
         action:    '<%= action_name %>',
+        status:    <%= render('projects/issues/status.json', issue: @issue).html_safe %>,
         assignee:   <%= render('projects/issues/user.json', user: @issue.assignee).html_safe %>
       };
     });

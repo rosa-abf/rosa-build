@@ -1,5 +1,5 @@
 issueService = ($http) ->
-  getFormParams = (kind) ->
+  getFormParams = (kind, extra = {}) ->
     if kind is 'title_body'
       {
         issue: {
@@ -8,14 +8,38 @@ issueService = ($http) ->
         }
       }
     else if kind is 'labels'
+      if extra.label.selected is false
+        is_destroy = '1'
+      else
+        is_destroy = '0'
       {
-        update_labels: true
         issue: {
-          labelings_attributes: {
-
-          }
+          labelings_attributes:
+            [{
+               id:       extra.label.labeling_id,
+               label_id: extra.label.id,
+               _destroy: is_destroy
+            }]
         }
       }
+    else if kind is 'assignee'
+      {
+        issue: {
+          assignee_id: extra.assignee.id
+        }
+      }
+    else if kind is 'status'
+      if extra.status.name isnt 'closed'
+        status = 'closed'
+      else
+        status = 'open'
+
+      {
+        issue: {
+          status: status
+        }
+      }
+
   {
     getIssues: (project, filter) ->
       params =  {

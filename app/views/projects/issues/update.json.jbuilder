@@ -1,11 +1,14 @@
-json.(@issue, :title, :status)
+json.(@issue, :title)
 json.body markdown(@issue.body)
 
 json.labels do
-  json.array!(@issue.labels) do |label|
-    json.name  label.name
-  end
+  json.partial! 'labels', project: @project, issue: @issue
 end
+
+json.status do
+  json.partial! 'status', issue: @issue
+end
+
 
 #json.updated_at     @issue.updated_at
 #json.updated_at_utc @issue.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')

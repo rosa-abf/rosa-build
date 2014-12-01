@@ -109,10 +109,11 @@ class Projects::IssuesController < Projects::BaseController
             params[:issue].delete k
           end if params[:issue]
         end
-        @issue.labelings.destroy_all if params[:update_labels].present?
+
         if params[:issue] && status = params[:issue][:status]
           @issue.set_close(current_user) if status == 'closed'
           @issue.set_open if status == 'open'
+          status = @issue.save ? 200 : 500
         else
           status = 422 unless @issue.update_attributes(params[:issue])
         end

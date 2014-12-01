@@ -5,6 +5,7 @@
     .panel.panel-info ng-show = 'issueCtrl.toggle_manage_assignee'
       .panel-heading
         = t('layout.issues.assign_someone')
+        i.fa.fa-spinner.fa-spin.pull-right ng-show = 'issueCtrl.processing_issue_assignee'
       .panel-body
         span.fa.fa-times[ ng-click = 'issueCtrl.removeAssignee()'
                           ng-show  = 'issueCtrl.assignee.id' ]

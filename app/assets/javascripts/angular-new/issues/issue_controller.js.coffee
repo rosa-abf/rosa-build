@@ -3,6 +3,11 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label) ->
   updateIssueFromResponse = (response) ->
     $('#issue_title_text').html(response.data.title)
     $('#issue_body_text').html(response.data.body)
+    vm.assignee = response.data.assignee
+    vm.labels   = response.data.labels
+    vm.status   = response.data.status
+
+    updateStatusCLass()
 
   getLabels = ->
     promise = Label.get_labels(vm.project)
@@ -19,6 +24,13 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label) ->
       )
     true
 
+  updateStatusCLass = ->
+    if vm.status.name is 'open' or vm.status.name is 'reopen'
+      vm.issue_status_class = 'btn-primary'
+    else
+      vm.issue_status_class = 'btn-danger'
+
+
   vm = this
 
   vm.previewBody = ->
@@ -28,6 +40,7 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label) ->
     if vm.body is Preview.old_text
       return false
 
+    return false if vm.processing
     vm.processing = true
 
     promise = Preview.get_preview(vm.project, vm.body)
@@ -42,6 +55,10 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label) ->
     false
 
   vm.toggleLabel = (label) ->
+    if vm.action is 'show'
+      return false if vm.processing_issue_labels
+      vm.processing_issue_labels = true
+
     label.selected = !label.selected
     if label.selected
       label.style       = label.default_style
@@ -49,43 +66,81 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label) ->
     else
       label.selected_id = null
       label.style = {}
-    vm.updateIssue('labels', {id: label.id, selected: label.selected}) if action is 'show'
+
+    if vm.action is 'show'
+      vm.updateIssue('labels', label: label)
     true
 
   vm.getAssignees = (val) ->
+    vm.processing_issue_assignee = true
     promise = Issue.getAssignees(vm.project, val)
     promise.then (response) ->
+      vm.processing_issue_assignee = false
       response.data
 
   vm.selectAssignee = (item, model, label) ->
+    if vm.action is 'show'
+      return false if vm.processing_issue_assignee
+      vm.processing_issue_assignee = true
+
     vm.assignee = item
-    vm.toggle_manage_assignee = false
+
+    if vm.action is 'show'
+      vm.updateIssue('assignee', assignee: vm.assignee)
+    vm.toggle_manage_assignee    = false
     false
 
   vm.removeAssignee = () ->
+    if vm.action is 'show'
+      return false if vm.processing_issue_assignee
+      vm.processing_issue_assignee = true
+
     vm.assignee = {}
-    vm.toggle_manage_assignee = false
+
+    if vm.action is 'show'
+      vm.updateIssue('assignee', assignee: vm.assignee)
+    vm.toggle_manage_assignee    = false
     false
 
-  vm.updateIssue = (kind) ->
-    promise = Issue.update(vm.project, vm.serial_id, kind)
+  vm.updateStatus = ->
+    return false if vm.action isnt 'show'
+    return false if vm.processing_issue_status
+    vm.processing_issue_status = true
+    vm.updateIssue('status', status: vm.status)
+    false
+
+  vm.updateIssue = (kind, extra = {}) ->
+    promise = Issue.update(vm.project, vm.serial_id, kind, extra)
     promise.then (response) ->
       updateIssueFromResponse(response)
       vm.edit = false if kind is 'title_body'
+      if vm.action is 'show' and vm.processing_issue_assignee
+        vm.processing_issue_assignee = false
+      if vm.action is 'show' and vm.processing_issue_labels
+        vm.processing_issue_labels = false
+      if vm.action is 'show' and vm.processing_issue_status
+        vm.processing_issue_status = false
     false
+
 
   $rootScope.$on "updateLabels", (event, args) ->
     getLabels()
 
   init = (dataservice) ->
-    vm.project                = dataservice.project
-    vm.serial_id              = dataservice.serial_id
-    vm.labels                 = dataservice.labels
-    vm.action                 = dataservice.action
-    vm.assignee               = dataservice.assignee
+    vm.project   = dataservice.project
+    vm.serial_id = dataservice.serial_id
+    vm.labels    = dataservice.labels
+    vm.action    = dataservice.action
+    vm.assignee  = dataservice.assignee
+    vm.status    = dataservice.status
 
-    vm.toggle_manage_assignee = false
-    vm.processing             = false
+    vm.toggle_manage_assignee  = false
+    vm.processing              = false
+
+    vm.processing_issue_labels   = false
+    vm.processing_issue_assignee = false
+
+    updateStatusCLass()
 
   init(dataservice)
   true
