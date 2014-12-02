@@ -1,10 +1,7 @@
-CollaboratorsController = (dataservice, Collaborator, $http) ->
+CollaboratorsController = (dataservice, Collaborator, $http, confirmMessage) ->
   vm = this
 
   vm.new_role = 'reader'
-
-  vm.confirmMessage = ->
-    confirm('<%= I18n.t 'layout.confirm' %>')
 
   vm.isDisabledDeleteAllButton = ->
     is_selected = true
@@ -33,6 +30,7 @@ CollaboratorsController = (dataservice, Collaborator, $http) ->
     false
 
   vm.removeCollaborator = (member) ->
+    return false unless confirmMessage.show()
     promise = Collaborator.remove(vm.name_with_owner, member.id)
     promise.success (data) ->
       vm.collaborators = _.reject(vm.collaborators, (c) ->
@@ -41,12 +39,14 @@ CollaboratorsController = (dataservice, Collaborator, $http) ->
     false
 
   vm.removeCollaborators = ->
+    return false unless confirmMessage.show()
     _.each(vm.collaborators, (c) ->
       vm.removeCollaborator(c) if c.check_delete
     )
     false
 
   vm.updateCollaborator = (member) ->
+    return false unless confirmMessage.show()
     Collaborator.update(vm.name_with_owner, member)
     false
 
@@ -64,4 +64,9 @@ angular
   .module("RosaABF")
   .controller "CollaboratorsController", CollaboratorsController
 
-CollaboratorsController.$inject = ['CollaboratorsInitializer', 'Collaborator', '$http']
+CollaboratorsController.$inject = [
+                                    'CollaboratorsInitializer'
+                                    'Collaborator'
+                                    '$http'
+                                    'confirmMessage'
+                                  ]

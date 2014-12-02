@@ -1,7 +1,4 @@
-LabelsController = (dataservice, $http, Label, $rootScope, $scope) ->
-
-  confirmMessage = ->
-    confirm('<%= I18n.t 'layout.confirm' %>')
+LabelsController = (dataservice, $http, Label, $rootScope, $scope, confirmMessage) ->
 
   $scope.$watch (->
     vm.label.color
@@ -49,7 +46,7 @@ LabelsController = (dataservice, $http, Label, $rootScope, $scope) ->
     false
 
   vm.removeLabel = (l) ->
-    return false unless confirmMessage()
+    return false unless confirmMessage.show()
     promise = Label.remove(vm.project, l)
     promise.success (data) ->
       $rootScope.$broadcast('updateLabels')
@@ -78,4 +75,11 @@ angular
   .module("RosaABF")
   .controller "LabelsController", LabelsController
 
-LabelsController.$inject = ['LabelsInitializer', '$http', 'Label', '$rootScope', '$scope']
+LabelsController.$inject = [
+                             'LabelsInitializer'
+                             '$http'
+                             'Label'
+                             '$rootScope'
+                             '$scope'
+                             'confirmMessage'
+                           ]

@@ -28,20 +28,20 @@ table.table.table-striped
           | &nbsp;
           = t("layout.collaborators.role_names.#{ role }")
       td
-        a[ ng-click         = 'membersCtrl.confirmMessage() && membersCtrl.updateCollaborator(member)'
+        a[ ng-click         = 'membersCtrl.updateCollaborator(member)'
            href             = '#' ]
 
           span.glyphicon.glyphicon-ok
             | &nbsp;
 
-        a[ ng-click         = 'membersCtrl.confirmMessage() && membersCtrl.removeCollaborator(member)'
+        a[ ng-click         = 'membersCtrl.removeCollaborator(member)'
            href             = '#' ]
           span.glyphicon.glyphicon-remove
             | &nbsp;
 
 
 = submit_tag t('layout.delete'), class: 'btn btn-danger',
-  'ng-click'    => 'membersCtrl.confirmMessage() && membersCtrl.removeCollaborators()',
+  'ng-click'    => 'membersCtrl.removeCollaborators()',
   'ng-disabled' => 'membersCtrl.isDisabledDeleteAllButton()'
 
 hr

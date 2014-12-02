@@ -1,4 +1,4 @@
-IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label) ->
+IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label, confirmMessage) ->
 
   updateIssueFromResponse = (response) ->
     $('#issue_title_text').html(response.data.title)
@@ -91,6 +91,7 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label) ->
     false
 
   vm.removeAssignee = () ->
+    return false unless confirmMessage.show()
     if vm.action is 'show'
       return false if vm.processing_issue_assignee
       vm.processing_issue_assignee = true
@@ -156,4 +157,5 @@ IssueController.$inject = [
                             '$rootScope'
                             'Preview'
                             'Label'
+                            'confirmMessage'
                           ]
