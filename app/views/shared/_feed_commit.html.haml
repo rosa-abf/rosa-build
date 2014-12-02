@@ -6,7 +6,7 @@
   .clearfix
   %span= presenter.caption
   - if presenter.expandable? and presenter.content?
-    %span.glyphicon.glyphicon-chevron-down{ 'data-toggle' => 'collapse', 'data-target' => "#commit_message_#{item_no}" }
+    %span.glyphicon.glyphicon-chevron-down.pointer{ 'data-toggle' => 'collapse', 'data-target' => "#commit_message_#{item_no}" }
 .clearfix
 - if presenter.content?
   .collapse{ id: "commit_message_#{item_no}" }
