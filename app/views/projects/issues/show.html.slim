@@ -40,7 +40,7 @@
         hr
         == render "projects/comments/add", project: @project, commentable: @issue if current_user
     .col-md-9.col-sm-8.offset20 ng-show='issueCtrl.edit'
-      h3= title t('layout.issues.edit_header')
+      h3= t('layout.issues.edit_header')
 
       = simple_form_for @issue, url: project_issue_path(@project, @issue) do |f|
         == render 'title_body', f: f
