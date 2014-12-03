@@ -21,6 +21,14 @@ module AbfWorker
       end
 
       item = find_or_create_item
+
+      unless subject.valid?
+        item.update_attributes({status: BuildList::BUILD_ERROR})
+        subject.build_error(false)
+        subject.save(validate: false)
+        return
+      end
+
       fill_container_data if status != STARTED
 
       rerunning_tests = subject.rerunning_tests?
@@ -39,8 +47,7 @@ module AbfWorker
         when EXIT_CODE_UNPERMITTED_ARCHITECTURE
           subject.unpermitted_arch
         else
-          subject.build_error(false)
-          subject.save(validate: false)
+          subject.build_error
         end
 
         item.update_attributes({status: BuildList::BUILD_ERROR}) unless rerunning_tests
