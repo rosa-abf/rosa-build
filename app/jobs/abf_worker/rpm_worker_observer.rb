@@ -39,7 +39,8 @@ module AbfWorker
         when EXIT_CODE_UNPERMITTED_ARCHITECTURE
           subject.unpermitted_arch
         else
-          subject.build_error
+          subject.build_error(false)
+          subject.save(validate: false)
         end
 
         item.update_attributes({status: BuildList::BUILD_ERROR}) unless rerunning_tests
