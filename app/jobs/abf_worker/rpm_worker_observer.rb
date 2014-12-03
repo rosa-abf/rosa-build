@@ -21,6 +21,7 @@ module AbfWorker
       end
 
       item = find_or_create_item
+      fill_container_data if status != STARTED
 
       unless subject.valid?
         item.update_attributes({status: BuildList::BUILD_ERROR})
@@ -28,8 +29,6 @@ module AbfWorker
         subject.save(validate: false)
         return
       end
-
-      fill_container_data if status != STARTED
 
       rerunning_tests = subject.rerunning_tests?
 
