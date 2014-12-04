@@ -1,0 +1,15 @@
+- if Comment.issue_comment?(commentable.class)
+  - is_subscribed = commentable.subscribes.exists?(user_id: current_user.id)
+  - subscribe_path = is_subscribed ? project_issue_subscribe_path(project, commentable, current_user.id) : project_issue_subscribes_path(project, commentable)
+- else Comment.commit_comment?(commentable.class)
+  - is_subscribed = Subscribe.subscribed_to_commit?(project, current_user, commentable)
+  - subscribe_path = is_subscribed ? unsubscribe_commit_path(project, commentable) : subscribe_commit_path(project, commentable)
+
+- if is_subscribed
+  span.label.label-success>
+    = t('layout.turned_on')
+  = link_to t('layout.commits.unsubscribe_btn'), subscribe_path, method: :delete
+- else
+  span.label.label-danger>
+    = t('layout.turned_off')
+  = link_to t('layout.commits.subscribe_btn'), subscribe_path, method: :post

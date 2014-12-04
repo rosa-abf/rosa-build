@@ -328,8 +328,8 @@ Rosa::Application.routes.draw do
           end
         end
 
-        get 'pull_requests'            => 'issues#pull_requests', as: :pull_requests
-        get 'labels'                   => 'issues#labels',        as: :labels
+        get  'pull_requests'           => 'issues#pull_requests', as: :pull_requests
+        get  'labels'                  => 'issues#labels',        as: :labels
         post 'labels/:label_id'        => 'issues#destroy_label', as: :issues_delete_label
         post 'labels/:label_id/update' => 'issues#update_label',  as: :issues_update_label
 

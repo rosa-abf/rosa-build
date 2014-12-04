@@ -1,13 +1,18 @@
 tabset
   tab heading = t('layout.edit')
-    .offset10 ng-init="issueCtrl.body = '#{f.object.body}'"
-      = f.input :body, label: false,
-        input_html: { rows: 10, ng_model: 'issueCtrl.body' }
+    .offset10
+      - if defined?(ang_model)
+        = f.input :body, label: false,
+          input_html: { rows: 10, id: "#{id}-body",
+                        'ng-model' => ang_model, 'ng-value' => ang_model }
+      - else
+        = f.input :body, label: false,
+          input_html: { rows: 10, id: "#{id}-body" }
 
   tab[ heading = t('layout.preview')
-       select  = 'issueCtrl.previewBody()' ]
+       select  = "#{ctrl}.previewBody('#{id}')" ]
     .offset10
-      i.fa.fa-spinner.fa-spin.fa-lg ng-show = 'issueCtrl.processing'
+      i.fa.fa-spinner.fa-spin.fa-lg ng-show = "#{ctrl}.processing"
 
-      div[ ng-bind-html = 'issueCtrl.preview_body'
-           ng-show      = '!issueCtrl.processing' ]
+      div[ ng-bind-html = "#{ctrl}.preview_body"
+           ng-show      = "!#{ctrl}.processing"  ]

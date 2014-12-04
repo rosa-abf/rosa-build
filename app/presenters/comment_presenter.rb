@@ -54,15 +54,21 @@ class CommentPresenter < ApplicationPresenter
 
   def buttons
     project, commentable = options[:project], options[:commentable]
-    path = helpers.project_commentable_comment_path(project, commentable, comment)
 
-    res = [link_to(content_tag(:i, nil, class: 'fa fa-link'), "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}", class: "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment").html_safe]
+    link_to_comment = "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}"
+    klass = "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment"
+    res = [ link_to(content_tag(:i, nil, class: 'fa fa-link'),
+                    link_to_comment,
+                    class: klass).html_safe ]
     if controller.can? :update, @comment
-      res << link_to(content_tag(:i, nil, class: 'fa fa-edit'), path, id: "comment-#{comment.id}", class: "edit_comment").html_safe
+      res << link_to(content_tag(:i, nil, class: 'fa fa-edit'),
+                     "#update-comment#{comment.id}",
+                     'ng-click' => "commentsCtrl.toggleEditForm(#{comment_id})" ).html_safe
     end
     if controller.can? :destroy, @comment
-      res << link_to(content_tag(:i, nil, class: 'fa fa-close'), path, method: "delete",
-                     data: { confirm: t('layout.comments.confirm_delete') }).html_safe
+      res << link_to(content_tag(:i, nil, class: 'fa fa-close'),
+                     '',
+                     'ng-click' => "commentsCtrl.remove(#{comment_id})").html_safe
     end
     res
   end

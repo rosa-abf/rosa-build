@@ -4,7 +4,7 @@ issueService = ($http) ->
       {
         issue: {
           title: $('#issue_title').val()
-          body:  $('#issue_body').val()
+          body:  $('#issue-body').val()
         }
       }
     else if kind is 'labels'

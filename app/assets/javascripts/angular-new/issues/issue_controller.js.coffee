@@ -34,19 +34,20 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label, confir
   vm = this
 
   vm.previewBody = ->
-    if vm.body is '' or !vm.body
+    body = $('#issue-body').val()
+    if body is '' or !body
       vm.preview_body = ''
       return false
-    if vm.body is Preview.old_text
+    if body is Preview.old_text
       return false
 
     return false if vm.processing
     vm.processing = true
 
-    promise = Preview.get_preview(vm.project, vm.body)
+    promise = Preview.get_preview(vm.project, body)
     promise.success( (response) ->
       vm.preview_body  = response
-      Preview.old_text = vm.body
+      Preview.old_text = body
     ).error( (response) ->
       vm.preview_body = 'Error :('
     )

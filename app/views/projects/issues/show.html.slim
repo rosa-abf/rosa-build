@@ -35,10 +35,15 @@
       == render 'closed_by'
       == render 'choose_assignee'
 
-      ==  render "projects/comments/list", list: @issue.comments, project: @project, commentable: @issue
-      - if current_user
-        hr
-        == render "projects/comments/add", project: @project, commentable: @issue if current_user
+      - params = "{ kind: 'issue', id: #{@issue.serial_id} }"
+      div[ ng-controller = 'CommentsController as commentsCtrl'
+           ng-init       = "commentsCtrl.init('#{@project.name_with_owner}', #{params})" ]
+        ==  render "projects/comments/list", list: @issue.comments,
+                   project: @project, commentable: @issue
+        - if current_user
+          hr
+          == render "projects/comments/add", project: @project, commentable: @issue
+
     .col-md-9.col-sm-8.offset20 ng-show='issueCtrl.edit'
       h3= t('layout.issues.edit_header')
 

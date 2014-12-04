@@ -1,32 +1,20 @@
 h3
   = t('layout.comments.new_header')
-- if Comment.issue_comment?(commentable.class)
-  - new_path = project_issue_comments_path(project, commentable)
-  - is_subscribed = commentable.subscribes.exists?(user_id: current_user.id)
-  - subscribe_path = is_subscribed ? project_issue_subscribe_path(project, commentable, current_user.id) : project_issue_subscribes_path(project, commentable)
-- else Comment.commit_comment?(commentable.class)
-  - new_path = project_commit_comments_path(project, commentable)
-  - is_subscribed = Subscribe.subscribed_to_commit?(project, current_user, commentable)
-  - subscribe_path = is_subscribed ? unsubscribe_commit_path(project, commentable) : subscribe_commit_path(project, commentable)
 
-= simple_form_for Comment.new, url: new_path, html: { method: :post } do |f|
+= simple_form_for Comment.new, url: '', html: { method: :post } do |f|
   .panel.panel-info ng-controller = 'IssueController as issueCtrl' ng-cloak = true
     .panel-heading
       h3.panel-title
-        - t('activerecord.attributes.issue.body')
         = f.label :body
         .pull-right= render 'projects/comments/button_md_help'
     .panel-body
-      = render 'projects/comments/body', f: f
+      = render 'projects/comments/body', f: f, id: 'new-comment', ctrl: 'commentsCtrl',
+               ang_model: 'commentsCtrl.new_body'
       hr
-      = f.button :submit, t('layout.create')
+      button.btn.btn-primary[ ng-disabled = 'commentsCtrl.isDisabledNewCommentButton()'
+                              ng-click    = 'commentsCtrl.add()' ]
+        = t('layout.create')
     .panel-footer
       => t('layout.comments.notifications_are')
-      - if is_subscribed
-        span.label.label-success>
-          = t('layout.turned_on')
-        = link_to t('layout.commits.unsubscribe_btn'), subscribe_path, method: :delete
-      - else
-        span.label.label-danger>
-          = t('layout.turned_off')
-        = link_to t('layout.commits.subscribe_btn'), subscribe_path, method: :post
+
+      == render 'projects/subscribes/subscribe_status', project: @project, commentable: @issue

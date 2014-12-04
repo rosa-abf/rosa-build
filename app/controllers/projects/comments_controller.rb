@@ -8,17 +8,17 @@ class Projects::CommentsController < Projects::BaseController
   include CommentsHelper
 
   def create
-    anchor = ''
     if !@comment.set_additional_data params
-      flash[:error] = I18n.t("flash.comment.save_error")
+      render online: I18n.t("flash.comment.save_error"), layout: false
     elsif @comment.save
-      flash[:notice] = I18n.t("flash.comment.saved")
-      anchor = view_context.comment_anchor(@comment)
+      locals = {
+        comment: @comment,
+        data: { project: @project, commentable: @commentable }
+      }
+      render partial: 'projects/comments/comment', locals: locals, layout: false
     else
-      flash[:error] = I18n.t("flash.comment.save_error")
-      flash[:warning] = @comment.errors.full_messages.join('. ')
+      render online: I18n.t("flash.comment.save_error"), layout: false
     end
-    redirect_to "#{project_commentable_path(@project, @commentable)}##{anchor}"
   end
 
   def edit
@@ -28,15 +28,14 @@ class Projects::CommentsController < Projects::BaseController
     status, message = if @comment.update_attributes(params[:comment])
       [200, view_context.markdown(@comment.body)]
     else
-      [400, view_context.local_alert(@comment.errors.full_messages.join('. '))]
+      [422, 'error']
     end
-    render inline: message, status: status
+    render json: {body: message}, status: status
   end
 
   def destroy
     @comment.destroy
-    flash[:notice] = t("flash.comment.destroyed")
-    redirect_to project_commentable_path(@project, @commentable)
+    render json: nil
   end
 
   def new_line
