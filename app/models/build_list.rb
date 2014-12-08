@@ -599,12 +599,16 @@ class BuildList < ActiveRecord::Base
     kind_id       = Redis.current.spop(USER_BUILDS_SET)
     key           = "user_build_#{kind_id}_rpm_worker_default" if kind_id
     build_list    = next_build_from_queue(kind_id, key, arch_ids, platform_ids) if key
-    Redis.current.sadd(USER_BUILDS_SET, kind_id) if build_list
+    if build_list || Redis.current.llen("resque:queue:#{key}") > 0
+      Redis.current.sadd(USER_BUILDS_SET, kind_id)
+    end
 
     kind_id     ||= Redis.current.spop(MASS_BUILDS_SET)
     key         ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
     build_list  ||= next_build_from_queue(kind_id, key, arch_ids, platform_ids, true) if key
-    Redis.current.sadd(MASS_BUILDS_SET, kind_id) if build_list && key =~ /^mass_build/
+    if key =~ /^mass_build/ && (build_list || Redis.current.llen("resque:queue:#{key}") > 0)
+      Redis.current.sadd(MASS_BUILDS_SET, kind_id)
+    end
 
     build_list.delayed_add_job_to_abf_worker_queue if build_list.present?
     build_list
