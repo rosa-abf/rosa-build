@@ -12,7 +12,13 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     @project = Project.find(params[:project_id]) if params[:project_id].present?
     authorize!(:show, @project) if @project
     filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
-    @build_lists = filter.find.includes(:save_to_platform, :project, :user, :arch)
+    @build_lists = filter.find.includes(:build_for_platform,
+                                        :save_to_repository,
+                                        :save_to_platform,
+                                        :project,
+                                        :user,
+                                        :arch)
+
     @build_lists = @build_lists.recent.paginate(paginate_params)
     respond_to :json
   end

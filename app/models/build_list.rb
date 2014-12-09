@@ -131,10 +131,12 @@ class BuildList < ActiveRecord::Base
   scope :for_platform,    ->(platform)    { where(build_for_platform_id: platform) if platform.present? }
   scope :by_mass_build,   ->(mass_build)  { where(mass_build_id: mass_build) }
   scope :scoped_to_arch,  ->(arch)        { where(arch_id: arch) if arch.present? }
-  scope :scoped_to_save_platform,   ->(pl_id)       { where(save_to_platform_id: pl_id) if pl_id.present? }
-  scope :scoped_to_project_version, ->(pr_version)  { where(project_version: pr_version) if pr_version.present? }
-  scope :scoped_to_is_circle,       ->(is_circle)   { where(is_circle: is_circle) }
-  scope :for_creation_date_period,  ->(start_date, end_date) {
+  scope :scoped_to_save_platform,      ->(pl_id)       { where(save_to_platform_id: pl_id) if pl_id.present? }
+  scope :scoped_to_build_for_platform, ->(pl_id)       { where(build_for_platform_id: pl_id) if pl_id.present? }
+  scope :scoped_to_save_to_repository, ->(repo_id)     { where(save_to_repository_id: repo_id) if repo_id.present? }
+  scope :scoped_to_project_version,    ->(pr_version)  { where(project_version: pr_version) if pr_version.present? }
+  scope :scoped_to_is_circle,          ->(is_circle)   { where(is_circle: is_circle) }
+  scope :for_creation_date_period,     ->(start_date, end_date) {
     s = all
     s = s.where(["#{table_name}.created_at >= ?", start_date]) if start_date
     s = s.where(["#{table_name}.created_at <= ?", end_date]) if end_date
