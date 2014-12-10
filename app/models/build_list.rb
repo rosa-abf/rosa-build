@@ -598,43 +598,41 @@ class BuildList < ActiveRecord::Base
   end
 
   def self.next_build(arch_ids, platform_ids)
-    kind_id       = Redis.current.spop(USER_BUILDS_SET)
-    key           = "user_build_#{kind_id}_rpm_worker_default" if kind_id
-    build_list    = next_build_from_queue(kind_id, key, arch_ids, platform_ids) if key
-    if build_list || Redis.current.llen("resque:queue:#{key}") > 0
-      Redis.current.sadd(USER_BUILDS_SET, kind_id)
-    end
+    build_list   = next_build_from_queue(USER_BUILDS_SET, arch_ids, platform_ids)
+    build_list ||= next_build_from_queue(MASS_BUILDS_SET, arch_ids, platform_ids)
 
-    kind_id     ||= Redis.current.spop(MASS_BUILDS_SET)
-    key         ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
-    build_list  ||= next_build_from_queue(kind_id, key, arch_ids, platform_ids, true) if key
-    if key =~ /^mass_build/ && (build_list || Redis.current.llen("resque:queue:#{key}") > 0)
-      Redis.current.sadd(MASS_BUILDS_SET, kind_id)
-    end
-
-    build_list.delayed_add_job_to_abf_worker_queue if build_list.present?
+    build_list.delayed_add_job_to_abf_worker_queue if build_list
     build_list
   end
 
-  def self.next_build_from_queue(kind_id, key, arch_ids, platform_ids, mass_build = false)
-    if kind_id && (arch_ids.present? || platform_ids.present?)
-      scope = BuildList.scoped_to_arch(arch_ids).
-        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
-        for_platform(platform_ids)
-      scope =
-        if mass_build
-          scope.where(mass_build_id: kind_id)
-        else
-          scope.where(user_id: kind_id, mass_build_id: nil)
-        end
-      build_list = scope.oldest.order(:created_at).first
+  def self.next_build_from_queue(set, arch_ids, platform_ids)
+    kind_id = Redis.current.spop(set)
+    key     =
+      case set
+      when USER_BUILDS_SET
+        "user_build_#{kind_id}_rpm_worker_default"
+      when MASS_BUILDS_SET
+        "mass_build_#{kind_id}_rpm_worker"
+      end if kind_id
 
-      build_list = nil if build_list && build_list.destroy_from_resque_queue != 1
-    elsif key
-      task = Resque.pop(key)
+    task = Resque.pop(key) if key
+
+    if task || Redis.current.llen("resque:queue:#{key}") > 0
+      Redis.current.sadd(set, kind_id)
     end
 
-    build_list ||= BuildList.where(id: task['args'][0]['id']).first if task
+    build_list = BuildList.where(id: task['args'][0]['id']).first if task
+    return unless build_list
+
+    if platform_ids.present? && platform_ids.exclude?(build_list.build_for_platform_id)
+      build_list.restart_job
+      return
+    end
+    if arch_ids.present? && arch_ids.exclude?(build_list.arch_id)
+      build_list.restart_job
+      return
+    end
+
     build_list
   end
 
