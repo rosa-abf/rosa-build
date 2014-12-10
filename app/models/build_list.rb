@@ -618,12 +618,16 @@ class BuildList < ActiveRecord::Base
 
   def self.next_build_from_queue(kind_id, key, arch_ids, platform_ids, mass_build = false)
     if kind_id && (arch_ids.present? || platform_ids.present?)
-      build_list = BuildList.where(user_id: kind_id).
-        scoped_to_arch(arch_ids).
+      scope = BuildList.scoped_to_arch(arch_ids).
         for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
         for_platform(platform_ids)
-      build_list = build_list.where.not(mass_build_id: nil) if mass_build
-      build_list = build_list.oldest.order(:created_at).first
+      scope =
+        if mass_build
+          scope.where(mass_build_id: kind_id)
+        else
+          scope.where(user_id: kind_id, mass_build_id: nil)
+        end
+      build_list = scope.oldest.order(:created_at).first
 
       build_list = nil if build_list && build_list.destroy_from_resque_queue != 1
     elsif key
