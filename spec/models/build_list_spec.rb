@@ -30,6 +30,7 @@ describe BuildList do
       end
 
       it 'returns nothing for wrong platform' do
+        expect_any_instance_of(BuildList).to receive(:restart_job)
         expect(BuildList.next_build([], [-1])).to be_nil
       end
     end
@@ -41,6 +42,7 @@ describe BuildList do
       end
 
       it 'returns nothing for wrong arch' do
+        expect_any_instance_of(BuildList).to receive(:restart_job)
         expect(BuildList.next_build([-1], [])).to be_nil
       end
     end
