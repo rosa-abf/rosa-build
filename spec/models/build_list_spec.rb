@@ -29,11 +29,6 @@ describe BuildList do
         expect(BuildList.next_build([], [build_list.build_for_platform_id])).to eq build_list
       end
 
-      it 'returns nothing if build list does not in queue' do
-        expect_any_instance_of(BuildList).to receive(:destroy_from_resque_queue).and_return(0)
-        expect(BuildList.next_build([], [build_list.build_for_platform_id])).to be_nil
-      end
-
       it 'returns nothing for wrong platform' do
         expect(BuildList.next_build([], [-1])).to be_nil
       end
@@ -43,11 +38,6 @@ describe BuildList do
       it 'returns build list for correct arch' do
         expect_any_instance_of(BuildList).to receive(:delayed_add_job_to_abf_worker_queue)
         expect(BuildList.next_build([build_list.arch_id], [])).to eq build_list
-      end
-
-      it 'returns nothing if build list does not in queue' do
-        expect_any_instance_of(BuildList).to receive(:destroy_from_resque_queue).and_return(0)
-        expect(BuildList.next_build([build_list.arch_id], [])).to be_nil
       end
 
       it 'returns nothing for wrong arch' do
