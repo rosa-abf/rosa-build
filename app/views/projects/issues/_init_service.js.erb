@@ -18,7 +18,7 @@
       };
     });
   <% end %>
-  <% if action_name.in? %w(new create index show) %>
+  <% if controller_name == 'issues' && action_name.in?(%w(new create index show)) %>
     angular.module('RosaABF').service('LabelsInitializer', function(){
       return {
         project: '<%= @project.name_with_owner %>',

@@ -112,9 +112,9 @@ class CommentPresenter < ApplicationPresenter
   def issue_referenced_state
     if @referenced_issue.is_a? Issue
       statuses = {'open' => 'success', 'closed' => 'important'}
-      content_tag :span, t("layout.issues.status.#{@referenced_issue.status}"), class: "state label-bootstrap label-#{statuses[@referenced_issue.status]}"
+      content_tag :span, t("layout.issues.status.#{@referenced_issue.status}"), class: "pull-right label label-#{statuses[@referenced_issue.status]}"
     else
-      pull_status_label @referenced_issue.status
+      pull_status_label @referenced_issue.status, class: 'pull-right'
     end.html_safe
   end
 end

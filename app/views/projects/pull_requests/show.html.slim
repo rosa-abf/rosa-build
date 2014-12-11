@@ -1,0 +1,36 @@
+-ar = 'activerecord.attributes.pull_requests'
+-set_meta_tags title: [title_object(@project), t('.title', name: @pull.title.truncate(40), user: @pull.user.try(:uname))]
+== render 'submenu'
+== render "projects/comments/markdown_help" if current_user
+
+div[ ng-controller = 'PullRequestController'
+     ng-init       = "init('#{@project.owner.uname}', '#{@project.name}', '#{@pull.serial_id}')"
+     ng-cloak      = true ]
+  .row
+    .col-md-10.col-md-offset-1
+      h3.bpadding10
+        - PullRequest::STATUSES.each do |status|
+          = pull_status_label status, 'ng-show' => "pull.status == '#{status}'"
+        =< pull_header @pull
+
+      div role = 'tabpanel'
+        =render 'nav_tabs'
+        .tab-content.pull_diff_fix
+          #discussion.tab-pane.active role = 'tabpanel'
+            == render 'projects/issues/header'
+            - ctrl_params = "{ kind: 'pull', id: #{@issue.serial_id} }"
+            div[ ng-controller = 'CommentsController as commentsCtrl'
+                 ng-init       = "commentsCtrl.init('#{@project.name_with_owner}', #{ctrl_params})" ]
+
+              #pull-activity== render 'activity'
+              - if current_user
+                hr
+                == render "projects/comments/add", project: @project, commentable: @issue
+            /
+              .pull_status
+                == render 'status'
+          /
+            == render 'diff_commits_tabs' unless @pull.already?
+
+- content_for :additional_scripts do
+  == render 'projects/issues/init_service.js.erb'

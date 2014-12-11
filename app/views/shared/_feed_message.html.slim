@@ -6,8 +6,7 @@
 
       - if presenter.buttons?
         .pull-right
-          | &nbsp;
-          = raw presenter.buttons.join('  ').html_safe
+          => raw presenter.buttons.join('  ').html_safe
 
       .pull-left
         strong= presenter.header

@@ -1,6 +1,6 @@
 CommentsController = (Comment, Preview, confirmMessage, $compile, $scope) ->
 
-  comments_list = $('#comments_list')
+  list = null
 
   vm = this
 
@@ -51,10 +51,10 @@ CommentsController = (Comment, Preview, confirmMessage, $compile, $scope) ->
       template = angular.element(response.data)
       linkFn   = $compile(template)
       element  = linkFn($scope)
-      comments_list.append(element)
+      list.append(element)
 
       vm.new_body = ''
-      new_id = comments_list.find('div.panel.panel-default:last').attr('id')
+      new_id = template.find('div.panel.panel-default:last').attr('id')
       location.hash = "#" + new_id;
       vm.processing = false
 
@@ -89,6 +89,13 @@ CommentsController = (Comment, Preview, confirmMessage, $compile, $scope) ->
     vm.commentable = commentable
     vm.processing  = false
 
+    if commentable.kind is 'issue'
+      list = $('#comments_list')
+    else if commentable.kind is 'pull'
+      list = $('#pull-activity')
+    else
+      list = $()
+    true
   true
 
 angular

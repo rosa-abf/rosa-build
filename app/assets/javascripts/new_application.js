@@ -40,6 +40,8 @@
 //= require lib/custom-bootstrap-typeahead
 //= require extra/highlight
 
+//= require extra/pull
+
 //= require_self
 
 function setCookie (name, value, expires, path, domain, secure) {
@@ -61,13 +63,13 @@ $(document).ready(function() {
   var clip = new ZeroClipboard($("#clipboard_copy_button"));
 
   $('.datetime_moment').each(function() {
-    var mtime = moment($(this).attr('origin_datetime'), 'X').format('YYYY-MM-DD HH:mm:ss UTC');
+    var mtime = moment($(this).attr('origin_datetime')).utc().format('YYYY-MM-DD HH:mm:ss UTC');
     $(this).attr('title', mtime);
   });
 
   window.updateTime = function () {
     $('.datetime_moment').each(function() {
-      var time = moment($(this).attr('origin_datetime'), 'X');
+      var time = moment($(this).attr('origin_datetime'));
       $(this).html(time.format('D MMM YYYY, HH:mm') + ' (' + time.fromNow() + ')');
     });
   };

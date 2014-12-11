@@ -9,7 +9,8 @@ module PullRequestHelper
 
   def pull_status_label pull_status, options = {}
     statuses = {'ready' => 'success', 'closed' => 'important', 'merged' => 'important', 'blocked' => 'warning'}
-    content_tag :span, t("projects.pull_requests.statuses.#{pull_status}"), options.merge(class: "state label-bootstrap label-#{statuses[pull_status]}")
+    options[:class] = "#{options[:class]} label label-#{statuses[pull_status]}"
+    content_tag :span, t("projects.pull_requests.statuses.#{pull_status}"), options
   end
 
   def pull_status pull
@@ -22,10 +23,10 @@ module PullRequestHelper
   end
 
   def pull_header pull
-    str = "#{t '.header'} #{t 'from'} <span class='state label-bootstrap label-info font14'> \
-   #{show_ref pull, 'from'}</span> \
-   #{t 'into'} <span class='label-bootstrap label-info font14'> \
-   #{show_ref pull, 'to'}</span>"
+    str = "#{t '.header'} #{t 'from'} \
+   #{show_ref pull, 'from'} \
+   #{t 'into'} \
+   #{show_ref pull, 'to'}"
     str << " #{t 'by'} #{link_to pull.user.uname, user_path(pull.user)}" if pull.user# pull.persisted?
     str.html_safe
   end
@@ -38,7 +39,7 @@ module PullRequestHelper
                elsif which == 'from'
                  "#{pull.from_project_owner_uname.truncate limit}/#{pull.from_project_name.truncate limit}"
                end
-    link_to "#{fullname}: #{ref.truncate limit}", ref_path(project, ref)
+    link_to "#{fullname}: #{ref.truncate limit}", ref_path(project, ref), class: 'btn btn-primary'
   end
 
   def ref_path project, ref

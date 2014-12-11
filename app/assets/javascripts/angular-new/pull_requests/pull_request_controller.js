@@ -18,6 +18,15 @@ RosaABF.controller('PullRequestController',['$scope', '$http', 'ApiPullRequest',
       project:    project_name,
       serial_id:  serial_id
     };
+
+    tab = 'discussion'
+    if(location.href.match(/(.*)#diff(.*)/))
+      tab = 'diff'
+    else if(document.location.href.match(/(.*)#commits(.*)/))
+      tab = 'commits'
+
+    $('#pull_tabs a[href="#'+tab+'"]').tab('show');
+
     $scope.getPullRequest();
   }
 

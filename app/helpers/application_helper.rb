@@ -50,9 +50,8 @@ module ApplicationHelper
 
   def datetime_moment(date, options = {})
     tag = options[:tag] || :div
-    title = options[:title] || date.strftime('%Y-%m-%d %H:%M:%S UTC')
     klass = "datetime_moment #{options[:class]}"
-    content_tag(tag, nil, class: klass, title: title, origin_datetime: date.to_i)
+    content_tag(tag, nil, class: klass, origin_datetime: date)
   end
 
   def alert_class(type)

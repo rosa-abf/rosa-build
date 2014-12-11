@@ -2,7 +2,7 @@ h3
   = t('layout.comments.new_header')
 
 = simple_form_for Comment.new, url: '', html: { method: :post } do |f|
-  .panel.panel-info ng-controller = 'IssueController as issueCtrl' ng-cloak = true
+  .panel.panel-info
     .panel-heading
       h3.panel-title
         = f.label :body
