@@ -33,7 +33,7 @@
       .column
         %h3.medium= t 'activerecord.models.platform'
         .lineForm.aside
-          = f.select :platform_id, availables_main_platforms.collect{|pl| [pl.name, pl.id]}, {include_blank: true}, html_options.merge(id: 'platform', 'ng-model' => 'params.filter.platform_id')
+          = f.select :save_to_platform_id, availables_main_platforms.collect{|pl| [pl.name, pl.id]}, {include_blank: true}, html_options.merge(id: 'platform', 'ng-model' => 'params.filter.save_to_platform_id')
         %h3.medium= t 'activerecord.attributes.build_list.arch'
         .lineForm.aside
           = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {include_blank: true}, html_options.merge(id: 'architecture', 'ng-model' => 'params.filter.arch_id')

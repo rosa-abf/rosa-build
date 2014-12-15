@@ -137,15 +137,15 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
       page:               params.page     || 1,
       per_page:           params.per_page || 25,
       filter: {
-        ownership:          params['filter[ownership]'] || 'owned',
-        status:             params['filter[status]'],
-        platform_id:        params['filter[platform_id]'],
-        arch_id:            params['filter[arch_id]'],
-        mass_build_id:      params['filter[mass_build_id]'],
-        updated_at_start:   params['filter[updated_at_start]'],
-        updated_at_end:     params['filter[updated_at_end]'],
-        project_name:       params['filter[project_name]'],
-        id:                 params['filter[id]']
+        ownership:           params['filter[ownership]'] || 'owned',
+        status:              params['filter[status]'],
+        save_to_platform_id: params['filter[save_to_platform_id]'],
+        arch_id:             params['filter[arch_id]'],
+        mass_build_id:       params['filter[mass_build_id]'],
+        updated_at_start:    params['filter[updated_at_start]'],
+        updated_at_end:      params['filter[updated_at_end]'],
+        project_name:        params['filter[project_name]'],
+        id:                  params['filter[id]']
       }
     }
   }
