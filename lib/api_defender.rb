@@ -9,7 +9,7 @@ class ApiDefender < Rack::Throttle::Hourly
     options = {
       cache: Redis.new(thread_safe: true),
       key_prefix: :throttle,
-      max: 2000 # only 2000 request per hour
+      max: 3000 # only 3000 request per hour
     }
     @app, @options = app, options
   end

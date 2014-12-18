@@ -10,7 +10,8 @@ class BuildScript < ActiveRecord::Base
   belongs_to :project
 
   validates :treeish, presence: true
-  validates :project, presence: true, uniqueness: { scope: :treeish }
+  validates :project, presence: true
+  validates :project_id, uniqueness: { scope: :treeish }
 
   scope :by_active,   -> { where(status: ACTIVE) }
   scope :by_treeish,  -> treeish { where(treeish: treeish) }

@@ -40,14 +40,15 @@ class BuildList < ActiveRecord::Base
     AUTO_PUBLISH_STATUS_TESTING = 'testing'
   ]
 
-  validates :project,
+  validates :project, :project_id,
             :project_version,
-            :arch,
+            :arch, :arch_id,
             :include_repos,
-            :build_for_platform,
-            :save_to_platform,
-            :save_to_repository,
+            :build_for_platform, :build_for_platform_id,
+            :save_to_platform,   :save_to_platform_id,
+            :save_to_repository, :save_to_repository_id,
             presence: true
+
   validates_numericality_of :priority, greater_than_or_equal_to: 0
   validates :external_nodes, inclusion: { in:  EXTERNAL_NODES }, allow_blank: true
   validates :auto_publish_status, inclusion: { in: AUTO_PUBLISH_STATUSES }
@@ -133,10 +134,12 @@ class BuildList < ActiveRecord::Base
   scope :for_platform,    ->(platform)    { where(build_for_platform_id: platform) if platform.present? }
   scope :by_mass_build,   ->(mass_build)  { where(mass_build_id: mass_build) }
   scope :scoped_to_arch,  ->(arch)        { where(arch_id: arch) if arch.present? }
-  scope :scoped_to_save_platform,   ->(pl_id)       { where(save_to_platform_id: pl_id) if pl_id.present? }
-  scope :scoped_to_project_version, ->(pr_version)  { where(project_version: pr_version) if pr_version.present? }
-  scope :scoped_to_is_circle,       ->(is_circle)   { where(is_circle: is_circle) }
-  scope :for_creation_date_period,  ->(start_date, end_date) {
+  scope :scoped_to_save_platform,      ->(pl_id)       { where(save_to_platform_id: pl_id) if pl_id.present? }
+  scope :scoped_to_build_for_platform, ->(pl_id)       { where(build_for_platform_id: pl_id) if pl_id.present? }
+  scope :scoped_to_save_to_repository, ->(repo_id)     { where(save_to_repository_id: repo_id) if repo_id.present? }
+  scope :scoped_to_project_version,    ->(pr_version)  { where(project_version: pr_version) if pr_version.present? }
+  scope :scoped_to_is_circle,          ->(is_circle)   { where(is_circle: is_circle) }
+  scope :for_creation_date_period,     ->(start_date, end_date) {
     s = all
     s = s.where(["#{table_name}.created_at >= ?", start_date]) if start_date
     s = s.where(["#{table_name}.created_at <= ?", end_date]) if end_date
@@ -598,35 +601,41 @@ class BuildList < ActiveRecord::Base
   end
 
   def self.next_build(arch_ids, platform_ids)
-    kind_id       = Redis.current.spop(USER_BUILDS_SET)
-    key           = "user_build_#{kind_id}_rpm_worker_default" if kind_id
-    build_list    = next_build_from_queue(kind_id, key, arch_ids, platform_ids) if key
-    Redis.current.sadd(USER_BUILDS_SET, kind_id) if build_list
+    build_list   = next_build_from_queue(USER_BUILDS_SET, arch_ids, platform_ids)
+    build_list ||= next_build_from_queue(MASS_BUILDS_SET, arch_ids, platform_ids)
 
-    kind_id     ||= Redis.current.spop(MASS_BUILDS_SET)
-    key         ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
-    build_list  ||= next_build_from_queue(kind_id, key, arch_ids, platform_ids, true) if key
-    Redis.current.sadd(MASS_BUILDS_SET, kind_id) if build_list && key =~ /^mass_build/
-
-    build_list.delayed_add_job_to_abf_worker_queue if build_list.present?
+    build_list.delayed_add_job_to_abf_worker_queue if build_list
     build_list
   end
 
-  def self.next_build_from_queue(kind_id, key, arch_ids, platform_ids, mass_build = false)
-    if kind_id && (arch_ids.present? || platform_ids.present?)
-      build_list = BuildList.where(user_id: kind_id).
-        scoped_to_arch(arch_ids).
-        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
-        for_platform(platform_ids)
-      build_list = build_list.where.not(mass_build_id: nil) if mass_build
-      build_list = build_list.oldest.order(:created_at).first
+  def self.next_build_from_queue(set, arch_ids, platform_ids)
+    kind_id = Redis.current.spop(set)
+    key     =
+      case set
+      when USER_BUILDS_SET
+        "user_build_#{kind_id}_rpm_worker_default"
+      when MASS_BUILDS_SET
+        "mass_build_#{kind_id}_rpm_worker"
+      end if kind_id
 
-      build_list = nil if build_list && build_list.destroy_from_resque_queue != 1
-    elsif key
-      task = Resque.pop(key)
+    task = Resque.pop(key) if key
+
+    if task || Redis.current.llen("resque:queue:#{key}") > 0
+      Redis.current.sadd(set, kind_id)
     end
 
-    build_list ||= BuildList.where(id: task['args'][0]['id']).first if task
+    build_list = BuildList.where(id: task['args'][0]['id']).first if task
+    return unless build_list
+
+    if platform_ids.present? && platform_ids.exclude?(build_list.build_for_platform_id)
+      build_list.restart_job
+      return
+    end
+    if arch_ids.present? && arch_ids.exclude?(build_list.arch_id)
+      build_list.restart_job
+      return
+    end
+
     build_list
   end
 

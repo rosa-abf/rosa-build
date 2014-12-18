@@ -24,9 +24,9 @@
                   = t "layout.build_lists.ownership.#{ownership}"
         .col-md-4.col-sm-6
           %h4= t 'activerecord.models.platform'
-          = f.select :platform_id, availables_main_platforms.collect{ |pl| [pl.name, pl.id] },
+          = f.select :save_to_platform_id, availables_main_platforms.collect{ |pl| [pl.name, pl.id] },
                      { include_blank: true },
-                     html_options.merge(id: 'platform', 'ng-model' => 'params.filter.platform_id')
+                     html_options.merge(id: 'platform', 'ng-model' => 'params.filter.save_to_platform_id')
         -[:updated_at_start, :updated_at_end].each do |attr|
           .col-md-2.col-sm-4
             %h4= t attr == :updated_at_start ? '_on' : 'until'

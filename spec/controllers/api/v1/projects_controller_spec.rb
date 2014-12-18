@@ -120,6 +120,10 @@ shared_examples_for 'api projects user with admin rights' do
     get :members, id: @project.id, format: :json
     response.should be_success
   end
+  it 'should not set a wrong maintainer_id' do
+    put :update, project: { maintainer_id: -1 }, id: @project.id, format: :json
+    response.should_not be_success
+  end
 
   context 'api project user with update rights' do
     before do
@@ -129,7 +133,7 @@ shared_examples_for 'api projects user with admin rights' do
     it 'should be able to perform update action' do
       response.should be_success
     end
-    it 'ensures that group has been updated' do
+    it 'ensures that description has been updated' do
       @project.reload
       @project.description.should == 'new description'
     end

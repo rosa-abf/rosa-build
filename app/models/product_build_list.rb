@@ -45,12 +45,13 @@ class ProductBuildList < ActiveRecord::Base
   before_validation -> { self.arch_id = Arch.find_by(name: 'x86_64').id }, on: :create
   # field "not_delete" can be changed only if build has been completed
   before_validation -> { self.not_delete = false unless build_completed?; true }
-  validates :product,
+
+  validates :product, :product_id,
             :status,
-            :project,
+            :project, :project_id,
             :main_script,
-            :project_version,
-            :arch, presence: true
+            :arch,    :arch_id,
+            presence: true
   validates :status, inclusion: { in: STATUSES }
   validates :main_script, :params, length: { maximum: 255 }
 
