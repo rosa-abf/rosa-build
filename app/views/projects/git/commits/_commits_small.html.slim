@@ -18,5 +18,5 @@ div.commits_activity
                          data-toggle = 'collapse'
                          data-target = "#content-expand#{item_no}" ]
               - if presenter.content?
-                .collapse[ id    = (presenter.expandable? ? "content-expand#{item_no}" : '') ]
+                .collapse id = (presenter.expandable? ? "content-expand#{item_no}" : '')
                   .cm-s-default.md_and_cm= markdown presenter.content

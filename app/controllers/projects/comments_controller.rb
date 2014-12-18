@@ -8,16 +8,19 @@ class Projects::CommentsController < Projects::BaseController
   include CommentsHelper
 
   def create
-    if !@comment.set_additional_data params
-      render online: I18n.t("flash.comment.save_error"), layout: false
-    elsif @comment.save
-      locals = {
-        comment: @comment,
-        data: { project: @project, commentable: @commentable }
-      }
-      render partial: 'projects/comments/comment', locals: locals, layout: false
-    else
-      render online: I18n.t("flash.comment.save_error"), layout: false
+    respond_to do |format|
+      if !@comment.set_additional_data params
+        format.json {
+                      render json: {
+                                     error:   I18n.t("flash.comment.save_error"),
+                                     message: @comment.errors.full_messages
+                                   }
+                    }
+      elsif @comment.save
+        format.json {}
+      else
+        format.json { render json: { error: I18n.t("flash.comment.save_error") }, status: 422 }
+      end
     end
   end
 
@@ -36,11 +39,6 @@ class Projects::CommentsController < Projects::BaseController
   def destroy
     @comment.destroy
     render json: nil
-  end
-
-  def new_line
-    @path = view_context.project_commentable_comments_path(@project, @commentable)
-    render layout: false
   end
 
   protected

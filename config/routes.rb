@@ -346,7 +346,6 @@ Rosa::Application.routes.draw do
         end
         post '/preview' => 'projects#preview', as: 'md_preview'
         post 'refs_list' => 'projects#refs_list', as: 'refs_list'
-        get '/pull_requests/:issue_id/add_line_comments(.:format)' => "comments#new_line", as: :new_line_pull_comment
         put 'schedule' => 'projects#schedule'
       end
 

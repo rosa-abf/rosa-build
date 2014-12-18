@@ -11,6 +11,16 @@ commentService = ($http) ->
       params = { comment: { body:  body }}
       $http.post(path, params)
 
+    addInline: (project, commentable, body, params) ->
+      path = getPath('add', project, commentable)
+      params = {
+                 comment: { body:  body },
+                 in_reply: params.in_reply,
+                 line:     params.line,
+                 path:     params.path
+               }
+      $http.post(path, params)
+
     update: (project, commentable, id) ->
       path = getPath('update', project, commentable, id)
       params = { comment: { body:  $('#comment-'+id+'-body').val() }}

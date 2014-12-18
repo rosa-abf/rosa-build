@@ -1,0 +1,18 @@
+-comment = item[1].first
+.panel.panel-default
+  .panel-heading
+    =comment.data[:view_path]
+    .pull-right
+      -if comment.actual_inline_comment? @pull.diff
+        = link_to t("layout.pull_requests.view_full_changes"),
+          "#{project_commentable_path(@project, @commentable)}##{comment_anchor(comment)}",
+          class: 'link_to_full_changes'
+      -else
+        => t'projects.pull_requests.outdated_diff'
+        .fa.fa-close.fa-lg.text-danger
+== render_diff(comment.inline_diff,
+             diff_counter: diff_counter,
+             comments: item[1],
+             filepath: comment.data[:path],
+             diff_prefix: 'discussion')
+

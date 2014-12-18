@@ -9,7 +9,7 @@ h3
         .pull-right= render 'projects/comments/button_md_help'
     .panel-body
       = render 'projects/comments/body', f: f, id: 'new-comment', ctrl: 'commentsCtrl',
-               ang_model: 'commentsCtrl.new_body'
+               ang_model: 'new_body'
       hr
       button.btn.btn-primary[ ng-disabled = 'commentsCtrl.isDisabledNewCommentButton()'
                               ng-click    = 'commentsCtrl.add()' ]

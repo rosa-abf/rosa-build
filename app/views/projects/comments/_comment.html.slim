@@ -1,5 +1,5 @@
 - CommentPresenter.present(comment, data) do |presenter|
-  == render 'shared/feed_message', presenter: presenter
+  == render 'shared/feed_message.html.slim', presenter: presenter
 -unless comment.automatic
   .open-comment.hidden class = "comment-#{comment.id}" id = "update-comment#{comment.id}"
     h3.tmargin0= t("layout.comments.edit_header")
@@ -8,9 +8,9 @@
         .panel-heading
           h3.panel-title
             = f.label :body
-            .pull-right== render 'projects/comments/button_md_help'
+            .pull-right== render 'projects/comments/button_md_help.html.slim'
         .panel-body
-          == render 'projects/comments/body', f: f, id: "comment-#{comment.id}",
+          == render 'projects/comments/body.html.slim', f: f, id: "comment-#{comment.id}",
                     ctrl: 'commentsCtrl'
           - anchor = "#comment#{comment.id}"
           a.btn.btn-primary[ ng-disabled = 'commentsCtrl.processing'

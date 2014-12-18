@@ -4,7 +4,7 @@ tabset
       - if defined?(ang_model)
         = f.input :body, label: false,
           input_html: { rows: 10, id: "#{id}-body",
-                        'ng-model' => ang_model, 'ng-value' => ang_model }
+                        'ng-model' => "#{ctrl}.#{ang_model}", 'ng-value' => "#{ctrl}.#{ang_model}" }
       - else
         = f.input :body, label: false,
           input_html: { rows: 10, id: "#{id}-body" }

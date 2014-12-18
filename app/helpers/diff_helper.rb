@@ -36,7 +36,7 @@ module DiffHelper
            end
     prepare(args.merge({filepath: filepath, comments: comments, in_discussion: in_discussion}))
 
-    res = '<table class="diff inline" cellspacing="0" cellpadding="0" ng-non-bindable>'
+    res = '<table class="table diff inline" cellspacing="0" cellpadding="0">'
     res << '<tbody>'
     res << renderer(diff_display.data) #diff_display.render(Git::Diff::InlineCallback.new comments, path)
     res << tr_line_comments(comments) if in_discussion
@@ -76,8 +76,8 @@ module DiffHelper
       <td class='line_numbers'></td>
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code ins'>
-        #{line_comment}
-        <pre>#{render_line(line)}</pre>
+        #{line_comment_icon}
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
      </tr>
      #{render_line_comments}"
@@ -89,8 +89,8 @@ module DiffHelper
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       <td class='line_numbers'></td>
       <td class='code del'>
-        #{line_comment}
-        <pre>#{render_line(line)}</pre>
+        #{line_comment_icon}
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
     </tr>
     #{render_line_comments}"
@@ -98,12 +98,12 @@ module DiffHelper
 
   def modline(line)
     set_line_number
-    "<tr clas='chanes line'>
+    "<tr clas='changes line'>
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code unchanged modline'>
-        #{line_comment}
-        <pre>#{render_line(line)}</pre>
+        #{line_comment_icon}
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
     </tr>
     #{render_line_comments}"
@@ -115,8 +115,8 @@ module DiffHelper
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code unchanged unmodline'>
-        #{line_comment}
-        <pre>#{render_line(line)}</pre>
+        #{line_comment_icon}
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
     </tr>
     #{render_line_comments}"
@@ -132,11 +132,11 @@ module DiffHelper
 
   def nonewlineline(line)
     set_line_number
-    "<tr class='changes'>
+    "<tr class='changes' ng-non-bindable>
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code modline unmodline'>
-        #{line_comment}
+        #{line_comment_icon}
         <pre>#{render_line(line)}</pre>
       </td>
     </tr>
@@ -226,9 +226,14 @@ module DiffHelper
     @num_line = @num_line.succ
   end
 
-  def line_comment
+  def line_comment_icon
     return if @no_commit_comment || (@in_discussion && @add_reply_id && @line_comments[0].data[:line].to_i != @num_line)
-    link_to image_tag('line_comment.png', alt: t('layout.comments.new_header')), new_comment_path, class: 'add_line-comment' if current_user
+    if current_user
+      link_to image_tag('line_comment.png', alt: t('layout.comments.new_header')),
+              '#new_inline_comment',
+              class: 'add_line-comment',
+              'ng-click' => "commentsCtrl.showInlineForm(#{new_inline_comment_params.to_json})"
+    end
   end
 
   def render_line_comments
@@ -246,24 +251,34 @@ module DiffHelper
 
   def tr_line_comments comments
     return if @no_commit_comment
-    res="<tr class='inline-comments'>
+    res="<tr class='line-comments'>
       <td class='line_numbers' colspan='2'>#{comments.count}</td>
       <td>"
       comments.each do |comment|
-        res << "<div class='line-comments'>
+        res << "<div class='line-comment'>
           #{render 'projects/comments/comment', comment: comment, data: {project: @project, commentable: @commentable, add_anchor: 'inline', in_discussion: @in_discussion}}
          </div>"
       end
-    res << link_to(t('layout.comments.new_inline'), new_comment_path, class: 'new_inline_comment button') if current_user
+    if current_user
+      res << link_to( t('layout.comments.new_inline'),
+                      '#new_inline_comment',
+                      class: 'btn btn-primary',
+                      'ng-click' => "commentsCtrl.showInlineForm(#{new_inline_comment_params.to_json})",
+                      'ng-hide'  => "commentsCtrl.hideInlineCommentButton(#{new_inline_comment_params.to_json})" )
+    end
     res << "</td></tr>"
   end
+  # def new_comment_path
+  #   hash = {path: @filepath, line: @num_line}
+  #   if @commentable.is_a? Issue
+  #     project_new_line_pull_comment_path(@project, @commentable, hash.merge({in_reply: @add_reply_id}))
+  #   elsif @commentable.is_a? Grit::Commit
+  #     new_line_commit_comment_path(@project, @commentable, hash)
+  #   end
+  # end
 
-  def new_comment_path
-    hash = {path: @filepath, line: @num_line}
-    if @commentable.is_a? Issue
-      project_new_line_pull_comment_path(@project, @commentable, hash.merge({in_reply: @add_reply_id}))
-    elsif @commentable.is_a? Grit::Commit
-      new_line_commit_comment_path(@project, @commentable, hash)
-    end
+  def new_inline_comment_params
+    { path: @filepath, line: @num_line, in_reply: @add_reply_id }
   end
+
 end

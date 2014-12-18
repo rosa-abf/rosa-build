@@ -1,0 +1,19 @@
+.new_inline_comment_form.hidden
+  #new_inline_comment
+    h3
+      = t('layout.comments.new_header')
+
+    = simple_form_for Comment.new, url: '', html: { method: :post } do |f|
+      .panel.panel-info
+        .panel-heading
+          h3.panel-title
+            = f.label :body
+            .pull-right= render 'projects/comments/button_md_help'
+        .panel-body
+          = render 'projects/comments/body', f: f, id: 'new-inline-comment', ctrl: 'commentsCtrl',
+                   ang_model: 'new_inline_body'
+          hr
+          button.btn.btn-primary[ ng-disabled = 'commentsCtrl.isDisabledNewInlineCommentButton()'
+                                  ng-click    = 'commentsCtrl.addInline()' ]
+            = t('layout.create')
+          =< link_to t('layout.cancel'), '', 'ng-click' => 'commentsCtrl.hideInlineForm()'

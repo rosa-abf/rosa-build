@@ -25,12 +25,15 @@ div[ ng-controller = 'PullRequestController'
               #pull-activity== render 'activity'
               - if current_user
                 hr
-                == render "projects/comments/add", project: @project, commentable: @issue
+                == render 'projects/comments/add', project: @project, commentable: @issue
             /
               .pull_status
                 == render 'status'
           /
             == render 'diff_commits_tabs' unless @pull.already?
+
+div ng-non-bindable = true
+  == render 'projects/comments/new_line'
 
 - content_for :additional_scripts do
   == render 'projects/issues/init_service.js.erb'
