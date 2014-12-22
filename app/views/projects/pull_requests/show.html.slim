@@ -26,8 +26,8 @@ div ng-controller = 'PullRequestController as pullCtrl' ng-cloak = true
                 hr
                 == render 'projects/comments/add', project: @project, commentable: @issue
             .pull_status.offset20== render 'status'
-          /
-            == render 'diff_commits_tabs' unless @pull.already?
+
+          == render 'diff_commits_tabs' unless @pull.already?
 
 div ng-non-bindable = true
   == render 'projects/comments/new_line'
