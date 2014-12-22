@@ -26,4 +26,13 @@
       };
     });
   <% end %>
+  <% if controller_name == 'pull_requests' && action_name == 'show' %>
+    angular.module('RosaABF').service('PullInitializer', function(){
+      return {
+        owner:     '<%= @project.owner.uname %>',
+        project:   '<%= @project.name %>',
+        serial_id: '<%= @pull.serial_id %>'
+      };
+    });
+  <% end %>
 </script>
