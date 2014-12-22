@@ -1,7 +1,6 @@
 json.build_list do
   json.(@build_list, :id, :container_status, :status, :duration)
   json.(@build_list, :update_type, :priority, :new_core)
-  json.(@build_list, :advisory, :mass_build)
   json.(@build_list, :auto_publish_status, :package_version, :commit_hash, :last_published_commit_hash, :auto_create_container, :use_cached_chroot, :use_extra_tests)
   json.build_log_url log_build_list_path(@build_list)
 
