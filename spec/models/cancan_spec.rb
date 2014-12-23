@@ -354,7 +354,7 @@ describe CanCan do
           end
         end
       end
-    end # 'repository relations'
+    end # 'product build list relations'
 
   end # 'Site user'
 end
