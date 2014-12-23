@@ -1,7 +1,6 @@
 json.build_list do
   json.(@build_list, :id, :container_status, :status, :duration)
   json.(@build_list, :update_type, :priority, :new_core)
-  json.(@build_list, :advisory, :mass_build)
   json.(@build_list, :auto_publish_status, :package_version, :commit_hash, :last_published_commit_hash, :auto_create_container, :use_cached_chroot, :use_extra_tests)
   json.build_log_url log_build_list_path(@build_list)
 
@@ -63,14 +62,22 @@ json.build_list do
 
   json.extra_params @build_list.extra_params
 
-  json.advisory do
-    json.name @build_list.advisory.advisory_id
-    json.(@build_list.advisory, :description)
-  end if @build_list.advisory
+  if @build_list.advisory
+    json.advisory do
+      json.name @build_list.advisory.advisory_id
+      json.(@build_list.advisory, :description)
+    end 
+  else
+    json.advisory nil
+  end
 
-  json.mass_build do
-    json.(@build_list.mass_build, :id, :name)
-  end if @build_list.mass_build
+  if @build_list.mass_build
+    json.mass_build do
+      json.(@build_list.mass_build, :id, :name)
+    end 
+  else
+    json.mass_build nil
+  end
 
   json.logs (@build_list.results || []) do |result|
     json.file_name result['file_name']
