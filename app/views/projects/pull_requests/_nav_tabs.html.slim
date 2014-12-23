@@ -6,7 +6,7 @@ ul.nav.nav-tabs#pull_tabs role = 'tablist'
        href          = '#discussion' ]= t 'pull_requests.tabs.discussion'
   -if @stats
     li role = 'presentation'
-      a[ data-toggle   = 'diff'
+      a[ data-toggle   = 'tab'
          role          = 'tab'
          aria-controls = 'diff'
          href          = "#diff" ]= "#{t'pull_requests.tabs.diff'} (#{@stats.count})"

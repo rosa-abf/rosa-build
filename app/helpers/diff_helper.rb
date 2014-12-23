@@ -1,7 +1,7 @@
 module DiffHelper
   def render_diff_stats(stats)
     path = @pull.try(:id) ? polymorphic_path([@project, @pull]) : ''
-    res = ["<table class='commit_stats'>"]
+    res = ["<table class='table table-responsive commit_stats'>"]
     stats.each_with_index do |stat, ind|
       res << "<tr>"
       res << "<td>#{link_to stat.filename.rtruncate(120), "#{path}#diff-#{ind}"}</td>"
@@ -36,7 +36,7 @@ module DiffHelper
            end
     prepare(args.merge({filepath: filepath, comments: comments, in_discussion: in_discussion}))
 
-    res = '<table class="table diff inline" cellspacing="0" cellpadding="0">'
+    res = '<table class="table diff inline table-responsive" cellspacing="0" cellpadding="0">'
     res << '<tbody>'
     res << renderer(diff_display.data) #diff_display.render(Git::Diff::InlineCallback.new comments, path)
     res << tr_line_comments(comments) if in_discussion
