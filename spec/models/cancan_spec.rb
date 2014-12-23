@@ -318,5 +318,43 @@ describe CanCan do
         end
       end
     end # 'repository relations'
+
+    context 'product build list relations' do
+      let(:product_build_list) { FactoryGirl.create(:product_build_list) }
+
+      before { FactoryGirl.create(:arch, name: 'x86_64') }
+
+      context 'with platform admin rights' do
+        before do
+          product_build_list.product.platform.owner = @user
+          product_build_list.product.platform.save
+        end
+
+        [:read, :create, :update, :destroy, :log, :cancel].each do |action|
+          it "should be able to #{action} product build list" do
+            @ability.should be_able_to(action, product_build_list)
+          end
+        end
+      end
+
+      context 'with project writer rights' do
+        before do
+          create_relation(product_build_list.project, @user, 'writer')
+        end
+
+        [:read, :create, :log, :cancel].each do |action|
+          it "should be able to #{action} product build list" do
+            @ability.should be_able_to(action, product_build_list)
+          end
+        end
+
+        [:update, :destroy].each do |action|
+          it "should not be able to #{action} product build list" do
+            @ability.should_not be_able_to(action, product_build_list)
+          end
+        end
+      end
+    end # 'repository relations'
+
   end # 'Site user'
 end

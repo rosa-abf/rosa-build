@@ -141,6 +141,7 @@ class Ability
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.main?}
         can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform and product.platform.main?}
 
+        can([:create, :cancel], ProductBuildList) {|pbl| can?(:write, pbl.project)}
         can([:create, :cancel, :update], ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
 
