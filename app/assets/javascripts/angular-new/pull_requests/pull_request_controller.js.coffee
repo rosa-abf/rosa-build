@@ -88,7 +88,7 @@ PullRequestController = (dataservice, $http, ApiPullRequest, ApiProject, DateTim
     sha: vm.pull.from_ref.sha
 
   vm.getActivity = ->
-    return if vm.pull_updated and vm.is_activity_updated
+    return if vm.is_pull_updated and vm.is_activity_updated
     vm.processing = true
 
     promise = ApiPullRequest.get_activity(vm.pull_params)
@@ -102,7 +102,7 @@ PullRequestController = (dataservice, $http, ApiPullRequest, ApiProject, DateTim
     false
 
   vm.getDiff = ->
-    return if vm.pull_updated and vm.is_diff_updated
+    return if vm.is_pull_updated and vm.is_diff_updated
     vm.processing = true
 
     promise = ApiPullRequest.get_diff(vm.pull_params)
@@ -116,7 +116,7 @@ PullRequestController = (dataservice, $http, ApiPullRequest, ApiProject, DateTim
     false
 
   vm.getCommits = ->
-    return if vm.pull_updated and vm.is_commits_updated
+    return if vm.is_pull_updated and vm.is_commits_updated
     vm.processing = true
 
     promise = ApiPullRequest.get_commits(vm.pull_params)

@@ -132,12 +132,12 @@ module DiffHelper
 
   def nonewlineline(line)
     set_line_number
-    "<tr class='changes' ng-non-bindable>
+    "<tr class='changes'>
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code modline unmodline'>
         #{line_comment_icon}
-        <pre>#{render_line(line)}</pre>
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
     </tr>
     #{render_line_comments}"
@@ -232,14 +232,14 @@ module DiffHelper
       link_to image_tag('line_comment.png', alt: t('layout.comments.new_header')),
               '#new_inline_comment',
               class: 'add_line-comment',
-              'ng-click' => "commentsCtrl.showInlineForm(#{new_inline_comment_params.to_json})"
+              'ng-click' => "commentsCtrl.showInlineForm($event, #{new_inline_comment_params.to_json})"
     end
   end
 
   def render_line_comments
     unless @no_commit_comment || @in_discussion
       comments = @line_comments.select do |c|
-        c.data.try('[]', :line) == @num_line.to_s && c.actual_inline_comment?
+        c.data.try('[]', :line).to_s == @num_line.to_s && c.actual_inline_comment?
       end
       tr_line_comments(comments) if comments.count > 0
     end
@@ -263,7 +263,7 @@ module DiffHelper
       res << link_to( t('layout.comments.new_inline'),
                       '#new_inline_comment',
                       class: 'btn btn-primary',
-                      'ng-click' => "commentsCtrl.showInlineForm(#{new_inline_comment_params.to_json})",
+                      'ng-click' => "commentsCtrl.showInlineForm($event, #{new_inline_comment_params.to_json})",
                       'ng-hide'  => "commentsCtrl.hideInlineCommentButton(#{new_inline_comment_params.to_json})" )
     end
     res << "</td></tr>"

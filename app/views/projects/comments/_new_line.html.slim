@@ -14,6 +14,6 @@
                    ang_model: 'new_inline_body'
           hr
           button.btn.btn-primary[ ng-disabled = 'commentsCtrl.isDisabledNewInlineCommentButton()'
-                                  ng-click    = 'commentsCtrl.addInline()' ]
+                                  ng-click    = 'commentsCtrl.addInline($event)' ]
             = t('layout.create')
           =< link_to t('layout.cancel'), '', 'ng-click' => 'commentsCtrl.hideInlineForm()'

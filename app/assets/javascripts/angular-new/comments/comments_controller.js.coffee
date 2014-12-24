@@ -7,11 +7,11 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
   setInlineCommentParams = (params) ->
     inlineCommentParams = params
 
-  findInlineComments = (params) ->
+  findInlineComments = ($event, params) ->
     if params.in_reply
       $('#comment'+params.in_reply).parents('tr').find('td .line-comment:last')
     else
-      $()
+      $($event.target).parent().parent().parent()
 
   vm = this
 
@@ -96,30 +96,37 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
       else
         return false
 
-  vm.showInlineForm = (params = {}) ->
-    line_comments = findInlineComments(params)
+  vm.showInlineForm = ($event, params = {}) ->
+    line_comments = findInlineComments($event, params)
     return false if line_comments.count is 0
 
     vm.new_inline_body = null
     vm.hideInlineForm()
     setInlineCommentParams(params)
 
-    new_form = new_inline_form.html()
-    new_form = compileHTML.run($scope, new_form)
-    line_comments.append(new_form)
-    line_comments.find('#new_inline_comment').addClass('cloned')
+    if params.in_reply
+      new_form = compileHTML.run($scope, new_inline_form.html())
+      line_comments.append(new_form)
+    else
+      new_form = "<tr class='inline-comments'><td class='line_numbers' colspan='2'></td><td>" +
+                 new_inline_form.html()+"</td></tr>"
+      new_form = compileHTML.run($scope, new_form)
+      line_comments.after(new_form)
+
+    line_comments.parent().find('#new_inline_comment').addClass('cloned')
     true
 
   vm.hideInlineForm = ->
     $('#new_inline_comment.cloned').remove()
+
     inlineCommentParams = {}
     false
 
   vm.hideInlineCommentButton = (params = {}) ->
     _.isEqual(inlineCommentParams, params)
 
-  vm.addInline = ->
-    inline_comments = findInlineComments(inlineCommentParams)
+  vm.addInline = ($event) ->
+    inline_comments = findInlineComments($event, inlineCommentParams)
     return false if inline_comments.count is 0
 
     vm.processing = true
@@ -138,6 +145,7 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
   $rootScope.$on "compile_html", (event, args) ->
     html = compileHTML.run($scope, args.html)
     args.element.html(html)
+    true
 
   vm.init = (project, commentable = {}) ->
     vm.project     = project

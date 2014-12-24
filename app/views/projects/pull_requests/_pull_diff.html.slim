@@ -2,9 +2,10 @@
 .file
   a name = "diff-#{pull_diff_counter}"
   .top
-    .l= h(pull_diff.renamed_file ? "#{pull_diff.a_path.rtruncate 60}=>#{pull_diff.b_path.rtruncate 60}" : pull_diff.b_path.rtruncate(120))
+    .pull-left= h(pull_diff.renamed_file ? "#{pull_diff.a_path.rtruncate 60}=>#{pull_diff.b_path.rtruncate 60}" : pull_diff.b_path.rtruncate(120))
     - if @pull.from_project.present?
-      .r= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@pull.from_project, commit_id, pull_diff.b_path)
-    .clear
+      .pull-right= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@pull.from_project, commit_id, pull_diff.b_path)
+    .clearfix
   -if pull_diff.diff.present? && !(@pull.repo.tree(commit_id) / pull_diff.b_path).binary?
-    .diff_data=render_diff(pull_diff, diff_counter: pull_diff_counter, comments: @comments)
+    .diff_data== render_diff(pull_diff, diff_counter: pull_diff_counter, comments: @comments)
+    p= "comments count is #{@comments.count}"

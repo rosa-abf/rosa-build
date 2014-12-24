@@ -1,5 +1,5 @@
 tabset
-  tab heading = t('layout.edit')
+  tab.active heading = t('layout.edit')
     .offset10
       - if defined?(ang_model)
         = f.input :body, label: false,
