@@ -1,13 +1,8 @@
-CommentsController = (Comment, Preview, confirmMessage, $compile, $scope) ->
+CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $rootScope) ->
 
   inlineCommentParams = {}
   list                = null
   new_inline_form     = $('.new_inline_comment_form.hidden')
-
-  compileHTML = (data) ->
-    template = angular.element(data)
-    linkFn   = $compile(template)
-    linkFn($scope)
 
   setInlineCommentParams = (params) ->
     inlineCommentParams = params
@@ -68,7 +63,7 @@ CommentsController = (Comment, Preview, confirmMessage, $compile, $scope) ->
     vm.processing = true
     promise = Comment.add(vm.project, vm.commentable, vm.new_body)
     promise.then (response) ->
-      element = compileHTML(response.data.html)
+      element = compileHTML.run($scope, response.data.html)
       list.append(element)
 
       vm.new_body = ''
@@ -110,7 +105,7 @@ CommentsController = (Comment, Preview, confirmMessage, $compile, $scope) ->
     setInlineCommentParams(params)
 
     new_form = new_inline_form.html()
-    new_form = compileHTML(new_form)
+    new_form = compileHTML.run($scope, new_form)
     line_comments.append(new_form)
     line_comments.find('#new_inline_comment').addClass('cloned')
     true
@@ -130,7 +125,7 @@ CommentsController = (Comment, Preview, confirmMessage, $compile, $scope) ->
     vm.processing = true
     promise = Comment.addInline(vm.project, vm.commentable, vm.new_inline_body, inlineCommentParams)
     promise.then (response) ->
-      element = compileHTML(response.data.html)
+      element = compileHTML.run($scope, response.data.html)
       vm.hideInlineForm()
       inline_comments.append(element)
 
@@ -139,6 +134,10 @@ CommentsController = (Comment, Preview, confirmMessage, $compile, $scope) ->
       vm.processing = false
 
     false
+
+  $rootScope.$on "compile_html", (event, args) ->
+    html = compileHTML.run($scope, args.html)
+    args.element.html(html)
 
   vm.init = (project, commentable = {}) ->
     vm.project     = project
@@ -162,6 +161,7 @@ CommentsController.$inject = [
                                'Comment'
                                'Preview'
                                'confirmMessage'
-                               '$compile'
                                '$scope'
+                               'compileHTML'
+                               '$rootScope'
                              ]

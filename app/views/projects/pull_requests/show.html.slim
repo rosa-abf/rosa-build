@@ -12,22 +12,30 @@ div ng-controller = 'PullRequestController as pullCtrl' ng-cloak = true
         =< pull_header @pull
 
       div role = 'tabpanel'
-        =render 'nav_tabs'
-        .tab-content.pull_diff_fix
-          #discussion.tab-pane.active role = 'tabpanel'
+        == render 'nav_tabs'
+
+        .tab-content
+          #discussion.tab-pane role = 'tabpanel'
             div[ ng-controller = 'IssueController as issueCtrl' ng-cloak = true ]
               == render 'projects/issues/header'
             - ctrl_params = "{ kind: 'pull', id: #{@issue.serial_id} }"
             div[ ng-controller = 'CommentsController as commentsCtrl'
                  ng-init       = "commentsCtrl.init('#{@project.name_with_owner}', #{ctrl_params})" ]
 
-              #pull-activity== render 'activity'
+              #pull-activity ng-hide = 'pullCtrl.processing'
+              i.fa.fa-spinner.fa-spin.fa-lg ng-show = 'pullCtrl.processing'
               - if current_user
                 hr
                 == render 'projects/comments/add', project: @project, commentable: @issue
             .pull_status.offset20== render 'status'
 
-          == render 'diff_commits_tabs' unless @pull.already?
+          #diff.tab-pane
+            .content ng-hide = 'pullCtrl.processing'
+            i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
+
+          #commits.tab-pane
+            .content ng-hide = 'pullCtrl.processing'
+            i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
 
 div ng-non-bindable = true
   == render 'projects/comments/new_line'

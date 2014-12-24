@@ -1,0 +1,7 @@
+confirmMessage = ->
+  show: ->
+    confirm "<%= I18n.t 'layout.confirm' %>"
+
+angular
+  .module("RosaABF")
+  .service "confirmMessage", confirmMessage

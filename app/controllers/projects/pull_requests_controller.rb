@@ -86,12 +86,18 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def show
-    unless request.xhr?
-      if @pull.nil?
-        redirect_to project_issue_path(@project, @issue)
-      else
-        load_diff_commits_data
-      end
+    if @pull.nil?
+      redirect_to project_issue_path(@project, @issue)
+    end
+
+    load_diff_commits_data
+
+    if params[:get_activity] == 'true'
+      render partial: 'activity', layout: false
+    elsif params[:get_diff]  == 'true'
+      render partial: 'diff_tab', layout: false
+    elsif params[:get_commits]  == 'true'
+      render partial: 'commits_tab', layout: false
     end
   end
 

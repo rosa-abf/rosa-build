@@ -1,7 +1,7 @@
 json.pull_request do
 
   json.number @pull.serial_id
-  json.(@pull, :status)
+  json.(@pull, :status, :updated_at)
   json.to_ref do
     json.ref @pull.to_ref
     json.sha @pull.to_commit.try(:id)
@@ -38,4 +38,10 @@ json.pull_request do
       json.(@pull.issue.closer, :id, :name, :uname)
     end if @pull.merged?
   end
+
+  commits_count = @commits.count.to_s
+  commits_count << '+' if @total_commits > @commits.count
+
+  json.stats_count @stats.count
+  json.commits_count commits_count
 end

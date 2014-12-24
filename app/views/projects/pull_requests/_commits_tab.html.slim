@@ -1,0 +1,3 @@
+- if @total_commits > @commits.count
+  h4= t("projects.pull_requests.is_big", count: @commits.count)
+== render partial: 'projects/git/commits/commits', object: @commits, locals: { project: @pull.from_project }
