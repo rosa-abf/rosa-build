@@ -95,6 +95,7 @@ class Projects::IssuesController < Projects::BaseController
 
   def show
     redirect_to project_pull_request_path(@project, @issue.pull_request) if @issue.pull_request
+    @commentable = @issue
   end
 
   def update
