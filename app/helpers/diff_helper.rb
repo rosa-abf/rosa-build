@@ -98,7 +98,7 @@ module DiffHelper
 
   def modline(line)
     set_line_number
-    "<tr clas='changes line'>
+    "<tr class='changes line'>
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code unchanged modline'>
