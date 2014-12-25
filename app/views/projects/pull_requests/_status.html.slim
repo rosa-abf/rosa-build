@@ -30,12 +30,11 @@ h3 ng-show = '!pullCtrl.pull.mergeable'
   .clearfix
 
 -if can? :update, @pull
-  br
-  button.btn.btn-primary[ href     = ''
+  button.btn.btn-primary.pull-right[ href     = ''
       ng-click = 'pullCtrl.reopen()'
       ng-show  = "pullCtrl.pull.status == 'closed'" ]
     = t '.reopen'
-  button.btn.btn-primary[ href     = ''
+  button.btn.btn-danger.pull-right[ href     = ''
       ng-click = 'pullCtrl.close()'
       ng-show  = "pullCtrl.pull.status == 'ready' || pullCtrl.pull.status == 'open' || pullCtrl.pull.status == 'blocked'" ]
     = t '.close'
