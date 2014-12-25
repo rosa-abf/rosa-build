@@ -41,6 +41,7 @@
 //= require extra/highlight
 
 //= require extra/pull
+//= require extra/scroller
 
 //= require_self
 
