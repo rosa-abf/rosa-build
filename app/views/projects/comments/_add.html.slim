@@ -7,6 +7,7 @@ h3
       h3.panel-title
         = f.label :body
         .pull-right= render 'projects/comments/button_md_help'
+        .clearfix
     .panel-body
       = render 'projects/comments/body', f: f, id: 'new-comment', ctrl: 'commentsCtrl',
                ang_model: 'new_body'

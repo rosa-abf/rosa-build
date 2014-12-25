@@ -6,5 +6,6 @@
       - t('activerecord.attributes.issue.body')
       = f.label :body
       .pull-right= render 'projects/comments/button_md_help'
+      .clearfix
   .panel-body
     = render 'projects/comments/body', f: f, id: 'issue', ctrl: 'issueCtrl'

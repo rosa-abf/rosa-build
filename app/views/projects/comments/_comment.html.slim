@@ -9,6 +9,7 @@
           h3.panel-title
             = f.label :body
             .pull-right== render 'projects/comments/button_md_help.html.slim'
+            .clearfix
         .panel-body
           == render 'projects/comments/body.html.slim', f: f, id: "comment-#{comment.id}",
                     ctrl: 'commentsCtrl'
