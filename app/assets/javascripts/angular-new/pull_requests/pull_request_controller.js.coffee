@@ -15,8 +15,8 @@ PullRequestController = (dataservice, $http, ApiPullRequest, ApiProject, DateTim
   vm.can_delete_branch   = false
 
   activity               = $('#pull-activity')
-  diff                   = $('#diff.tab-pane > .content')
-  commits                = $('#commits.tab-pane > .content')
+  diff                   = $('#diff.tab-pane .content')
+  commits                = $('#commits.tab-pane .content')
 
   vm.active_tab          = null
 

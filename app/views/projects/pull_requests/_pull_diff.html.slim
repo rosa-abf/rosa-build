@@ -8,4 +8,3 @@
     .clearfix
   -if pull_diff.diff.present? && !(@pull.repo.tree(commit_id) / pull_diff.b_path).binary?
     .diff_data== render_diff(pull_diff, diff_counter: pull_diff_counter, comments: @comments)
-    p= "comments count is #{@comments.count}"

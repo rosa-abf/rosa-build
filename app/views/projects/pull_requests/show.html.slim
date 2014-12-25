@@ -4,8 +4,8 @@
 == render "projects/comments/markdown_help" if current_user
 
 div ng-controller = 'PullRequestController as pullCtrl' ng-cloak = true
-  .row
-    .col-md-10.col-md-offset-1
+  .row.lroffset-15
+    .col-lg-12
       h3.bpadding10
         - PullRequest::STATUSES.each do |status|
           = pull_status_label status, 'ng-show' => "pullCtrl.pull.status == '#{status}'"
@@ -30,11 +30,11 @@ div ng-controller = 'PullRequestController as pullCtrl' ng-cloak = true
             .pull_status.offset20== render 'status'
 
           #diff.tab-pane
-            .content ng-hide = 'pullCtrl.processing'
+            .offset20.content ng-hide = 'pullCtrl.processing'
             i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
 
           #commits.tab-pane
-            .content ng-hide = 'pullCtrl.processing'
+            .offset20.content ng-hide = 'pullCtrl.processing'
             i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
 
 div ng-non-bindable = true
