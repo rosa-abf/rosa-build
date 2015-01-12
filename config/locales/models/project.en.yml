@@ -21,6 +21,7 @@ en:
       edit: Settings
       fork_and_edit: Fork
       fork_to: Fork to %{to}
+      create_alias_for: Create alias for %{for}
       fork_modal_header: Where do you want to fork this project?
       already_exists: Project already exists
       unexisted_project: Project not exists

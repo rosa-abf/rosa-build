@@ -21,6 +21,7 @@ ru:
       edit: Настройки
       fork_and_edit: Клонировать
       fork_to: Клонировать в %{to}
+      create_alias_for: Создать ссылку для %{for}
       fork_modal_header: Куда Вы хотите клонировать проект?
       already_exists: Проект уже существует
       unexisted_project: Проект не существует

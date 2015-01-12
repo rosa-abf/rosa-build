@@ -153,7 +153,20 @@ module Git
   end
 
   def fork_git_repo
-    dummy = Grit::Repo.new(path) rescue parent.repo.fork_bare(path, shared: false)
+    dummy = Grit::Repo.new(path) rescue nil
+    unless dummy
+      if alias_from_id
+        aliases_path = File.join(APP_CONFIG['git_path'], 'git_projects', '.aliases')
+        FileUtils.mkdir_p(aliases_path)
+        alias_path   = File.join(aliases_path, "#{alias_from_id}.git")
+        if !Dir.exists?(alias_path) && alias_from
+          FileUtils.mv(alias_from.path, alias_path, force: true)
+        end
+        FileUtils.ln_sf alias_path, path
+      else
+        parent.repo.fork_bare(path, shared: false)
+      end
+    end
     write_hook
   end
 
