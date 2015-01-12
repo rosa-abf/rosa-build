@@ -152,16 +152,22 @@ module Git
     end
   end
 
+  # Creates fork/alias for GIT repo
   def fork_git_repo
     dummy = Grit::Repo.new(path) rescue nil
+    # Do nothing if GIT repo already exist
     unless dummy
       if alias_from_id
         aliases_path = File.join(APP_CONFIG['git_path'], 'git_projects', '.aliases')
         FileUtils.mkdir_p(aliases_path)
         alias_path   = File.join(aliases_path, "#{alias_from_id}.git")
         if !Dir.exists?(alias_path) && alias_from
+          # Move GIT repo into aliases
           FileUtils.mv(alias_from.path, alias_path, force: true)
+          # Create link for GIT
+          FileUtils.ln_sf alias_path, alias_from.path
         end
+        # Create link for GIT
         FileUtils.ln_sf alias_path, path
       else
         parent.repo.fork_bare(path, shared: false)
