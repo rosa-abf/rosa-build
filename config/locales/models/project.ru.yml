@@ -1,4 +1,18 @@
 ru:
+
+  projects:
+    projects:
+      aliases:
+        header: "Ссылкы"
+        name:   "Название проекта"
+
+
+    base:
+      submenu:
+        tooltips:
+          alias:  "Ссылка %{name}"
+          fork:   "Клонирование %{name}"
+
   layout:
     projects:
       placeholder:

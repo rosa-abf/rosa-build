@@ -1,4 +1,17 @@
 en:
+
+  projects:
+    projects:
+      aliases:
+        header: "Aliases"
+        name:   "Project name"
+
+    base:
+      submenu:
+        tooltips:
+          alias:  "Alias of %{name}"
+          fork:   "Fork of %{name}"
+
   layout:
     projects:
       placeholder:

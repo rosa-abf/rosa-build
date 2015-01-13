@@ -89,4 +89,5 @@ $(document).ready(function() {
     $(this).button('loading');
   });
 
+  $('[data-toggle="tooltip"]').tooltip();
 });

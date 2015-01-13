@@ -48,6 +48,9 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def edit
+    @project_aliases = Project.where.not(id: @project.id).
+      where('alias_from_id IN (:ids) OR id IN (:ids)', { ids: [@project.alias_from_id, @project.id] }).
+      paginate(page: current_page)
   end
 
   def create

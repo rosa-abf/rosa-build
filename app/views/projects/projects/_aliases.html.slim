@@ -1,0 +1,15 @@
+.col-sm-9.col-sm-offset-3
+
+  h3= t('.header')
+
+  table.table.table-condensed.offset20
+    thead
+      tr
+        th= t('.name')
+    tbody
+      - @project_aliases.each do |project|
+        tr
+          td
+            = fa_visibility_icon @project
+            = link_to project.name_with_owner, project_path(project)
+  = will_paginate @project_aliases
