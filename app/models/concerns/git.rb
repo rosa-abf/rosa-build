@@ -187,7 +187,7 @@ module Git
   def destroy_git_repo
     FileUtils.rm_rf path
     return unless alias_from_id
-    unless Project.where.not(id: id).where(alias_from_id: alias_from_id).exists?
+    unless alias_from || Project.where.not(id: id).where(alias_from_id: alias_from_id).exists?
       FileUtils.rm_rf alias_path
     end
   end

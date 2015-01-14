@@ -59,13 +59,26 @@ describe Project do
         end.to change(Project, :count).by(-1)
       end
 
-      it 'middle alias node' do
+      it 'alias nodes' do
         alias_alias_project # init chain of projects
         expect do
           alias_project.destroy
         end.to change(Project, :count).by(-1)
-        expect{ Grit::Repo.new(root_project.path) }.to_not raise_exception
-        expect{ Grit::Repo.new(alias_project.path) }.to raise_exception
+        expect{ Grit::Repo.new(root_project.path)        }.to_not raise_exception
+        expect{ Grit::Repo.new(alias_alias_project.path) }.to_not raise_exception
+        expect{ Grit::Repo.new(alias_project.path)       }.to     raise_exception
+
+        expect do
+          alias_alias_project.destroy
+        end.to change(Project, :count).by(-1)
+        expect{ Grit::Repo.new(root_project.path)        }.to_not raise_exception
+        expect{ Grit::Repo.new(alias_alias_project.path) }.to     raise_exception
+
+        expect do
+          root_project.destroy
+        end.to change(Project, :count).by(-1)
+        expect{ Grit::Repo.new(root_project.path)              }.to raise_exception
+        expect{ Grit::Repo.new(root_project.send(:alias_path)) }.to raise_exception
       end
 
       pending 'when will be available orphan_strategy: :adopt' do
