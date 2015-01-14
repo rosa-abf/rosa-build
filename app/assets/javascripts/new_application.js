@@ -61,7 +61,7 @@ $(document).ready(function() {
     setCookie("flash_notify_hash", FLASH_HASH_ID, expires);
   });
 
-  var clip = new ZeroClipboard($("#clipboard_copy_button"));
+  var clip = new ZeroClipboard($("#copy_to_clipboard"));
 
   $('.datetime_moment').each(function() {
     var mtime = moment($(this).attr('origin_datetime')).utc().format('YYYY-MM-DD HH:mm:ss UTC');

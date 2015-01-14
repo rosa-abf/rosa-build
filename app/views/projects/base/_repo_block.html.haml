@@ -39,8 +39,8 @@
           .form-group
             %input#clone-url.form-control{ readonly: 'readonly', spellcheck: false,
                                            type: 'text', 'ng-model' => 'clone_url' }
-        #copy_to_clipboard.navbar-text.navbar-left{ title: t('layout.projects.git_help.question_title') }
-          %a.navbar-link
+        .navbar-text.navbar-left{ title: t('layout.projects.git_help.question_title') }
+          %a#copy_to_clipboard.navbar-link{ 'data-clipboard-target' => 'clone-url' }
             %i.fa.fa-clipboard.fa-lg
 
         .navbar-text.navbar-left
