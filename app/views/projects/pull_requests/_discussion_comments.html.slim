@@ -1,5 +1,5 @@
 -comment = item[1].first
-.panel.panel-default
+.panel.panel-default.offset20
   .panel-heading
     =comment.data[:view_path]
     .pull-right
@@ -10,9 +10,9 @@
       -else
         => t'projects.pull_requests.outdated_diff'
         .fa.fa-close.fa-lg.text-danger
-== render_diff(comment.inline_diff,
-             diff_counter: diff_counter,
-             comments: item[1],
-             filepath: comment.data[:path],
-             diff_prefix: 'discussion')
-
+  .panel-body
+    == render_diff(comment.inline_diff,
+                 diff_counter: diff_counter,
+                 comments: item[1],
+                 filepath: comment.data[:path],
+                 diff_prefix: 'discussion')
