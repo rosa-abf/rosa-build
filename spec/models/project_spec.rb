@@ -3,43 +3,82 @@ require 'spec_helper'
 describe Project do
   before { stub_symlink_methods }
 
-  context 'creation' do
-    let(:root_project) { FactoryGirl.create(:project) }
-    let(:child_project) { root_project.fork(FactoryGirl.create(:user)) }
+  context '#fork' do
+    let(:root_project)        { FactoryGirl.create(:project) }
+    let(:child_project)       { root_project.fork(FactoryGirl.create(:user)) }
     let(:child_child_project) { child_project.fork(FactoryGirl.create(:user)) }
+    let(:alias_project)       { root_project.fork(FactoryGirl.create(:user), is_alias: true) }
+    let(:alias_alias_project) { alias_project.fork(FactoryGirl.create(:user), is_alias: true) }
 
-    it { root_project }
-    it { child_project }
-    it { child_child_project }
-  end
+    context 'creation' do
 
-  context 'for destroy' do
-    let!(:root_project) { FactoryGirl.create(:project) }
-    let!(:child_project) { root_project.fork(FactoryGirl.create(:user)) }
-    let!(:child_child_project) { child_project.fork(FactoryGirl.create(:user)) }
+      it { root_project }
 
-    context 'root project' do
-      before { root_project.destroy }
-
-      it "should not be delete child" do
-        Project.where(id: child_project).count.should == 1
+      it 'creates child project' do
+        expect(child_project).to be_valid
+        expect(child_project.parent).to eq(root_project)
+        expect(child_project.alias_from).to be_nil
+        expect{ Grit::Repo.new(child_project.path) }.to_not raise_exception
       end
 
-      it "should not be delete child of the child" do
-        Project.where(id: child_child_project).count.should == 1
+      it 'creates child-child project' do
+        expect(child_child_project).to be_valid
+        expect(child_child_project.parent).to eq(child_project)
+        expect(child_child_project.alias_from).to be_nil
+        expect{ Grit::Repo.new(child_child_project.path) }.to_not raise_exception
+      end
+
+      it 'creates alias project' do
+        expect(alias_project).to be_valid
+        expect(alias_project.parent).to eq(root_project)
+        expect(alias_project.alias_from).to eq(root_project)
+        expect{ Grit::Repo.new(alias_project.path) }.to_not raise_exception
+      end
+
+      it 'creates alias-alias project' do
+        expect(alias_alias_project).to be_valid
+        expect(alias_alias_project.parent).to eq(alias_project)
+        expect(alias_alias_project.alias_from).to eq(root_project)
+        expect{ Grit::Repo.new(alias_alias_project.path) }.to_not raise_exception
       end
     end
 
-    pending 'when will be available orphan_strategy: :adopt' do
-      context 'middle node' do
-        before{ child_project.destroy }
+    context 'for destroy' do
 
-        it "should set root project as a parent for orphan child" do
-          Project.find(child_child_project).ancestry == root_project
-        end
+      it 'root project' do
+        child_child_project # init chain of projects
+        expect do
+          root_project.destroy
+        end.to change(Project, :count).by(-1)
+      end
 
-        it "should not be delete child of the child" do
-          Project.where(id: child_child_project).count.should == 1
+      it 'middle child node' do
+        child_child_project # init chain of projects
+        expect do
+          child_project.destroy
+        end.to change(Project, :count).by(-1)
+      end
+
+      it 'middle alias node' do
+        alias_alias_project # init chain of projects
+        expect do
+          alias_project.destroy
+        end.to change(Project, :count).by(-1)
+        expect{ Grit::Repo.new(root_project.path) }.to_not raise_exception
+        expect{ Grit::Repo.new(alias_project.path) }.to raise_exception
+      end
+
+      pending 'when will be available orphan_strategy: :adopt' do
+        context 'middle node' do
+          before{ child_project.destroy }
+
+          it "should set root project as a parent for orphan child" do
+            Project.find(child_child_project).ancestry == root_project
+          end
+
+          it "should not be delete child of the child" do
+            Project.where(id: child_child_project).count.should == 1
+          end
         end
       end
     end

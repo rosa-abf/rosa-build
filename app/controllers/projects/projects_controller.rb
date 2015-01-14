@@ -119,7 +119,7 @@ class Projects::ProjectsController < Projects::BaseController
     authorize! :write, owner if owner.class == Group
 
     is_alias = params[:alias] == 'true'
-    if forked = @project.fork(owner, params[:fork_name], is_alias) and forked.valid?
+    if forked = @project.fork(owner, new_name: params[:fork_name], is_alias: is_alias) and forked.valid?
       redirect_to forked, notice: t("flash.project.forked")
     else
       flash[:warning] = t("flash.project.fork_error")

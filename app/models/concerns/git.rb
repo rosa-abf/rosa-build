@@ -173,6 +173,8 @@ module Git
           # Create link for GIT
           FileUtils.ln_sf alias_path, alias_from.path
         end
+        # Create folder
+        FileUtils.mkdir_p File.join(APP_CONFIG['git_path'], 'git_projects', owner_uname || owner.uname)
         # Create link for GIT
         FileUtils.ln_sf alias_path, path
       else

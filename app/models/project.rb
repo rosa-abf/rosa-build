@@ -219,7 +219,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def fork(new_owner, new_name = name, is_alias = false)
+  def fork(new_owner, new_name: nil, is_alias: false)
     new_name = new_name.presence || name
     dup.tap do |c|
       c.name          = new_name

@@ -11,7 +11,7 @@
       == render "form", f: f
 
     == render 'build_schedule'
-    - if true #@project_aliases.present?
+    - if @project_aliases.present?
       hr.col-sm-12
       == render 'aliases'
 
