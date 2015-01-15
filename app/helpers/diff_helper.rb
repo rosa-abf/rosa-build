@@ -1,7 +1,8 @@
 module DiffHelper
   def render_diff_stats(stats)
     path = @pull.try(:id) ? polymorphic_path([@project, @pull]) : ''
-    res = ["<table class='table table-responsive commit_stats'>"]
+
+    res = ["<table class='table table-responsive boffset0'>"]
     stats.each_with_index do |stat, ind|
       res << "<tr>"
       res << "<td>#{link_to stat.filename.rtruncate(120), "#{path}#diff-#{ind}"}</td>"
@@ -14,9 +15,37 @@ module DiffHelper
              ")"
       res << "</td>"
     end
-    res << "</table>"
+    res << '</table>'
+    wrap_header_list(stats, res)
+  end
 
+  def wrap_header_list(stats, list)
+    is_stats_open = stats.count <= 25 ? 'in' : ''
+    res = ["<div class='panel-group' id='diff_header' role='tablist' aria-multiselectable='false'>"]
+      res << "<div class='panel panel-default'>"
+        res << "<div class='panel-heading' role='tab' id='heading'>"
+          res << "<h4 class='panel-title'>"
+            res << "<a data-toggle='collapse' data-parent='#diff_header' href='#collapseList' aria-expanded='true' aria-controls='collapseList'>"
+            res << "#{diff_header_message(stats)}</a>"
+          res << "</h4>"
+        res << "</div>"
+        res << "<div id='collapseList' class='panel-collapse collapse #{is_stats_open}' role='tabpanel' aria-labelledby='collapseList'>"
+          res << "<div class='panel-body'>"
+            res += list
+          res << "</div>"
+        res << "</div>"
+      res << "</div>"
+    res << "</div>"
     res.join("\n").html_safe
+  end
+
+  def diff_header_message(stats)
+    total_additions = @stats.inject(0) {|sum, n| sum + n.additions}
+    total_deletions = @stats.inject(0) {|sum, n| sum + n.deletions}
+    I18n.t('layout.projects.diff_show_header',
+           files:     t('layout.projects.commit_files_count',     count: stats.count),
+           additions: t('layout.projects.commit_additions_count', count: total_additions),
+           deletions: t('layout.projects.commit_deletions_count', count: total_deletions))
   end
 
   #include Git::Diff::InlineCallback

@@ -1,11 +1,3 @@
-.leftside
-  -total_additions = @stats.inject(0) {|sum, n| sum + n.additions}
-  -total_deletions = @stats.inject(0) {|sum, n| sum + n.deletions}
-  h5= t('layout.projects.diff_show_header',
-        files:     t('layout.projects.commit_files_count',     count: @stats.count),
-        additions: t('layout.projects.commit_additions_count', count: total_additions),
-        deletions: t('layout.projects.commit_deletions_count', count: total_deletions))
-.clearfix
 -begin
   == render_diff_stats(@stats)
   == render partial: 'pull_diff', collection: @pull.diff
