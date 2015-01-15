@@ -6,5 +6,15 @@
     - if @pull.from_project.present?
       .pull-right= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@pull.from_project, commit_id, pull_diff.b_path)
     .clearfix
-  -if pull_diff.diff.present? && !(@pull.repo.tree(commit_id) / pull_diff.b_path).binary?
-    .diff_data== render_diff(pull_diff, diff_counter: pull_diff_counter, comments: @comments)
+
+  -if pull_diff.diff.present?
+    .diff_data
+      - blob = @pull.repo.tree(commit_id) / pull_diff.b_path
+      - if blob.render_as == :image
+        table.table.diff.inline.table-bordered[ cellspacing = 0 cellpadding = 0 ]
+          tr
+            td.diff-image
+              span.diff-image
+                img[ src = "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"
+                     style = 'max-width: 600px;' ]
+      == render_diff(pull_diff, diff_counter: pull_diff_counter, comments: @comments) unless blob.binary?
