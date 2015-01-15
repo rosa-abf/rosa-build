@@ -21,7 +21,7 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
       if line_comments.hasClass('line-comments')
         new_form = form
         new_form = compileHTML.run($scope, new_form)
-        line_comments.find('td:last').append(new_form)
+        line_comments.find('td.line-comments:last').append(new_form)
       else
         new_form = "<tr class='line-comments'><td class='line_numbers' colspan='2'></td>" +
                    "<td>" + form + "</td></tr>"
@@ -130,9 +130,9 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
     $('table.table #new_inline_comment').addClass('cloned')
     true
 
-  vm.hideInlineForm = ->
+  vm.hideInlineForm = (is_new_comment = false)->
     parent = $('#new_inline_comment.cloned').parents('tr.line-comments')
-    if parent.find('.line-comment').length is 1
+    if !is_new_comment and parent.find('.line-comment').length is 1
       # there is only one line comment, remove all line
       parent.remove()
     else
@@ -151,8 +151,8 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
     vm.processing = true
     promise = Comment.addInline(vm.project, vm.commentable, vm.new_inline_body, inlineCommentParams)
     promise.then (response) ->
+      vm.hideInlineForm(true)
       insertCommentForm(line_comments, response.data.html)
-      vm.hideInlineForm()
 
       vm.new_inline_body = ''
       location.hash = "#comment" + response.data.id;
