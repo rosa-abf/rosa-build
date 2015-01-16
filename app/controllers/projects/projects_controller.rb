@@ -48,6 +48,9 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def edit
+    @project_aliases = Project.where.not(id: @project.id).
+      where('alias_from_id IN (:ids) OR id IN (:ids)', { ids: [@project.alias_from_id, @project.id] }).
+      paginate(page: current_page)
   end
 
   def create
@@ -114,7 +117,9 @@ class Projects::ProjectsController < Projects::BaseController
   def fork
     owner = (Group.find params[:group] if params[:group].present?) || current_user
     authorize! :write, owner if owner.class == Group
-    if forked = @project.fork(owner, params[:fork_name]) and forked.valid?
+
+    is_alias = params[:alias] == 'true'
+    if forked = @project.fork(owner, new_name: params[:fork_name], is_alias: is_alias) and forked.valid?
       redirect_to forked, notice: t("flash.project.forked")
     else
       flash[:warning] = t("flash.project.fork_error")

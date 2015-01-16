@@ -17,6 +17,9 @@ class Project < ActiveRecord::Base
   belongs_to :owner, polymorphic: true, counter_cache: :own_projects_count
   belongs_to :maintainer, class_name: 'User'
 
+  belongs_to :alias_from, class_name: 'Project'
+  has_many   :aliases,    class_name: 'Project', foreign_key: 'alias_from_id'
+
   has_many :issues,         dependent: :destroy
   has_many :pull_requests,  dependent: :destroy, foreign_key: 'to_project_id'
   has_many :labels,         dependent: :destroy
@@ -216,13 +219,14 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def fork(new_owner, new_name = name)
+  def fork(new_owner, new_name: nil, is_alias: false)
     new_name = new_name.presence || name
     dup.tap do |c|
-      c.name = new_name
-      c.parent_id = id
-      c.owner = new_owner
-      c.updated_at = nil; c.created_at = nil # :id = nil
+      c.name          = new_name
+      c.parent_id     = id
+      c.alias_from_id = alias_from_id || id if is_alias
+      c.owner         = new_owner
+      c.updated_at    = nil; c.created_at = nil # :id = nil
       # Hack to call protected method :)
       c.send :set_maintainer
       c.save
