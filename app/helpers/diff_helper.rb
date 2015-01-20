@@ -1,4 +1,7 @@
 module DiffHelper
+  MAX_FILES_WITHOUT_COLLAPSE = 25
+  MAX_LINES_WITHOUT_COLLAPSE = 50
+
   def render_diff_stats(stats)
     path = @pull.try(:id) ? polymorphic_path([@project, @pull]) : ''
 
@@ -20,7 +23,7 @@ module DiffHelper
   end
 
   def wrap_header_list(stats, list)
-    is_stats_open = stats.count <= 25 ? 'in' : ''
+    is_stats_open = stats.count <= MAX_FILES_WITHOUT_COLLAPSE ? 'in' : ''
     res = ["<div class='panel-group' id='diff_header' role='tablist' aria-multiselectable='false'>"]
       res << "<div class='panel panel-default'>"
         res << "<div class='panel-heading' role='tab' id='heading'>"
