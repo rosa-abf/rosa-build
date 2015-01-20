@@ -1,16 +1,19 @@
 -set_meta_tags title: [title_object(@project), t('layout.projects.edit')]
-= render 'submenu'
+== render 'submenu'
 
 .container.col-md-offset-2.col-md-8
   .row
-    = render 'settings_menu'
+    == render 'settings_menu'
 
     = simple_form_for @project, html:             { class: 'form-horizontal' },
                                 wrapper:          :horizontal_form,
                                 wrapper_mappings: { boolean: :horizontal_boolean } do |f|
-      = render "form", f: f
+      == render "form", f: f
 
-    = render 'build_schedule'
+    == render 'build_schedule'
+    - if @project_aliases.present?
+      hr.col-sm-12
+      == render 'aliases'
 
     hr.col-sm-12
     .col-sm-9.col-sm-offset-3

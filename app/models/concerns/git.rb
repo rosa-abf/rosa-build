@@ -134,6 +134,14 @@ module Git
 
   protected
 
+  def aliases_path
+    File.join(APP_CONFIG['git_path'], 'git_projects', '.aliases')
+  end
+
+  def alias_path
+    File.join(aliases_path, "#{alias_from_id}.git")
+  end
+
   def build_path(dir)
     File.join(APP_CONFIG['git_path'], 'git_projects', "#{dir}.git")
   end
@@ -152,13 +160,36 @@ module Git
     end
   end
 
+  # Creates fork/alias for GIT repo
   def fork_git_repo
-    dummy = Grit::Repo.new(path) rescue parent.repo.fork_bare(path, shared: false)
+    dummy = Grit::Repo.new(path) rescue nil
+    # Do nothing if GIT repo already exist
+    unless dummy
+      if alias_from_id
+        FileUtils.mkdir_p(aliases_path)
+        if !Dir.exists?(alias_path) && alias_from
+          # Move GIT repo into aliases
+          FileUtils.mv(alias_from.path, alias_path, force: true)
+          # Create link for GIT
+          FileUtils.ln_sf alias_path, alias_from.path
+        end
+        # Create folder
+        FileUtils.mkdir_p File.join(APP_CONFIG['git_path'], 'git_projects', owner_uname || owner.uname)
+        # Create link for GIT
+        FileUtils.ln_sf alias_path, path
+      else
+        parent.repo.fork_bare(path, shared: false)
+      end
+    end
     write_hook
   end
 
   def destroy_git_repo
     FileUtils.rm_rf path
+    return unless alias_from_id
+    unless alias_from || Project.where.not(id: id).where(alias_from_id: alias_from_id).exists?
+      FileUtils.rm_rf alias_path
+    end
   end
 
   def write_hook

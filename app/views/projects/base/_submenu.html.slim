@@ -1,0 +1,50 @@
+- content_for :submenu do
+  - act = action_name.to_sym; contr = controller_name.to_sym; treeish = @project.default_head(params[:treeish])
+  nav.navbar.navbar-default role='navigation'
+    .container-fluid
+      / Brand and toggle get grouped for better mobile display
+      .navbar-header
+        button.navbar-toggle data-target='#submenu-navbar-collapse' data-toggle='collapse' type='button'
+          span.sr-only Toggle navigation
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        .navbar-brand
+          = fa_visibility_icon @project
+          = link_to @project.owner.uname, @project.owner
+          | /
+          = link_to @project.name, project_path(@project)
+      / Collect the nav links, forms, and other content for toggling
+      #submenu-navbar-collapse.collapse.navbar-collapse
+        ul.nav.navbar-nav.left-border
+          - if @project.parent
+            - is_alias = @project.alias_from_id.present?
+            - tooltip_title = t(".tooltips.#{is_alias ? 'alias' : 'fork' }", name: @project.parent.name_with_owner)
+            li data-toggle='tooltip' data-placement='bottom' title=tooltip_title
+              = link_to project_path(@project.parent), class: 'small' do
+                - if is_alias
+                  = fa_icon 'share-alt'
+                - else
+                  = fa_icon 'code-fork'
+                =< @project.parent.name_with_owner
+          li class=('active' if act.in?([:show, :edit, :branches, :tags]) && contr.in?([:trees, :blobs]) || contr == :commits)
+            = link_to t('project_menu.code'), tree_path(@project, treeish)
+          - if @project.is_package and can?(:read, @project => BuildList)
+            li class=('active' if contr == :build_lists)
+              = link_to t('project_menu.builds'), project_build_lists_path(@project)
+
+          - if @project.has_issues
+            li class=('active' if contr == :issues && act == :index)
+              = link_to t('project_menu.tracker', count: @opened_issues_count), project_issues_path(@project)
+          li class=('active' if contr == :issues && act == :pull_requests)
+            = link_to t('project_menu.pull_requests', count: @opened_pull_requests_count), project_pull_requests_path(@project)
+          - if @project.has_wiki
+            li class=('active' if contr == :wiki)
+              = link_to t('project_menu.wiki'), project_wiki_index_path(@project)
+          li
+            / = link_to t('project_menu.readme'), '#' #pending
+          - if can? :update, @project
+            li class=('active' if act.in?(%i[edit update sections]) && contr == :projects)
+              = link_to t('project_menu.settings'), edit_project_path(@project)
+      / /.navbar-collapse
+    / /.container-fluid

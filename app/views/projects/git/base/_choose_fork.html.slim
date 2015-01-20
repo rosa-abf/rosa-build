@@ -1,0 +1,22 @@
+- is_group = owner.class == Group ? "(#{t 'activerecord.models.group'})" : ''
+- full_name = "#{owner.uname}/#{name} #{is_group}"
+
+- if owner.own_projects.exists? name: name
+  p.text-center
+    => t('layout.projects.already_exists')
+    = link_to full_name, project_path("#{owner.uname}/#{name}")
+- else
+  = form_for @project, url: fork_project_path(@project), html: { class: :form, multipart: true, method: :post } do |f|
+    = hidden_field_tag :group, owner.id if owner.class == Group
+    = hidden_field_tag :fork_name, name, name: 'fork_name'
+    = hidden_field_tag :alias, '{{create_alias}}'
+    .btn-group.btn-group-justified ng-init='create_alias = false'
+      .btn-group
+        = f.submit t('layout.projects.fork_to', to: full_name),
+          class: 'btn btn-primary center-block',
+          'data-loading-text' => t('layout.processing'), id: 'create_fork'
+      .btn-group
+        = f.submit t('layout.projects.create_alias_for', for: full_name),
+        class: 'btn btn-primary center-block',
+        ng_click: 'create_alias = true',
+        'data-loading-text' => t('layout.processing'), id: 'create_fork'
