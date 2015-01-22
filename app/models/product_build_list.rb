@@ -85,6 +85,8 @@ class ProductBuildList < ActiveRecord::Base
           Time.now - LIVE_TIME, Time.now - MAX_LIVE_TIME)
   }
 
+  after_initialize :init_project, if: :new_record?
+
   after_create :add_job_to_abf_worker_queue
   before_destroy :can_destroy?
 
@@ -157,6 +159,10 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   protected
+
+  def init_project
+    self.project ||= product.try(:project)
+  end
 
   def abf_worker_priority
     ''
