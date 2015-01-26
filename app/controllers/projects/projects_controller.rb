@@ -114,11 +114,10 @@ class Projects::ProjectsController < Projects::BaseController
     redirect_to @project.owner
   end
 
-  def fork
+  def fork(is_alias = false)
     owner = (Group.find params[:group] if params[:group].present?) || current_user
     authorize! :write, owner if owner.class == Group
 
-    is_alias = params[:alias] == 'true'
     if forked = @project.fork(owner, new_name: params[:fork_name], is_alias: is_alias) and forked.valid?
       redirect_to forked, notice: t("flash.project.forked")
     else
@@ -126,6 +125,10 @@ class Projects::ProjectsController < Projects::BaseController
       flash[:error] = forked.errors.full_messages.join("\n")
       redirect_to @project
     end
+  end
+
+  def alias
+    fork(true)
   end
 
   def possible_forks

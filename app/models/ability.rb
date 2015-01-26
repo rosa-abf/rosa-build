@@ -72,8 +72,11 @@ class Ability
         can [:update, :sections, :manage_collaborators, :autocomplete_maintainers, :add_member, :remove_member, :remove_members, :update_member, :members, :schedule], Project do |project|
           local_admin? project
         end
+
         can(:fork, Project) {|project| can? :read, project}
         can(:fork, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
+        can(:alias, Project) {|project| local_admin?(project) }
+
         can(:destroy, Project) {|project| owner? project}
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin')}
         can :remove_user, Project
