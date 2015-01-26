@@ -74,7 +74,6 @@ class Ability
         end
 
         can(:fork, Project) {|project| can? :read, project}
-        can(:fork, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
         can(:alias, Project) {|project| local_admin?(project) }
 
         can(:destroy, Project) {|project| owner? project}
