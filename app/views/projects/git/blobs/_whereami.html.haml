@@ -1,8 +1,0 @@
-%ol.breadcrumb
-  %li= link_to @project.name, tree_path(@project, treeish: @treeish)
-  - if @path.present?
-    - paths = File.split(@path)
-    - if paths.size > 1 and paths.first != '.'
-      - iterate_path(paths.first).each do |el|
-        %li= link_to(el.last, tree_path(@project, "#{@treeish}/#{el.first}"))
-    %li.active= paths.last

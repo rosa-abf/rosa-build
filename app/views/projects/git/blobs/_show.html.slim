@@ -1,0 +1,9 @@
+h3= t("layout.projects.files_in_project")
+.files
+  .pull-left== render 'whereami'
+  .pull-right== render 'fork'
+.clearfix
+.panel.panel-default
+  .panel-heading== render 'top'
+
+== render "render_as_#{@blob.render_as}"

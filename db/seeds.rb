@@ -1,6 +1,6 @@
 ARCHES = %w(i386 i586 x86_64)
 ARCHES.each do |arch|
-  Arch.find_or_create_by_name arch
+  Arch.find_or_create_by(name: arch)
 end
 
 %w(rosa_system iso_worker_1 file_store).each do |uname|
