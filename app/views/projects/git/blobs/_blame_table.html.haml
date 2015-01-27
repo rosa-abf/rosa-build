@@ -15,7 +15,7 @@
         %span.message{title: elem[0].message}= short_message(elem[0].message)
 
       %td.lines
-        = index
+        %pre= index
         - index += 1
 
       %td.code.formatted
@@ -25,7 +25,7 @@
       - elem[1][1..-1].each do |line|
         %tr
           %td.lines
-            = index
+            %pre= index
             - index += 1
           %td.code.formatted
             = preserve do

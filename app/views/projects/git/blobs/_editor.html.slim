@@ -1,0 +1,39 @@
+= javascript_include_tag 'codemirror_editor'
+= stylesheet_link_tag    'codemirror_editor'
+
+h3= t("layout.projects.files_in_project")
+.files
+  .pull-left= render 'whereami'
+  .pull-right= render 'fork'
+.clearfix
+
+= form_tag edit_blob_path(@project, @treeish, @path), name: 'blob-editor', method: :put do
+  .form-group
+    .file-editor= text_area_tag :content, @blob.data, id: 'code'
+
+  .form-group
+    label[ for = :message ]= t("layout.enter_commit_message")
+    = text_area_tag :message, "Updated #{@blob.name}", class: 'form-control'
+
+  => submit_tag t('layout.save'), title: t('layout.save'),
+      data: {'disable-with' => t('layout.saving')},
+      class: 'btn btn-primary'
+  => t("layout.or")
+  = link_to t("layout.cancel"), blob_path(@project, @treeish, @path), class: 'btn btn-default'
+
+- content_for :additional_scripts do
+  javascript:
+    $(function() {
+      var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+        lineNumbers: true,
+        mode: '#{@blob.raw_mime_type}'
+      });
+      $(".CodeMirror").resizable({
+        stop: function() { editor.refresh(); },
+        resize: function() {
+          $(".CodeMirror-scroll").height($(this).height());
+          $(".CodeMirror-scroll").width($(this).width());
+          editor.refresh();
+        }
+      });
+    });

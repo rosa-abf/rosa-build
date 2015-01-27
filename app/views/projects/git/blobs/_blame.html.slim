@@ -1,0 +1,9 @@
+h3= t("layout.projects.files_in_project")
+.files
+  .pull-left== render 'whereami'
+  .pull-right== render 'fork'
+.clearfix
+.panel.panel-default
+  .panel-heading== render 'top'
+
+#output.formatted== render 'blame_table' if @blame.first.first.present?
