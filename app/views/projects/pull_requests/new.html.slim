@@ -1,0 +1,57 @@
+-ar = 'activerecord.attributes.pull_requests'
+-set_meta_tags title: [title_object(@project), t('.title')]
+== render 'submenu'
+== render "projects/comments/markdown_help" if current_user
+
+.col-xs-12.col-md-10.col-md-offset-1 ng-cloak = true
+  h3= pull_header @pull
+  .row
+    .col-lg-12
+      div role = 'tabpanel'
+        == render 'nav_tabs'
+
+      .tab-content
+        #discussion.tab-pane.active
+          =hidden_field_tag :update_action, new_project_pull_request_path
+          = simple_form_for @pull, url: (@pull.already? ? new_project_pull_request_path : project_pull_requests_path),
+              html: {class: 'form-horizontal', method: (@pull.already? ? :get : :post)} do |f|
+
+            .form-group.offset20
+              = f.label :from_project, t("#{ar}.from_project"), class: 'col-sm-2 control-label'
+              .col-sm-10
+                .row
+                  .col-sm-5
+                    = text_field_tag :from_project, @pull.from_project.name_with_owner, readonly: :readonly, style: 'background-color: #DDD;', class: 'form-control col-sm-5'
+                  .col-sm-5== render 'ref_select', kind: 'from', project: @pull.from_project, current: @pull.from_ref
+            .form-group
+              = f.label :to_project, t("#{ar}.to_project"), class: 'col-sm-2 control-label'
+              .col-sm-10
+                .row
+                  .col-sm-5= f.autocomplete_field :to_project, autocomplete_to_project_project_pull_requests_path,
+                                                  value: @pull.to_project.name_with_owner,
+                                                  id_element: 'pull_request_to_project_id', name: 'to_project',
+                                                  class: 'form-control col-sm-5'
+                  .col-sm-5== render 'ref_select', kind: 'to', project: @pull.to_project, current: @pull.to_ref
+
+            .form-group
+              .col-sm-offset-2.col-sm-10
+                = f.submit t('.update'), class: 'btn btn-primary',
+                    style: @pull.already? ? '' : 'display: none;',
+                    id: 'update_pull', data: {'disable-with' => t('layout.processing')}
+
+            -unless @pull.already?
+              .row[ ng-controller = 'IssueController as issueCtrl' ng-cloak = true ]
+                .col-md-9.col-sm-8== render 'projects/issues/form', f: f
+                = f.submit t('.submit'), class: 'btn btn-primary', id: 'create_pull',
+                  data: {'disable-with' => t('layout.processing')} unless @pull.already?
+        - if !@pull.already? && @stats != nil
+          #diff.tab-pane
+            .offset20.content ng-hide = 'pullCtrl.processing'
+            i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
+
+          #commits.tab-pane
+            .offset20.content ng-hide = 'pullCtrl.processing'
+            i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
+
+- content_for :additional_scripts do
+  == render 'projects/issues/init_service.js.erb'

@@ -2,7 +2,7 @@
 == render 'submenu'
 == render 'projects/comments/markdown_help' if current_user
 
-.container ng-controller = 'IssueController as issueCtrl' ng-cloak = true
+.col-xs-12.col-md-10.col-md-offset-1 ng-controller = 'IssueController as issueCtrl' ng-cloak = true
   .row
     .col-md-3.col-sm-4.offset20
       == render 'status_sidebar'

@@ -1,0 +1,39 @@
+.row[ ng-controller = 'ProjectBranchesController' ng-cloak = true
+      ng-init = "init('#{@project.owner.uname}', '#{@project.name}','#{@branch.try(:name)}')"]
+
+  h3= t('layout.projects.branches')
+  .col-md-4
+    h4[ ng-show = '!branches.length']= t('layout.projects.no_branches')
+    h5[ ng-show = 'branches.length > 0'] {{'project.total_branches' | i18n:'plural':branches.length}}
+
+  .col-md-4.pull-right
+    input.form-control ng-model = 'query.ref' placeholder = t('layout.search.header')
+  .clearfix
+
+  table.table.table-hover.offset20
+    tbody
+      tr ng-repeat = 'branch in branches | filter:query' ng-class = '{info: branch.ref == current_ref}'
+        td
+          a ng-href = '{{branch.path(project)}}'
+            strong[] {{branch.ref}}
+        td
+          ul.list-inline.pull-right.boffset_auto
+            - if can?(:write, @project)
+              li ng-hide = 'branch.ref == current_ref || branch.ui_container'
+                a href = '' ng-confirm-click = t('layout.confirm') confirmed-click = 'destroy(branch)'
+                  = t('layout.projects.delete_branch')
+              li ng-hide = 'branch.ui_container'
+                a href = '' ng-click = 'branch.ui_container = true'
+                  = t('layout.projects.new_branch')
+              li ng-show = 'branch.ui_container'
+                form.form-inline role = 'form' ng-submit = 'create(branch)'
+                  .form-group
+                    input.form-control ng-model = 'branch.new_ref'
+                    input.btn.btn-primary type = 'submit' value = t('layout.create')
+                    a.btn.btn-primary href = '' ng-click = 'branch.ui_container = false'
+                      = t('layout.cancel')
+            li ng-hide = 'branch.ref == current_ref || branch.ui_container'
+              a ng-href = '{{branch.diff_path(project, current_ref)}}'
+                = t('layout.projects.compare')
+            li ng-show = 'branch.ref == current_ref && !branch.ui_container'
+              = t('layout.projects.base_branch')

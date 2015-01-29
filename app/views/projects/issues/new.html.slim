@@ -1,7 +1,7 @@
 -set_meta_tags title: [title_object(@project), t('layout.issues.create_header')]
 -render 'submenu'
 
-.container ng-controller = 'IssueController as issueCtrl' ng-cloak = true
+.col-xs-12.col-md-10.col-md-offset-1 ng-controller = 'IssueController as issueCtrl' ng-cloak = true
   = simple_form_for @issue, url: project_issues_path(@project) do |f|
     .row
       - can_write = can?(:write, @project)

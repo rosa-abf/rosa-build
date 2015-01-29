@@ -1,8 +1,0 @@
--set_meta_tags title: [title_object(@project), "#{t '.title'} #{t('at') if @branch} #{@branch.try :name}"]
-= render 'submenu'
-.container
-  .row
-    = render 'repo_block', project: @project
-    .offset20
-    = render partial: 'commits', object: @commits
-    = render 'paginate' if @path.blank?

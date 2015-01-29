@@ -1,6 +1,6 @@
 = render 'platforms/base/submenu'
 
-.container.col-md-offset-2.col-md-8
+.col-xs-12.col-md-10.col-md-offset-1
   .row
     - if can? :create, @platform.mass_builds.build
       a.btn.btn-primary href=new_platform_mass_build_path(@platform)

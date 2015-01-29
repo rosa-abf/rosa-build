@@ -3,7 +3,7 @@
 == render "projects/comments/markdown_help" if current_user
 
 div ng-controller = 'PullRequestController as pullCtrl' ng-cloak = true
-  .row.lroffset-15
+  .row
     .col-lg-12
       h3.bpadding10
         - PullRequest::STATUSES.each do |status|
