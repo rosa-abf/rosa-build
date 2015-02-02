@@ -13,7 +13,7 @@ shared_context "comments controller" do
 
     set_session_for(@user)
 
-    @path = { name_with_owner: @project.name_with_owner, issue_id: @issue.serial_id }
+    @path = { name_with_owner: @project.name_with_owner, issue_id: @issue.serial_id, format: :json }
     @return_path = project_issue_path(@project, @issue)
     @create_params = { comment: { body: 'I am a comment!' }}.merge(@path)
     @update_params = { comment: { body: 'updated' }}.merge(@path)
