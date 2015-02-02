@@ -87,6 +87,7 @@ class Projects::PullRequestsController < Projects::BaseController
   def show
     if @pull.nil?
       redirect_to project_issue_path(@project, @issue)
+      return
     end
 
     load_diff_commits_data
