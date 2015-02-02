@@ -16,7 +16,6 @@
 //= require angular-ui-bootstrap-tpls
 //= require ui-codemirror
 //= require angular-i18n
-//= require angularjs/locales
 
 //= require angular-resource
 //= require ng-rails-csrf
@@ -26,9 +25,8 @@
 //= require angular-rails-templates
 
 //= require moment
-//= require angularjs/angular-moment
 
-//= require_tree ./angular-new
+//= require_tree ./angularjs
 //= require loading-bar
 
 //= require underscore

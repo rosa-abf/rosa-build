@@ -5,7 +5,11 @@ RosaABF.directive "ngConfirmClick", ->
   restrict: "A"
   link: (scope, element, attr) ->
     msg = attr.ngConfirmClick || "Are you sure?"
+    clickAction = attr.confirmedClick
     element.bind 'click', (event) ->
-      unless confirm(msg)
-        event.stopImmediatePropagation()
-        event.preventDefault
+      if clickAction
+        scope.$apply clickAction if window.confirm(msg)
+      else
+        unless confirm(msg)
+          event.stopImmediatePropagation()
+          event.preventDefault
