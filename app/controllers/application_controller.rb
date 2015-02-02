@@ -81,7 +81,8 @@ class ApplicationController < ActionController::Base
   def render_error(status)
     respond_to do |format|
       format.json { render json: {status: status, message: t("flash.#{status}_message")}.to_json, status: status }
-      format.all  { render file: "public/#{status}.html", alert: t("flash.#{status}_message"), layout: false }
+      format.all  { render file: "public/#{status}.html", status: status,
+                           alert: t("flash.#{status}_message"), layout: false }
     end
   end
 
