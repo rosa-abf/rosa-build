@@ -2,39 +2,37 @@
 == render 'submenu'
 == render "projects/comments/markdown_help" if current_user
 
-div ng-controller = 'PullRequestController as pullCtrl' ng-cloak = true
-  .row
-    .col-lg-12
-      h3.bpadding10
-        - PullRequest::STATUSES.each do |status|
-          = pull_status_label status, 'ng-show' => "pullCtrl.pull.status == '#{status}'"
-        =< pull_header @pull
+.col-xs-12.col-md-10.col-md-offset-1 ng-controller = 'PullRequestController as pullCtrl' ng-cloak = true
+  h3.bpadding10
+    - PullRequest::STATUSES.each do |status|
+      = pull_status_label status, 'ng-show' => "pullCtrl.pull.status == '#{status}'"
+    =< pull_header @pull
 
-      div role = 'tabpanel'
-        == render 'nav_tabs'
+  div role = 'tabpanel'
+    == render 'nav_tabs'
 
-        .tab-content
-          #discussion.tab-pane role = 'tabpanel'
-            div[ ng-controller = 'IssueController as issueCtrl' ng-cloak = true ]
-              == render 'projects/issues/header'
-            - ctrl_params = "{ kind: 'pull', id: #{@issue.serial_id} }"
-            div[ ng-controller = 'CommentsController as commentsCtrl'
-                 ng-init       = "commentsCtrl.init('#{@project.name_with_owner}', #{ctrl_params})" ]
+    .tab-content
+      #discussion.tab-pane role = 'tabpanel'
+        div[ ng-controller = 'IssueController as issueCtrl' ng-cloak = true ]
+          == render 'projects/issues/header'
+        - ctrl_params = "{ kind: 'pull', id: #{@issue.serial_id} }"
+        div[ ng-controller = 'CommentsController as commentsCtrl'
+             ng-init       = "commentsCtrl.init('#{@project.name_with_owner}', #{ctrl_params})" ]
 
-              #pull-activity ng-hide = 'pullCtrl.processing'
-              i.fa.fa-spinner.fa-spin.fa-lg ng-show = 'pullCtrl.processing'
-              - if current_user
-                hr
-                == render 'projects/comments/add', project: @project, commentable: @issue
-            .pull_status.offset20== render 'status'
+          #pull-activity ng-hide = 'pullCtrl.processing'
+          i.fa.fa-spinner.fa-spin.fa-lg ng-show = 'pullCtrl.processing'
+          - if current_user
+            hr
+            == render 'projects/comments/add', project: @project, commentable: @issue
+        .pull_status.offset20== render 'status'
 
-          #diff.tab-pane
-            .offset20.content ng-hide = 'pullCtrl.processing'
-            i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
+      #diff.tab-pane
+        .offset20.content ng-hide = 'pullCtrl.processing'
+        i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
 
-          #commits.tab-pane
-            .offset20.content ng-hide = 'pullCtrl.processing'
-            i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
+      #commits.tab-pane
+        .offset20.content ng-hide = 'pullCtrl.processing'
+        i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
 
 div ng-non-bindable = true
   == render 'projects/comments/new_line'

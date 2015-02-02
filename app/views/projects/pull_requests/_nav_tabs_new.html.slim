@@ -1,0 +1,20 @@
+ul.nav.nav-tabs#pull_tabs role = 'tablist'
+  li role = 'presentation' class = 'active'
+    a[ data-toggle   = 'tab'
+       role          = 'tab'
+       aria-controls = 'discussion'
+       href          = '#discussion' ]= t 'pull_requests.tabs.discussion'
+  -if @stats
+    li role = 'presentation'
+      a[ data-toggle   = 'tab'
+         role          = 'tab'
+         aria-controls = 'diff'
+         href          = "#diff" ]= "#{t'pull_requests.tabs.diff'} (#{@stats.count})"
+  -if @commits
+    - commits_message = @commits.count.to_s
+    - commits_message << '+' if @total_commits > @commits.count
+    li role = 'presentation'
+      a[ data-toggle   = 'tab'
+         role          = 'tab'
+         aria-controls = 'commits'
+         href          = '#commits' ]= "#{t'pull_requests.tabs.commits'} (#{commits_message})"

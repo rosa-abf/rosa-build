@@ -2,11 +2,11 @@ tabset
   tab.active heading = t('layout.edit')
     .offset10
       - if defined?(ang_model)
-        = f.input :body, label: false,
+        = f.input :body, label: false, as: :text,
           input_html: { rows: 10, id: "#{id}-body",
                         'ng-model' => "#{ctrl}.#{ang_model}", 'ng-value' => "#{ctrl}.#{ang_model}" }
       - else
-        = f.input :body, label: false,
+        = f.input :body, label: false, as: :text,
           input_html: { rows: 10, id: "#{id}-body" }
 
   tab[ heading = t('layout.preview')

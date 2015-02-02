@@ -48,7 +48,7 @@ en:
     models:
       pull_request: Pull Request
     attributes:
-      pull_requests:
+      pull_request:
         to_ref: Source
         from_ref: Receiver
         refs: 'branch · tag'

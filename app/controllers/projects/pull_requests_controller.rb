@@ -30,7 +30,6 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def create
     unless pull_params
-      raise 'expect pull_request params' # for debug
       redirect :back
     end
     to_project = find_destination_project
