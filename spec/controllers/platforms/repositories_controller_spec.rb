@@ -162,7 +162,7 @@ shared_examples_for 'platform admin user' do
 
   it 'should not be able to perform regenerate_metadata action of personal repository when build_for_platform does not exist' do
     put :regenerate_metadata, id: @personal_repository, platform_id: @personal_repository.platform
-    response.should redirect_to('/404.html')
+    response.should render_template(file: "#{Rails.root}/public/404.html")
     @personal_repository.repository_statuses.should have(:no).items
   end
 
@@ -203,7 +203,7 @@ shared_examples_for 'platform admin user' do
     lambda { delete :destroy, id: @personal_repository, platform_id: @personal_repository.platform}
       .should change{ Repository.count }.by(0)
     # response.should redirect_to(forbidden_path)
-    response.should redirect_to('/404.html')
+    response.should render_template(file: "#{Rails.root}/public/404.html")
   end
 
   it 'should be able to destroy personal repository with name not "main"' do
