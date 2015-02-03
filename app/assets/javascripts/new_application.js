@@ -3,12 +3,6 @@
 //= require jquery-ui
 //= require js-routes
 
-// require jquery.dataTables
-// require jquery.dataTables_ext
-
-// require autocomplete-rails
-// require extra/autocomplete-form
-
 //= require bootstrap-sprockets
 
 //= require angular
