@@ -61,6 +61,6 @@ module Rosa
 
     config.log_redis = false
 
-    config.angular_templates.ignore_prefix = 'angular-new/templates/'
+    config.angular_templates.ignore_prefix = 'angularjs/templates/'
   end
 end
