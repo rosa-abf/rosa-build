@@ -218,6 +218,7 @@ module BuildListsHelper
         id:                 r.id,
         name:               "#{r.platform.name}/#{r.name}",
         publish_without_qa: r.publish_without_qa?,
+        repo_name:          r.name,
         platform_id:        r.platform.id,
         platform_name:      r.platform.name,
         default_arches:     ( r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence ||

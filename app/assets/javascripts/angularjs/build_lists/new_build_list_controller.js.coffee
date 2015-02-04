@@ -48,7 +48,7 @@ NewBuildListController = (dataservice, $http) ->
              (!vm.is_build_for_main_platform and
               vm.project_version and
               vm.project_version.name is pl.name)
-            r.checked = true if r.name == 'main' or r.name == 'base'
+            r.checked = true if r.name is 'main' or r.name is 'base' or r.name is vm.save_to_repository.repo_name
         )
       )
 
