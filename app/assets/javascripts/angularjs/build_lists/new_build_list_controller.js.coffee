@@ -35,7 +35,7 @@ NewBuildListController = (dataservice, $http) ->
       result = _.select(vm.project_versions, (e) ->
         e.name is vm.project_version_name
       )
-      return vm.project_versions[0] if result.length is 0
+      return defaultProjectVersion() if result.length is 0
       result[0]
 
     changeStatusRepositories = ->
