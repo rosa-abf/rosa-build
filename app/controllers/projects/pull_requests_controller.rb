@@ -122,9 +122,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def json_for_autocomplete_base items
     items.collect do |project|
-      hash = {id: project.id.to_s, label: project.name_with_owner, value: project.name_with_owner}
-      hash[:get_refs_url] = project_refs_list_path(project)
-      hash
+      {id: project.id.to_s, name: project.name_with_owner}
     end
   end
 

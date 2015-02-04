@@ -28,16 +28,19 @@
               = f.label :to_project, t("#{ar}.to_project"), class: 'col-sm-2 control-label'
               .col-sm-10
                 .row
-                  .col-sm-5= f.autocomplete_field :to_project, autocomplete_to_project_project_pull_requests_path,
-                                                  value: @pull.to_project.name_with_owner,
-                                                  id_element: 'pull_request_to_project_id', name: 'to_project',
-                                                  class: 'form-control col-sm-5'
+                  .col-sm-5
+                    input[ id = 'to_project'
+                           data-ajax  = autocomplete_to_project_project_pull_requests_path
+                           value      = @pull.to_project.name_with_owner
+                           id_element = 'pull_request_to_project_id'
+                           name       = 'to_project'
+                           class      = 'form-control typeahead' ]
                   .col-sm-5== render 'ref_select', kind: 'to', project: @pull.to_project, current: @pull.to_ref
                   .clearfix
 
             .form-group
               .col-sm-offset-2.col-sm-10
-                = f.submit t('.update'), class: 'btn btn-primary',
+                = f.submit t('.update'), class: 'btn btn-primary offset20',
                     style: @pull.already? ? '' : 'display: none;',
                     id: 'update_pull', data: {'disable-with' => t('layout.processing')}
 
