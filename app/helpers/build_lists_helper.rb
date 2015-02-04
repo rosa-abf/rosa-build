@@ -244,7 +244,7 @@ module BuildListsHelper
   end
 
   def include_repos(params)
-    @include_repos ||= params.try(:[], :build_list).try(:[], :include_repos) || []
+    @include_repos ||= (params.try(:[], :build_list).try(:[], :include_repos) || []).map {|e| e.to_s}
   end
 
   def save_to_repository_id(params)
