@@ -61,12 +61,12 @@ namespace :deploy do
 
   desc 'Copy compiled assets'
   task :copy_assets, :roles => :app do
-    %w(new_application*.css new_application*.css.gz new_application*.js new_application*.js.gz).each do |f|
+    %w(new_application-*.css new_application-*.css.gz new_application-*.js new_application-*.js.gz).each do |f|
       asset_glob = "#{fetch :shared_path}/assets/#{f}"
       asset_file = capture %Q{ruby -e "print Dir.glob('#{asset_glob}').max_by { |file| File.mtime(file) }"}
       puts asset_file
       if asset_file
-        run "ln -fs #{asset_file} #{fetch :shared_path}/assets/#{ f.gsub('*', '') }"
+        run "ln -fs #{asset_file} #{fetch :shared_path}/assets/#{ f.gsub('-*', '') }"
       else
         error "Error #{f} asset does not exist"
       end
