@@ -1,0 +1,14 @@
+== render 'submenu'
+.col-xs-12.col-md-10.col-md-offset-1
+  .row
+    == render 'repo_block', project: @project
+    == render 'about_block', project: @project
+
+    - if @commit.present?
+      h3= t('layout.projects.last_commit')
+      - GitPresenters::CommitAsMessagePresenter.present(@commit, project: @project) do |presenter|
+        .panel.panel-default
+          .panel-body
+            == render 'shared/feed_commit', presenter: presenter, item_no: 1
+    .clearfix
+    == yield

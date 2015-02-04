@@ -1,14 +1,16 @@
 .pull-left.roffset5
-  img alt = 'avatar' src = presenter.image
+  img alt='avatar' src=presenter.image
 .pull-left
   strong= presenter.header
   =< datetime_moment(presenter.date, tag: :strong)
   .clearfix
-  span= presenter.caption
+  span=> presenter.caption
   - if presenter.expandable? && presenter.content?
-    span.glyphicon.glyphicon-chevron-down.pointer[ data-toggle = 'collapse'
-                                                   data-target = "#commit_message_#{item_no}" ]
+    span.glyphicon.glyphicon-chevron-down.pointer[
+      data-toggle = 'collapse'
+      data-target = "#commit_message_#{item_no}" ]
 .clearfix
 - if presenter.content?
-  .collapse id = "commit_message_#{item_no}"
-    pre== markdown(presenter.content)
+  .collapse id="commit_message_#{item_no}"
+    / pre== markdown(presenter.content)
+    .well.well-sm== markdown(presenter.content)
