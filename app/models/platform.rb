@@ -8,6 +8,8 @@ class Platform < ActiveRecord::Base
   include EventLoggable
   include EmptyMetadata
 
+  self.per_page = 20
+
   CACHED_CHROOT_PRODUCT_NAME        = 'cached-chroot'
   AUTOMATIC_METADATA_REGENERATIONS  = %w(day week)
   VISIBILITIES                      = [
@@ -21,11 +23,12 @@ class Platform < ActiveRecord::Base
     TYPE_MAIN     = 'main'
   ]
 
-
   belongs_to :parent, class_name: 'Platform', foreign_key: 'parent_platform_id'
   belongs_to :owner, polymorphic: true
 
   has_many :repositories, dependent: :destroy
+  has_many :key_pairs, through: :repositories
+
   has_many :products, dependent: :destroy
   has_many :tokens, as: :subject, dependent: :destroy
   has_many :platform_arch_settings, dependent: :destroy
@@ -34,6 +37,7 @@ class Platform < ActiveRecord::Base
   has_many :relations, as: :target, dependent: :destroy
   has_many :actors, as: :target, class_name: 'Relation', dependent: :destroy
   has_many :members, through: :actors, source: :actor, source_type: 'User'
+
 
   has_and_belongs_to_many :advisories
 
@@ -108,7 +112,11 @@ class Platform < ActiveRecord::Base
                   :description,
                   :released,
                   :platform_arch_settings_attributes,
-                  :automatic_metadata_regeneration
+                  :automatic_metadata_regeneration,
+                  :admin_id,
+                  :term
+
+  attr_accessor :admin_id, :term
 
   attr_readonly :name, :distrib_type, :parent_platform_id, :platform_type
 
@@ -143,10 +151,11 @@ class Platform < ActiveRecord::Base
 
     # TODO: rename method or create separate methods for mdv and rhel
     # Platform.main.opened.where(distrib_type: APP_CONFIG['distr_types'].first).each do |pl|
+    arches = Arch.all.to_a
     Platform.main.opened.each do |pl|
       urpmi_commands[pl.name] = {}
       # FIXME should support restricting access to the hidden platform
-      Arch.all.each do |arch|
+      arches.each do |arch|
         tail = "/#{arch.name}/#{repository_name}/release"
         command = add_commands ? "urpmi.addmedia #{name} " : ''
         command << "#{APP_CONFIG['downloads_url']}/#{name}/repository/#{pl.name}#{tail}"

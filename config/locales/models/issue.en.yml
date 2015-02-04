@@ -48,6 +48,7 @@ en:
       labels: Labels
       invalid_labels: Invalid color hex code
       new_label: New label name
+      switch_to_new_label: new label
       update_label: Update label
       label_custom_color: Custom color
       label_manage: Manage labels
@@ -60,6 +61,10 @@ en:
       at: at
       cancel_button: Cancel
       done: Done
+
+      created_by: 'Created by '
+      updated_at: 'updated '
+      assigned_to: 'Assigned to'
 
   flash:
     issue:

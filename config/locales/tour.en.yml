@@ -21,31 +21,31 @@ en:
         ABF is not just a hosting for source code, but a system to build and publish packages.
         Build your projects for large variety of distributions and hardware platforms in your personal repository!
 
-    repo_description: |
+    repo_description_html: |
       Personal repository provides you with an easy way to distribute your software among great number of Linux users by means of standard ways of software delivery.
       ABF will take care of package dependencies from both main repositories or extra and personal ones. Published a new package version?
       Users will be automatically notified about available update.
-    builds_description: |
+    builds_description_html: |
       ABF provides you with power to build projects for large variety of distributions and hardware platforms. No additional efforts from your side!
-    monitoring_description: |
+    monitoring_description_html: |
       It is easy to get lost in large amount of tasks, but smart monitoring will focus your attention on those tasks that really matter for you.
-    source_description: |
+    source_description_html: |
       We have focused on making access to the source code easy and transparent. Every file pushed to git repository will instantly become available for online access,
       so you can share it with other developers even if they don't use Git. Home page of every project contains list of project files,
       as well as information about recent changes. You can immediately see the most important part of your project: the code.
-    history_description: |
+    history_description_html: |
       Every file in git repository has history of modifications which can be easily looked through using ABF to see who and when modified the file
       and which changes were introduced by particular commits.
-    annotation_description: 'Looking for the author of a particular code fragment? Just open the file blame to see who modified that fragment for the last time and in which commit.'
-    edit_description: Need to quickly edit some file? Want to fix syntax error from your mobile phone? No problem. We provide you with a simple editor for every file in git repository.
-    control_description: |
+    annotation_description_html: 'Looking for the author of a particular code fragment? Just open the file blame to see who modified that fragment for the last time and in which commit.'
+    edit_description_html: Need to quickly edit some file? Want to fix syntax error from your mobile phone? No problem. We provide you with a simple editor for every file in git repository.
+    control_description_html: |
       There are 3 possible levels of privileges for project members: read-only, read/write, and administration level. A project member can designate a real user
       or a group of developers. Both projects and groups may have unlimited number of members (every of which can be in turn a user or a group).
-    git_description: |
+    git_description_html: |
       Project wiki is based on Gollum — open wiki engine developed by GitHub. In fact, this is a full-function git repository which can be cloned, used offline,
       modified and pushed back to server, as if it were a usual source code. Convenient web editor allows to modify wiki online.
       Now information about your project will be never lost and will be always available for modifications in any editor! 
       <br/><br/>Note: for private projects, wiki is accessible by project team only. Wiki of a public project can be read by everyone.
-    tracker_description: |
+    tracker_description_html: |
       Every project may use a lightweight and simple task tracker. Labels and assignments will allow not to get lost in tasks,
       while convenient interface will allow to concentrate on a real work, not filling huge forms.

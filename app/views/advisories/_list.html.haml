@@ -1,32 +1,27 @@
-%table#myTable.tablesorter.advisories.static-search{cellspacing: "0", cellpadding: "0"}
+.row.offset10.boffset20
+  .col-xs-8
+    = text_field_tag 'q', params[:q], placeholder: t('layout.advisories.search'),
+                     class: 'form-control text-muted', 'ng-model' => 'q', 'ng-change' => 'goToPage(1)'
+
+%table.table.table-hover{ 'ng-cloak' => true }
   %thead
     %tr
-      %th.th1= t("activerecord.attributes.advisory.advisory_id")
-      %th.th2= t("layout.advisories.affected_versions")
-      %th.th3= t("activerecord.attributes.advisory.description")
-    %tr.search
-      -# TODO: change filter to Backbone.js
-      %th{colspan: 3, rowspan: 1}
-        = form_tag advisories_path, method: :get do |f|
-          = text_field_tag('q', params[:q], placeholder: t('layout.advisories.search'), class: params[:q].present? ? 'black' : 'gray', style: 'width:600px;')
-          = submit_tag t('layout.search.header'), data: {'disable-with' => t('layout.processing')}
-          =# link_to t('layout.back'), advisories_path, class: 'button'
-        = button_to t('layout.clear'), {action: :index} , method: :get
-
+      %th= t 'activerecord.attributes.advisory.advisory_id'
+      %th= t 'layout.advisories.affected_versions'
+      %th= t 'activerecord.attributes.advisory.description'
+      %th= t 'layout.advisories.project_names'
   %tbody
-    - if list.size > 0
-      = render partial: 'list_item', collection: list, as: :advisory
-    - else
-      %tr.odd
-        %td.no_results{colspan: 3}
-          = t("layout.search.no_results", query: params[:q])
+    %tr{ 'ng-repeat' => 'item in advisories' }
+      %td
+        %a{ 'ng-href' => '{{item.link}}' } {{item.id}}
+      %td
+        %p{ 'ng-repeat' => 'pl in item.platforms' }
+          %a{ 'ng-href' => '{{pl.link}}' } {{pl.name}}
+      %td {{item.description}}
+      %td
+        %ul.list-unstyled
+          %li{ 'ng-repeat' => 'project in item.projects' }
+            %a{ 'ng-href' => '{{project.link}}' } {{ project.name }}
 
-:javascript
-  $(function() {
-    var $search = $('tr.search > th input[type="text"]');
-    $search.on('blur focus', function() {
-        if ($search.val() === '') {
-          $search.toggleClass('gray black');
-        }
-    });
-  });
+    %tr{ 'ng-show' => 'advisories.length === 0' }
+      %td{ colspan: 3 } {{'no_results_for_search' | i18n:q}}

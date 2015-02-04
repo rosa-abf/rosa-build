@@ -16,7 +16,37 @@ var _locales = {
     'autostart_statuses.0': 'Раз в 12 часов',
     'autostart_statuses.1': 'Раз в день',
     'autostart_statuses.2': 'Раз в неделю',
-    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>
+    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>,
+
+    //
+    <%= I18n.t('activity_menu').map{ |k,v| "'activity_menu.#{k}': '#{v}'" }.join(',') %>,
+    'tracker.filter.all': '<%= I18n.t('layout.issues.all') %>',
+    'tracker.filter.assigned': '<%= I18n.t('layout.issues.assigned') %>',
+    'tracker.filter.created': '<%= I18n.t('layout.issues.created') %>',
+    'pull_requests.filter.all': '<%= I18n.t('layout.pull_requests.all') %>',
+    'pull_requests.filter.assigned': '<%= I18n.t('layout.pull_requests.assigned') %>',
+    'pull_requests.filter.created': '<%= I18n.t('layout.pull_requests.created') %>',
+
+    'notification.new_comment.title': 'добавил новый комментарий к задаче ',
+    'notification.new_commit_comment.title': 'добавил новый комментарий к коммиту ',
+    'notification.push.delete_branch': 'удалил ветку ',
+    'notification.push.create_branch': 'создал новую ветку ',
+    'notification.push.update_branch': 'внес изменения в ветку ',
+    'notification.in_project': ' в проекте ',
+    'notification.new_issue': 'добавил новую задачу',
+    'notification.new_user.title': 'Здравствуйте, ',
+    'notification.new_user.content': 'Спасибо за вашу регистрацию!',
+    'notification.wiki.new_commit': 'обновил ',
+    'notification.build_list': 'сборочное задание ',
+    'notification.issue_assign': 'Вам назначили задачу ',
+
+    'issues.status.open':   '<%= I18n.t('layout.issues.status.open') %>',
+    'issues.status.reopen': '<%= I18n.t('layout.issues.status.open') %>',
+    'issues.status.closed': '<%= I18n.t('layout.issues.status.closed') %>',
+
+    'read_more': 'Читать дальше',
+    'no_results_for_search': 'По запросу "%1" ничего не найдено.',
+
   },
   <%I18n.locale = :en%>
   'en-us': {
@@ -33,6 +63,35 @@ var _locales = {
     'autostart_statuses.0': 'Once a 12 hours',
     'autostart_statuses.1': 'Once a day',
     'autostart_statuses.2': 'Once a week',
-    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>
+    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>,
+
+    //
+    <%= I18n.t('activity_menu').map{ |k,v| "'activity_menu.#{k}': '#{v}'" }.join(',') %>,
+    'tracker.filter.all': '<%= I18n.t('layout.issues.all') %>',
+    'tracker.filter.assigned': '<%= I18n.t('layout.issues.assigned') %>',
+    'tracker.filter.created': '<%= I18n.t('layout.issues.created') %>',
+    'pull_requests.filter.all': '<%= I18n.t('layout.pull_requests.all') %>',
+    'pull_requests.filter.assigned': '<%= I18n.t('layout.pull_requests.assigned') %>',
+    'pull_requests.filter.created': '<%= I18n.t('layout.pull_requests.created') %>',
+
+    'notification.new_comment.title': 'added a new comment in issue ',
+    'notification.new_commit_comment.title': 'added a new comment in commit ',
+    'notification.push.delete_branch': 'deleted a branch ',
+    'notification.push.create_branch': 'created a new branch ',
+    'notification.push.update_branch': 'pushed to branch ',
+    'notification.in_project': ' in project ',
+    'notification.new_issue': 'added a new issue ',
+    'notification.new_user.title': 'Hello, ',
+    'notification.new_user.content': 'Thank you for your registration!',
+    'notification.wiki.new_commit': 'has been updated ',
+    'notification.build_list': 'build task ',
+    'notification.issue_assign': 'You have been assigned to issue ',
+
+    'issues.status.open':   '<%= I18n.t('layout.issues.status.open') %>',
+    'issues.status.reopen': '<%= I18n.t('layout.issues.status.open') %>',
+    'issues.status.closed': '<%= I18n.t('layout.issues.status.closed') %>',
+
+    'read_more': 'Read more',
+    'no_results_for_search': 'Nothing found for "%1".',
   }
 };

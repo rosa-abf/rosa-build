@@ -1,7 +1,7 @@
 RosaABF.factory("ApiProject", ['$resource', function($resource) {
 
   var ProjectResource = $resource(
-    '/:owner/:project?format=json',
+    '/:owner/:project?format=json&info=true',
     {owner: '@project.owner.uname', project: '@project.name'},
     {
       tags: {

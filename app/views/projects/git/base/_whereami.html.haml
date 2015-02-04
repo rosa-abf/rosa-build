@@ -1,10 +1,5 @@
-%p#file-name1
-  = link_to @project.name, tree_path(@project, treeish: @treeish)
-  = File::SEPARATOR
-  - if @path.present?
-    - paths = File.split(@path)
-    - if paths.size > 1 and paths.first != '.'
-      - iterate_path(paths.first) do |path, name|
-        = link_to(name, tree_path(@project, @treeish, path))
-        = File::SEPARATOR
-    = paths.last
+%ol.breadcrumb
+  %li= link_to @project.name, tree_path(@project, treeish: @treeish), 'ng-click' => "getTree($event, '')"
+  %li{ 'ng-repeat' => 'el in breadcrumb.paths' }
+    %a{ href: '#', 'ng-click' => 'getTree($event, el.path)' } {{el.name}}
+  %li.active {{breadcrumb.last}}

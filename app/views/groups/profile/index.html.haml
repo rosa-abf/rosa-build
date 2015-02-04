@@ -1,15 +1,19 @@
 -set_meta_tags title: t('layout.groups.list_header')
-= link_to t("layout.groups.new"), new_group_path, class: "button"
-%table#myTable.tablesorter.group-list{cellpadding: "0", cellspacing: "0"}
-  %thead
-    %tr
-      %th.th1= t("layout.groups.group")
-      %th.th2= t("layout.groups.description")
-      %th= t("layout.groups.leave_group")
-  %tbody
-    - @groups.each do |group|
-      %tr#Row1
-        %td= link_to group.name, group_path(group)
-        %td.td2= group.description
-        %td.td5
-          = link_to image_tag('x.png'), remove_user_group_path(group), method: :delete unless group.owner_id == current_user.id
+.row
+  .col-md-6.col-md-offset-3
+    = link_to t("layout.groups.new"), new_group_path, class: "btn btn-primary"
+    %table.table.table-hover.offset10
+      %thead
+        %tr
+          %th= t 'layout.groups.group'
+          %th= t 'layout.groups.description'
+          %th.col-sm-1= t 'layout.groups.leave_group'
+      %tbody
+        - @groups.each do |group|
+          %tr
+            %td= link_to group.name, group_path(group)
+            %td= group.description
+            %td
+              - if group.owner_id != current_user.id
+                = link_to remove_user_group_path(group), method: :delete do
+                  %span.fa.fa-lg.fa-times.text-danger

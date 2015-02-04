@@ -1,0 +1,62 @@
+- act = controller.action_name.to_sym
+div ng-controller = 'ProjectFromController' ng-cloak = 'true'
+  = f.input :name
+  = f.input :description, as: :text
+
+  - if [:new, :create].include? act
+    = render 'owner', f: f
+
+  = f.input         :visibility,
+    collection:     project_visibility_options,
+    include_blank:  false
+
+  - if [:edit, :update].include? act
+    = f.input :default_branch,
+      collection: @project.repo.branches.map(&:name),
+      selected: @project.default_branch
+
+  = f.input :is_package, as: :boolean,
+    input_html: { 'ng-model'  => 'project.is_package',
+                  'ng-change' => 'project.publish_i686_into_x86_64 = false' }
+
+  = f.input :architecture_dependent, as: :boolean,
+    wrapper_html: { 'ng-show'  => 'project.is_package' }
+
+  - unless [:new, :create].include? act
+    = f.input :publish_i686_into_x86_64, as: :boolean,
+      wrapper_html: { 'ng-show'  => 'project.is_package' },
+      input_html:   { 'ng-model' => 'project.publish_i686_into_x86_64' }
+
+  - if [:edit, :update].include? act
+    = f.hidden_field :maintainer_id, value: @project.maintainer_id
+
+    .form-group ng-show = 'project.is_package'
+      label.control-label.col-sm-3= Project.human_attribute_name :maintainer
+
+      .col-sm-9
+        input.form-control.typeahead[
+          name        = 'project[maintainer_id]'
+          type        = 'text'
+          data-ajax   = autocomplete_maintainers_path(@project)
+          ng-disabled = 'loading'
+          data-id     = '#project_maintainer_id'
+          value       = @project.maintainer.try(:fullname) ]
+
+  - if [:new, :create].include? act
+    = f.input :srpm, as: :file
+
+  .col-sm-offset-3.col-sm-9
+    = f.button :submit, t('layout.save'), data: {'disable-with' => t('layout.saving')}
+
+- content_for :additional_scripts do
+  javascript:
+    RosaABF.controller('ProjectFromController', ['$scope', function($scope) {
+      $scope.project = {
+        is_package:               #{@project.is_package},
+        publish_i686_into_x86_64: #{@project.publish_i686_into_x86_64}
+      }
+      $scope.owner    = '#{@who_owns}';
+      $scope.OwnerChanged = function() {
+        var tmp = $scope.owner;
+      }
+    }]);

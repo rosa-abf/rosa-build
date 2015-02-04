@@ -2,5 +2,4 @@ ru:
   layout:
     avatars:
       avatar_notice: При отсутствии загруженного аватара будет использован Ваш аватар на сервисе gravatar.
-      delete_avatar: Удалить аватар
       avatar_with_size: Аватар (менее %{max})

@@ -1,12 +1,9 @@
-projs = @projects.map do |project|
-  [
-    link_to(project.name_with_owner, project),
-    truncate(project.description || '', length: 60).gsub(/\n|\r|\t/, ' '),
-    link_to(t("layout.add"), url_for(controller: :repositories, action: :add_project, project_id: project.id))
-  ]
+json.projects @projects do |project|
+  json.visibility_class fa_visibility_icon(project)
+  json.path             project_path(project.name_with_owner)
+  json.name             project.name_with_owner
+  json.description      truncate(project.description || '', length: 60).gsub(/\n|\r|\t/, ' ')
+  json.add_path         url_for(controller: :repositories, action: :add_project, project_id: project.id)
 end
 
-json.sEcho                params[:sEcho] || -1
-json.iTotalRecords        @total_projects
-json.iTotalDisplayRecords @projects.count
-json.aaData               projs
+json.total_items @total_items

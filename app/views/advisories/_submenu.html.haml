@@ -1,7 +1,11 @@
 - content_for :submenu do
   - act = action_name.to_sym; contr = controller_name.to_sym
-  .left
-    = @advisory.advisory_id if @advisory.present?
-  %nav
-    %ul
-      %li= link_to t('layout.list'), advisories_path, class: act.in?([:index]) ? 'active' : nil
+  %nav.navbar.navbar-default.submenu{role: "navigation"}
+    .container-fluid
+      .navbar-header
+        %ul.nav.navbar-nav
+          - if @advisory.present?
+            %li= @advisory.advisory_id
+          - else
+            %li{ class: ('active' if act.in? [:index]) }
+              = link_to t('layout.list'), advisories_path, class: act.in?([:index]) ? 'active' : nil

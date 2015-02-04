@@ -72,3 +72,17 @@ en:
         owner: Owner
         synchronizing_publications: Publish only on success all build_lists for each arch (checking by commit hash)
         publish_builds_only_from_branch: "Publish builds only from branch"
+
+  simple_form:
+    labels:
+      repository:
+        projects_list:                  Projects list
+    placeholders:
+      repository:
+        projects_list:                  Enter the names of projects here.
+    hints:
+      repository:
+        remove_project:
+          projects_list_html:           "For example: <i>project-name</i>"
+        add_project:
+          projects_list_html:           "For example: <i>my/project-name</i>"

@@ -167,22 +167,6 @@ ru:
 
     models:
       product_build_list: Сборочный лист продукта
-
-    attributes:
-      settings:
-        notifier:
-          can_notify: Включить оповещения по электронной почте
-          new_comment: Оповещать о новом комментарии в задаче
-          new_comment_reply: Оповещать о новом ответе на мой комментарий
-          new_issue: Оповещать о новых задачах в моих проектах
-          issue_assign: Оповещать, когда на меня выставляют задачу
-          update_code: Оповещать об изменении кода в моих проектах
-          new_comment_commit_owner: Оповещать о комментариях к моему коммиту
-          new_comment_commit_repo_owner: Оповещать о комментариях к коммитам в моем репозитории
-          new_comment_commit_commentor: Оповещать о комментариях к коммиту после моего
-          new_build: Оповещать о моих сборочных заданиях
-          new_associated_build: Оповещать о связанных со мной сборочных заданиях
-
       arch:
         name: Название
         created_at: Создана
@@ -197,3 +181,4 @@ ru:
   _on: с
   until: по
   none: Нет
+  close: Закрыть

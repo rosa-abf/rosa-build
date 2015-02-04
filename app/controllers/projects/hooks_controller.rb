@@ -3,7 +3,6 @@ class Projects::HooksController < Projects::BaseController
   load_and_authorize_resource :project
   load_and_authorize_resource :hook, through: :project
 
-
   def index
     authorize! :edit, @project
     @name = params[:name]

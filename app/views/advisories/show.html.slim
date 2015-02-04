@@ -1,0 +1,72 @@
+- set_meta_tags title: [title_object(@advisory), t('activerecord.models.advisory')]
+- render partial: 'submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+    h3
+      => t('activerecord.models.advisory')
+      = @advisory.advisory_id
+
+  .row
+    .col-md-6
+      b
+        = t('layout.advisories.project_names')
+    .col-md-6
+      = raw @advisory.projects.map{ |p| link_to p.name_with_owner, project_path(p) }.join(', ')
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.advisory.created_at')
+    .col-md-6
+      = @advisory.created_at
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.advisory.advisory_id')
+    .col-md-6
+      = @advisory.advisory_id
+
+  .row
+    .col-md-6
+      b
+        = t('layout.advisories.affected_versions')
+    .col-md-6
+      ul.list-unstyled
+        - @advisory.platforms.each do |platform|
+          li
+            = link_to platform_printed_name(platform), platform_path(platform)
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.advisory.description')
+    .col-md-6
+      = simple_format @advisory.description
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.advisory.references')
+    .col-md-6
+      ul.list-unstyled
+        - @advisory.references.gsub(/\r| /, '').split("\n").each do |ref|
+          li
+            = construct_ref_link(ref)
+
+  .row
+    .col-md-6
+      b
+        = t('layout.advisories.build_lists')
+    .col-md-6
+      = raw @advisory.build_lists.map{ |bl| link_to bl.id, build_list_path(bl) }.join(', ')
+
+  .row
+    .col-md-6
+      b
+        = t('layout.advisories.build_lists')
+    .col-md-6
+
+  .row
+    = render 'packages_info'

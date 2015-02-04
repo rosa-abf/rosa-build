@@ -1,0 +1,19 @@
+h4
+  = t('layout.issues.labels')
+  i.fa.fa-spinner.fa-spin.pull-right ng-show = 'issueCtrl.processing_issue_labels'
+ul.nav.nav-pills.nav-stacked
+  li[ role = 'presentation' ng-repeat = 'label in issueCtrl.labels' ]
+    - if can?(:write, @project)
+      a[ ng-click = 'issueCtrl.toggleLabel(label)'
+         ng-style = 'label.style' ]
+        .label-flag[ ng-style = 'label.default_style'
+                     ng-show  = '!label.selected' ] &nbsp;
+        | {{label.name}}
+      input.hidden[ name     = 'issue[labelings_attributes][][label_id]'
+                    ng-model = 'label.selected_id'
+                    ng-value = 'label.selected_id' ]
+    - else
+      a[ ng-style = 'label.style' ]
+        .label-flag[ ng-style = 'label.default_style'
+                     ng-show  = '!label.selected' ] &nbsp;
+        | {{label.name}}

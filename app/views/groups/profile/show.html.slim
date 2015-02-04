@@ -1,0 +1,32 @@
+- set_meta_tags title: title_object(@group)
+
+= render 'groups/base/submenu'
+
+.row
+  .col-md-2.col-md-offset-1
+    - size = User::AVATAR_SIZES[:big]
+    = image_tag avatar_url(@group, :big),
+      alt: @group.uname, height: size, width: size
+  .col-md-8
+      h2
+        = @group.uname
+      h4
+        = t('activerecord.attributes.group.description')
+      p
+        = @group.description
+hr
+.row
+  .col-md-8.col-md-offset-1 ng-controller='ProfileController'
+    = render 'users/profile/projects', subject: @group
+  .col-md-2
+    .panel.panel-default
+      .panel-heading
+        b
+          = t('layout.collaborators.members')
+      .panel-body
+        - size = User::AVATAR_SIZES[:micro]
+        - @members.each do |member|
+          p
+            => image_tag avatar_url(member, :micro), alt: member.uname, height: size, width: size
+            = link_to member.uname.truncate(20), member
+

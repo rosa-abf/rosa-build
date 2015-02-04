@@ -1,0 +1,80 @@
+- update_roles_path ||= false
+= form_tag remove_members_path, id: 'members_form', method: :delete do
+  table.table.table-striped
+    thead
+      tr
+        - if can? :remove_members, editable_object
+          th
+        th
+          = t("layout.collaborators.members")
+        - if can? :remove_members, editable_object
+          - if update_roles_path
+            th.buttons.text-center colspan=3
+              = t("layout.collaborators.roles")
+          th.buttons
+            = t("layout.remove")
+    tbody
+      - if update_roles_path
+        - actors ||= editable_object.actors
+      - members.each do |user|
+        tr
+          - if can? :remove_members, editable_object
+            td
+              = check_box_tag "members[]", user.id
+          td
+            span
+              = image_tag avatar_url(user), size: '30x30'
+            | &nbsp;
+            = link_to user.fullname, user_path(user)
+          - if can? :remove_members, editable_object
+            - if update_roles_path
+              - actor = actors.find{ |a| a.actor_id == user.id }
+              - Relation::ROLES.each_with_index do |role, i|
+                td ng-init="user_#{user.id}_role = '#{actor.role}'"
+                  input[
+                    type      = 'radio'
+                    ng-model  = "user_#{user.id}_role"
+                    value     = role ]
+                  | &nbsp;
+                  = t("layout.collaborators.role_names.#{ role }")
+            td
+              - if update_roles_path
+                - path = "#{update_roles_path}?member_id=#{user.id}"
+                a[
+                  ng-href       = "{{'#{path}&role=' + user_#{user.id}_role}}"
+                  data-method   = 'put'
+                  data-confirm  = t('layout.confirm') ]
+
+                  span.glyphicon.glyphicon-ok
+                    | &nbsp;
+
+              = link_to "#{remove_members_path}?members=#{user.id}", method: :delete, data: { confirm: t("layout.confirm") } do
+                span.glyphicon.glyphicon-remove
+                  | &nbsp;
+
+  - if can? :remove_members, editable_object
+    = submit_tag t('layout.delete'), class: 'btn btn-danger', data: {'disable-with' => t('layout.processing')}
+
+- if can? :add_member, editable_object
+  hr
+
+  = simple_form_for :user,  url:      add_member_path,
+                            html:     { class: 'form-inline' },
+                            wrapper:  :inline_form do |f|
+
+    = hidden_field_tag 'member_id', nil, id: 'member_id_field'
+    - autocomplete_path ||= autocomplete_user_uname_autocompletes_path
+    = f.input :uname,
+      input_html: { 'data-ajax' =>  autocomplete_path,
+                    'data-id'   =>  '#member_id_field',
+                    class:          'typeahead' }
+
+    - if update_roles_path
+      | &nbsp;
+      = f.input :role,
+        collection:     options_for_collaborators_roles_select,
+        input_html:     { name: :role },
+        include_blank:  false
+
+    | &nbsp;
+    = f.button :submit, t('layout.add')

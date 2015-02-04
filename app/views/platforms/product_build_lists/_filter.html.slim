@@ -1,0 +1,20 @@
+- html_options = { class: 'form-control' }
+accordion close-others='false' ng-cloak=true
+  accordion-group is-open='$parent.isOpenServerStatus'
+    accordion-heading
+      = t 'layout.build_lists.build_server_status.header'
+      span.pull-right.fa ng-class="{'fa-chevron-down': isOpenServerStatus, 'fa-chevron-up': !isOpenServerStatus}"
+    = render 'server_status'
+
+.container
+  .row.well
+    = simple_form_for @product_build_list, url: product_build_lists_path, method: :get do |f|
+      .row
+        .col-md-2
+          = f.input :status, collection: ProductBuildList::STATUSES.map{|s| [ProductBuildList.human_status(s), s]}, label: false, prompt: t('simple_form.placeholders.product_build_list.status')
+        .col-md-4
+          = f.input :product_name, label: false
+        .col-md-4
+          = f.input :product_id, label: false
+        .col-md-2
+          = f.button :submit, t('layout.search.header')

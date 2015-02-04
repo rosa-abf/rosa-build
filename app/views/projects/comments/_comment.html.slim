@@ -1,0 +1,21 @@
+- CommentPresenter.present(comment, data) do |presenter|
+  == render 'shared/feed_message.html.slim', presenter: presenter
+-unless comment.automatic
+  .open-comment.hidden class = "comment-#{comment.id}" id = "update-comment#{comment.id}"
+    h3.tmargin0= t("layout.comments.edit_header")
+    = simple_form_for comment, url: project_commentable_comment_path(data[:project], data[:commentable], comment) do |f|
+      .panel.panel-info
+        .panel-heading
+          h3.panel-title
+            = f.label :body
+            .pull-right== render 'projects/comments/button_md_help.html.slim'
+            .clearfix
+        .panel-body
+          == render 'projects/comments/body.html.slim', f: f, id: "comment-#{comment.id}",
+                    ctrl: 'commentsCtrl'
+          - anchor = "#comment#{comment.id}"
+          a.btn.btn-primary[ ng-disabled = 'commentsCtrl.processing'
+                             href        = anchor
+                             ng-click    = "commentsCtrl.update(#{comment.id})" ]
+            = t('layout.update')
+          =< link_to t('layout.cancel'), anchor

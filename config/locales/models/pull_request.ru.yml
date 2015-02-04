@@ -49,7 +49,7 @@ ru:
     models:
       pull_request: Пул реквест
     attributes:
-      pull_requests:
+      pull_request:
         to_ref: Приемник
         from_ref: Источник
         refs: 'ветка · тег'

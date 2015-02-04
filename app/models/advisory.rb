@@ -1,5 +1,6 @@
 class Advisory < ActiveRecord::Base
   self.include_root_in_json = false
+  self.per_page             = 30
 
   has_and_belongs_to_many :platforms
   has_and_belongs_to_many :projects

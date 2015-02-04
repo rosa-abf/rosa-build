@@ -1,93 +1,12 @@
-#md_help.modal.hidden
-  .modal-header
-    %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
-    %h3#myModalLabel=t('layout.comments.md_cheatsheet_header')
-  .modal-body
-    .mod
-      .col
-        %h3=t 'layout.comments.md_cheatsheet.format_text'
-        %p=t 'layout.comments.md_cheatsheet.headers'
-        %pre
-          -[1, 3, 6].each do |i|
-            ="#{'#'*i} This is an <h#{i}> tag"
-        %p=t 'layout.comments.md_cheatsheet.text_styles'
-        %pre
-          :preserve
-            *This text will be italic*
-            _This will also be italic_
-            **This text will be bold**
-            __This will also be bold__
-        %p=link_to t('layout.comments.md_cheatsheet.emoji_header'), 'http://www.emoji-cheat-sheet.com/', target: '_blank'
-        %pre
-          =":smile:"
-          =image_tag("/images/emoji/#{Emoji.find_by_alias('smile').image_filename}",
-                     class: 'emoji', title: 'smile', alt: 'smile', size: "20x20")
-          ="   :+1:"
-          =image_tag("/images/emoji/#{Emoji.find_by_alias('+1').image_filename}",
-                     class: 'emoji', title: '+1', alt: '+1', size: "20x20")
-      .col
-        %h3=t 'layout.comments.md_cheatsheet.lists'
-        %p{style: 'float:left;margin-left:20px;'}=t 'layout.comments.md_cheatsheet.unordered'
-        %p{style: 'float:right;margin-right:40px;'}=t 'layout.comments.md_cheatsheet.ordered'
-        .both
-        %pre
-          :preserve
-            * Item 1          1. Item 1
-            * Item 2          2. Item 2
-              * Item 2a       3. Item 3
-              * Item 2b         * Item 3a
-                                * Item 3b
-        %p=t 'layout.comments.md_cheatsheet.reference_format'
-        %pre
-          =preserve t('layout.comments.md_cheatsheet.reference_format_example').html_safe
-      .col
-        %h3=t 'layout.comments.md_cheatsheet.miscellaneous'
-        %p=t 'layout.comments.md_cheatsheet.images'
-        %pre
-          :preserve
-            ![avatar](/assets/ava.png)
-            Format: ![Alt Text](url)
-        %p=t 'layout.comments.md_cheatsheet.links'
-        %pre
-          :preserve
-            https://abf.rosalinux.ru
-            [ABF](https://abf.rosalinux.ru/)
-        %p=t 'layout.comments.md_cheatsheet.blockquotes'
-        %pre
-          :preserve
-            As Kanye West said:
+.modal.fade{ id: 'md_help', tabindex: '-1', role: 'dialog',
+             'aria-labelledby' => 'md_helpLabel', 'aria-hidden' => 'true' }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button{ class: 'close', type: 'button', 'data-dismiss' => 'modal' }
+          %span{ 'aria-hidden' => 'true' } &times;
+          %span.sr-only Close
+        %h4.modal-title#md_help= t('layout.comments.md_cheatsheet_header')
+      .modal-body
+        = render 'projects/comments/markdown_help_body'
 
-            > We're living the future so
-            > the present is our past.
-      .both
-      %hr.bootstrap
-      %h3=t 'layout.comments.md_cheatsheet.code_examples'
-      .col
-        %p
-          =t 'layout.comments.md_cheatsheet.syntax_highlighting'
-        %pre
-          :preserve
-            ```javascript
-            function fancyAlert(arg) {
-              if(arg) {
-                $.facebox({div:'#foo'})
-              }
-            }
-            ```
-      .col
-        %p=t 'layout.comments.md_cheatsheet.indent_code'
-        %pre
-          :preserve
-            Here is a Python code example
-            without syntax highlighting:
-
-                def foo:
-                  if not bar:
-                    return true
-      .col
-        %p=t 'layout.comments.md_cheatsheet.inline_code'
-        %pre
-          :preserve
-            I think you should use an
-            `[addr]` element here instead.
-      .both

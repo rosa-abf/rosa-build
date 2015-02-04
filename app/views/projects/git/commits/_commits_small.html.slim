@@ -1,0 +1,22 @@
+div.commits_activity
+  table.table.table-striped
+    tbody
+      - commits.each do |commit|
+        - item_no = commit.id
+        - GitPresenters::CommitAsMessagePresenter.present(commit, project: @project) do |presenter|
+          tr
+            = datetime_moment presenter.date, tag: :td, class: :date
+            td
+              img height = 16 alt = 'avatar' src = presenter.image
+            td.name
+              = presenter.header
+            td.subject
+              - if presenter.caption?
+                = presenter.caption
+                - if presenter.expandable? && presenter.content?
+                  span>[ class       = 'glyphicon glyphicon-chevron-down pointer'
+                         data-toggle = 'collapse'
+                         data-target = "#content-expand#{item_no}" ]
+              - if presenter.content?
+                .collapse id = (presenter.expandable? ? "content-expand#{item_no}" : '')
+                  .cm-s-default.md_and_cm= markdown presenter.content

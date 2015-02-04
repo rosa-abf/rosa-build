@@ -1,0 +1,41 @@
+%nav.navbar.navbar-inverse.top_menu{ role: "navigation" }
+  .container-fluid
+    / Brand and toggle get grouped for better mobile display
+    .navbar-header
+      %button.navbar-toggle{ "data-target" => "#top-menu-navbar-collapse", "data-toggle" => "collapse", type: "button" }
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      = link_to image_tag('logo-mini.png', alt: 'ABF'), root_path, class: 'navbar-brand'
+    / Collect the nav links, forms, and other content for toggling
+    #top-menu-navbar-collapse.collapse.navbar-collapse
+      %ul.nav.navbar-nav
+        - (collection = t 'top_menu').each do |base, title|
+          - if can? :index, base.to_s.classify.constantize
+            %li{ class: top_menu_class(base) }= link_to title, send("#{base}_path")
+        - if current_user.try(:admin?)
+          %li{ class: top_menu_class('admin') }= link_to t('admins_menu_header'), admin_users_path
+      = form_tag search_index_path, method: 'get', class: 'navbar-form navbar-left', role: 'search' do
+        .form-group
+          = text_field_tag 'query', @query, placeholder: t('layout.search.header'), class: 'form-control'
+      %ul.nav.navbar-nav.navbar-right
+        - if current_user
+          %li
+            .avatar= image_tag avatar_url(current_user), alt: 'avatar', class: 'img-responsive'
+          %li.dropdown
+            %a.dropdown{ 'data-toggle' => 'dropdown', href: '#', id: 'userMenuLabel',
+                         'aria-haspopup' => 'true',  'aria-expanded' => 'false' }
+              = current_user.uname
+              %b.caret
+            %ul.dropdown-menu{ role: 'menu', 'aria-labelledby' => 'userMenuLabel' }
+              %li= link_to current_user.uname, current_user
+              %li= link_to t('layout.settings.label'), profile_settings_path
+              %li.divider
+              %li= link_to t('layout.logout'), destroy_user_session_path, method: :delete
+        - else
+          %ul.nav.navbar-nav
+            %li= link_to t('layout.devise.shared_links.sign_up'), new_register_request_path
+            %li= link_to t('layout.devise.shared_links.sign_in'), new_user_session_path
+    / /.navbar-collapse
+  / /.container-fluid

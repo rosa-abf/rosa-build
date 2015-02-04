@@ -1,0 +1,221 @@
+- set_meta_tags title: [title_object(@build_list.project), t('activerecord.models.build_list')]
+
+= render 'submenu'
+
+div[class         = 'row'
+    ng-controller = 'BuildListController'
+    ng-init       = "advisoriable_types = #{ BuildList::RELEASE_UPDATE_TYPES }"
+    ng-cloak      = true ]
+  = hidden_field_tag :build_list_id, @build_list.id
+  .col-md-8.col-md-offset-2.alert.alert-info
+    .alert.pull-left.submenu ng-class='"alert-" + build_list.status_color'
+      p
+        | {{build_list.human_status | i18n}}
+
+    p.alert.alert-info.pull-right.submenu title = '{{build_list.updated_at_utc}}'
+      | {{ build_list.updated_at | amDateFormat:'ddd, D MMM YYYY, HH:mm' }} (
+      span am-time-ago = 'build_list.updated_at'
+      | )
+
+  .col-md-8.col-md-offset-2
+
+    = form_for @build_list, url: publish_build_list_path(@build_list) do |f|
+
+      h3= t('layout.build_lists.main_data')
+      table.table.table-borderless.table-condensed
+        thead
+          tr
+            th.col-md-4
+            th
+        tr
+          td= t('activerecord.attributes.build_list.container_path')
+          td
+            - url = container_url
+            = link_to url, url,
+                      'ng-show' => "build_list.container_status == #{ BuildList::BUILD_PUBLISHED }"
+            p ng-show="build_list.container_status == #{ BuildList::BUILD_PUBLISH }"
+              = t('layout.build_lists.creating')
+
+        tr
+          td= t('activerecord.attributes.build_list.id')
+          td= @build_list.id
+
+        tr
+          td= t('activerecord.attributes.build_list.user')
+          td= link_to @build_list.user.try(:fullname), @build_list.user
+
+        tr
+          td= t('activerecord.attributes.build_list.publisher')
+          td ng-show='build_list.publisher'
+            a ng-href='{{build_list.publisher.path}}'
+              | {{build_list.publisher.fullname}}
+
+        tr
+          td= t('activerecord.attributes.build_list.build_for_platform')
+          td
+            - if bfp = @build_list.build_for_platform
+              = link_to bfp.name, bfp
+            - else
+              = t('layout.build_lists.platform_deleted')
+
+        tr
+          td= t('activerecord.attributes.build_list.save_to_repository')
+          td
+            = link_to "#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}",
+                      [@build_list.save_to_platform, @build_list.save_to_repository]
+
+        tr
+          td= t('activerecord.attributes.build_list.include_testing_subrepository')
+          td= t("layout.#{@build_list.include_testing_subrepository?}_")
+
+        tr
+          td= t('activerecord.attributes.build_list.include_repos')
+          td= Repository.where(id: @build_list.include_repos).pluck(:name).join(', ')
+
+        tr
+          td= t('activerecord.attributes.build_list.update_type')
+          td
+            = f.select :update_type,
+              options_for_select(build_list_classified_update_types,
+              @build_list.update_type),
+              {},
+              'ng-model'  => 'build_list.update_type',
+              'ng-change' => 'updateTypeChanged()',
+              'ng-show'   => 'build_list.can_publish'
+            div ng-hide='build_list.can_publish'
+              = @build_list.update_type
+
+        tr
+          td.offset20.ng-hide ng-show='update_type_errors' colspan=2
+            .flash_notify
+              .alert ng-class="{ 'alert-danger': update_type_errors }"
+                | {{ update_type_errors }}
+
+        tr
+          td= t('activerecord.attributes.build_list.auto_publish_status')
+          td= t("layout.build_lists.auto_publish_status.#{@build_list.auto_publish_status}")
+
+        tr
+          td= t('activerecord.attributes.build_list.auto_create_container')
+          td= t("layout.#{@build_list.auto_create_container?}_")
+
+        tr
+          td= t('activerecord.attributes.build_list.use_cached_chroot')
+          td= t("layout.#{@build_list.use_cached_chroot?}_")
+
+        tr
+          td= t('activerecord.attributes.build_list.use_extra_tests')
+          td= t("layout.#{@build_list.use_extra_tests?}_")
+
+        tr
+          td= t('activerecord.attributes.build_list.save_buildroot')
+          td= t("layout.#{@build_list.save_buildroot?}_")
+
+        tr
+          td= t('activerecord.attributes.build_list.project_version')
+          td= link_to @build_list.project_version, tree_path(@build_list.project, @build_list.project_version)
+
+        tr
+          td= t('diff')
+          td= build_list_version_link(@build_list)
+
+        tr
+          td= t('activerecord.attributes.build_list.arch')
+          td= @build_list.arch.name
+
+        tr
+          td= t('activerecord.attributes.build_list.updated_at')
+          td
+            | {{build_list.updated_at_utc}}
+
+        - if @build_list.external_nodes.present?
+          tr
+            td= t('activerecord.attributes.build_list.external_nodes')
+            td= I18n.t("layout.build_lists.external_nodes.#{@build_list.external_nodes}")
+
+          tr
+            td= t('activerecord.attributes.build_list.builder')
+            td
+              a ng-href='{{build_list.builder.path}}' ng-show = 'build_list.builder'
+                | {{build_list.builder.fullname}}
+
+        tr
+          td= t('activerecord.attributes.build_list.is_circle')
+          td= t("layout.#{@build_list.is_circle?}_")
+
+        tr
+          td= t('activerecord.attributes.build_list.new_core')
+          td= t("layout.#{@build_list.new_core?}_")
+
+        - if @build_list.extra_build_lists.present? || @build_list.extra_repositories.present?
+          tr
+            td= t('activerecord.attributes.build_list.extra_repositories')
+            td
+              - Repository.where(id: @build_list.extra_repositories).each do |repo|
+                p
+                  = link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
+              - BuildList.where(id: @build_list.extra_build_lists).each do |bl|
+                p
+                  = link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
+
+        - if @build_list.extra_params.present?
+          tr
+            td= t('activerecord.attributes.build_list.extra_params.label')
+            td
+          - @build_list.extra_params.each do |k, v|
+            tr
+              td
+                i
+                  = t("activerecord.attributes.build_list.extra_params.#{k}")
+              td
+                = v
+
+        - if @build_list.mass_build_id.present?
+          tr
+            td= t('activerecord.attributes.mass_build_id')
+            td
+              = link_to @build_list.mass_build.name,
+                platform_mass_build_path(@build_list.save_to_platform, @build_list.mass_build_id)
+
+        tr ng-show='build_list.advisory'
+          td= t('layout.build_lists.attached_advisory')
+          td
+            a ng-href='{{build_list.advisory.path}}'
+              | {{build_list.advisory.advisory_id}}
+
+        tr ng-show='build_list.human_duration'
+          td
+          td
+            | {{build_list.human_duration }}
+
+        = render 'advisory', build_list: @build_list, advisories: @advisories, f: f
+
+        tr.alert.alert-danger ng-hide='build_list.extra_build_lists_published'
+          td colspan=2
+            = t('layout.build_lists.publish_with_extra_fail')
+
+        - unless @build_list.valid_branch_for_publish?
+          tr.alert.alert-danger
+            td colspan=2
+              = t('layout.build_lists.wrong_branch_for_publish_html',
+                branch: @build_list.save_to_repository.publish_builds_only_from_branch)
+
+        tr.alert.alert-danger ng-show='build_list.can_publish && build_list.can_publish_in_future && !build_list.can_publish_into_repository'
+          td colspan=2
+            = t('flash.build_list.not_all_build_lists_success')
+
+      hr
+      .row
+        = render 'buttons', build_list: @build_list
+
+      .row.offset20 ng-show="build_list.status == #{BuildList::BUILD_STARTED}"
+        = render 'shared/log', { build_started: true, get_log_path: log_build_list_path(@build_list) }
+
+      hr
+      = render 'item_groups'
+      = render 'packages'
+
+      - if @build_list.new_core?
+        .row
+          hr
+          = render 'shared/build_results', subject: @build_list

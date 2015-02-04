@@ -1,0 +1,24 @@
+-set_meta_tags title: [title_object(@project), t('wiki.git_access')]
+
+== render 'submenu'
+
+.row
+  .col-md-2.col-md-offset-1
+    == render 'sidebar'
+  .col-md-8
+    nav.navbar.navbar-default
+      .collapse.navbar-collapse
+        .navbar-text.navbar-left
+          a.navbar-link
+            i.fa.fa-code-fork.fa-lg
+        form.navbar-form.navbar-left
+          .form-group
+            input.form-control type='text' value=git_repo_url(@project.wiki_repo_name) readonly=true
+        .navbar-text.navbar-left
+          a.navbar-link
+            i.fa.fa-clipboard.fa-lg
+        .navbar-text.navbar-left
+          = can?(:write, @project) ? t("layout.read_write_access") : t("layout.read_access")
+
+
+    == render 'git_access_message'

@@ -1,0 +1,72 @@
+-set_meta_tags title: title_object(@platform)
+= render 'submenu'
+
+.col-xs-12.col-md-10.col-md-offset-1
+  .row
+    .col-md-6
+      h3
+        = t('layout.platforms.about')
+        | &nbsp;
+        = link_to @platform.name, platform_contents_path(@platform)
+
+      .row
+        .col-md-4
+          b= t('activerecord.attributes.platform.description')
+        .col-md-8= @platform.description
+
+      - if @platform.parent
+        .row
+          .col-md-4
+            b= t('activerecord.attributes.platform.parent')
+          .col-md-8
+            = link_to @platform.parent.description, platform_path(@platform.parent)
+
+      .row
+        .col-md-4
+          b= t('layout.platforms.owner')
+        .col-md-8= link_to @platform.owner.try(:name), url_for(@platform.owner)
+
+      .row
+        .col-md-4
+          b= t('layout.platforms.visibility')
+        .col-md-8= t("layout.visibilities.#{@platform.visibility}")
+
+      .row
+        .col-md-4
+          b= t('layout.platforms.platform_type')
+        .col-md-8= @platform.platform_type
+
+      .row
+        .col-md-4
+          b= t('layout.platforms.distrib_type')
+        .col-md-8= @platform.distrib_type
+
+      - if can? :clone, @platform
+        .row
+          .col-md-4
+          .col-md-8
+            a.btn.btn-primary href=clone_platform_path(@platform)
+              = t('layout.platforms.clone')
+
+    - if @platform.platform_type == 'personal' and @platform.visibility == 'open'
+      .col-md-6 ng-controller='PlatformSysReposController' ng-init="init(#{@platform.id})"
+        h3= t('layout.platforms.sys_repos_header')
+
+        .row
+          .col-md-4
+            b= t('layout.platforms.target_platform')
+          .col-md-8
+            select ng-model='platform' ng-change='updateCommand()'
+              option ng-repeat='platform in platforms' ng-value='platform'
+                | {{ platform }}
+
+        .row
+          .col-md-4
+            b= t('layout.platforms.target_architecture')
+          .col-md-8
+            select ng-model='arch' ng-change='updateCommand()'
+              option ng-repeat='arch in arches' ng-value='arch'
+                | {{ arch }}
+        .row
+          br
+          textarea.form-control readonly='readonly' ng-model='command' rows=3 ng-click='selectAll($event)'

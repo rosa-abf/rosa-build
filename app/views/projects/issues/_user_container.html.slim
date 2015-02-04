@@ -1,0 +1,15 @@
+.user-container
+  span ng-show = 'issueCtrl.assignee.id'
+    a[ ng-href = 'issueCtrl.assignee.path' ]
+      img> ng-src = '{{issueCtrl.assignee.avatar_path}}'
+      span[] {{ issueCtrl.assignee.fullname }}
+    span<= t('layout.issues.is_assigned')
+
+  span[ ng-hide = 'issueCtrl.assignee.id' ]= t('layout.issues.no_one_is_assigned')
+
+  -if can?(:write, @project)
+    input.hidden name = 'issue[assignee_id]' ng-value = 'issueCtrl.assignee.id'
+    a< href = ''
+      i [ class    = 'fa fa-share-square-o boffset20'
+          ng-click = 'issueCtrl.toggle_manage_assignee = !issueCtrl.toggle_manage_assignee' ]
+

@@ -1,0 +1,41 @@
+var RosaABF = angular.module('RosaABF', ['ui.bootstrap', 'angular-i18n', 'angularMoment',
+                                         'chieffancypants.loadingBar', 'ngSanitize', 'templates',
+                                         'ui.codemirror', 'ngResource', 'ng-rails-csrf', 'ngCookies']);
+
+RosaABF.factory('LocalesHelper', ['$locale', function($locale) {
+  var locales = {
+    'ru' : 'ru-ru',
+    'en' : 'en-us'
+  }
+  return {
+    setLocale: function(locale) {
+      $locale.id = locales[locale];
+    }
+  }
+}]);
+
+RosaABF.config(function(cfpLoadingBarProvider) {
+  cfpLoadingBarProvider.includeSpinner = false;
+});
+
+var SoundNotificationsHelper = function() {
+  var isOn = true;
+  var statusChangedSound = null;
+  soundManager.setup({
+    // url: '/assets/swf/',
+    preferFlash: false,
+    onready: function() {
+      statusChangedSound = soundManager.createSound({url: "<%=asset_path('garbage_shattering.wav')%>"});
+    }
+  });
+  return {
+    buildStatusChanged: function() {
+      if (isOn && statusChangedSound)
+        statusChangedSound.play();
+    },
+    enabled: function(status) {
+      isOn = status;
+    }
+  }
+}
+RosaABF.factory('SoundNotificationsHelper', SoundNotificationsHelper);

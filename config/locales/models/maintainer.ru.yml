@@ -2,7 +2,6 @@ ru:
   layout:
     maintainers:
       list_header: Майнтейнеры
-      search_by_package: Искать по имени пакета
 
   flash:
     maintainer:
@@ -23,3 +22,10 @@ ru:
         updated_at: Обновлен
         version: Версия-Релиз
 
+  simple_form:
+    labels:
+      build_list_package:
+        name:       Пакет
+    placeholders:
+      build_list_package:
+        name:       Введите имя пакета здесь.

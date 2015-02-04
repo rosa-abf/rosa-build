@@ -9,8 +9,8 @@ describe AutocompletesController do
       set_session_for user
     end
 
-    it 'should be able to perform autocomplete_group_uname action' do
-      get :autocomplete_group_uname
+    it 'should be able to perform autocomplete_user_or_group action' do
+      get :autocomplete_user_or_group
       response.should be_success
     end
 
@@ -66,7 +66,7 @@ describe AutocompletesController do
     end
 
     [
-      :autocomplete_group_uname,
+      :autocomplete_user_or_group,
       :autocomplete_user_uname,
       :autocomplete_extra_build_list,
       :autocomplete_extra_repositories

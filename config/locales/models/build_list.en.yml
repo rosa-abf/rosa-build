@@ -135,12 +135,12 @@ en:
 
       build_server_status:
         header: Build server status
-        amount: '- amount'
-        abf: '-- ABF'
-        tasks: '- tasks in queue'
-        custom: "-- user's"
-        mass_build_tasks: "-- mass build's"
-        build_tasks: '- tasks in execution'
+        amount: amount
+        abf: ABF
+        tasks: tasks in queue
+        custom: user's
+        mass_build_tasks: mass build's
+        build_tasks: tasks in execution
         rpm_workers: Workers of building
         iso_workers: Workers of building
         publish_workers: Workers of publishing
@@ -201,6 +201,7 @@ en:
 
       show_filter: Show filters
       hide_filter: Hide filters
+      filters: Filters
 
       last_build_lists: Last Build Lists
       recreate_build_list: Recreate Build List

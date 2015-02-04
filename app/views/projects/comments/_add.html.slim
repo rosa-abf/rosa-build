@@ -1,0 +1,21 @@
+h3
+  = t('layout.comments.new_header')
+
+= simple_form_for Comment.new, url: '', html: { method: :post } do |f|
+  .panel.panel-info
+    .panel-heading
+      h3.panel-title
+        = f.label :body
+        .pull-right= render 'projects/comments/button_md_help'
+        .clearfix
+    .panel-body
+      = render 'projects/comments/body', f: f, id: 'new-comment', ctrl: 'commentsCtrl',
+               ang_model: 'new_body'
+      hr
+      button.btn.btn-primary[ ng-disabled = 'commentsCtrl.isDisabledNewCommentButton()'
+                              ng-click    = 'commentsCtrl.add()' ]
+        = t('layout.create')
+    .panel-footer
+      => t('layout.comments.notifications_are')
+
+      == render 'projects/subscribes/subscribe_status', project: @project, commentable: @commentable

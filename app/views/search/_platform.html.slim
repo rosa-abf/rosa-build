@@ -1,0 +1,9 @@
+h4
+  - if platform.hidden?
+    i.fa.fa-lock.text-danger>
+  - else
+    i.fa.fa-unlock-alt.text-success>
+  a href=platform_path(platform)
+    = platform.name
+p
+  = platform.description.to_s.truncate(255)

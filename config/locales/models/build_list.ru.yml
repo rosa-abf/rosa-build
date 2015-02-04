@@ -133,12 +133,12 @@ ru:
 
       build_server_status:
         header: Статус сборочного сервера
-        amount: '- количество'
-        abf: '-- ABF'
-        tasks: '- заданий в очереди'
-        custom: '-- пользовательских'
-        mass_build_tasks: '-- массовой сборки'
-        build_tasks: '- заданий выполняется'
+        amount: количество
+        abf: ABF
+        tasks: заданий в очереди
+        custom: пользовательских
+        mass_build_tasks: массовой сборки
+        build_tasks: заданий выполняется
         rpm_workers: Воркеры сборки
         iso_workers: Воркеры сборки
         publish_workers: Воркеры публикации
@@ -199,6 +199,7 @@ ru:
 
       show_filter: Показать фильтры
       hide_filter: Скрыть фильтры
+      filters: Фильтры
 
       last_build_lists: Последние сборки
       recreate_build_list: Пересоздать сборку

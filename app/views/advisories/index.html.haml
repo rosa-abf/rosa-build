@@ -1,8 +1,0 @@
-- set_meta_tags title: t('layout.advisories.list_header')
-- render partial: 'submenu'
-%h3.fix
-  = t("layout.advisories.list_header")
-  = link_to image_tag("rss.ico", width: '15px', height: '15px', class: 'atom_icon'),
-    APP_CONFIG['anonymous_access'] ? advisories_path(format: 'atom') : advisories_path(format: 'atom', token: current_user.authentication_token)
-= render partial: 'list', object: @advisories
-= will_paginate @advisories

@@ -1,0 +1,53 @@
+h3= t 'layout.build_lists.last_build_lists'
+h4= t 'layout.relations.filters'
+
+.checkbox
+  label
+    = check_box_tag :owner_filter_build_lists, true,
+                    (params[:owner_filter] || 'true') == 'true',
+                    'ng-click' => 'newBuildCtrl.updateFilterOwner()',
+                    'ng-value' => 'newBuildCtrl.last_builds_filter.owner'
+    = t 'layout.build_lists.only_my_build_lists'
+
+.checkbox
+  label
+    = check_box_tag :status_filter_build_lists, true,
+                    (params[:status_filter] || 'true') == 'true',
+                    'ng-value' => 'newBuildCtrl.last_builds_filter.status',
+                    'ng-click' => 'newBuildCtrl.updateFilterStatus()'
+    = t 'layout.build_lists.failed_build_lists'
+
+table.table
+  thead
+    tr
+      th= t('activerecord.attributes.build_list.id')
+      th= t('activerecord.attributes.build_list.status')
+      th= t('diff')
+      th= t('activerecord.attributes.build_list.project_version')
+      th= t('activerecord.attributes.build_list.save_to_repository')
+      th= t('activerecord.attributes.build_list.arch_short')
+      th= t('activerecord.attributes.build_list.user')
+      th= t('activerecord.attributes.build_list.updated_at')
+  tbody
+    tr[ ng-repeat = 'last in newBuildCtrl.last_build_lists' ]
+      td
+        a[ ng-href = '{{ last.path }}' ] {{ last.id }}
+        br
+        a[ ng-click = 'newBuildCtrl.cloneBuildList(last.id)' href = '#new_build_list' ]= t 'layout.clone'
+      td[] {{ last.human_status }}
+      td
+        a[ ng-href = '{{ last.version.path }}' ] {{ last.version.name }}
+      td[] {{ last.version.release }}
+      td
+        a[ ng-href = '{{ last.save_to_repository.path }}' ] {{ last.save_to_repository.name }}
+      td[] {{ last.arch }}
+      td
+        a[ ng-href = '{{ last.user.path }}' ] {{ last.user.fullname }}
+      td
+        span[ am-time-ago = 'last.updated_at'
+              title = "{{ last.updated_at | amDateFormat:'ddd, LLL' }}" ]
+
+= angularjs_paginate( per_page:    BuildList.per_page,
+                      total_items: 'newBuildCtrl.total_items',
+                      page:        'newBuildCtrl.page',
+                      select_page: 'newBuildCtrl.goToPage(newBuildCtrl.page)' )

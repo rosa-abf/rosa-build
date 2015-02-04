@@ -26,7 +26,7 @@ shared_context "issues controller" do
       }
     }
 
-    @update_params = { name_with_owner: @project.name_with_owner, issue: { title: "issue2" }}
+    @update_params = { name_with_owner: @project.name_with_owner, issue: { title: "issue2" }, format: :json }
 
     @pull = @project.pull_requests.new issue_attributes: { title: 'test', body: 'testing' }
     @pull.issue.user, @pull.issue.project = @project.owner, @pull.to_project
@@ -106,7 +106,7 @@ end
 shared_examples_for 'user without issue update rights' do
   it 'should not be able to perform update action' do
     put :update, {id: @issue.serial_id}.merge(@update_params)
-    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
+    response.should redirect_to(forbidden_path)
   end
 
   it 'should not update issue title' do
@@ -291,7 +291,17 @@ describe Projects::IssuesController do
       lambda{ post :create, @create_params }.should_not change{ Issue.count }
     end
 
-    it_should_behave_like 'user without issue update rights'
+    #it_should_behave_like 'user without issue update rights'
+    it 'should not be able to perform update action' do
+      put :update, {id: @issue.serial_id}.merge(@update_params)
+      response.status.should == 401
+    end
+
+    it 'should not update issue title' do
+      put :update, {id: @issue.serial_id}.merge(@update_params)
+      @issue.reload.title.should_not == 'issue2'
+    end
+
     # it_should_behave_like 'user without issue destroy rights'
   end
 end

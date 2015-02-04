@@ -1,0 +1,66 @@
+- set_meta_tags title: [title_object(@platform), t('layout.platforms.contents')]
+= render 'platforms/base/submenu'
+
+.col-xs-12.col-md-10.col-md-offset-1
+  h3
+    = t('layout.platforms.contents_of')
+    | &nbsp;
+    = @platform.name
+
+  #contents ng-controller='ContentsController'
+
+    = simple_form_for @platform, html: { 'ng-submit' => 'search()', id: 'search_contents_form' } do |f|
+      = f.hidden_field :name
+      = hidden_field_tag 'path'
+      = hidden_field_tag 'page'
+
+      .row
+        .col-md-6
+          = f.input :term, label: false
+        .col-md-6
+          = f.button :submit, t('layout.search.header')
+    hr
+
+    .path
+      a ng-repeat='folder in folders'
+        span.text ng-click="open(folder.path)" {{folder.name}}
+        span.arrow-right
+    .both
+
+    - can_remove = can? :remove_file, @platform
+    table.table ng-show='!processing'
+      tbody
+
+      tr ng-show='back'
+        td
+          a ng-click="open(back)" ../
+        td
+        td
+        - if can_remove
+          td
+
+      tr ng-repeat='content in contents'
+        td ng-show='content.is_folder'
+          span.glyphicon.glyphicon-folder-close
+          | &nbsp;
+          span
+            a.files-see ng-click="open(content)" {{content.name}}
+        td ng-hide='content.is_folder'
+          span.glyphicon.glyphicon-file
+          | &nbsp;
+          span
+            a.files-see ng-href='{{content.download_url}}' {{content.name}}
+        td
+          a ng-href='{{content.build_list.url}}' ng-show='content.build_list'
+            = t('activerecord.models.build_list')
+        td
+          | {{content.size}}
+        - if can_remove
+          td ng-show='content.is_folder'
+          td.buttons ng-hide='content.is_folder'
+            div ng-show='content.processing'
+              = t('layout.processing')
+            span.delete ng-click="destroy(content)" ng-hide='content.processing' ng-confirm-click=t('layout.confirm')
+              | &nbsp;
+
+    = angularjs_paginate

@@ -1,0 +1,15 @@
+-set_meta_tags title: [title_object(@platform), t('layout.products.list_header')]
+= render 'submenu' if params[:platform_id]
+
+
+.container.col-md-offset-2.col-md-8
+  .row
+
+    - if can? :create, @platform.products.build
+      a.btn.btn-primary href=new_platform_product_path(@platform)
+        = t('layout.products.new')
+      hr
+
+    = render 'list', object: @products
+    = will_paginate @products
+

@@ -30,8 +30,8 @@ describe Platforms::ProductsController do
       @product = FactoryGirl.create(:product, platform: @platform)
       @project = FactoryGirl.create(:project)
 
-      params = {platform_id: @platform, src_project: @project.name_with_owner}
-      @create_params = params.merge({product: {name: 'pro', time_living: 150}})
+      params = {platform_id: @platform}
+      @create_params = params.merge({product: {name: 'pro', time_living: 150, project_id: @project.id}})
       @update_params = params.merge({product: {name: 'pro2'}})
 
       @user = FactoryGirl.create(:user)

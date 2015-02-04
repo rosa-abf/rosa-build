@@ -1,4 +1,17 @@
 module PlatformsHelper
+
+  def platform_options
+    Platform.main.each do |p|
+      [ p.name, p.id ]
+    end
+  end
+
+  def platform_visibility_options
+    Platform::VISIBILITIES.map do |v|
+      [ I18n.t("activerecord.attributes.platform.visibility_types.#{v}"), v ]
+    end
+  end
+
   def repository_name_postfix(platform)
      return "" unless platform
      return platform.released ? '/update' : '/release'
@@ -25,4 +38,9 @@ module PlatformsHelper
     settings.sort_by{ |s| s.arch.name }
   end
 
+  def fa_platform_visibility_icon(platform)
+    return nil unless platform
+    image, color = platform.hidden? ? ['lock', 'text-danger fa-fw']: ['unlock-alt', 'text-success fa-fw']
+    fa_icon(image, class: color)
+  end
 end

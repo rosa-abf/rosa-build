@@ -13,7 +13,8 @@ class Platforms::MassBuildsController < Platforms::BaseController
       @mass_build         = @platform.mass_builds.find(params[:mass_build_id]).dup
       @mass_build.arches  = Arch.where(name: @mass_build.arch_names.split(', ')).pluck(:id)
     end
-    @mass_build.arches  ||= @platform.platform_arch_settings.by_default.pluck(:arch_id)
+    @mass_build.arches        ||= @platform.platform_arch_settings.by_default.pluck(:arch_id)
+    @mass_build.repositories  ||= []
     @mass_build.arches.map!(&:to_s)
   end
 
@@ -21,7 +22,9 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def create
-    @mass_build.user, @mass_build.arches = current_user, params[:arches] || []
+    @mass_build.user            = current_user
+    @mass_build.arches          = params[:arches] || []
+    @mass_build.repositories  ||= params[:repositories] || []
 
     if @mass_build.save
       redirect_to(platform_mass_builds_path(@platform), notice: t("flash.platform.build_all_success"))
@@ -42,16 +45,9 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def index
-    respond_to do |format|
-      format.html {}
-      format.json {
-        @mass_builds        = @platform.mass_builds
-        @total_mass_builds  = @mass_builds.count
-        @mass_builds        = @mass_builds.order("id #{sort_dir}")
-                                .search(params[:sSearch])
-                                .paginate(page: page, per_page: per_page)
-      }
-    end
+    @mass_build  = MassBuild.new(params[:mass_build])
+    @mass_builds = @platform.mass_builds.search(@mass_build.description).
+      order(id: :desc).paginate(page: params[:page])
   end
 
   def cancel

@@ -35,11 +35,6 @@ shared_context "pull request controller" do
 end
 
 shared_examples_for 'pull request user with project guest rights' do
-  it 'should be able to perform index action' do
-    get :index, name_with_owner: @project.name_with_owner
-    response.should render_template(:index)
-  end
-
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
     get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
@@ -48,12 +43,6 @@ shared_examples_for 'pull request user with project guest rights' do
 end
 
 shared_examples_for 'pull request user with project reader rights' do
-  it 'should be able to perform index action on hidden project' do
-    @project.update_attributes(visibility: 'hidden')
-    get :index, name_with_owner: @project.name_with_owner
-    response.should render_template(:index)
-  end
-
   it 'should be able to perform create action' do
     post :create, @create_params
     response.should redirect_to(project_pull_request_path(@project, @project.pull_requests.last))
@@ -163,10 +152,6 @@ end
 
 shared_examples_for 'pull request when project with issues turned off' do
   before { @project.update_attributes(has_issues: false) }
-  it 'should be able to perform index action' do
-    get :index, name_with_owner: @project.name_with_owner
-    response.should render_template(:index)
-  end
 
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
@@ -268,20 +253,9 @@ describe Projects::PullRequestsController do
       it_should_behave_like 'pull request when project with issues turned off'
 
     else
-      it 'should not be able to perform index action' do
-        get :index, name_with_owner: @project.name_with_owner
-        response.should redirect_to(new_user_session_path)
-      end
-
       it 'should not be able to perform show action' do
         @pull.check
         get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
-        response.should redirect_to(new_user_session_path)
-      end
-
-      it 'should not be able to perform index action on hidden project' do
-        @project.update_attributes(visibility: 'hidden')
-        get :index, name_with_owner: @project.name_with_owner
         response.should redirect_to(new_user_session_path)
       end
     end

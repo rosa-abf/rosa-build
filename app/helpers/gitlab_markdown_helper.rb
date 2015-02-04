@@ -31,6 +31,7 @@ module GitlabMarkdownHelper
   end
 
   def markdown(text)
+    return '' if text.blank?
     unless @markdown
       gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
                           # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-

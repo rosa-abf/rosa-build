@@ -1,0 +1,78 @@
+- user ||= false
+.row
+  .col-md-12
+
+    h3.text-info
+      = t('.header')
+
+    form#statistics-form.form-inline.alert.alert-info.centered
+      .form-group>
+        label.control-label>
+          = t('.range_label')
+        = select_tag 'range', statistics_range_options, id: 'range_select', class: 'form-control input-medium', ng_model: 'range', ng_change: 'update()', ng_disabled: 'loading'
+      .form-group ng-show="range == 'custom'"
+
+        .input-group
+          = text_field_tag :range_start, Date.today - 1.month,
+            class:                'form-control',
+            ng_model:             'range_start',
+            ng_change:            'update()',
+            size:                 7,
+            readonly:             true,
+            ng_disabled:          'loading',
+            datepicker_popup:     'yyyy-MM-dd',
+            datepicker_options:   'dateOptions',
+            is_open:              'range_start_opened',
+            show_button_bar:      false
+
+          span.input-group-btn
+            button.btn.btn-default[
+              type          = 'button'
+              ng_disabled   = 'loading'
+              ng-click      = 'openRangeStart($event)' ]
+
+              i.glyphicon.glyphicon-calendar
+
+        = t('.range_separator')
+
+        .input-group
+          = text_field_tag :range_end, Date.today,
+            class:                'form-control',
+            ng_model:             'range_end',
+            ng_change:            'update()',
+            size:                 7,
+            ng_disabled:          'loading',
+            readonly:             true,
+            datepicker_popup:     'yyyy-MM-dd',
+            datepicker_options:   'dateOptions',
+            is_open:              'range_end_opened',
+            show_button_bar:      false
+
+          span.input-group-btn
+            button.btn.btn-default[
+              type        = 'button'
+              ng_disabled = 'loading'
+              ng-click    = 'openRangeEnd($event)' ]
+              i.glyphicon.glyphicon-calendar
+
+        | &nbsp;
+
+      - if user
+        .form-group ng-init="users_or_groups = '#{user.uname}'"
+      - else
+        .form-group>
+          label.control-label>
+            = t('.users_or_groups_label')
+
+          input#users_or_groups[
+            name        = 'users_or_groups'
+            type        = 'text'
+            data-ajax   = autocomplete_user_or_group_autocompletes_path
+            ng-model    = 'users_or_groups'
+            placeholder = t('.users_or_groups_placeholder')
+            ng-disabled = 'loading'
+            class       = 'form-control typeahead' ]
+
+      a href='#' ng-click='update()'
+        b
+          = t('.refresh')

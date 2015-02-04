@@ -81,7 +81,8 @@ class ApplicationController < ActionController::Base
   def render_error(status)
     respond_to do |format|
       format.json { render json: {status: status, message: t("flash.#{status}_message")}.to_json, status: status }
-      format.all  { render file: "public/#{status}.html", alert: t("flash.#{status}_message"), layout: false }
+      format.all  { render file: "public/#{status}.html", status: status,
+                           alert: t("flash.#{status}_message"), layout: false }
     end
   end
 
@@ -126,5 +127,11 @@ class ApplicationController < ActionController::Base
 
   def not_found
     raise ActionController::RoutingError.new('Not Found')
+  end
+
+  def current_page
+    params[:page] = 1 if params[:page].to_i < 1
+
+    params[:page]
   end
 end

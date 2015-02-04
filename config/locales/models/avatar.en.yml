@@ -2,5 +2,4 @@ en:
   layout:
     avatars:
       avatar_notice: Without uploaded avatar will be used avatar from gravar web service.
-      delete_avatar: Delete avatar
       avatar_with_size: Avatar (less than %{max})

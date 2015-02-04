@@ -1,33 +1,29 @@
-.bordered
-  = link_to t("layout.activity_feed.new_project"), new_project_path, class: 'button'
-  %h3= t("layout.activity_feed.my_last_projects")
-  %table
-    %tbody
-      - current_user.projects.order('updated_at DESC').limit(5).each do |project|
-        %tr
-          %td
-            - if project.public?
-              = image_tag("unlock.png")
-            - else
-              = image_tag("lock.png")
-          %td
-            = link_to project.name_with_owner, project_path(project)
-      %tr
-        %td
-          \ 
-        %td
-          = link_to t("layout.activity_feed.all_my_projects"), projects_path
-.block
-  - midnight = Time.now.utc.to_date
-  %h3= t("layout.activity_feed.my_builds_by_day")
-  %table{cellpadding: "0", cellspacing: "0"}
-    %tbody
-      - ['BuildList::BUILD_PUBLISHED', 'BuildList::SUCCESS', 'BuildList::BUILD_STARTED', 'BuildList::BUILD_PENDING', 'BuildList::BUILD_ERROR'].each do |state|
-        %tr
-          %td.first
-            = link_to t("layout.build_lists.statuses.#{state.demodulize.downcase}"), build_lists_path(filter: {status: state.constantize, :'updated_at_start(1i)' => midnight.year, :'updated_at_start(2i)' => midnight.month, :'updated_at_start(3i)' => midnight.day})
-          %td= BuildList.for_status(state.constantize).for_user(current_user).for_notified_date_period(midnight, nil).count
-      %tr
-        %td.first
-          = link_to t("layout.activity_feed.all_my_builds"), build_lists_path
-        %td  
+%p
+  = link_to t('layout.activity_feed.new_project'), new_project_path,
+    class: 'btn btn-primary btn-small', role: 'button'
+%hr
+%h5= t('layout.activity_feed.my_last_projects')
+
+%ul.nav.nav-pills.nav-stacked
+  - current_user.projects.order(updated_at: :desc).limit(5).each do |project|
+    %li
+      = link_to project_path(project) do
+        = fa_visibility_icon project
+        = project.name_with_owner
+  %li
+    = link_to t('layout.activity_feed.all_my_projects'), projects_path
+
+%hr
+- midnight = Time.now.utc.to_date
+%h5= t 'layout.activity_feed.my_builds_by_day'
+%ul.nav.nav-pills.nav-stacked
+  - ['BuildList::BUILD_PUBLISHED', 'BuildList::SUCCESS', 'BuildList::BUILD_STARTED',
+     'BuildList::BUILD_PENDING', 'BuildList::BUILD_ERROR'].each do |state|
+    %li
+      %a{ href: build_lists_path(filter: {status: state.constantize, 'updated_at_start(1i)' => midnight.year,
+                'updated_at_start(2i)' => midnight.month, 'updated_at_start(3i)' => midnight.day}) }
+        %span.badge.pull-right
+          = BuildList.for_status(state.constantize).for_user(current_user).for_notified_date_period(midnight, nil).count
+        = t "layout.build_lists.statuses.#{state.demodulize.downcase}"
+  %li
+    %a{ href: build_lists_path }=t 'layout.activity_feed.all_my_builds'

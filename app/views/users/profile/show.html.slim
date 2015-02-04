@@ -1,0 +1,63 @@
+- set_meta_tags title: title_object(@user)
+
+= render 'users/base/submenu'
+
+.row
+  .col-md-3.col-md-offset-1
+    - size = User::AVATAR_SIZES[:big]
+    = image_tag avatar_url(@user, :big),
+      alt: @user.uname, height: size, width: size
+    - if @user.name.present?
+      h2= @user.name.truncate(20)
+    h3.help-block= @user.uname.truncate(20)
+    hr
+
+    - if @user.professional_experience.present?
+      b= t('activerecord.attributes.user.professional_experience')
+      p= @user.professional_experience
+
+    - unless @user.hide_email?
+      b= t('activerecord.attributes.user.email')
+      p= mail_to @user.email, @user.email.truncate(50), title: @user.email
+
+    - if @user.site.present?
+      b= t('activerecord.attributes.user.site')
+      p= link_to @user.site.truncate(50), @user.site
+
+    - if @user.company.present?
+      b= t('activerecord.attributes.user.company')
+      p= @user.company.truncate(50)
+
+    - if @user.location.present?
+      b= t('activerecord.attributes.user.location')
+      p= @user.location.truncate(50)
+    hr
+    h4= t('top_menu.groups')
+    - size = User::AVATAR_SIZES[:micro]
+    - @groups.each do |group|
+      p
+        => image_tag avatar_url(group, :micro), alt: group.uname, height: size, width: size
+        = link_to group.uname.truncate(20), group
+
+  .col-md-7
+
+    ul.nav.nav-tabs ng-init="tab = 'projects'"
+      li[ role='presentation'
+          ng-class="{ active: tab == 'projects' }"
+          ng-click="tab = 'projects'" ]
+        a href="#"
+          = t('top_menu.projects')
+      li[ role='presentation'
+          ng-class="{ active: tab == 'statistics' }"
+          ng-click="tab = 'statistics'; $broadcast('activate_stats_tab')" ]
+        a href="#"
+          = t('top_menu.statistics')
+
+    .offset20 ng-show="tab == 'projects'" ng-controller='ProfileController' ng-cloak = true
+      = render 'projects', subject: @user
+    #manage-statistics.offset20[ ng-show       = "tab == 'statistics'"
+                                 ng-controller = 'StatisticsController'
+                                 ng-cloak      = true ]
+      = render 'statistics'
+
+

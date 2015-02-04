@@ -1,0 +1,63 @@
+- set_meta_tags title: [title_object(@platform), t('layout.platforms.edit')]
+= render 'submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+    = simple_form_for @platform, wrapper_mappings: { boolean: :vertical_boolean } do |f|
+      = render 'form', f: f
+    hr
+  .row
+
+    - if can? :regenerate_metadata, @platform
+      h4= t('layout.platforms.metadata')
+
+      table.table
+        tbody
+          tr
+            td= t('activerecord.attributes.regeneration_status.status')
+            td= t("layout.regeneration_statuses.statuses.#{@platform.human_status}")
+
+          tr
+            td= t('activerecord.attributes.regeneration_status.last_regenerated_at')
+            td= @platform.last_regenerated_at
+
+          tr
+            td= t('activerecord.attributes.regeneration_status.last_regenerated_status')
+            td= t("layout.regeneration_statuses.last_regenerated_statuses.#{@platform.human_regeneration_status}")
+          tr
+            td= t('activerecord.attributes.regeneration_status.last_regenerated_log_sha1')
+            td= link_to_file_store('regeneration.log', @platform.last_regenerated_log_sha1)
+          tr
+            td= t('activerecord.attributes.platform.automatic_metadata_regeneration')
+            td ng-controller='AutomaticMetadataRegenerationController' ng-init="platform_id = #{@platform.id}"
+              select ng-options='k as (v | i18n) for (k, v) in items' ng-model='amr' ng-change='update()' ng-init="amr = '#{@platform.automatic_metadata_regeneration.to_s}'"
+                option value=''
+          tr
+            td
+            td
+              br
+              = link_to t('layout.regeneration_statuses.regenerate_metadata'),
+                regenerate_metadata_platform_path(@platform),
+                method: :put,
+                data:   { confirm: t('layout.confirm') },
+                class:  'btn btn-xs btn-warning'
+
+
+    - if can? :destroy, @platform
+      hr
+      p
+        = t("layout.platforms.delete_warning")
+      = link_to t("layout.delete"),
+        platform_path(@platform),
+        method: :delete,
+        data:   { confirm: t("layout.platforms.confirm_delete") },
+        class:  'btn btn-danger'
+
+    - if can? :clear, @platform
+      p
+        = t("layout.repositories.clear_warning")
+      = link_to t("layout.repositories.clear"),
+        clear_platform_path(@platform),
+        class:  'btn btn-danger',
+        data:   { confirm: t('layout.repositories.clear_confirm') },
+        method: :put

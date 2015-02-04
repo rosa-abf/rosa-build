@@ -1,0 +1,7 @@
+- set_meta_tags title: [title_object(@platform), t('layout.advisories.list_header')]
+== render 'submenu'
+
+.col-xs-12.col-md-10.col-md-offset-1
+  .row
+    == render partial: 'advisories', object: @advisories
+    = will_paginate @advisories

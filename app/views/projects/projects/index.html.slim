@@ -1,0 +1,40 @@
+-set_meta_tags title: t('layout.projects.list_header')
+.col-xs-12.col-md-10.col-md-offset-1 ng-controller = 'ProjectsCtrl'
+  .row.offset20
+    .col-md-3.col-sm-4== render 'filters'
+    .col-md-9.col-sm-8
+      .toolbar
+        span
+          i.fa.fa-lg.fa-user.text-success.roffset5
+          =  t 'layout.relations.user_owner'
+          i.fa.fa-lg.fa-user.text-success.roffset5.loffset10
+          =  t 'layout.relations.group_owner'
+          i.fa.fa-lg.fa-group.text-primary.roffset5.loffset10
+          = t 'layout.relations.user'
+          i.fa.fa-lg.fa-group.text-primary.roffset5.loffset10
+          = t 'layout.relations.group'
+
+      table.table.table-hover.offset10 ng-cloak = true
+        thead
+          tr
+            th
+            th= t 'activerecord.attributes.project.name'
+            th= t 'activerecord.attributes.project.description'
+            th
+            th= t 'layout.projects.role'
+            th= t 'layout.projects.remove_user'
+        tbody
+          tr ng-repeat = 'item in projects'
+            td
+              i.fa ng-class = 'item.visibility_class'
+            td
+              a[ ng-href = '{{item.link}}' ] {{item.name_with_owner}}
+            td[] {{item.description}}
+            td
+              i.fa.roffset5 ng-class = 'item.participant_class'
+            td[] {{item.user_role_name}}
+            td
+              span.fa.fa-lg.fa-times.text-danger[ confirmed-click = 'leave_project(item)'
+                ng-show = 'item.can_leave_project' ng-confirm-click = t('layout.confirm') ]
+
+      = angularjs_paginate per_page: Project.per_page

@@ -46,28 +46,6 @@ module BuildListsHelper
     end
   end
 
-  def save_to_repositories(project)
-    project.repositories.collect do |r|
-      [
-        "#{r.platform.name}/#{r.name}",
-        r.id,
-        {
-          publish_without_qa: r.publish_without_qa? ? 1 : 0,
-          platform_id:        r.platform.id,
-          default_arches:     (r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence || Arch.where(name: Arch::DEFAULT).pluck(:id)).join(' ')
-        }
-      ]
-    end.sort_by { |col| col[0] }
-  end
-
-  def selected_save_to_repositories(project, select_options, params)
-    selected = params[:build_list].try(:[], :save_to_repository_id)
-    return { selected: selected } if selected.present?
-    version = params[:build_list].try(:[], :project_version) || project.default_branch
-    res = select_options.select { |r| r[0] =~ /#{version}\// }[0].try :[], 1
-    res.present? ? { selected: res } : {}
-  end
-
   def external_nodes
     BuildList::EXTERNAL_NODES.map do |type|
       [I18n.t("layout.build_lists.external_nodes.#{type}"), type]
@@ -128,15 +106,39 @@ module BuildListsHelper
     end
   end
 
-  def build_list_version_link(bl, str_version = false)
+  def build_list_version_name(bl)
+    hash_size=5
+    if bl.commit_hash.present?
+      if bl.last_published_commit_hash.present? && bl.last_published_commit_hash != bl.commit_hash
+        "#{shortest_hash_id bl.last_published_commit_hash, hash_size}...#{shortest_hash_id bl.commit_hash, hash_size}"
+      else
+        shortest_hash_id(bl.commit_hash, hash_size)
+      end
+    else
+      bl.project_version
+    end
+  end
+
+  def get_build_list_version_path(bl)
+    if bl.commit_hash.present?
+      if bl.last_published_commit_hash.present? && bl.last_published_commit_hash != bl.commit_hash
+        diff_path(bl.project, bl.last_published_commit_hash) + "...#{bl.commit_hash}"
+      else
+        commit_path(bl.project, bl.commit_hash)
+      end
+    else
+      nil
+    end
+  end
+
+  def build_list_version_link(bl)
     hash_size=5
     if bl.commit_hash.present?
       if bl.last_published_commit_hash.present? && bl.last_published_commit_hash != bl.commit_hash
         link_to "#{shortest_hash_id bl.last_published_commit_hash, hash_size}...#{shortest_hash_id bl.commit_hash, hash_size}",
                 diff_path(bl.project, bl.last_published_commit_hash) + "...#{bl.commit_hash}"
       else
-        link_to str_version ? "#{shortest_hash_id bl.commit_hash, hash_size}" : shortest_hash_id(bl.commit_hash, hash_size),
-          commit_path(bl.project, bl.commit_hash)
+        link_to shortest_hash_id(bl.commit_hash, hash_size), commit_path(bl.project, bl.commit_hash)
       end
     else
       bl.project_version
@@ -181,5 +183,140 @@ module BuildListsHelper
   def get_version_release build_list
     pkg = build_list.source_packages.first
     "#{pkg.version}-#{pkg.release}" if pkg.present?
+  end
+
+  def new_build_list_data(build_list, project, params)
+    res = {
+            build_list_id:         params[:build_list_id],
+            name_with_owner:       project.name_with_owner,
+            build_for_platform_id: params[:build_list].try(:[], :build_for_platform_id),
+            save_to_repository_id: save_to_repository_id(params),
+            project_version:       project_version(project, params),
+
+            platforms:             new_build_list_platforms(params),
+            save_to_repositories:  save_to_repositories(project, params),
+            project_versions:      build_list_project_versions(project),
+            arches:                arches(params),
+            default_extra_repos:   default_extra_repos(project),
+            extra_repos:           extra_repos(params),
+            extra_build_lists:     extra_build_lists(params),
+            auto_create_container: default_auto_create_container(params, build_list),
+            auto_publish_status:   params[:build_list].try(:[], :auto_publish_status)
+          }
+    res.to_json
+  end
+
+  def is_repository_checked(repo, params)
+    include_repos(params).include? repo.id.to_s
+  end
+
+  private
+
+  def save_to_repositories(project, params)
+    project.repositories.map do |r|
+      {
+        id:                 r.id,
+        name:               "#{r.platform.name}/#{r.name}",
+        publish_without_qa: r.publish_without_qa?,
+        platform_id:        r.platform.id,
+        platform_name:      r.platform.name,
+        default_arches:     ( r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence ||
+                              Arch.where(name: Arch::DEFAULT).pluck(:id) )
+      }
+    end.sort_by { |e| e[:name] }
+  end
+
+  def selected_save_to_repositories(project, repo_id, platform_name, params)
+    repo_id == save_to_repository_id(params) || platform_name == project_version(project, params)
+  end
+
+  def new_build_list_platforms(params)
+    availables_main_platforms.map do |pl|
+      platform = { id: pl.id, name: pl.name, repositories: [] }
+      Repository.custom_sort(pl.repositories).each do |repo|
+        platform[:repositories] << { id:       repo.id,
+                                     name:     repo.name,
+                                     disabled: false,
+                                     checked:  is_repository_checked(repo, params) }
+      end
+      platform
+    end
+  end
+
+  def include_repos(params)
+    @include_repos ||= params.try(:[], :build_list).try(:[], :include_repos) || []
+  end
+
+  def save_to_repository_id(params)
+    @save_to_repository_id ||= params[:build_list].try(:[], :save_to_repository_id).to_i
+  end
+
+  def project_version(project, params)
+    @project_version ||= params[:build_list].try(:[], :project_version) || project.default_branch
+  end
+
+  def build_list_project_versions(project)
+    return [] unless project
+    branches_kind = I18n.t('layout.git.repositories.branches')
+    tags_kind     = I18n.t('layout.git.repositories.tags')
+    res = []
+    project.repo.branches.each do |br|
+      res << { name: br.name, kind: branches_kind }
+    end
+    project.repo.tags.each do |t|
+      res << { name: t.name, kind: tags_kind }
+    end
+    res.sort_by { |e| e[:name] }
+  end
+
+  def arches(params)
+    Arch.recent.map do |arch|
+      {
+        id:      arch.id,
+        name:    arch.name,
+        checked: (params[:arches]||[]).include?(arch.id) ||
+                   (params[:arches].blank? &&
+                    controller.action_name == 'new' &&
+                    Arch::DEFAULT.include?(arch.name))
+      }
+    end
+  end
+
+  def default_extra_repos(project)
+    project.repositories.joins(:platform).accessible_by(current_ability, :read)
+           .where(platforms: { platform_type: 'personal' }).map do |extra|
+      {
+        id:              extra.id,
+        platform_id:     extra.platform.id,
+        label:           "#{extra.platform.name}/#{extra.name}",
+        path:            url_for([extra.platform, extra])
+      }
+    end
+  end
+
+  def extra_repos(params)
+    Repository.where(id: params[:build_list].try(:[], :extra_repositories) ).map do |extra|
+      {
+        id:    extra.id,
+        label: "#{extra.platform.name}/#{extra.name}",
+        path:  url_for([extra.platform, extra])
+      }
+    end
+  end
+
+  def extra_build_lists(params)
+    BuildList.where(id: params[:build_list].try(:[], :extra_build_lists) ).map do |extra|
+      {
+        id:    extra.id,
+        label: "#{extra.id} (#{extra.project.name} - #{extra.arch.name})",
+        path:  url_for(extra)
+      }
+    end
+  end
+
+  def default_auto_create_container(params, build_list)
+    checked = params[:build_list].try(:[], :auto_create_container)
+    checked = build_list.auto_create_container if checked.nil?
+    checked
   end
 end

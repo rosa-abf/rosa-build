@@ -1,0 +1,24 @@
+- set_meta_tags title: t('layout.users.settings')
+
+= render 'users/base/submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+    h3
+      = t('layout.users.private_settings_header')
+
+    = simple_form_for @user, url: private_settings_path do |f|
+      = f.input :current_password
+      = f.input :password
+      = f.input :password_confirmation
+
+      = f.button :submit, t('layout.save')
+
+    hr
+    = simple_form_for @user,
+      url:  reset_auth_token_settings_path,
+      html: { method: :put } do |f|
+
+      = f.input :authentication_token, disabled: true
+      = f.button :submit, t('layout.users.reset_token')
+

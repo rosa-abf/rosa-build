@@ -1,0 +1,35 @@
+= render 'platforms/base/submenu'
+
+.col-xs-12.col-md-10.col-md-offset-1
+  .row
+    - if can? :create, @platform.mass_builds.build
+      a.btn.btn-primary href=new_platform_mass_build_path(@platform)
+        =  t('layout.mass_builds.new')
+      hr
+
+    = simple_form_for @mass_build, url: platform_mass_builds_path(@platform), method: :get do |f|
+      .row
+        .col-md-6
+          = f.input :description, label: false
+        .col-md-6
+          = f.button :submit, t('layout.search.header')
+
+    hr
+    table.table.table-striped
+      thead
+        tr
+          th= t('activerecord.attributes.mass_build.id')
+          th= t('activerecord.attributes.mass_build.name')
+          th= t('activerecord.attributes.mass_build.description')
+          th= t('activerecord.attributes.mass_build.created_at')
+          th
+      tbody
+        - @mass_builds.each do |mass_build|
+          tr
+            td= mass_build.id
+            td= link_to_mass_build(mass_build)
+            td= mass_build.description
+            td= mass_build.created_at.to_s
+            td= link_to t('layout.show'), platform_mass_build_path(@platform, mass_build.id)
+
+    = will_paginate @mass_builds

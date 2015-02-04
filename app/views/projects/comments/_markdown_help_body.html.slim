@@ -1,0 +1,112 @@
+.row
+  .col-md-6
+    h3=t 'layout.comments.md_cheatsheet.format_text'
+    p=t 'layout.comments.md_cheatsheet.headers'
+    pre
+      = '# This is an <h1> tag'
+      br
+      = '## This is an <h2> tag'
+      br
+      = '### This is an <h3> tag'
+    p=t 'layout.comments.md_cheatsheet.text_styles'
+
+    pre
+      | *This text will be italic*
+      br
+      | _This will also be italic_
+      br
+      | **This text will be bold**
+      br
+      | __This will also be bold__
+    p=link_to t('layout.comments.md_cheatsheet.emoji_header'),
+      'http://www.emoji-cheat-sheet.com/', target: '_blank'
+    pre
+      =":smile:"
+      =image_tag("/images/emoji/#{Emoji.find_by_alias('smile').image_filename}",
+                 class: 'emoji', title: 'smile', alt: 'smile', size: "20x20")
+      ="   :+1:"
+      =image_tag("/images/emoji/#{Emoji.find_by_alias('+1').image_filename}",
+                 class: 'emoji', title: '+1', alt: '+1', size: "20x20")
+  .col-md-6
+    h3=t 'layout.comments.md_cheatsheet.lists'
+    p= "#{t 'layout.comments.md_cheatsheet.unordered'} / #{t 'layout.comments.md_cheatsheet.ordered'}"
+    pre
+      | * Item 1      1. Item 1
+      br
+      | * Item 2      2. Item 2
+      br
+      |   * Item 2a   3. Item 3
+      br
+      |   * Item 2b     * Item 3a
+      br
+      |                 * Item 3b
+    p=t 'layout.comments.md_cheatsheet.reference_format'
+    pre
+      =preserve t('layout.comments.md_cheatsheet.reference_format_example').html_safe
+
+  .clearfix
+
+  .col-md-12
+    h3=t 'layout.comments.md_cheatsheet.code_examples'
+  .col-md-6
+    p= t 'layout.comments.md_cheatsheet.syntax_highlighting'
+    pre
+      | ```javascript
+      br
+      |   function fancyAlert(arg) {
+      br
+      |     if(arg) {
+      br
+      |       $.facebox({div:'#foo'})
+      br
+      |     }
+      br
+      |   }
+      br
+      | ```
+
+  .col-md-6
+    p=t 'layout.comments.md_cheatsheet.indent_code'
+    pre
+      | Here is a Python code example
+      br
+      | without syntax highlighting:
+      br
+      br
+      |     def foo:
+      br
+      |       if not bar:
+      br
+      |         return true
+
+  .col-md-6
+    p= t 'layout.comments.md_cheatsheet.inline_code'
+    pre
+      | I think you should use an
+      br
+      | `[addr]` element here instead.
+
+  .clearfix
+
+  .col-md-12
+    h3=t 'layout.comments.md_cheatsheet.miscellaneous'
+    .row
+      .col-md-6
+        p=t 'layout.comments.md_cheatsheet.images'
+        pre
+          | ![avatar](/assets/ava.png)
+          br
+          | Format: ![Alt Text](url)
+        p=t 'layout.comments.md_cheatsheet.links'
+        pre
+          | https://abf.rosalinux.ru
+          br
+          | [ABF](https://abf.rosalinux.ru/)
+      .col-md-6
+        p=t 'layout.comments.md_cheatsheet.blockquotes'
+        pre
+          |  As Kanye West said:
+          br
+          | > We're living the future so
+          br
+          | > the present is our past.

@@ -1,3 +1,3 @@
 json.array!(collaborators) do |collaborator|
-  json.partial! 'projects/collaborators/collaborator', collaborator: collaborator
+  json.partial! 'collaborator.json', collaborator: collaborator
 end

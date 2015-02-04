@@ -60,3 +60,12 @@ en:
       delete_error: Unable to delete product build list
       updated: Product build list updated
       update_error: Unable to update product build list
+
+  simple_form:
+    labels:
+      product_build_list:
+    placeholders:
+      product_build_list:
+        status:             Select a status
+        product_name:       Enter the name of product here.
+        product_id:         Enter the ID of product build list here.

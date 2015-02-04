@@ -1,0 +1,67 @@
+- if can?(:cancel, build_list)
+  = link_to t("layout.build_lists.cancel"),
+    cancel_build_list_path(build_list),
+    method:       :put,
+    data:         { confirm: t('layout.confirm') },
+    class:        'btn btn-primary roffset5 boffset5',
+    'ng-show' =>  'build_list.can_cancel'
+
+= submit_tag t('layout.publish_again'),
+  data:         { confirm: t("layout.publish_again_warning") },
+  name:         'publish',
+  class:        'btn btn-primary roffset5 boffset5',
+  'ng-show' =>  "build_list.can_publish && build_list.status == #{BuildList::BUILD_PUBLISHED}"
+
+= submit_tag t('layout.publish'),
+  data:         { confirm: t('layout.build_lists.tests_failed') },
+  name:         'publish',
+  class:        'btn btn-primary roffset5 boffset5',
+  'ng-show' =>  "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status == #{BuildList::TESTS_FAILED}"
+
+= submit_tag t('layout.publish'),
+  data:         { confirm: t('layout.confirm') },
+  name:         'publish',
+  class:        'btn btn-primary roffset5 boffset5',
+  'ng-show' =>  "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status != #{BuildList::TESTS_FAILED} && build_list.status != #{BuildList::BUILD_PUBLISHED}"
+
+= link_to t('layout.publish_into_testing'),
+  publish_into_testing_build_list_path(build_list),
+  method:      :put,
+  data:        { confirm: t('layout.confirm') },
+  class:       'btn btn-primary roffset5 boffset5',
+  'ng-show' => 'build_list.can_publish_into_testing'
+
+- if can?(:reject_publish, build_list)
+  = link_to t('layout.reject_publish'),
+    reject_publish_build_list_path(build_list),
+    method:       :put,
+    data:         { confirm: t('layout.confirm') },
+    class:        'btn btn-primary roffset5 boffset5',
+    'ng-show' =>  'build_list.can_reject_publish'
+
+- if can?(:rerun_tests, build_list)
+  = link_to t('layout.build_lists.rerun_tests'),
+    rerun_tests_build_list_path(build_list),
+    method:       :put,
+    data:         { confirm: t('layout.confirm') },
+    class:        'btn btn-primary roffset5 boffset5',
+    'ng-show' =>  "build_list.status == #{BuildList::TESTS_FAILED} || build_list.status == #{BuildList::SUCCESS}"
+
+- if can?(:create_container, build_list)
+  = link_to t('layout.build_lists.create_container'),
+    create_container_build_list_path(build_list),
+    method:       :put,
+    data:         { confirm: t("layout.confirm") },
+    class:        'btn btn-primary roffset5 boffset5',
+    'ng-show' =>  'build_list.can_create_container'
+
+- if can? :create, build_list
+  = link_to t('layout.build_lists.recreate_build_list'), new_project_build_list_path(build_list.project,
+    build_list_id: build_list.id),
+    class:         'btn btn-primary roffset5 boffset5'
+
+  - if can_run_dependent_build_lists?(build_list)
+    = link_to t('projects.build_lists.dependent_projects.title'),
+      dependent_projects_build_list_path(build_list),
+      class:        'btn btn-primary roffset5 boffset5',
+      'ng-show' =>  'build_list.dependent_projects_exists'

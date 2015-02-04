@@ -1,0 +1,15 @@
+.panel.panel-default ng-show = 'issueCtrl.status.name === "closed"'
+  .panel-body
+    .pull-right
+      .strong.text-center.padding-5 ng-class = 'issueCtrl.issue_status_class'
+        | {{ 'issues.status.' + issueCtrl.status.name | i18n }}
+    .pull-left.roffset5
+      img ng-src = '{{ issueCtrl.status.closer.image }}'
+    .pull-left
+      strong
+        a> ng-href = 'issueCtrl.status.closer.path'
+          | {{ issueCtrl.status.closer.fullname }}
+        | {{ issueCtrl.status.closed_at | amDateFormat:'D MMM YYYY, HH:mm' }} (
+        span am-time-ago = 'issueCtrl.status.closed_at'
+        | )
+    .clearfix

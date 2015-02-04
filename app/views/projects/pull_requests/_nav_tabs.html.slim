@@ -1,0 +1,21 @@
+ul.nav.nav-tabs#pull_tabs role = 'tablist'
+  li role = 'presentation' ng-class = '{active: pullCtrl.active_tab == "discussion"}'
+    a[ data-toggle   = 'tab'
+       role          = 'tab'
+       aria-controls = 'discussion'
+       ng-click      = 'pullCtrl.getActivity()'
+       href          = '#discussion' ]= t 'pull_requests.tabs.discussion'
+  -if @stats
+    li role = 'presentation' ng-class = '{active: pullCtrl.active_tab == "diff"}'
+      a[ data-toggle   = 'tab'
+         role          = 'tab'
+         aria-controls = 'diff'
+         ng-click      = 'pullCtrl.getDiff()'
+         href          = "#diff" ]= "#{t'pull_requests.tabs.diff'} ({{ pullCtrl.pull.stats_count }})"
+  -if @commits
+    li role = 'presentation' ng-class = '{active: pullCtrl.active_tab == "commits"}'
+      a[ data-toggle   = 'tab'
+         role          = 'tab'
+         aria-controls = 'commits'
+         ng-click      = 'pullCtrl.getCommits()'
+         href          = '#commits' ]= "#{t'pull_requests.tabs.commits'} ({{ pullCtrl.pull.commits_count }})"

@@ -20,8 +20,9 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
   ]
   $scope.charts                   = {}
 
-  $('#users_or_groups').on 'autocompleteselect', (e) ->
-    $timeout($scope.update, 100)
+  $scope.dateOptions =
+    formatYear:   'yy'
+    startingDay:  1
 
   $scope.init = ->
     $('#statistics-form .date_picker').datepicker
@@ -33,6 +34,24 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
     $scope.update()
     true
 
+  $scope.$on "activate_stats_tab", (event, args) ->
+    if Object.keys($scope.statistics).length is 0
+      $timeout $scope.init, 1000
+
+    true
+
+  $scope.openRangeStart = ($event) ->
+    return if $scope.loading
+    $event.preventDefault()
+    $event.stopPropagation()
+    $scope.range_start_opened = true
+
+  $scope.openRangeEnd = ($event) ->
+    return if $scope.loading
+    $event.preventDefault()
+    $event.stopPropagation()
+    $scope.range_end_opened = true
+
   $scope.prepareRange = ->
     range_start = new Date($scope.range_start)
     range_end   = new Date($scope.range_end)
@@ -42,23 +61,15 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
       $scope.range_start  = $scope.range_end
       $scope.range_end    = tmp
 
-  $scope.prepareUsersOrGroups = ->
-    if $scope.users_or_groups
-      items = _.uniq $('#users_or_groups').val().replace(/\s/g, '').split(/,/)
-      items = _.reject items, (i) ->
-        _.isEmpty(i)
-      $scope.users_or_groups = _.first(items, 3).join(', ') + ', '
-
   $scope.update = ->
     return if $scope.loading
     $scope.loading    = true
     $scope.statistics = {}
 
     $scope.prepareRange()
-    $scope.prepareUsersOrGroups()
     $('.doughnut-legend').remove()
 
-    params = 
+    params =
       range:            $scope.range
       range_start:      $scope.range_start
       range_end:        $scope.range_end
@@ -130,7 +141,12 @@ RosaABF.controller 'StatisticsController', ['$scope', '$http', '$timeout', ($sco
       options =
         responsive: true
 
-      context           = $(id)[0].getContext('2d')
+      chart = $(id)
+      chart.attr
+        width:  chart.parent().width()
+        height: chart.parent().outerHeight()
+
+      context           = chart[0].getContext('2d')
       $scope.charts[id] = new Chart(context).Line(data, options)
 
   $scope.initBuildListsChart = ->

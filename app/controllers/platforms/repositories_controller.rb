@@ -2,6 +2,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   include DatatableHelper
   include FileStoreHelper
   include RepositoriesHelper
+  include PaginateHelper
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
@@ -11,12 +12,11 @@ class Platforms::RepositoriesController < Platforms::BaseController
   before_filter :set_members, only: [:edit, :update]
 
   def index
-    @repositories = Repository.custom_sort(@repositories).paginate(page: params[:page])
+    @repositories = Repository.custom_sort(@repositories).paginate(page: current_page)
   end
 
   def show
-    @projects = @repository.projects.recent.search(params[:query])
-                           .paginate(page: params[:project_page], per_page: 30)
+    params[:per_page] = 30
   end
 
   def edit
@@ -34,14 +34,9 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_members
-    user_ids = params[:user_remove] ?
-      params[:user_remove].map{ |k, v| k if v.first == '1' }.compact : []
-    User.where(id: user_ids).each{ |user| @repository.remove_member(user) }
-    redirect_to edit_platform_repository_path(@platform, @repository)
-  end
-
-  def remove_member
-    User.where(id: params[:member_id]).each{ |user| @repository.remove_member(user) }
+    User.where(id: params[:members]).each do |user|
+      @repository.remove_member(user)
+    end
     redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
@@ -75,7 +70,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
       redirect_to platform_repository_path(@platform, @repository)
     else
       flash[:error] = t('flash.repository.save_error')
-      flash[:warning] = @repository.errors.full_messages.join('. ')
       render action: :new
     end
   end
@@ -123,11 +117,14 @@ class Platforms::RepositoriesController < Platforms::BaseController
       @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
       @projects = @projects.opened if @repository.platform.main? && !@repository.platform.hidden?
     end
-    @projects = @projects.paginate(page: page, per_page: per_page)
+    # @projects = @projects.paginate(page: page, per_page: per_page)
 
-    @total_projects = @projects.count
+    # @total_projects = @projects.count
     @projects = @projects.by_owner(params[:owner_name]).
-      search(params[:sSearch]).order("projects.name #{sort_dir}")
+      search(params[:project_name]).order("projects.name #{sort_dir}")
+
+    @total_items = @projects.count
+    @projects    = @projects.paginate(paginate_params)
 
     respond_to do |format|
       format.json {

@@ -55,3 +55,29 @@ ru:
         avatar: Аватар
         avatar_file_size: Размер аватара
         authentication_token: API токен
+
+  users:
+    profile:
+      projects:
+        visibilities:
+          all:                                Все
+          open:                               Публичный
+          hidden:                             Приватный
+        search:                               Искать
+        or:                                   или
+        clear:                                Очистить
+        updated:                              "Обновлен:"
+
+  simple_form:
+    labels:
+      user:
+        delete_avatar:                        Удалить аватар
+        remember_me_html:                     "Запомнить меня&nbsp;"
+    placeholders:
+      user:
+        uname:                                Введите никнейм здесь.
+        name:                                 Введите имя здесь.
+        email:                                Введите email здесь.
+        password:                             Введите пароль здесь.
+        password_confirmation:                Повторите пароль здесь.
+

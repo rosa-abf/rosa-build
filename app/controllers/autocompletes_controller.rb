@@ -1,14 +1,15 @@
 class AutocompletesController < ApplicationController
   before_filter :authenticate_user!
 
-  autocomplete :group,  :uname
-  autocomplete :user,   :uname
+  def autocomplete_user_uname
+    results = User.opened.search(params[:query]).search_order.limit(5)
+    render json: results.map{ |u| { id: u.id, name: u.uname } }
+  end
 
   def autocomplete_user_or_group
-    results = []
-    results << User.opened.search(params[:term]).search_order.limit(5).pluck(:uname)
-    results << Group.search(params[:term]).search_order.limit(5).pluck(:uname)
-    render json: results.flatten.sort.map{ |r| { label: r } }
+    results << User.opened.search(params[:query]).search_order.limit(5).pluck(:uname)
+    results << Group.search(params[:query]).search_order.limit(5).pluck(:uname)
+    render json: results.flatten.sort.map{ |r| { id: r, name: r } }
   end
 
   def autocomplete_extra_build_list
@@ -39,12 +40,14 @@ class AutocompletesController < ApplicationController
             .where("platforms.platform_type = 'personal' OR platforms.id = ?",
                     params[:build_for_platform_id].to_i).each do |platform|
       platform.repositories.each do |repository|
-        label = "#{platform.name}/#{repository.name}"
-        results <<  { :id     => repository.id,
-                      :label  => label,
-                      :value  => label,
-                      :path   => platform_repository_path(platform, repository)
-                    }
+        results <<
+          {
+            id:              repository.id,
+            platform_name:   platform.name,
+            repository_name: repository.name,
+            label:           "#{platform.name}/#{repository.name}",
+            path:            platform_repository_path(platform, repository)
+          }
       end
     end if save_to_platform.personal?
     render json: results.to_json

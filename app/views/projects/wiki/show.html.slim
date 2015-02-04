@@ -1,0 +1,28 @@
+- set_meta_tags title: [title_object(@project), @page.name]
+
+== render 'submenu'
+
+.row
+  .col-md-2.col-md-offset-1
+    == render 'sidebar'
+  .col-md-8
+
+    .row
+      .col-md-4
+        h3
+          = @page.name
+          = "(#{ t("wiki.preview") })" if action_name == 'preview'
+      - unless action_name == 'preview'
+        .col-md-8.offset20
+          a.btn.btn-primary> href=history_project_wiki_path(@project, escaped_name)
+            = t('wiki.page_history')
+          - if @editable
+            a.btn.btn-primary> href=edit_project_wiki_path(@project, escaped_name)
+              = t('wiki.edit_page')
+          - if can? :write, @project
+            a.btn.btn-primary href=new_project_wiki_path(@project)
+              = t('wiki.new_page')
+    hr
+    .row
+      .col-md-8
+        == render 'page'

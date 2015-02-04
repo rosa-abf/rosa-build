@@ -1,9 +1,0 @@
-.sub-menu.tour
-  %nav
-    =render 'pages/tour/submenu'
-.both
-/ Page
-%article
-  / Single page content
-  -@entries.each_with_index do |el, ind|
-    =render partial: 'pages/tour/entry', locals: {entry: el, is_left: ind.odd?}

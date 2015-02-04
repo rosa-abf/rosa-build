@@ -40,9 +40,8 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   def log
     worker_log = @product_build_list.abf_worker_log
-
     render json: {
-      log: ( Pygments.highlight(worker_log, lexer: 'sh') rescue worker_log),
+      log: (Pygments.highlight(worker_log, lexer: 'sh') rescue worker_log),
       building: @product_build_list.build_started?
     }
   end
@@ -58,7 +57,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
       redirect_to [@platform, @product]
     else
       flash[:error] = t('flash.product.build_error')
-      flash[:warning] = pbl.errors.full_messages.join('. ')
+      @product_build_list = pbl
       render action: :new
     end
   end
@@ -73,11 +72,14 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def index
-    if params[:product_id].present?
-      @product_build_lists = @product_build_lists.where(id: params[:product_id])
+    @product_build_list = ProductBuildList.new(params[:product_build_list])
+    @product_build_list.status = nil if params[:product_build_list].blank?
+    if @product_build_list.product_id.present?
+      @product_build_lists = @product_build_lists.where(id: @product_build_list.product_id)
     else
-      @product_build_lists = @product_build_lists.scoped_to_product_name(params[:product_name]) if params[:product_name].present?
-      @product_build_lists = @product_build_lists.for_status(params[:status]) if params[:status].present?
+      @product_build_lists = @product_build_lists.
+        scoped_to_product_name(@product_build_list.product_name).
+        for_status(@product_build_list.status)
     end
     @product_build_lists = @product_build_lists.recent.paginate page: params[:page]
     @build_server_status = AbfWorkerStatusPresenter.new.products_status

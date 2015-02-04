@@ -1,0 +1,48 @@
+- if build_list.save_to_platform.released
+  tr ng-show='build_list.can_publish && !build_list.advisory'
+    td= t('layout.build_lists.attached_advisory')
+    td
+      = select_tag :attach_advisory,
+        advisories_select_options(advisories),
+        'ng-model'  => 'attach_advisory',
+        'ng-change' => 'attachAdvisoryChanged()'
+      p.help-block
+        = t('layout.advisories.publication_info',
+          update_types: BuildList::RELEASE_UPDATE_TYPES.join(', '))
+
+  tr ng-show='attach_advisory != "no" && attach_advisory != "new"'
+    td
+      i
+        = t('layout.advisories.search_hint')
+    td
+      input.form-control type='text' ng-model='term' ng-keyup='search()'
+      p.help-block
+        = t('layout.advisories.advisory_id_info',
+          advisory_format: advisory_id_for_hint)
+      - I18n.t('layout.advisories.banners').keys.each do |key|
+        .info class=key ng-show="search_status == '#{key}'"
+          p.help-block
+            = t("layout.advisories.banners.#{key}")
+
+  tr ng-show='attach_advisory == "new"'
+    td colspan=2
+      = f.fields_for build_list.build_advisory do |f|
+        = render partial: 'advisories/form', locals: {f: f}
+
+  tr.alert.alert-info ng-show='attach_advisory != "no" && attach_advisory != "new"'
+    td colspan=2
+      .row
+        .col-md-4
+          i=t('activerecord.models.advisory')
+        .col-md-8
+          b
+            | {{advisory.advisory_id}}
+      .row
+        .col-md-4
+          i= t('activerecord.attributes.advisory.description')
+        .col-md-8 ng-bind-html='advisory.description'
+      .row
+        .col-md-4
+          i= t('activerecord.attributes.advisory.references')
+        .col-md-8
+          | {{advisory.references}}

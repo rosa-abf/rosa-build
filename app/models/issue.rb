@@ -7,6 +7,7 @@ class Issue < ActiveRecord::Base
     STATUS_CLOSED = 'closed'
   ]
   HASH_TAG_REGEXP = /([a-zA-Z0-9\-_]*\/)?([a-zA-Z0-9\-_]*)?#([0-9]+)/
+  self.per_page   = 20
 
   belongs_to :project
   belongs_to :user
@@ -47,7 +48,9 @@ class Issue < ActiveRecord::Base
   before_update :update_statistic
 
   attr_accessible :labelings_attributes, :title, :body, :assignee_id
-  accepts_nested_attributes_for :labelings, allow_destroy: true
+  accepts_nested_attributes_for :labelings,
+    reject_if: lambda {|attributes| attributes['label_id'].blank?},
+    allow_destroy: true
 
   scope :opened, -> { where(status: [STATUS_OPEN, STATUS_REOPEN]) }
   scope :closed, -> { where(status: STATUS_CLOSED) }
@@ -60,7 +63,8 @@ class Issue < ActiveRecord::Base
     where("#{table_name}.title ILIKE ?", "%#{q.mb_chars.downcase}%") if q.present?
   }
   scope :without_pull_requests, -> {
-    where('NOT EXISTS (select null from pull_requests as pr where pr.issue_id = issues.id)')
+    where('NOT EXISTS (select null from pull_requests as pr where pr.issue_id = issues.id)').
+    references(:pull_requests)
   }
 
   attr_accessor :new_pull_request

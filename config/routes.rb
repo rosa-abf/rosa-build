@@ -169,9 +169,8 @@ Rosa::Application.routes.draw do
         put    :clear
         get    :clone
         get    :members
-        post   :remove_members # fixme: change post to delete
+        delete :remove_members
         post   :change_visibility
-        delete :remove_member
         post   :add_member
         post   :make_clone
         get    :advisories
@@ -198,8 +197,7 @@ Rosa::Application.routes.draw do
           get     :remove_project
           delete  :remove_project
           get     :projects_list
-          post    :remove_members # fixme: change post to delete
-          delete  :remove_member
+          delete  :remove_members
           post    :add_member
           put     :regenerate_metadata
           put     :sync_lock_file
@@ -229,7 +227,6 @@ Rosa::Application.routes.draw do
   resources :autocompletes, only: [] do
     collection do
       get :autocomplete_user_uname
-      get :autocomplete_group_uname
       get :autocomplete_extra_build_list
       get :autocomplete_extra_mass_build
       get :autocomplete_extra_repositories
@@ -267,8 +264,8 @@ Rosa::Application.routes.draw do
       delete :remove_user, on: :member
       resources :members, only: [:index] do
         collection do
-          post :add
-          post :update
+          post   :add
+          put    :update
           delete :remove
         end
       end
@@ -330,8 +327,11 @@ Rosa::Application.routes.draw do
             get :search_collaborators
           end
         end
-        post "/labels/:label_id" => "issues#destroy_label", as: :issues_delete_label
-        post "/labels/:label_id/update" => "issues#update_label", as: :issues_update_label
+
+        get  'pull_requests'           => 'issues#pull_requests', as: :pull_requests
+        get  'labels'                  => 'issues#labels',        as: :labels
+        post 'labels/:label_id'        => 'issues#destroy_label', as: :issues_delete_label
+        post 'labels/:label_id/update' => 'issues#update_label',  as: :issues_update_label
 
         resources :build_lists, only: [:index, :new, :create] do
           get :list, on: :collection
@@ -340,13 +340,12 @@ Rosa::Application.routes.draw do
           get :find, on: :collection
         end
         resources :hooks, except: :show
-        resources :pull_requests, except: :destroy do
+        resources :pull_requests, except: [:index, :destroy] do
           get :autocomplete_to_project, on: :collection
           put :merge, on: :member
         end
         post '/preview' => 'projects#preview', as: 'md_preview'
         post 'refs_list' => 'projects#refs_list', as: 'refs_list'
-        get '/pull_requests/:issue_id/add_line_comments(.:format)' => "comments#new_line", as: :new_line_pull_comment
         put 'schedule' => 'projects#schedule'
       end
 
@@ -356,17 +355,18 @@ Rosa::Application.routes.draw do
       patch '/' => 'projects#update'
       delete '/' => 'projects#destroy'
       # Member
-      post '/fork' => 'projects#fork', as: :fork_project
+      post '/fork'  => 'projects#fork',  as: :fork_project
+      post '/alias' => 'projects#alias', as: :alias_project
       get '/possible_forks' => 'projects#possible_forks', as: :possible_forks_project
       get '/sections' => 'projects#sections', as: :sections_project
-      post '/sections' => 'projects#sections'
+      patch '/sections' => 'projects#sections'
       delete '/remove_user' => 'projects#remove_user', as: :remove_user_project
       # constraints treeish: /[\w\-\.]+(\/[\w\-\.]+)?/ do
       constraints treeish: /.+/ do
         constraints Rosa::Constraints::Treeish do
           # Tree
           get '/' => "git/trees#show", as: :project
-          get '/tree/:treeish(/*path)' => "git/trees#show", as: :tree, format: false
+          get '/tree/:treeish' => "git/trees#show", as: :tree, format: false
           # Tags
           get '/tags' => "git/trees#tags", as: :tags
           # Branches

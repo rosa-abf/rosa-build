@@ -7,9 +7,9 @@ describe Groups::MembersController do
     @user = @group.owner
     set_session_for @user
     @another_user = FactoryGirl.create(:user)
-    @add_params = {group_id: @group, user_uname: @another_user.uname}
-    @remove_params = {group_id: @group, user_remove: {"#{@group.owner.id}"=>["1"]}}
-    @update_params = {group_id: @group, user: {"#{@group.owner.id}"=>'reader'}}
+    @add_params = {group_id: @group, member_id: @another_user.id}
+    @remove_params = {group_id: @group, members: [@group.owner.id]}
+    @update_params = {group_id: @group, member_id: @group.owner.id, role: :reader}
   end
 
   context 'for owner user' do
@@ -61,7 +61,7 @@ describe Groups::MembersController do
     it 'should not set read role to owner group' do
       post :update, @update_params
       Relation.by_target(@group).by_actor(@user).first.role.should eql('admin')
-      response.should redirect_to(group_members_path(@group))
+      response.should redirect_to(forbidden_path)
     end
   end
 

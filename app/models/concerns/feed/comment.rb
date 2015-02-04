@@ -11,6 +11,7 @@ module Feed::Comment
 
   def new_comment_notifications
     return if automatic?
+
     if issue_comment?
       commentable.subscribes.each do |subscribe|
         if user_id != subscribe.user_id && can_notify_on_new_comment?(subscribe)
@@ -23,7 +24,7 @@ module Feed::Comment
                 user_name:       user.name,
                 user_email:      user.email,
                 user_id:         user_id,
-                comment_body:    body,
+                comment_body:    body.truncate(100, omission: '…'),
                 issue_title:     commentable.title,
                 issue_serial_id: commentable.serial_id,
                 project_id:      commentable.project.id,
@@ -52,8 +53,8 @@ module Feed::Comment
               user_name:      user.name,
               user_email:     user.email,
               user_id:        user_id,
-              comment_body:   body,
-              commit_message: commentable.message,
+              comment_body:   body.truncate(100, omission: '…'),
+              commit_message: commentable.message.truncate(70, omission: '…'),
               commit_id:      commentable.id,
               project_id:     project.id,
               comment_id:     id,

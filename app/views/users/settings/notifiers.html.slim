@@ -1,0 +1,43 @@
+- set_meta_tags title: t('layout.users.settings_notifier')
+= render 'users/base/submenu'
+
+
+.container.col-md-offset-2.col-md-8
+  .row
+    p
+      = t('layout.settings.notifiers.notice_header', email: @user.email)
+    = link_to t("layout.settings.notifiers.change_email_link"), profile_settings_path
+    hr
+
+    = simple_form_for @user.notifier,
+      url:              notifiers_settings_path,
+      wrapper:          :horizontal_form,
+      wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+
+      .row
+        .col-md-6
+          = f.input :can_notify, as: :boolean
+
+          .col-sm-offset-3.col-sm-9
+            h4
+              = t('layout.settings.notifiers.code_header')
+          - [:update_code, :new_comment_commit_owner, :new_comment_commit_repo_owner, :new_comment_commit_commentor].each do |field|
+            = f.input field, as: :boolean
+
+        .col-md-6
+          .col-sm-offset-3.col-sm-9
+            h4
+              = t('layout.settings.notifiers.tracker_header')
+          - [:new_comment, :new_comment_reply, :new_issue, :issue_assign].each do |field|
+            = f.input field, as: :boolean
+
+          .col-sm-offset-3.col-sm-9
+            h4
+              = t('layout.settings.notifiers.build_list_header')
+          - [:new_build, :new_associated_build].each do |field|
+            = f.input field, as: :boolean
+
+      .row
+        hr
+        = f.button :submit, t('layout.save')
+

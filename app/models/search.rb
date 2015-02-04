@@ -1,29 +1,28 @@
-class Search
-  TYPES = ['projects', 'users', 'groups', 'platforms']
+class Search < Struct.new(:query, :ability, :paginate_params)
+  include ActiveModel::Conversion
+  extend  ActiveModel::Naming
 
-  def self.by_term_and_type(term, type, ability, paginate_params)
-    results = {}
-    case type
-    when 'all'
-      TYPES.each{ |t| results[t] = find_collection(t, term, ability, paginate_params) }
-    when *TYPES
-      results[type] = find_collection(type, term, ability, paginate_params)
-    end
-    results
-  end
+  TYPES = %w(projects users groups platforms)
 
-  class << self
-    protected
 
-    def find_collection(type, term, ability, paginate_params)
-      scope = if type == 'users'
-                User.opened
-              else
-                type.classify.constantize.accessible_by(ability, :show)
-              end
-      scope.search(term).
-            search_order.
-            paginate(paginate_params)
+  TYPES.each do |type|
+    define_method type do
+      find_collection(type)
     end
   end
+
+  private
+
+  def find_collection(type)
+    scope =
+      if type == 'users'
+        User.opened
+      else
+        type.classify.constantize.accessible_by(ability, :show)
+      end
+    scope.search(query).
+          search_order.
+          paginate(paginate_params)
+  end
+
 end

@@ -6,7 +6,8 @@ describe Projects::CommentsController do
     @project = FactoryGirl.create(:project_with_commit)
     @commit = @project.repo.commits.first
 
-    @create_params = { comment: { body: 'I am a comment!' }, name_with_owner: @project.name_with_owner, commit_id: @commit.id }
+    @create_params = { comment: { body: 'I am a comment!' }, name_with_owner: @project.name_with_owner,
+                       commit_id: @commit.id, format: :json }
     @update_params = { comment: { body: 'updated' }, name_with_owner: @project.name_with_owner, commit_id: @commit.id }
 
     any_instance_of(Project, versions: ['v1.0', 'v2.0'])

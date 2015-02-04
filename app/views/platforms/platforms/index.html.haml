@@ -1,4 +1,0 @@
--set_meta_tags title: t('layout.platforms.list_header')
-= link_to t("layout.platforms.new"), new_platform_path, class: 'button' if can? :create, Platform
-= render 'list', object: @platforms
-= will_paginate @platforms

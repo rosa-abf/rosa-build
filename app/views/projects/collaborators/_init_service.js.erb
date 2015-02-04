@@ -1,0 +1,9 @@
+<script>
+  angular.module('RosaABF').service('CollaboratorsInitializer', function(){
+    return {
+      name_with_owner: '<%= @project.name_with_owner %>',
+      project_id:      <%= @project.id %>,
+      collaborators:   <%= render('collaborators.json', collaborators: @collaborators).html_safe %>
+    };
+  });
+</script>

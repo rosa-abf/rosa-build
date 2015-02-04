@@ -60,3 +60,12 @@ ru:
       delete_error: Не удалось удалить cборочный лист продукта
       updated: Cборочный лист продукта успешно обновлен
       update_error: Не удалось обновить cборочный лист продукта
+
+  simple_form:
+    labels:
+      product_build_list:
+    placeholders:
+      product_build_list:
+        status:             Выберите статус
+        product_name:       Введите название продукта здесь.
+        product_id:         Введите Id сборочного листа продукта здесь.

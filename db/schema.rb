@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141015193923) do
+ActiveRecord::Schema.define(version: 20150112204757) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -173,6 +173,8 @@ ActiveRecord::Schema.define(version: 20141015193923) do
     t.string   "owner_uname",                                 null: false
     t.boolean  "architecture_dependent",   default: false,    null: false
     t.integer  "autostart_status"
+    t.integer  "alias_from_id"
+    t.index ["alias_from_id"], :name => "index_projects_on_alias_from_id"
     t.index ["name", "owner_id", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
   end
 

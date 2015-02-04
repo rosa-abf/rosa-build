@@ -1,4 +1,17 @@
 en:
+
+  projects:
+    projects:
+      aliases:
+        header: "Aliases"
+        name:   "Project name"
+
+    base:
+      submenu:
+        tooltips:
+          alias:  "Alias of %{name}"
+          fork:   "Fork of %{name}"
+
   layout:
     projects:
       placeholder:
@@ -21,6 +34,7 @@ en:
       edit: Settings
       fork_and_edit: Fork
       fork_to: Fork to %{to}
+      create_alias_for: Create alias for %{for}
       fork_modal_header: Where do you want to fork this project?
       already_exists: Project already exists
       unexisted_project: Project not exists
@@ -60,6 +74,7 @@ en:
       git_help:
         cloning: Cloning the repository
         remote: Add this repository as a remote to an existing local repository
+        question_title: Copy to clipboard
 
       diff_show_header: "%{files} with %{additions} and %{deletions}."
       about_subheader:  "About project"
@@ -103,7 +118,7 @@ en:
         description: Description
         owner: Owner
         visibility: Visibility
-        visibility_types:
+        visibilities:
           open: Public
           hidden: Private
         repository_id: Repository
@@ -112,7 +127,7 @@ en:
         updated_at: Updated on
         has_issues: Issues tracker enabled
         has_wiki:  Wiki enabled
-        srpm: Import code from src.rpm (optional)
+        srpm: Import code from src.rpm
         who_owns:
           me: Myself
           group: Group
@@ -126,3 +141,16 @@ en:
       project:
         uname: The name can only use lower case Latin letters (a-z), numbers (0-9) and underscore (_)
         default_branch: Wrong branch
+
+  simple_form:
+    labels:
+      project:
+        name:       Project name
+        owner:      Owner
+    placeholders:
+      project:
+        name:       Enter the name of project here.
+        owner:      Enter the nickname of owner here.
+    hints:
+      project:
+        srpm:       Optional

@@ -1,15 +1,11 @@
 %h3= t("layout.advisories.form_header")
 
-.leftlist
+.form-group
   = f.label :description, t("activerecord.attributes.advisory.description")
-.rightlist
-  = f.text_area :description, class: 'text_field', cols: 80
-.both
+  = f.text_area :description, class: 'form-control', cols: 80
 
-.leftlist
+.form-group
   = f.label :references, t("activerecord.attributes.advisory.references")
-  %span.hint
+  %p.help-block
     = t("layout.advisories.ref_comment")
-.rightlist
-  = f.text_area :references, class: 'text_field', cols: 80
-.both
+  = f.text_area :references, class: 'form-control', cols: 80

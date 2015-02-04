@@ -1,0 +1,32 @@
+hr
+- commits_queue = []
+- diff_counter = 0
+
+-merge_activity(@comments, @commits).each do |item|
+  -if item.is_a? Comment
+    == render 'projects/git/commits/commits_small', commits: commits_queue if commits_queue.present?
+    -commits_queue.clear
+    -unless item.created_from_commit_hash
+      == render 'projects/comments/comment', comment: item, data: {project: @project, commentable: @commentable}
+    -else
+      - GitPresenters::CommitAsMessagePresenter.present(nil, comment: item) do |presenter|
+        == render 'shared/feed_message', presenter: presenter, item_no: "-#{item.id}"
+  -elsif item.is_a? Grit::Commit
+    -commits_queue << item
+  -elsif item.is_a? Array
+    == render 'projects/git/commits/commits_small', commits: commits_queue if commits_queue.present?
+    -commits_queue.clear
+    -unless item[1].first.data[:actual]
+      -exp_id = "expand-comment#{item[1].first.id}"
+      .activity.panel.panel-default
+        .panel-heading
+          => t '.show_outdated_diff'
+          span>[ class       = 'glyphicon glyphicon-chevron-down pointer'
+                 data-toggle = 'collapse'
+                 data-target = "#content-#{exp_id}" ]
+        .panel-body.collapse id = "content-#{exp_id}"
+          == render 'projects/pull_requests/discussion_comments', item: item, diff_counter: diff_counter
+    -else
+      == render 'projects/pull_requests/discussion_comments', item: item, diff_counter: diff_counter
+    - diff_counter += 1
+== render 'projects/git/commits/commits_small', commits: commits_queue if commits_queue.present?

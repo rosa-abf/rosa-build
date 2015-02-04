@@ -1,0 +1,19 @@
+-set_meta_tags title: [title_object(@project), @issue.title]
+== render 'submenu'
+== render 'projects/comments/markdown_help' if current_user
+
+.col-xs-12.col-md-10.col-md-offset-1 ng-controller = 'IssueController as issueCtrl' ng-cloak = true
+  .row
+    .col-md-3.col-sm-4.offset20
+      == render 'status_sidebar'
+      - if can?(:write, @project)
+        = simple_form_for @issue, url: project_issue_path(@project, @issue) do |f|
+          == render 'select_labels'
+          == render 'manage_labels'
+      - else
+        == render 'select_labels'
+
+    .col-md-9.col-sm-8= render 'header'
+
+- content_for :additional_scripts do
+  == render 'init_service.js.erb'

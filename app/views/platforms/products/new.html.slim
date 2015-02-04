@@ -1,0 +1,8 @@
+- set_meta_tags title: [title_object(@platform), t('layout.products.new')]
+= render 'submenu'
+
+
+.container.col-md-offset-2.col-md-8
+  .row
+    = simple_form_for [@platform, @product] do |f|
+      = render 'form', f: f

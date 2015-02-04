@@ -42,3 +42,11 @@ ru:
         projects_list: Список проектов
         build_for_platform: Собрано для платформы
         external_nodes: Дополнительные ноды
+
+  simple_form:
+    labels:
+      mass_build:
+        description:       Описание
+    placeholders:
+      mass_build:
+        description:       Введите описание массовой сборки здесь.

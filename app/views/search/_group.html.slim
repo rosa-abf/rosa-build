@@ -1,0 +1,7 @@
+h4
+  - size = User::AVATAR_SIZES[:small]
+  => image_tag avatar_url(group, :small), alt: group.uname, height: size, width: size
+  a href=user_path(group)
+    = group.uname
+p
+  = group.description.to_s.truncate(255)

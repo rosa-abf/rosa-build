@@ -6,15 +6,24 @@ class Platforms::PlatformsController < Platforms::BaseController
   load_and_authorize_resource
 
   def index
-    @platforms = @platforms.accessible_by(current_ability, :related).order(:name).paginate(page: params[:page], per_page: 20)
+    respond_to do |format|
+      format.html {}
+
+      format.json {
+        @platforms = @platforms.accessible_by(current_ability, :related)
+        @platforms_count = @platforms.count
+        @platforms = @platforms.paginate(page: current_page, per_page: Platform.per_page)
+      }
+    end
   end
 
   def show
   end
 
   def new
-    @admin_uname = current_user.uname
-    @admin_id = current_user.id
+    @admin_uname  = current_user.uname
+    @admin_id     = current_user.id
+    @platform     = Platform.new
   end
 
   def edit
@@ -33,7 +42,6 @@ class Platforms::PlatformsController < Platforms::BaseController
       redirect_to @platform
     else
       flash[:error] = I18n.t("flash.platform.create_error")
-      flash[:warning] = @platform.errors.full_messages.join('. ')
       render action: :new
     end
   end
@@ -54,7 +62,6 @@ class Platforms::PlatformsController < Platforms::BaseController
           redirect_to @platform
         else
           flash[:error] = I18n.t("flash.platform.save_error")
-          flash[:warning] = @platform.errors.full_messages.join('. ')
           render action: :edit
         end
       end
@@ -116,14 +123,9 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def remove_members
-    user_ids = params[:user_remove] ?
-      params[:user_remove].map{ |k, v| k if v.first == '1' }.compact : []
-    User.where(id: user_ids).each{ |user| @platform.remove_member(user) }
-    redirect_to members_platform_path(@platform)
-  end
-
-  def remove_member
-    User.where(id: params[:member_id]).each{ |user| @platform.remove_member(user) }
+    User.where(id: params[:members]).each do |user|
+      @platform.remove_member(user)
+    end
     redirect_to members_platform_path(@platform)
   end
 

@@ -1,97 +1,87 @@
 <html><head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>500</title>
-  <link href="/assets/application.css" media="screen" rel="stylesheet" type="text/css">
+  <title>404</title>
+  <link href="/assets/new_application.css" media="screen" rel="stylesheet" type="text/css">
+  <script cache="application" src="/assets/new_application.js"></script>
 </head>
 <body>
-  <div class="wrap">
-    <!--Top block-->
-    <header>
-      <div class="left">
+  <nav class='navbar navbar-inverse top_menu' role='navigation'>
+    <div class='container-fluid'>
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class='navbar-header'>
+        <button class='navbar-toggle' data-target='#top-menu-navbar-collapse' data-toggle='collapse' type='button'>
+          <span class='sr-only'>Toggle navigation</span>
+          <span class='icon-bar'></span>
+          <span class='icon-bar'></span>
+          <span class='icon-bar'></span>
+        </button>
+        <a class="navbar-brand" href="/"><img alt="ABF" src="/pics/logo-mini.png" /></a>
       </div>
-      <div class="middle">
-        <!--Main menu-->
-        <menu>
-        <div class="logo">
-          <a href="/"><img src="/pics/logo-mini.png" alt="Logo"></a>
-        </div>
-          <ul>
-            <li>
-              <a href="/build_lists">Monitoring</a>
-            </li>
-            <li>
-              <a href="/advisories">Advisories</a>
-            </li>
-          </ul>
-        </menu>
-        <div class="information">
-          <div class="search">
-            <form accept-charset="UTF-8" action="/search" method="get"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="✓"></div>
-              <div class="pic"></div>
-              <div class="field"><input id="query" name="query" placeholder="Search" type="text"></div>
-            </form>
-          </div>
-        </div>
-
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class='collapse navbar-collapse' id='top-menu-navbar-collapse'>
+        <ul class='nav navbar-nav'>
+          <li><a href="/build_lists">Мониторинг задач</a></li>
+          <li><a href="/advisories">Бюллетени</a></li>
+          <li><a href="/statistics">Статистика</a></li>
+        </ul>
+        <form accept-charset="UTF-8" action="/search" class="navbar-form navbar-left" method="get" role="search"><div style="margin:0;padding:0;display:inline"><input name="utf8" type="hidden" value="&#x2713;" /></div>
+              <div class='form-group'>
+                <input class="form-control" id="query" name="query" placeholder="Поиск" type="text" />
+              </div>
+        </form>
       </div>
-      <div class="right">
-      </div>
-      <div class="both">
-      </div>
-    </header>
-
-    <div class="both">
+      <!-- /.navbar-collapse -->
     </div>
-
-    <!--Page-->
-    <article>
-      <!--Single page content-->
-      <div class="all error500">
-
-        <h1>Error <span>500</span></h1>
-        <h2>Something went wrong.<br>
-        We've been notified about this issue<br>
-        and we'll take a look at it shortly.</h2>
-        <p class="pages">
-          Try to open other pages.
-        </p>
-        <p class="search">
-          Or use the search.
-        </p>
-        <div class="both"></div>
-
+    <!-- /.container-fluid -->
+  </nav>
+  <noscript>
+    <div style='font-size: 12px; color: red; font-weight: bold;'>You need javascript to properly use this site</div>
+  </noscript>
+  <article >
+    <div class='row'>
+      <div class='col-md-6 col-md-offset-3 text-center'>
+        <div class="all error500">
+          <div class='offset20'>
+            <img src="/pics/500.png" class='img-responsive'>
+          </div>
+          <div class="clearfix"></div>
+          <h1>Error <span>500</span></h1>
+          <h2>Something went wrong.</h2>
+          <p class="pages">
+            We've been notified about this issue<br>
+            and we'll take a look at it shortly.
+          </p>
+          <p class="pages">
+            Try to open other pages.
+          </p>
+          <p class="search">
+            Or use the search.
+          </p>
+          <div class="clearfix"></div>
+        </div>
       </div>
+    </div>
+  </article>
 
-      <div class="both">
-      </div>
-    </article>
-
-  </div>
-  <!--Footer-->
-  <footer>
+  <footer class='offset20'>
     <ul>
-      <li>
-        <img src="/pics/flag.png" alt="rosa"> <img src="/pics/square.png" alt="_">
-      </li>
-      <li>
-        <a href="#">About company</a> <img src="/pics/square.png" alt="_">
-      </li>
-      <li>
-        <a href="#">Contacts</a> <img src="/pics/square.png" alt="_">
-      </li>
-      <li>
-        <a href="#">Terms of use</a> <img src="/pics/square.png" alt="_">
-      </li>
-      <li>
-        <a href="#">Confidentiality</a> <img src="/pics/square.png" alt="_">
-      </li>
-      <li>
-        <a href="#">Security</a> <img src="/pics/square.png" alt="_">
-      </li>
-      <li>
-        <a href="/contact">Support</a>
-      </li>
+      <li>ROSA Лаб. © 2015</li>
+      <li>·</li>
+      <li><img alt="flag" src="/pics/flag.png" /></li>
+      <li>·</li>
+      <li><a href="http://www.rosalab.ru/about">О компании</a></li>
+      <li>·</li>
+      <li><a href="http://www.rosalab.ru/about/contacts">Контакты</a></li>
+      <li>·</li>
+      <li><a href="/terms-of-service">Условия использования</a></li>
+      <li>·</li>
+      <li><a href="/contact">Служба поддержки</a></li>
+      <li>·</li>
+      <li><a href="http://abf-doc.rosalinux.ru">API для разработчиков</a></li>
+      <li>·</li>
+      <li><a href="/abf/abf-ideas/issues">Идеи для ABF</a></li>
+      <li>·</li>
+      <li><a href="http://abf-blog.rosalinux.ru">Блог ABF</a></li>
     </ul>
   </footer>
-
 </body></html>

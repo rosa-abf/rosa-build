@@ -1,24 +1,24 @@
 class Projects::ProjectsController < Projects::BaseController
   include DatatableHelper
   include ProjectsHelper
+
   before_filter :authenticate_user!
   load_and_authorize_resource id_param: :name_with_owner # to force member actions load
   before_filter :who_owns, only: [:new, :create, :mass_import, :run_mass_import]
 
   def index
-    @projects = Project.accessible_by(current_ability, :membered)
-
+    @projects = Project.accessible_by(current_ability, :membered).search(params[:search])
     respond_to do |format|
       format.html {
-        @all_projects = @projects
         @groups = current_user.groups
         @owners = User.where(id: @projects.where(owner_type: 'User').uniq.pluck(:owner_id))
-        @projects = @projects.recent.paginate(page: params[:page], per_page: 25)
       }
       format.json {
-        selected_groups = params[:groups] || []
-        selected_owners = params[:users] || []
-        @projects = prepare_list(@projects, selected_groups, selected_owners)
+        groups = params[:groups] || []
+        owners = params[:users] || []
+        @projects = @projects.by_owners(groups, owners) if groups.present? || owners.present?
+        @projects_count = @projects.count
+        @projects = @projects.recent.paginate(page: current_page, per_page: Project.per_page)
       }
     end
   end
@@ -43,12 +43,14 @@ class Projects::ProjectsController < Projects::BaseController
       flash[:notice] = t('flash.project.mass_import_added_to_queue')
       redirect_to projects_path
     else
-      flash[:warning] = @project.errors.full_messages.join('. ')
       render :mass_import
     end
   end
 
   def edit
+    @project_aliases = Project.where.not(id: @project.id).
+      where('alias_from_id IN (:ids) OR id IN (:ids)', { ids: [@project.alias_from_id, @project.id] }).
+      paginate(page: current_page)
   end
 
   def create
@@ -112,10 +114,11 @@ class Projects::ProjectsController < Projects::BaseController
     redirect_to @project.owner
   end
 
-  def fork
+  def fork(is_alias = false)
     owner = (Group.find params[:group] if params[:group].present?) || current_user
     authorize! :write, owner if owner.class == Group
-    if forked = @project.fork(owner, params[:fork_name]) and forked.valid?
+
+    if forked = @project.fork(owner, new_name: params[:fork_name], is_alias: is_alias) and forked.valid?
       redirect_to forked, notice: t("flash.project.forked")
     else
       flash[:warning] = t("flash.project.fork_error")
@@ -124,13 +127,17 @@ class Projects::ProjectsController < Projects::BaseController
     end
   end
 
+  def alias
+    fork(true)
+  end
+
   def possible_forks
     render partial: 'projects/git/base/forks', layout: false,
       locals: { owner: current_user, name: (params[:name].presence || @project.name) }
   end
 
   def sections
-    if request.post?
+    if request.patch?
       if @project.update_attributes(params[:project])
         flash[:notice] = t('flash.project.saved')
         redirect_to sections_project_path(@project)
@@ -143,20 +150,25 @@ class Projects::ProjectsController < Projects::BaseController
 
   def remove_user
     @project.relations.by_actor(current_user).destroy_all
-    flash[:notice] = t("flash.project.user_removed")
-    redirect_to projects_path
+    respond_to do |format|
+      format.html do
+        flash[:notice] = t("flash.project.user_removed")
+        redirect_to projects_path
+      end
+      format.json { render nothing: true }
+    end
   end
 
   def autocomplete_maintainers
     term, limit = params[:term], params[:limit] || 10
     items = User.member_of_project(@project)
                 .where("users.name ILIKE ? OR users.uname ILIKE ?", "%#{term}%", "%#{term}%")
-                .limit(limit).map { |u| {value: u.fullname, label: u.fullname, id: u.id} }
+                .limit(limit).map { |u| {name: u.fullname, id: u.id} }
     render json: items
   end
 
   def preview
-    render inline: view_context.markdown(params[:text] || ''), layout: false
+    render inline: view_context.markdown(params[:text]), layout: false
   end
 
   def refs_list
@@ -169,28 +181,6 @@ class Projects::ProjectsController < Projects::BaseController
 
   def who_owns
     @who_owns = (@project.try(:owner_type) == 'User' ? :me : :group)
-  end
-
-  def prepare_list(projects, groups, owners)
-    res = {}
-    res[:total_count] = projects.count
-
-    if groups.present? || owners.present?
-      projects = projects.by_owners(groups, owners)
-    end
-
-    projects = projects.search(params[:sSearch])
-
-    res[:filtered_count] = projects.count
-
-    projects = projects.order("name #{sort_dir}")
-    res[:projects] = if params[:iDisplayLength].present?
-      projects.paginate(page: page, per_page: per_page)
-    else
-      projects
-    end
-
-    res
   end
 
   def choose_owner

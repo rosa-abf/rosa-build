@@ -95,19 +95,12 @@ shared_examples_for 'registered user or guest' do
     @repository.members.should_not include(@another_user)
   end
 
-  it 'should not be able to remove member from repository' do
-    create_relation(@repository, @another_user, 'admin')
-    delete :remove_member, id: @repository, platform_id: @platform, member_id: @another_user.id
-    response.should redirect_to(redirect_path)
-    @repository.members.should include(@another_user)
-  end
-
   it 'should not be able to remove members from repository' do
     another_user2 = FactoryGirl.create(:user)
     create_relation(@repository, @another_user, 'admin')
     create_relation(@repository, another_user2, 'admin')
     post :remove_members, id: @repository, platform_id: @platform,
-      user_remove: {@another_user.id => [1], another_user2.id => [1]}
+      members: [@another_user.id, another_user2.id]
     response.should redirect_to(redirect_path)
     @repository.members.should include(@another_user, another_user2)
   end
@@ -169,7 +162,7 @@ shared_examples_for 'platform admin user' do
 
   it 'should not be able to perform regenerate_metadata action of personal repository when build_for_platform does not exist' do
     put :regenerate_metadata, id: @personal_repository, platform_id: @personal_repository.platform
-    response.should redirect_to('/404.html')
+    response.should render_template(file: "#{Rails.root}/public/404.html")
     @personal_repository.repository_statuses.should have(:no).items
   end
 
@@ -194,19 +187,12 @@ shared_examples_for 'platform admin user' do
     @repository.members.should include(@another_user)
   end
 
-  it 'should be able to remove member from repository' do
-    create_relation(@repository, @another_user, 'admin')
-    delete :remove_member, id: @repository, platform_id: @platform, member_id: @another_user.id
-    response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
-    @repository.members.should_not include(@another_user)
-  end
-
   it 'should be able to remove members from repository' do
     another_user2 = FactoryGirl.create(:user)
     create_relation(@repository, @another_user, 'admin')
-    create_relation(@repository, @another_user2, 'admin')
+    create_relation(@repository, another_user2, 'admin')
     post :remove_members, id: @repository, platform_id: @platform,
-      user_remove: {@another_user.id => [1], another_user2.id => [1]}
+      members: [@another_user.id, another_user2.id]
     response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
     @repository.members.should_not include(@another_user, another_user2)
   end
@@ -217,7 +203,7 @@ shared_examples_for 'platform admin user' do
     lambda { delete :destroy, id: @personal_repository, platform_id: @personal_repository.platform}
       .should change{ Repository.count }.by(0)
     # response.should redirect_to(forbidden_path)
-    response.should redirect_to('/404.html')
+    response.should render_template(file: "#{Rails.root}/public/404.html")
   end
 
   it 'should be able to destroy personal repository with name not "main"' do

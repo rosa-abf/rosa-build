@@ -56,9 +56,9 @@ class User < Avatar
   validates :language, inclusion: { in: LANGUAGES }, allow_blank: true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
-                  :site, :company, :professional_experience, :location, :sound_notifications, :hide_email
+                  :site, :company, :professional_experience, :location, :sound_notifications, :hide_email, :delete_avatar
   attr_readonly :uname
-  attr_accessor :login
+  attr_accessor :login, :delete_avatar
 
   scope :opened, -> { where('users.role != \'system\' OR users.role IS NULL') }
   scope :real,   -> { where(role: ['', nil]) }

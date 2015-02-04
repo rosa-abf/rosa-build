@@ -1,0 +1,5 @@
+== render 'projects/git/base/choose_fork', owner: current_user, name: name
+hr
+- Group.can_own_project(current_user).each do |group|
+  == render 'projects/git/base/choose_fork', owner: group, name: name
+  hr

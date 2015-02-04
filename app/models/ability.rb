@@ -12,7 +12,7 @@ class Ability
     @user = user
 
     # Shared rights between guests and registered users
-    can [:show, :archive], Project, visibility: 'open'
+    can [:show, :archive, :read], Project, visibility: 'open'
     can :get_id,  Project, visibility: 'open' # api
     can(:refs_list, Project) {|project| can? :show, project}
     can :read, Issue, project: { visibility: 'open' }
@@ -34,6 +34,7 @@ class Ability
     can :possible_forks, Project
 
     if user.guest? # Guest rights
+      cannot :index, Project
       # can [:new, :create], RegisterRequest
     else # Registered user rights
       if user.admin?
@@ -51,7 +52,7 @@ class Ability
       if user.user?
         can :edit, User, id: user.id
         can [:read, :create], Group
-        can [:update, :manage_members, :members, :add_member, :remove_member, :update_member], Group do |group|
+        can [:update, :manage_members, :members, :add_member, :remove_member, :remove_members, :update_member], Group do |group|
           group.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin') # or group.owner_id = user.id
         end
         can :write, Group do |group|
@@ -68,11 +69,13 @@ class Ability
         # can([:read, :archive, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
         can([:read, :archive, :membered, :get_id], Project, read_relations_with_projects) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
-        can [:update, :sections, :manage_collaborators, :autocomplete_maintainers, :add_member, :remove_member, :update_member, :members, :schedule], Project do |project|
+        can [:update, :sections, :manage_collaborators, :autocomplete_maintainers, :add_member, :remove_member, :remove_members, :update_member, :members, :schedule], Project do |project|
           local_admin? project
         end
+
         can(:fork, Project) {|project| can? :read, project}
-        can(:fork, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
+        can(:alias, Project) {|project| local_admin?(project) }
+
         can(:destroy, Project) {|project| owner? project}
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin')}
         can :remove_user, Project
@@ -126,13 +129,13 @@ class Ability
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories')) {|repository| can? :show, repository.platform}
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
         can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project, :regenerate_metadata, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository) {|repository| local_admin? repository.platform}
-        can([:remove_members, :remove_member, :add_member, :signatures, :packages], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
+        can([:remove_member, :remove_members, :add_member, :signatures, :packages], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
         can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(id: user.id)}
         can(:clear, Platform) {|platform| owner?(platform) && platform.personal?}
         can(:regenerate_metadata, Platform) {|platform| owner?(platform) || local_admin?(platform)}
         can([:settings, :destroy, :edit, :update], Repository) {|repository| owner? repository.platform}
 
-        can([:create, :destroy], KeyPair) {|key_pair| owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
+        can([:create, :destroy], KeyPair) {|key_pair| key_pair.repository.blank? || owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
 
         can([:read, :create, :withdraw], Token) {|token| local_admin?(token.subject)}
 
@@ -170,7 +173,7 @@ class Ability
       cannot [:regenerate_metadata, :destroy], Platform, platform_type: 'personal'
       cannot [:create, :destroy], Repository, platform: {platform_type: 'personal'}, name: 'main'
       cannot [:packages], Repository, platform: {platform_type: 'personal'}
-      cannot [:remove_members, :remove_member, :add_member, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository, platform: {platform_type: 'personal'}
+      cannot [:remove_member, :remove_members, :add_member, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository, platform: {platform_type: 'personal'}
 
       cannot :clear, Platform, platform_type: 'main'
       cannot :destroy, Issue

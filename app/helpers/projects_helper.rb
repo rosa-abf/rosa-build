@@ -7,13 +7,9 @@ module ProjectsHelper
     (groups + owners).map do |o|
       class_name = o.class.name
       {
-        id: "#{class_name.downcase}-#{o.id}",
-        color: '0054a6',
-        selected: false,
-        check_box_name: class_name.downcase.pluralize,
-        check_box_value: o.id,
-        name: content_tag(:div, content_tag(:span, o.uname, class: class_name.downcase)),
-        uname: o.uname, # only for sorting
+        class_name: class_name.downcase,
+        id: o.id,
+        uname: o.uname,
         count: o.is_a?(User) ? projects_count_by_owners[o.id] : projects_count_by_groups[o.id]
       }
     end.sort_by{ |f| f[:uname] }
@@ -35,13 +31,13 @@ module ProjectsHelper
     end.to_a.to_json
   end
 
-  def repositories_grouped_by_platform
+  def mass_import_repositories_for_group_select
     groups = {}
     Platform.accessible_by(current_ability, :related).order(:name).each do |platform|
       next unless can?(:local_admin_manage, platform)
       groups[platform.name] = Repository.custom_sort(platform.repositories).map{ |r| [r.name, r.id] }
     end
-    groups
+    groups.to_a
   end
 
   def git_repo_url(name)
@@ -57,11 +53,9 @@ module ProjectsHelper
   end
 
   def options_for_collaborators_roles_select
-    options_for_select(
-      Relation::ROLES.collect { |role|
-        [t("layout.collaborators.role_names.#{ role }"), role]
-      }
-    )
+    Relation::ROLES.map do |role|
+      [t("layout.collaborators.role_names.#{ role }"), role]
+    end
   end
 
   def visibility_icon(visibility)
@@ -69,9 +63,9 @@ module ProjectsHelper
   end
 
   def participant_class(alone_member, project)
-    c = alone_member ? 'user' : 'group'
-    c = 'user_owner' if project.owner == current_user
-    c = 'group_owner' if project.owner.in? current_user.groups
+    c = alone_member ? 'fa-user text-primary' : 'fa-group text-primary'
+    c = 'fa-user text-success' if project.owner == current_user
+    c = 'fa-group text-success' if project.owner.in? current_user.groups
     return c
   end
 
@@ -81,5 +75,30 @@ module ProjectsHelper
 
   def participant_path(participant)
     participant.kind_of?(User) ? user_path(participant) : group_path(participant)
+  end
+
+  def fa_visibility_icon(project)
+    return nil unless project
+    image, color = project.public? ? ['unlock-alt', 'text-success fa-fw'] : ['lock', 'text-danger fa-fw']
+    fa_icon(image, class: color)
+  end
+
+  def project_ownership_options
+    [
+      [ I18n.t('activerecord.attributes.project.who_owns.me'), 'me' ],
+      [ I18n.t('activerecord.attributes.project.who_owns.group'), 'group' ]
+    ]
+  end
+
+  def project_visibility_options
+    Project::VISIBILITIES.map do |v|
+      [ I18n.t("activerecord.attributes.project.visibilities.#{v}"), v ]
+    end
+  end
+
+  def project_owner_groups_options
+    Group.can_own_project(current_user).map do |g|
+      [ g.name, g.id ]
+    end
   end
 end

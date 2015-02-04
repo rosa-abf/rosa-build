@@ -1,0 +1,18 @@
+en:
+
+  simple_form:
+    labels:
+      settings_notifier:
+        can_notify:                     Notifications by email
+        new_comment:                    New task comment notifications
+        new_comment_reply:              New reply of comment notifications
+        new_issue:                      New task notifications
+        issue_assign:                   New task assignment notifications
+        update_code:                    Notify about changes of code in my projects
+        new_comment_commit_owner:       Notify about comments to my commit
+        new_comment_commit_repo_owner:  Notify about comments to my repository commits
+        new_comment_commit_commentor:   Notify about comments after my commit
+        new_build:                      Notify about my build tasks
+        new_associated_build:           Notify about associated with me build tasks
+    placeholders:
+      settings_notifier:

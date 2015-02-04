@@ -1,0 +1,12 @@
+-set_meta_tags title: [title_object(@platform), t('layout.tokens.new')]
+= render 'submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+    h3
+      = t('layout.tokens.new')
+
+    = simple_form_for @token, url: platform_tokens_path(@platform) do |f|
+      = f.input :description, as: :text
+
+      = f.button :submit, t('layout.save')

@@ -17,11 +17,11 @@ module Feed::Git
                    change_type: change_type, project_owner: record.project.owner.uname}
       else
         if record.message # online update
-          last_commits, commits = [[record.newrev, record.message]], []
+          last_commits, commits = [[record.newrev, record.message.truncate(70, omission: '…')]], []
           all_commits = last_commits
         else
           commits       = record.project.repo.commits_between(record.oldrev, record.newrev)
-          all_commits   = commits.collect { |commit| [commit.sha, commit.message] }
+          all_commits   = commits.collect { |commit| [commit.sha, commit.message.truncate(70, omission: '…')] }
           last_commits  = all_commits.last(3).reverse
         end
 
@@ -63,6 +63,8 @@ module Feed::Git
       project = Project.find record[:project_id]
 
       project.admins.each do |recipient|
+        next if actor && actor.id == recipient.id
+
         ActivityFeed.create!(
           user: recipient,
           kind: 'wiki_new_commit_notification',

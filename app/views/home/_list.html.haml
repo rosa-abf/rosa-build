@@ -1,6 +1,0 @@
-- @activity_feeds.each do |activity_feed|
-  .activity{id: "#feed#{activity_feed.id}"}
-    = render_activity_feed(activity_feed)
-- if @activity_feeds.next_page
-  %a{href: root_path({filter: @filter, page: @activity_feeds.next_page}), class: 'more_activities'}
-    .messages.messages-last=t('layout.activity_feed.load_messages')

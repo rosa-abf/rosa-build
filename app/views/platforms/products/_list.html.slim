@@ -1,0 +1,17 @@
+table.table.table-striped
+  thead
+    tr
+      th= t("activerecord.attributes.product.name")
+      th= t("layout.delete")
+  tbody
+    - @products.each do |product|
+      tr
+        td
+          = link_to product.name, platform_product_path(@platform, product)
+        td
+          - if can? :destroy, product
+            a[href          = platform_product_path(@platform, product)
+              method        = 'delete'
+              data-confirm  = t('layout.products.confirm_delete') ]
+              span.glyphicon.glyphicon-remove
+                | &nbsp;

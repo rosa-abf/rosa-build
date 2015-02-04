@@ -30,7 +30,6 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def create
     unless pull_params
-      raise 'expect pull_request params' # for debug
       redirect :back
     end
     to_project = find_destination_project
@@ -86,36 +85,19 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def show
-    unless request.xhr?
-      if @pull.nil?
-        redirect_to project_issue_path(@project, @issue)
-      else
-        load_diff_commits_data
-      end
+    if @pull.nil?
+      redirect_to project_issue_path(@project, @issue)
+      return
     end
-  end
 
-  def index(status = 200)
-    @issues_with_pull_request = @project.issues.joins(:pull_request)
-    @issues_with_pull_request = @issues_with_pull_request.where(assignee_id: current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
-    @issues_with_pull_request = @issues_with_pull_request.search(params[:search_pull_request]) if params[:search_pull_request] !~ /#{t('layout.pull_requests.search')}/
+    load_diff_commits_data
 
-    @opened_issues, @closed_issues = @issues_with_pull_request.not_closed_or_merged.count, @issues_with_pull_request.closed_or_merged.count
-
-    @status = params[:status] == 'closed' ? :closed : :open
-    @issues_with_pull_request = @issues_with_pull_request.send( (@status == :closed) ? :closed_or_merged : :not_closed_or_merged )
-
-    @sort       = params[:sort] == 'updated' ? :updated : :created
-    @direction  = params[:direction] == 'asc' ? :asc : :desc
-    @issues_with_pull_request = @issues_with_pull_request.order("issues.#{@sort}_at #{@direction}")
-
-    @issues_with_pull_request = @issues_with_pull_request.
-      includes(:assignee, :user, :pull_request).uniq.
-      paginate per_page: 20, page: params[:page]
-    if status == 200
-      render 'index', layout: request.xhr? ? 'with_sidebar' : 'application'
-    else
-      render status: status, nothing: true
+    if params[:get_activity] == 'true'
+      render partial: 'activity', layout: false
+    elsif params[:get_diff]  == 'true'
+      render partial: 'diff_tab', layout: false
+    elsif params[:get_commits]  == 'true'
+      render partial: 'commits_tab', layout: false
     end
   end
 

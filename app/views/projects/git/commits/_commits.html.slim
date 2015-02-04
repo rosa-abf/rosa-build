@@ -1,0 +1,17 @@
+- project ||= @project
+- commits = split_commits_by_date(commits)
+- cur_year = Date.today.year
+- counter = 1
+
+- commits.each_pair do |year, by_month|
+  - by_month.each_pair do |month, by_day|
+    - by_day.each_pair do |day, commits|
+      .panel.panel-info
+        .panel-heading
+          h3.panel-title= raw l(commits.first.committed_date, format: :date_block_format)
+        ul.list-group
+          - commits.each_with_index do |commit|
+            li.list-group-item
+              - GitPresenters::CommitAsMessagePresenter.present(commit, project: @project) do |presenter|
+                == render 'shared/feed_commit', presenter: presenter, item_no: counter
+                - counter += 1

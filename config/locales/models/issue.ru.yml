@@ -48,6 +48,7 @@ ru:
       labels: Метки
       invalid_labels: Неверный hex код
       new_label: Название новой метки
+      switch_to_new_label: новая метка
       update_label: Обновить метку
       label_custom_color: Свой цвет
       label_manage: Управление метками
@@ -60,6 +61,10 @@ ru:
       at: в
       cancel_button: Отменить
       done: Обновить
+
+      created_by: 'Создано '
+      updated_at: 'обновлено '
+      assigned_to: 'Назначен'
 
   flash:
     issue:

@@ -1,0 +1,38 @@
+<script>
+  <% if action_name.in?(['index', 'pull_requests']) %>
+    angular.module('RosaABF').service('IssuesInitializer', function(){
+      return {
+        project: '<%= @project.name_with_owner %>',
+        filter: <%= render('filter.json', all_issues: @all_issues, params: params).html_safe %>
+      };
+    });
+  <% elsif action_name.in? %w(new create show) %>
+    angular.module('RosaABF').service('IssueInitializer', function(){
+      return {
+        project:   '<%= @project.name_with_owner %>',
+        serial_id:  <%= @issue.serial_id || 0 %>,
+        labels:     <%= render('projects/issues/labels.json', project: @project, issue: @issue).html_safe %>,
+        action:    '<%= action_name %>',
+        status:    <%= render('projects/issues/status.json', issue: @issue).html_safe %>,
+        assignee:   <%= render('projects/issues/user.json', user: @issue.assignee).html_safe %>
+      };
+    });
+  <% end %>
+  <% if controller_name == 'issues' && action_name.in?(%w(new create index show)) %>
+    angular.module('RosaABF').service('LabelsInitializer', function(){
+      return {
+        project: '<%= @project.name_with_owner %>',
+        labels: <%= render('projects/issues/labels.json', project: @project).html_safe %>
+      };
+    });
+  <% end %>
+  <% if controller_name == 'pull_requests' && action_name == 'show' %>
+    angular.module('RosaABF').service('PullInitializer', function(){
+      return {
+        owner:     '<%= @project.owner.uname %>',
+        project:   '<%= @project.name %>',
+        serial_id: '<%= @pull.serial_id %>'
+      };
+    });
+  <% end %>
+</script>

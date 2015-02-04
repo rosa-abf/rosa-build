@@ -9,28 +9,68 @@ class Projects::IssuesController < Projects::BaseController
 
   layout false, only: [:update, :search_collaborators]
 
-  def index(status = 200)
-    @labels = params[:labels] || []
-    @issues = @project.issues.without_pull_requests
-    @issues = @issues.where(assignee_id: current_user.id) if @is_assigned_to_me = params[:filter] == 'assigned'
-    @issues = @issues.joins(:labels).where(labels: {name: @labels}) unless @labels == []
-    # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
-    @issues = @issues.search(params[:search_issue]) if params[:search_issue] !~ /#{t('layout.issues.search')}/
-
-    @opened_issues, @closed_issues = @issues.not_closed_or_merged.count, @issues.closed_or_merged.count
-    @status = params[:status] == 'closed' ? :closed : :open
-    @issues = @issues.send( (@status == :closed) ? :closed_or_merged : :not_closed_or_merged )
-
-    @sort       = params[:sort] == 'updated' ? :updated : :created
-    @direction  = params[:direction] == 'asc' ? :asc : :desc
-    @issues = @issues.order("issues.#{@sort}_at #{@direction}")
-    @issues = @issues.preload(:assignee, :user, :pull_request).uniq
-                     .paginate per_page: 20, page: params[:page]
-    if status == 200
-      render 'index', layout: request.xhr? ? 'with_sidebar' : 'application'
-    else
-      render status: status, nothing: true
+  def index
+    params[:kind]      = params[:kind] == 'pull_requests' ? 'pull_requests' : 'issues'
+    params[:filter]    = params[:filter].in?(['created', 'assigned']) ? params[:filter] : 'all'
+    params[:sort]      = params[:sort] == 'submitted' ? 'submitted' : 'updated'
+    params[:direction] = params[:direction] == 'asc' ? :asc : :desc
+    params[:status]    = params[:status] == 'closed' ? :closed : :open
+    if !params[:labels].is_a?(Array) || params[:labels].blank?
+      params[:labels] = []
     end
+
+    respond_to do |format|
+      format.html { render 'index' }
+      format.json do
+        if params[:kind] == 'pull_requests'
+          all_issues = @project.issues.joins(:pull_request)
+        else
+          all_issues = @project.issues.without_pull_requests
+        end
+
+        @all_issues        = all_issues
+        if current_user
+          @created_issues  = all_issues.where(user_id: current_user)
+          @assigned_issues = all_issues.where(assignee_id: current_user)
+        end
+
+        case params[:filter]
+        when 'created'
+          @issues = @created_issues
+        when 'assigned'
+          @issues = @assigned_issues
+        else
+          @issues = all_issues
+        end
+
+        if params[:labels].is_a?(Array) && params[:labels].present?
+          @issues = @issues.joins(:labels).where(labels: {name: params[:labels]})
+        end
+
+        @opened_issues, @closed_issues = @issues.not_closed_or_merged, @issues.closed_or_merged
+        @issues = @issues.send( params[:status] == :closed ? :closed_or_merged : :not_closed_or_merged )
+
+        if params[:sort] == 'submitted'
+          @issues = @issues.order(created_at: params[:direction])
+        else
+          @issues = @issues.order(updated_at: params[:direction])
+        end
+
+        @issues = @issues.includes(:assignee, :user, :pull_request).uniq
+                         .paginate(page: current_page)
+
+        render 'index'
+      end
+    end
+  end
+
+  def pull_requests
+    params[:kind] = 'pull_requests'
+    index
+  end
+
+  def labels
+    render partial: 'projects/issues/labels.json', locals: {project: @project}, layout: false
   end
 
   def new
@@ -55,29 +95,31 @@ class Projects::IssuesController < Projects::BaseController
 
   def show
     redirect_to project_pull_request_path(@project, @issue.pull_request) if @issue.pull_request
+    @commentable = @issue
   end
 
   def update
-    unless can?(:write, @project)
-      params.delete :update_labels
-      [:assignee_id, :labelings, :labelings_attributes].each do |k|
-        params[:issue].delete k
-      end if params[:issue]
-    end
-    @issue.labelings.destroy_all if params[:update_labels]
-    if params[:issue] && status = params[:issue][:status]
-      @issue.set_close(current_user) if status == 'closed'
-      @issue.set_open if status == 'open'
-      render partial: 'status', status: (@issue.save ? 200 : 400)
-    elsif params[:issue]
-      status, message = if @issue.update_attributes(params[:issue])
-        [200, view_context.markdown(@issue.body)]
-      else
-        [400, view_context.local_alert(@issue.errors.full_messages.join('. '))]
-      end
-      render inline: message, status: status
-    else
-      render nothing: true, status: 200
+    respond_to do |format|
+      format.html { render nothing: true, status: 200 }
+
+      format.json {
+        status = 200
+        unless can?(:write, @project)
+          params.delete :update_labels
+          [:assignee_id, :labelings, :labelings_attributes].each do |k|
+            params[:issue].delete k
+          end if params[:issue]
+        end
+
+        if params[:issue] && status = params[:issue][:status]
+          @issue.set_close(current_user) if status == 'closed'
+          @issue.set_open if status == 'open'
+          status = @issue.save ? 200 : 500
+        else
+          status = 422 unless @issue.update_attributes(params[:issue])
+        end
+        render status: status
+      }
     end
   end
 
@@ -88,25 +130,43 @@ class Projects::IssuesController < Projects::BaseController
   # end
 
   def create_label
-    index(@project.labels.create!(name: params[:name], color: params[:color]) ? 200 : 500)
+    @label = @project.labels.new(name: params[:name], color: params[:color])
+    respond_to do |format|
+      if @label.save
+        format.json { render partial: 'labels', locals: {project: @project} }
+      else
+        format.json { render text: @label.errors.full_messages, status: 422 }
+      end
+    end
   end
 
   def update_label
-    index(@label.update_attributes(name: params[:name], color: params[:color]) ? 200 : 500)
+    respond_to do |format|
+      if @label.update_attributes(name: params[:name], color: params[:color])
+        format.json { render partial: 'labels', locals: {project: @project} }
+      else
+        format.json { render text: @label.errors.full_messages, status: 422 }
+      end
+    end
   end
 
   def destroy_label
-    index((@label && @label_destroy) ? 200 : 500)
+    respond_to do |format|
+      if @label.destroy
+        format.json { render partial: 'labels', locals: {project: @project} }
+      else
+        format.json { render json: @label.errors.full_messages, status: 422 }
+      end
+    end
   end
 
   def search_collaborators
-    render partial: 'search_collaborators'
   end
 
   private
 
   def load_and_authorize_label
-    @label = Label.find(params[:label_id]) if params[:label_id]
     authorize! :write, @project
+    @label = Label.find(params[:label_id]) if params[:label_id]
   end
 end

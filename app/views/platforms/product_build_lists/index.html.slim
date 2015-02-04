@@ -1,0 +1,24 @@
+- set_meta_tags title: t('.title')
+
+= render 'projects/build_lists/submenu'
+
+.container
+
+  .row.offset20
+    = render 'filter'
+  .row
+    table.table.table-striped
+      thead
+        tr
+          th= t("activerecord.attributes.product_build_list.id")
+          th= t("activerecord.attributes.product_build_list.status")
+          th= t("activerecord.attributes.product_build_list.container_path")
+          th= t("activerecord.attributes.product_build_list.product")
+          th= t("layout.product_build_lists.action")
+          th= t("activerecord.attributes.product_build_list.notified_at")
+      tbody
+        = render partial: 'platforms/product_build_lists/product_build_list', collection: @product_build_lists
+    .both
+
+    = will_paginate @product_build_lists
+

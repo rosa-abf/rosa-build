@@ -1,0 +1,30 @@
+- commit_id            = pull_diff.deleted_file ? @pull.to_commit.id : @pull.from_commit.id
+- diff_counter         = "diff-#{pull_diff_counter}"
+- diff_counter_content = "#{diff_counter}_content"
+.file.offset20
+  a name = diff_counter
+  .top
+    button.btn.btn-link.pull-left[ type = 'button'
+                data-toggle   = 'collapse'
+                data-target   = "##{diff_counter_content}"
+                aria-expanded = 'true'
+                aria-controls = diff_counter_content ]
+        = h(pull_diff.renamed_file ? "#{pull_diff.a_path.rtruncate 60}=>#{pull_diff.b_path.rtruncate 60}" : pull_diff.b_path.rtruncate(120))
+    - if @pull.from_project.present?
+      button.btn.btn-link.pull-right
+        = link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@pull.from_project, commit_id, pull_diff.b_path)
+    .clearfix
+
+  -if pull_diff.diff.present?
+    - blob = @pull.repo.tree(commit_id) / pull_diff.b_path
+    - is_file_open = 'in' if !blob.binary? && pull_diff.diff.split("\n").count <= DiffHelper::MAX_LINES_WITHOUT_COLLAPSE
+
+    .diff_data.collapse[ id = diff_counter_content class = is_file_open ]
+      - if blob.render_as == :image
+        table.table.diff.inline.table-bordered[ cellspacing = 0 cellpadding = 0 ]
+          tr
+            td.diff-image
+              span.diff-image
+                img[ src = "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"
+                     style = 'max-width: 600px;' ]
+      == render_diff(pull_diff, diff_counter: pull_diff_counter, comments: @comments) unless blob.binary?

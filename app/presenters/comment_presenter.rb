@@ -54,15 +54,21 @@ class CommentPresenter < ApplicationPresenter
 
   def buttons
     project, commentable = options[:project], options[:commentable]
-    path = helpers.project_commentable_comment_path(project, commentable, comment)
 
-    res = [link_to(t('layout.link'), "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}", class: "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment").html_safe]
+    link_to_comment = "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}"
+    klass = "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment"
+    res = [ link_to(content_tag(:i, nil, class: 'fa fa-link'),
+                    link_to_comment,
+                    class: klass).html_safe ]
     if controller.can? :update, @comment
-      res << link_to(t('layout.edit'), path, id: "comment-#{comment.id}", class: "edit_comment").html_safe
+      res << link_to(content_tag(:i, nil, class: 'fa fa-edit'),
+                     "#update-comment#{comment.id}",
+                     'ng-click' => "commentsCtrl.toggleEditForm(#{comment_id})" ).html_safe
     end
     if controller.can? :destroy, @comment
-      res << link_to(t('layout.delete'), path, method: "delete",
-                     data: { confirm: t('layout.comments.confirm_delete') }).html_safe
+      res << link_to(content_tag(:i, nil, class: 'fa fa-close'),
+                     '',
+                     'ng-click' => "commentsCtrl.remove(#{comment_id})").html_safe
     end
     res
   end
@@ -106,9 +112,9 @@ class CommentPresenter < ApplicationPresenter
   def issue_referenced_state
     if @referenced_issue.is_a? Issue
       statuses = {'open' => 'success', 'closed' => 'important'}
-      content_tag :span, t("layout.issues.status.#{@referenced_issue.status}"), class: "state label-bootstrap label-#{statuses[@referenced_issue.status]}"
+      content_tag :span, t("layout.issues.status.#{@referenced_issue.status}"), class: "pull-right label label-#{statuses[@referenced_issue.status]}"
     else
-      pull_status_label @referenced_issue.status
+      pull_status_label @referenced_issue.status, class: 'pull-right'
     end.html_safe
   end
 end

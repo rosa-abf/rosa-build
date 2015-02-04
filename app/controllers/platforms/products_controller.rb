@@ -1,11 +1,11 @@
 class Platforms::ProductsController < Platforms::BaseController
   include GitHelper
+
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :product, through: :platform, except: :autocomplete_project
-  before_filter :set_project, only: [:create, :update]
 
   def index
     @products = @products.paginate(page: params[:page])
@@ -42,6 +42,8 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def show
+    @product_build_lists = @product.product_build_lists.default_order.
+      paginate(page: params[:page])
   end
 
   def destroy
@@ -51,22 +53,9 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def autocomplete_project
-    items = Project.accessible_by(current_ability, :membered)
-                   .search(params[:term]).limit(20)
+    @items = Project.accessible_by(current_ability, :membered)
+                   .search(params[:query]).limit(20)
     #items.select! {|e| e.repo.branches.count > 0}
-    render json: items.map{ |p|
-      {
-        id: p.id,
-        label: p.name_with_owner,
-        value: p.name_with_owner,
-        project_versions: versions_for_group_select(p)
-      }
-    }
   end
 
-  protected
-
-  def set_project
-    @product.project = Project.find_by_owner_and_name params[:src_project]
-  end
 end

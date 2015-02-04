@@ -1,0 +1,132 @@
+- set_meta_tags title: [title_object(@product_build_list.product), t('layout.product_build_lists.show')]
+= render 'submenu'
+
+- pbl       = @product_build_list
+- product   = pbl.product
+- platform  = product.platform
+
+.container.col-md-offset-2.col-md-8 ng-controller='ProductBuildListController'
+  .row
+    h3
+      = t('layout.product_build_lists.main_data')
+
+  .row
+    = hidden_field_tag :product_build_list_id, pbl.id
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.id')
+    .col-md-6
+      = pbl.id
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.status')
+    .col-md-6
+      | {{pbl.human_status}}
+
+  - if pbl.user
+    .row
+      .col-md-6
+        b
+          = t('activerecord.attributes.product_build_list.user')
+      .col-md-6
+        = link_to pbl.user.try(:fullname), pbl.user
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.product')
+    .col-md-6
+      = link_to pbl.product.name, platform_product_path(platform, product)
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.project')
+    .col-md-6
+      = link_to pbl.project.name_with_owner, project_path(pbl.project)
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.project_version')
+    .col-md-6
+      = product_build_list_version_link(pbl, true)
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.main_script')
+    .col-md-6
+      = pbl.main_script
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.params')
+    .col-md-6
+      = pbl.params
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.time_living')
+    .col-md-6
+      = pbl.time_living / 60
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.autostarted')
+    .col-md-6
+      = t("layout.#{pbl.autostarted}_")
+
+  .row
+    .col-md-6
+      b
+        = t('activerecord.attributes.product_build_list.notified_at')
+    .col-md-6
+      | {{pbl.notified_at}}
+
+  - if can?(:update, pbl)
+    .row ng-show="pbl.status == #{ ProductBuildList::BUILD_COMPLETED }"
+      .col-md-6
+        b
+          = t('activerecord.attributes.product_build_list.not_delete')
+      .col-md-6
+        = select_tag 'not_delete',
+          options_for_select(product_build_list_delete_options),
+          { ng_model: "pbl.not_delete", ng_change: 'updateStatus()'}
+
+  .row.alert.alert-danger.offset20 ng-hide='pbl.not_delete'
+    - days = pbl.autostarted? ? ProductBuildList::LIVE_TIME : ProductBuildList::MAX_LIVE_TIME
+    - days = (pbl.created_at.to_date - days.ago.to_date).to_i
+    - if days > 1
+      = t('layout.product_build_lists.will_be_removed_n_days', n: days)
+    - else
+      = t('layout.product_build_lists.will_be_removed_today')
+
+  .row
+    hr
+    - if can?(:cancel, pbl)
+      a.btn.btn-warning[href=cancel_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
+                        method        = 'put'
+                        data-confirm  = t('layout.confirm')
+                        ng-show       = 'pbl.can_cancel' ]
+        = t('layout.build_lists.cancel')
+      | &nbsp;
+
+    - if can?(:destroy, pbl)
+      a.btn.btn-danger[ href=platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
+                        method        = 'delete'
+                        data-confirm  = t('layout.confirm')
+                        ng-show       = 'pbl.can_destroy' ]
+        = t('layout.product_build_lists.delete')
+
+  .row.offset20 ng-show="pbl.status == #{ProductBuildList::BUILD_STARTED}"
+    = render 'shared/log', { build_started: true, get_log_path: log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
+
+  .row
+    = render 'shared/build_results', subject: pbl
+

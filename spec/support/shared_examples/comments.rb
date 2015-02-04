@@ -38,7 +38,7 @@ end
 shared_examples_for 'user with create comment ability' do
   it 'should be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(@return_path+"#comment#{Comment.last.id}")
+    response.should be_success #redirect_to(@return_path+"#comment#{Comment.last.id}")
   end
 
   it 'should create comment in the database' do
@@ -81,7 +81,7 @@ end
 shared_examples_for 'user with destroy comment ability' do
   it 'should be able to perform destroy action' do
     delete :destroy, {id: @comment.id}.merge(@path)
-    response.should redirect_to(@return_path)
+    response.should be_success #redirect_to(@return_path)
   end
 
   it 'should delete comment from database' do

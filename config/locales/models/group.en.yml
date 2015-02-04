@@ -43,11 +43,18 @@ en:
   activerecord:
     models:
       group: Group
-    attributes:
+
+  simple_form:
+    labels:
       group:
-        name: Name
-        uname: Nickname
-        owner: Owner
-        created_at: Created
-        updated_at: Updated
-        description: Description
+        uname:          Name
+        owner:          Owner
+        created_at:     Created
+        updated_at:     Updated
+        description:    Description
+        avatar:         Avatar
+        delete_avatar:  Delete avatar
+    placeholders:
+      group:
+        uname:          Enter the name here.
+        description:    Enter the description here.

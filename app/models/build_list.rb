@@ -6,6 +6,8 @@ class BuildList < ActiveRecord::Base
   include BuildListObserver
   include EventLoggable
 
+  self.per_page = 25
+
   belongs_to :project
   belongs_to :arch
   belongs_to :save_to_platform,   class_name: 'Platform'
@@ -46,6 +48,7 @@ class BuildList < ActiveRecord::Base
             :save_to_platform,   :save_to_platform_id,
             :save_to_repository, :save_to_repository_id,
             presence: true
+
   validates_numericality_of :priority, greater_than_or_equal_to: 0
   validates :external_nodes, inclusion: { in:  EXTERNAL_NODES }, allow_blank: true
   validates :auto_publish_status, inclusion: { in: AUTO_PUBLISH_STATUSES }

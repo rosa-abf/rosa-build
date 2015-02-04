@@ -1,0 +1,13 @@
+.panel.panel-default
+  .panel-heading
+    h4= t('devise.passwords.new_password')
+  .panel-body
+
+    = simple_form_for resource, url: password_path(resource_name), html: { method: :put } do |f|
+      = f.hidden_field :reset_password_token
+
+      = f.input :password
+      = f.input :password_confirmation
+      hr
+      .pull-right
+        = f.button :submit, t('devise.passwords.edit_button')

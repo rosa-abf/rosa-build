@@ -1,0 +1,11 @@
+= f.input :title, as: :string, input_html: { maxlength: 80 }
+
+.panel.panel-info
+  .panel-heading
+    h3.panel-title
+      - t('activerecord.attributes.issue.body')
+      = f.label :body
+      .pull-right= render 'projects/comments/button_md_help'
+      .clearfix
+  .panel-body
+    = render 'projects/comments/body', f: f, id: 'issue', ctrl: 'issueCtrl'

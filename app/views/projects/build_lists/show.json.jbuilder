@@ -4,7 +4,7 @@ json.build_list do
   elsif @build_list.in_work?
     json.human_duration "#{@build_list.human_current_duration} / #{@build_list.human_average_build_time}"
   end
-  
+
   json.cache! [@build_list, current_user], expires_in: 1.minute do
     json.(@build_list, :id, :container_status, :status)
     json.(@build_list, :update_type)
@@ -45,8 +45,7 @@ json.build_list do
       json.sha1 result['sha1']
       json.size result['size']
 
-      timestamp = result['timestamp']
-      json.created_at Time.zone.at(result['timestamp']).to_s if timestamp
+      json.created_at Time.zone.at(result['timestamp']).to_s if result['timestamp']
 
       json.url file_store_results_url(result['sha1'], result['file_name'])
     end if @build_list.new_core? && @build_list.results.present?

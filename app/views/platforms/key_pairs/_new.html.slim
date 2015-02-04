@@ -1,0 +1,9 @@
+h3
+  = t("layout.key_pairs.header")
+
+= simple_form_for @key_pair, url: platform_key_pairs_path(@platform) do |f|
+  = f.input :public, as: :text
+  = f.input :secret, as: :text
+  = f.input :repository_id, collection: key_pair_repository_options(@platform)
+
+  = f.button :submit, t('layout.save')

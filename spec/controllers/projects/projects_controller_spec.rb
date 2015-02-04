@@ -35,6 +35,16 @@ shared_examples_for 'projects user with project admin rights' do
     put :schedule, { name_with_owner: @project.name_with_owner }.merge(repository_id: @project.repositories.first.id)
     response.should be_success
   end
+
+  it 'should be able to create alias for a project' do
+    post :alias, name_with_owner: @project.name_with_owner, fork_name: (@project.name + '_new')
+    response.should redirect_to(project_path(Project.last))
+  end
+
+  it 'should create alias for a project' do
+    lambda { post :alias, name_with_owner: @project.name_with_owner,
+                          fork_name: (@project.name + '_new') }.should change{ Project.count }.by(1)
+  end
 end
 
 shared_examples_for 'user with destroy rights' do
@@ -93,6 +103,16 @@ shared_examples_for 'projects user without project admin rights' do
     group = FactoryGirl.create(:group)
     create_actor_relation(group, @user, 'reader')
     lambda {post :create, @create_params.merge(who_owns: 'group', owner_id: group.id)}.should change{ Project.count }.by(0)
+  end
+
+  it 'should not be able to create alias for a project' do
+    post :alias, name_with_owner: @project.name_with_owner
+    response.should redirect_to(forbidden_path)
+  end
+
+  it 'should not create alias for a project' do
+    lambda { post :alias, name_with_owner: @project.name_with_owner,
+                      fork_name: (@project.name + '_new') }.should change{ Project.count }.by(0)
   end
 end
 

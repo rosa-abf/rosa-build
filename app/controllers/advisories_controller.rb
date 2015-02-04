@@ -5,10 +5,12 @@ class AdvisoriesController < ApplicationController
   authorize_resource
 
   def index
-    @advisories = @advisories.includes(:platforms).search(params[:q]).
-      uniq.paginate(page: params[:page])
+    @advisories = @advisories.includes(:platforms).search(params[:q]).uniq
+    @advisories_count = @advisories.count
+    @advisories = @advisories.paginate(page: current_page, per_page: Advisory.per_page)
     respond_to do |format|
       format.html
+      format.json
       format.atom
     end
   end

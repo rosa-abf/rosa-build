@@ -2,12 +2,21 @@ ru:
   layout:
     search:
       header: Поиск
+  search:
+    index:
+      submit: Поиск
       advanced: Расширенный поиск
-      all: Показать все
-      no_results: По запросу "%{query}" ничего не найдено.
+      no_results: 'По запросу "%{query}" ничего не найдено.'
       types:
-        all: Все
         projects: Проекты
         users: Пользователи
         groups: Группы
         platforms: Платформы
+
+    project:
+      updated:                              "Обновлен:"
+
+  simple_form:
+    placeholders:
+      search:
+        query:                              "Поиск"

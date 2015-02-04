@@ -1,4 +1,5 @@
 class Projects::Git::TreesController < Projects::Git::BaseController
+
   before_filter -> {redirect_to @project if params[:treeish] == @project.default_branch and params[:path].blank?}, only: :show
   skip_before_filter :set_branch_and_tree, :set_treeish_and_path, only: :archive
   before_filter -> { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, only: [:branch, :destroy]
@@ -12,6 +13,8 @@ class Projects::Git::TreesController < Projects::Git::BaseController
       @tree = @tree / @path if @path.present?
       @commit = @branch.present? ? @branch.commit() : @project.repo.log(@treeish, @path, max_count: 1).first
       raise Grit::NoSuchPathError unless @commit
+    else
+      @tree = @tree / @path if @path.present?
     end
   end
 

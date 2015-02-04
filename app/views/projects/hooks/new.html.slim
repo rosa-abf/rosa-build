@@ -1,0 +1,18 @@
+-set_meta_tags title: [title_object(@project), t('layout.projects.hooks')]
+= render 'submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+    = render 'settings_menu'
+
+    = simple_form_for @hook, url:     project_hooks_path(@project),
+                             html:    { class: 'form-horizontal offset20' },
+                             wrapper: :horizontal_form do |f|
+      h2= t("layout.hooks.services.#{@hook.name}")
+      = render "form", f: f
+
+      .col-sm-offset-3.col-sm-9
+        = f.button :submit, t('layout.create'), data: {'disable-with' => t('layout.saving')},
+          class: 'btn btn-primary boffset20'
+
+    .col-sm-offset-3.col-sm-9= render "projects/hooks/docs/#{@hook.name}"

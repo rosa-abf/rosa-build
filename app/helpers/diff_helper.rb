@@ -1,7 +1,11 @@
 module DiffHelper
+  MAX_FILES_WITHOUT_COLLAPSE = 25
+  MAX_LINES_WITHOUT_COLLAPSE = 50
+
   def render_diff_stats(stats)
     path = @pull.try(:id) ? polymorphic_path([@project, @pull]) : ''
-    res = ["<table class='commit_stats'>"]
+
+    res = ["<table class='table table-responsive boffset0'>"]
     stats.each_with_index do |stat, ind|
       res << "<tr>"
       res << "<td>#{link_to stat.filename.rtruncate(120), "#{path}#diff-#{ind}"}</td>"
@@ -14,9 +18,37 @@ module DiffHelper
              ")"
       res << "</td>"
     end
-    res << "</table>"
+    res << '</table>'
+    wrap_header_list(stats, res)
+  end
 
+  def wrap_header_list(stats, list)
+    is_stats_open = stats.count <= MAX_FILES_WITHOUT_COLLAPSE ? 'in' : ''
+    res = ["<div class='panel-group' id='diff_header' role='tablist' aria-multiselectable='false'>"]
+      res << "<div class='panel panel-default'>"
+        res << "<div class='panel-heading' role='tab' id='heading'>"
+          res << "<h4 class='panel-title'>"
+            res << "<a data-toggle='collapse' data-parent='#diff_header' href='#collapseList' aria-expanded='true' aria-controls='collapseList'>"
+            res << "#{diff_header_message(stats)}</a>"
+          res << "</h4>"
+        res << "</div>"
+        res << "<div id='collapseList' class='panel-collapse collapse #{is_stats_open}' role='tabpanel' aria-labelledby='collapseList'>"
+          res << "<div class='panel-body'>"
+            res += list
+          res << "</div>"
+        res << "</div>"
+      res << "</div>"
+    res << "</div>"
     res.join("\n").html_safe
+  end
+
+  def diff_header_message(stats)
+    total_additions = @stats.inject(0) {|sum, n| sum + n.additions}
+    total_deletions = @stats.inject(0) {|sum, n| sum + n.deletions}
+    I18n.t('layout.projects.diff_show_header',
+           files:     t('layout.projects.commit_files_count',     count: stats.count),
+           additions: t('layout.projects.commit_additions_count', count: total_additions),
+           deletions: t('layout.projects.commit_deletions_count', count: total_deletions))
   end
 
   #include Git::Diff::InlineCallback
@@ -36,12 +68,14 @@ module DiffHelper
            end
     prepare(args.merge({filepath: filepath, comments: comments, in_discussion: in_discussion}))
 
-    res = '<table class="diff inline" cellspacing="0" cellpadding="0" ng-non-bindable>'
+    res = '<div class="table-responsive overflow-auto">'
+    res << '<table class="table diff inline table-borderless" cellspacing="0" cellpadding="0">'
     res << '<tbody>'
     res << renderer(diff_display.data) #diff_display.render(Git::Diff::InlineCallback.new comments, path)
     res << tr_line_comments(comments) if in_discussion
     res << '</tbody>'
     res << '</table>'
+    res << '</div>'
     res.html_safe
   end
 
@@ -76,8 +110,8 @@ module DiffHelper
       <td class='line_numbers'></td>
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code ins'>
-        #{line_comment}
-        <pre>#{render_line(line)}</pre>
+        #{line_comment_icon}
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
      </tr>
      #{render_line_comments}"
@@ -89,8 +123,8 @@ module DiffHelper
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       <td class='line_numbers'></td>
       <td class='code del'>
-        #{line_comment}
-        <pre>#{render_line(line)}</pre>
+        #{line_comment_icon}
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
     </tr>
     #{render_line_comments}"
@@ -98,12 +132,12 @@ module DiffHelper
 
   def modline(line)
     set_line_number
-    "<tr clas='chanes line'>
+    "<tr class='changes line'>
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code unchanged modline'>
-        #{line_comment}
-        <pre>#{render_line(line)}</pre>
+        #{line_comment_icon}
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
     </tr>
     #{render_line_comments}"
@@ -115,8 +149,8 @@ module DiffHelper
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code unchanged unmodline'>
-        #{line_comment}
-        <pre>#{render_line(line)}</pre>
+        #{line_comment_icon}
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
     </tr>
     #{render_line_comments}"
@@ -136,8 +170,8 @@ module DiffHelper
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code modline unmodline'>
-        #{line_comment}
-        <pre>#{render_line(line)}</pre>
+        #{line_comment_icon}
+        <pre ng-non-bindable>#{render_line(line)}</pre>
       </td>
     </tr>
     #{render_line_comments}"
@@ -226,15 +260,20 @@ module DiffHelper
     @num_line = @num_line.succ
   end
 
-  def line_comment
+  def line_comment_icon
     return if @no_commit_comment || (@in_discussion && @add_reply_id && @line_comments[0].data[:line].to_i != @num_line)
-    link_to image_tag('line_comment.png', alt: t('layout.comments.new_header')), new_comment_path, class: 'add_line-comment' if current_user
+    if current_user
+      link_to image_tag('line_comment.png', alt: t('layout.comments.new_header')),
+              '#new_inline_comment',
+              class: 'add_line-comment',
+              'ng-click' => "commentsCtrl.showInlineForm($event, #{new_inline_comment_params.to_json})"
+    end
   end
 
   def render_line_comments
     unless @no_commit_comment || @in_discussion
       comments = @line_comments.select do |c|
-        c.data.try('[]', :line) == @num_line.to_s && c.actual_inline_comment?
+        c.data.try('[]', :line).to_s == @num_line.to_s && c.actual_inline_comment?
       end
       tr_line_comments(comments) if comments.count > 0
     end
@@ -246,24 +285,34 @@ module DiffHelper
 
   def tr_line_comments comments
     return if @no_commit_comment
-    res="<tr class='inline-comments'>
+    res="<tr class='line-comments'>
       <td class='line_numbers' colspan='2'>#{comments.count}</td>
       <td>"
       comments.each do |comment|
-        res << "<div class='line-comments'>
+        res << "<div class='line-comment'>
           #{render 'projects/comments/comment', comment: comment, data: {project: @project, commentable: @commentable, add_anchor: 'inline', in_discussion: @in_discussion}}
          </div>"
       end
-    res << link_to(t('layout.comments.new_inline'), new_comment_path, class: 'new_inline_comment button') if current_user
+    if current_user
+      res << link_to( t('layout.comments.new_inline'),
+                      '#new_inline_comment',
+                      class: 'btn btn-primary',
+                      'ng-click' => "commentsCtrl.showInlineForm($event, #{new_inline_comment_params.to_json})",
+                      'ng-hide'  => "commentsCtrl.hideInlineCommentButton(#{new_inline_comment_params.to_json})" )
+    end
     res << "</td></tr>"
   end
+  # def new_comment_path
+  #   hash = {path: @filepath, line: @num_line}
+  #   if @commentable.is_a? Issue
+  #     project_new_line_pull_comment_path(@project, @commentable, hash.merge({in_reply: @add_reply_id}))
+  #   elsif @commentable.is_a? Grit::Commit
+  #     new_line_commit_comment_path(@project, @commentable, hash)
+  #   end
+  # end
 
-  def new_comment_path
-    hash = {path: @filepath, line: @num_line}
-    if @commentable.is_a? Issue
-      project_new_line_pull_comment_path(@project, @commentable, hash.merge({in_reply: @add_reply_id}))
-    elsif @commentable.is_a? Grit::Commit
-      new_line_commit_comment_path(@project, @commentable, hash)
-    end
+  def new_inline_comment_params
+    { path: @filepath, line: @num_line, in_reply: @add_reply_id }
   end
+
 end

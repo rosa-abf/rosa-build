@@ -55,15 +55,16 @@ module GitHelper
     res.html_safe
   end
 
-  def iterate_path(path, &block)
-    path.split(File::SEPARATOR).inject('') do |a, e|
-      if e != '.' and e != '..'
-        a = File.join(a, e)
-        a = a[1..-1] if a[0] == File::SEPARATOR
-        block.call(a, e) if a.length > 1
+  def iterate_path(path)
+    tree = []
+    path.split("\/").each do |name|
+      if tree.last
+        tree << [File.join(tree.try(:last).try(:first), name), name]
+      else
+        tree << [name, name]
       end
-      a
     end
+    tree
   end
 
   def branch_selector_options(project)
@@ -88,8 +89,10 @@ module GitHelper
 
   def versions_for_group_select(project)
     return [] unless project
-    [ ['Branches', project.repo.branches.map(&:name)],
-      ['Tags', project.repo.tags.map(&:name)] ]
+    [
+      [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&:name).sort],
+      [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort]
+    ]
   end
 
   def split_commits_by_date(commits)
@@ -107,9 +110,9 @@ module GitHelper
   def blob_highlight(blob)
     return if blob.nil? || blob.data.blank?
     result = if blob.mime_type == 'text/rpm-spec'
-               Pygments.highlight blob.data, lexer: 'spec'
+               Pygments.highlight blob.data, lexer: 'spec', options: {linenos: true}
              else
-               blob.colorize
+               blob.colorize(options: {linenos: true, lineanchors: 'lc', linespans: 'ln', anchorlinenos: true})
              end
     result.present? ? result.html_safe : blob.data
   rescue MentosError, Yajl::ParseError => e

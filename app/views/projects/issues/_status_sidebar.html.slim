@@ -1,0 +1,19 @@
+h3
+  => "#{t('activerecord.attributes.issue.status')}:"
+
+  - if @issue.persisted?
+    - can_manage = can?(:update, @issue)
+    - if can_manage
+      button.btn[ ng-class    = 'issueCtrl.issue_status_class'
+                  ng-click    = 'issueCtrl.updateStatus()'
+                  ng-disabled = 'issueCtrl.processing_issue_status' ]
+        | {{ 'issues.status.' + issueCtrl.status.name | i18n }}
+    - else
+      .strong.text-center.ubpadding-5 ng-class = 'issueCtrl.issue_status_class'
+        | {{ 'issues.status.' + issueCtrl.status.name | i18n }}
+hr
+
+/
+    #switcher.issue_status{class: "#{@issue.closed? ? 'switcher-off' : 'switcher'} #{can_manage ? "switch_issue_status" : ''}"}
+      .swleft=t('layout.issues.status.open')
+      .swright=t('layout.issues.status.closed')

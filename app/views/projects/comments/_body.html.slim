@@ -1,0 +1,18 @@
+tabset
+  tab.active heading = t('layout.edit')
+    .offset10
+      - if defined?(ang_model)
+        = f.input :body, label: false, as: :text,
+          input_html: { rows: 10, id: "#{id}-body",
+                        'ng-model' => "#{ctrl}.#{ang_model}", 'ng-value' => "#{ctrl}.#{ang_model}" }
+      - else
+        = f.input :body, label: false, as: :text,
+          input_html: { rows: 10, id: "#{id}-body" }
+
+  tab[ heading = t('layout.preview')
+       select  = "#{ctrl}.previewBody('#{id}')" ]
+    .offset10
+      i.fa.fa-spinner.fa-spin.fa-lg ng-show = "#{ctrl}.processing"
+
+      div[ ng-bind-html = "#{ctrl}.preview_body"
+           ng-show      = "!#{ctrl}.processing"  ]

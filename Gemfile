@@ -47,14 +47,16 @@ gem 'wikicloth'
 gem 'newrelic_rpm'
 gem 'whenever', '~> 0.9.0', require: false
 
-gem 'jbuilder', '~> 2.1'
-gem 'rails3-jquery-autocomplete', '~> 1.0'
+gem 'jbuilder', '~> 2.2'
+gem 'rails3-jquery-autocomplete'
 gem 'will_paginate', '~> 3.0'
 gem 'meta-tags', '~> 2.0', require: 'meta_tags'
 gem "haml-rails", '~> 0.5'
 gem 'jquery-rails', '~> 2.3'
 gem 'jquery-migrate-rails'
 gem 'ruby-haml-js', '~> 0.0.5'
+gem 'slim'
+gem 'simple_form', '3.1.0.rc2'
 gem 'friendly_id', '~> 5.0'
 
 gem 'rack-throttle', '~> 0.3.0'
@@ -69,17 +71,24 @@ gem "gemoji", "~> 2.1"
 
 # AngularJS related stuff
 gem 'underscore-rails'
-gem 'angularjs-rails'
+gem 'angularjs-rails', '~> 1.2.15'
 gem 'ng-rails-csrf'
 gem 'momentjs-rails'
 gem 'angular-i18n', '0.1.2'
 gem 'js-routes'
 gem 'soundmanager-rails'
+gem 'angular-ui-bootstrap-rails'
+gem 'angular-rails-templates'
+gem 'ngmin-rails'
 
 gem 'time_diff'
 
 gem 'sass-rails', '~> 4.0'
-gem 'coffee-rails', '~> 4.0.1'
+gem 'coffee-rails', '~> 4.1'
+gem 'bootstrap-sass', '~> 3.2'
+gem 'font-awesome-rails', '~> 4.2'
+gem 'zeroclipboard-rails', '~> 0.1.0'
+
 gem 'compass-rails', '~> 2.0'
 gem 'uglifier', '~> 2.5'
 gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
@@ -87,6 +96,7 @@ gem 'therubyrhino', '~> 2.0', platforms: :jruby
 gem 'sitemap_generator'
 
 gem 'codemirror-rails', '~> 4.5'
+
 
 group :production do
   gem "airbrake", '~> 3.1'

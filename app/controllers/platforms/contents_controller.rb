@@ -5,19 +5,20 @@ class Platforms::ContentsController < Platforms::BaseController
   skip_before_filter :authenticate_user!, only: :index if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :platform
-  
-  def index
 
+  def index
     respond_to do |format|
       format.html
       format.json do
         @path = params[:path].to_s
         @term     = params[:term]
+
         @contents = PlatformContent.find_by_platform(@platform, @path, @term)
-                                   .paginate(paginate_params)
+        @total_items = @contents.count
+        @contents = @contents.paginate(paginate_params)
       end
     end
-    
+
   end
 
   def remove_file
