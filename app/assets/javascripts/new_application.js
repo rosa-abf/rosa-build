@@ -56,13 +56,13 @@ $(document).ready(function() {
   var clip = new ZeroClipboard($("#copy_to_clipboard"));
 
   $('.datetime_moment').each(function() {
-    var mtime = moment($(this).attr('origin_datetime')).utc().format('YYYY-MM-DD HH:mm:ss UTC');
-    $(this).attr('title', mtime);
+    var mtime = moment($(this).attr('origin_datetime'), 'YYYY-MM-DD HH:mm Z');
+    $(this).attr('title', mtime.utc().format('YYYY-MM-DD HH:mm:ss UTC'));
   });
 
   window.updateTime = function () {
     $('.datetime_moment').each(function() {
-      var time = moment($(this).attr('origin_datetime'));
+      var time = moment($(this).attr('origin_datetime'), 'YYYY-MM-DD HH:mm Z');
       $(this).html(time.format('D MMM YYYY, HH:mm') + ' (' + time.fromNow() + ')');
     });
   };
