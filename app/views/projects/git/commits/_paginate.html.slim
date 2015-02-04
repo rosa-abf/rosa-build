@@ -1,0 +1,17 @@
+- unless @page == 1 && @last_page
+  - prev_text, next_text = t('will_paginate.previous_label'), t('will_paginate.next_label')
+  ul.pager
+    - if @page == 1
+      li.disabled
+        a= prev_text
+    - else
+      li
+        a href=commits_path(@project, treeish: @treeish, page: (@page - 1))
+          = prev_text
+    - if @last_page
+      li.disabled
+        a= next_text
+    - else
+      li
+        a href=commits_path(@project, treeish: @treeish, page: (@page + 1))
+          = next_text
