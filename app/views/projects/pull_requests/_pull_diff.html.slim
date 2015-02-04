@@ -9,7 +9,7 @@
                 data-target   = "##{diff_counter_content}"
                 aria-expanded = 'true'
                 aria-controls = diff_counter_content ]
-        = h(pull_diff.renamed_file ? "#{pull_diff.a_path.rtruncate 60}=>#{pull_diff.b_path.rtruncate 60}" : pull_diff.b_path.rtruncate(120))
+      = h(pull_diff.renamed_file ? "#{pull_diff.a_path.rtruncate 60}=>#{pull_diff.b_path.rtruncate 60}" : pull_diff.b_path.rtruncate(120))
     - if @pull.from_project.present?
       button.btn.btn-link.pull-right
         = link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@pull.from_project, commit_id, pull_diff.b_path)

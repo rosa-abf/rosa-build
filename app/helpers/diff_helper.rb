@@ -43,8 +43,8 @@ module DiffHelper
   end
 
   def diff_header_message(stats)
-    total_additions = @stats.inject(0) {|sum, n| sum + n.additions}
-    total_deletions = @stats.inject(0) {|sum, n| sum + n.deletions}
+    total_additions = stats.inject(0) {|sum, n| sum + n.additions}
+    total_deletions = stats.inject(0) {|sum, n| sum + n.deletions}
     I18n.t('layout.projects.diff_show_header',
            files:     t('layout.projects.commit_files_count',     count: stats.count),
            additions: t('layout.projects.commit_additions_count', count: total_additions),
