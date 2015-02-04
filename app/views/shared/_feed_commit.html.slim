@@ -12,5 +12,4 @@
 .clearfix
 - if presenter.content?
   .collapse id="commit_message_#{item_no}"
-    / pre== markdown(presenter.content)
     .well.well-sm== markdown(presenter.content)
