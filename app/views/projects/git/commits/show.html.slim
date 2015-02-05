@@ -1,11 +1,11 @@
 -set_meta_tags title: [title_object(@project), shortest_hash_id(@commit.id), @commit.message]
 == render 'submenu'
-== render 'about_block', project: @project
 
 .col-xs-12.col-md-10.col-md-offset-1
-  h3= t("layout.projects.last_commit")
   - GitPresenters::CommitAsMessagePresenter.present(@commit, project: @project) do |presenter|
-    == render partial: 'shared/feed_message', locals: {presenter: presenter, item_no: 1}
+    .panel.panel-default
+      .panel-body
+        == render 'shared/feed_commit', presenter: presenter, item_no: 1
 
   .both
   #repo-wrapper
@@ -14,4 +14,4 @@
     == render "projects/comments/list", list: comments, project: @project, commentable: @commit
     == render "projects/comments/add", project: @project, commentable: @commit if current_user
 
-  =hidden_field_tag :preview_url, project_md_preview_path(@project)
+  = hidden_field_tag :preview_url, project_md_preview_path(@project)

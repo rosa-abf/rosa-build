@@ -108,7 +108,5 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
       @content = (@content.present?) ? tmp + @content : tmp
       @caption = @caption[0..68] + '...'
     end
-    # @content = @content.gsub("\n", "<br />").html_safe if @content
-    @content = simple_format(@content, {}, sanitize: true).html_safe if @content
   end
 end
