@@ -8,10 +8,10 @@ NewBuildListController = (dataservice, $http) ->
 
   defaultSaveToRepository = ->
     return {} unless vm.save_to_repositories
-    return vm.save_to_repositories[0] unless vm.save_to_repository_id
 
     result = _.select(vm.save_to_repositories, (e) ->
-      e.id is vm.save_to_repository_id
+      e.id is vm.save_to_repository_id or
+      !vm.save_to_repository_id and e.platform_name is vm.project_version_name
     )
     return vm.save_to_repositories[0] if result.length is 0
     result[0]
