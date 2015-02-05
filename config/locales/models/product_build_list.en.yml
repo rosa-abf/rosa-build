@@ -1,7 +1,7 @@
 en:
   layout:
     product_build_lists:
-      will_be_removed_n_days: Product build list will be removed through %{n} d.
+      will_be_removed_n_days: Product build list will be removed in %{n} d.
       will_be_removed_today: Product build list will be removed today
       logs: Logs (last 100 lines)
       work_env: Work environment
