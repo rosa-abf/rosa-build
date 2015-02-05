@@ -11,7 +11,8 @@ NewBuildListController = (dataservice, $http) ->
 
     result = _.select(vm.save_to_repositories, (e) ->
       e.id is vm.save_to_repository_id or
-      !vm.save_to_repository_id and e.platform_name is vm.project_version_name
+      !vm.save_to_repository_id and
+      e.platform_name is vm.project_version_name
     )
     return vm.save_to_repositories[0] if result.length is 0
     result[0]
@@ -20,7 +21,7 @@ NewBuildListController = (dataservice, $http) ->
     return {} unless vm.project_versions
 
     result = _.select(vm.project_versions, (e) ->
-      e.name is vm.project_version_name
+      e.name is vm.default_project_version_name
     )
     return vm.project_versions[0] if result.length is 0
     result[0]
@@ -76,9 +77,10 @@ NewBuildListController = (dataservice, $http) ->
 
     vm.build_for_platform_id = vm.save_to_repository.platform_id
     vm.is_build_for_main_platform = isBuildForMainPlatform()
-    vm.project_version_name = vm.save_to_repository.platform_name
 
+    vm.project_version_name = vm.save_to_repository.platform_name
     vm.project_version = setProjectVersion() if vm.is_build_for_main_platform
+
     changeStatusRepositories()
     updateDefaultArches()
     vm.extra_repositories = getExtraRepos()
@@ -185,31 +187,31 @@ NewBuildListController = (dataservice, $http) ->
 
   init = (dataservice) ->
 
-    vm.name_with_owner            = dataservice.name_with_owner
-    vm.platforms                  = dataservice.platforms
-    vm.save_to_repositories       = dataservice.save_to_repositories
-    vm.project_versions           = dataservice.project_versions
+    vm.name_with_owner              = dataservice.name_with_owner
+    vm.platforms                    = dataservice.platforms
+    vm.save_to_repositories         = dataservice.save_to_repositories
+    vm.project_versions             = dataservice.project_versions
 
-    vm.auto_publish_status        = dataservice.auto_publish_status
-    vm.auto_create_container      = dataservice.auto_create_container
+    vm.auto_publish_status          = dataservice.auto_publish_status
+    vm.auto_create_container        = dataservice.auto_create_container
 
-    vm.project_version_name       = dataservice.project_version
-    vm.project_version            = defaultProjectVersion()
-    vm.save_to_repository_id      = dataservice.save_to_repository_id
-    vm.save_to_repository         = defaultSaveToRepository()
+    vm.default_project_version_name = dataservice.project_version
+    vm.project_version_name         = dataservice.project_version
+    vm.project_version              = defaultProjectVersion()
+    vm.save_to_repository_id        = dataservice.save_to_repository_id
+    vm.save_to_repository           = defaultSaveToRepository()
     if vm.save_to_repository
-      vm.build_for_platform_id    = vm.save_to_repository.platform_id
+      vm.build_for_platform_id      = vm.save_to_repository.platform_id
 
-    vm.default_extra_repos        = dataservice.default_extra_repos
-    vm.extra_repositories         = dataservice.extra_repos
-    vm.extra_build_lists          = dataservice.extra_build_lists
+    vm.default_extra_repos          = dataservice.default_extra_repos
+    vm.extra_repositories           = dataservice.extra_repos
+    vm.extra_build_lists            = dataservice.extra_build_lists
 
-    vm.arches                     = dataservice.arches
+    vm.arches                       = dataservice.arches
 
-    vm.is_build_for_main_platform = isBuildForMainPlatform()
-    vm.hidePlatform               = (platform) ->
+    vm.is_build_for_main_platform   = isBuildForMainPlatform()
+    vm.hidePlatform                 = (platform) ->
       vm.is_build_for_main_platform and platform.id isnt vm.build_for_platform_id
-
 
     if !vm.last_build_lists
       vm.last_build_lists           = []

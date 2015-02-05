@@ -227,10 +227,6 @@ module BuildListsHelper
     end.sort_by { |e| e[:name] }
   end
 
-  def selected_save_to_repositories(project, repo_id, platform_name, params)
-    repo_id == save_to_repository_id(params) || platform_name == project_version(project, params)
-  end
-
   def new_build_list_platforms(params)
     availables_main_platforms.map do |pl|
       platform = { id: pl.id, name: pl.name, repositories: [] }
