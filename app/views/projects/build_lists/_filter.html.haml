@@ -73,13 +73,13 @@
               %button.btn.btn-default{ type: 'button', disabled: true }
                 = t('layout.processing')
             .btn-group{ 'ng-hide' => 'isRequest' }
-              %button.btn.btn-default{ type: 'button', 'ng-click' => 'refresh(true)' }
+              %button.btn.btn-primary{ type: 'button', 'ng-click' => 'refresh(true)' }
                 = t('layout.search.header')
             .btn-group
-              %button.btn.btn-default{ type: 'button', 'ng-click' => 'clear()' }= t('reset')
+              %button.btn.btn-primary{ type: 'button', 'ng-click' => 'clear()' }= t('reset')
             -if @project and can?(:create, @project.build_lists.build)
               .btn-group
-                %button.btn.btn-default{ id: 'filter_new_build', type: 'button',
+                %button.btn.btn-primary{ id: 'filter_new_build', type: 'button',
                   onclick: "location.href='#{new_project_build_list_path(@project)}'" }
                   = t('layout.build_lists.new_header')
           = hidden_field_tag :name_with_owner, @project.try(:name_with_owner)

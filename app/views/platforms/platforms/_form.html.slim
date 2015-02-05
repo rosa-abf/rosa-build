@@ -60,5 +60,6 @@
 
 .col-sm-offset-3.col-sm-9
   => f.button :submit, t('layout.save')
-  a.btn.btn-primary href=(@platform.new_record? ? root_path : platform_path(@platform))
+  => t('layout.or')
+  a.btn.btn-default href=(@platform.new_record? ? root_path : platform_path(@platform))
     = t('layout.cancel')

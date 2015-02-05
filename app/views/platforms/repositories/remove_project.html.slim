@@ -7,4 +7,4 @@
   .row
     = simple_form_for :repository, url: remove_project_platform_repository_path(@platform, @repository), html: { method: :delete } do |f|
       = f.input :projects_list, as: :text
-      = f.button :submit, t('layout.delete')
+      = f.button :submit, t('layout.delete'), class: 'btn-danger'

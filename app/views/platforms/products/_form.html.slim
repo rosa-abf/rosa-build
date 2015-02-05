@@ -35,10 +35,8 @@
 
 = f.input :autostart_status, collection: Product::AUTOSTART_STATUSES.collect{|status| [Product.human_autostart_status(status), status]}
 
-= f.button :submit, t('layout.save')
-| &nbsp;
-= t('layout.or')
-| &nbsp;
-a href=( @product.new_record? ? platform_path(@platform) : platform_product_path(@platform, @product) )
+=> f.button :submit, t('layout.save')
+=> t('layout.or')
+a.btn.btn-default href=( @product.new_record? ? platform_path(@platform) : platform_product_path(@platform, @product) )
   = t('layout.cancel')
 

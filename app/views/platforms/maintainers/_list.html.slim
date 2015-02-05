@@ -3,11 +3,9 @@
     .col-md-6
       = f.input :name, label: false
     .col-md-6
-      = f.button :submit, t('layout.search.header')
-      | &nbsp;
-      = t('layout.or')
-      | &nbsp;
-      a href=platform_maintainers_path(@platform)
+      => f.button :submit, t('layout.search.header')
+      => t('layout.or')
+      a.btn.btn-default href=platform_maintainers_path(@platform)
         = t('layout.clear')
 
 

@@ -38,7 +38,7 @@
     .col-md-5
       => f.button :submit, t('.search')
       => t('.or')
-      = link_to t('.clear'), subject
+      = link_to t('.clear'), subject, class: 'btn btn-default'
 hr
 
 table.table.table-striped ng-show='!processing'
