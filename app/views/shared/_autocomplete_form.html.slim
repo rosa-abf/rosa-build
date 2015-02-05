@@ -3,6 +3,7 @@
     field
     placeholder
     ctrl_as       angularjs controllerAs
+    hash          params hash name
 
 - modal_id   = "#{field}Modal"
 - field_name = field.to_s.underscore
@@ -45,5 +46,5 @@ table.table.offset5
     td
       a[ class='fa fa-times-circle text-danger' href=''
          ng-click="#{ctrl_as}remove#{func_name}(el.id)" ]
-      input[ name="mass_build[#{field_name}][]" type='hidden'
+      input[ name="#{hash}[#{field_name}][]" type='hidden'
              ng-model='el.id' ng-value='el.id' ]

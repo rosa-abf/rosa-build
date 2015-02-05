@@ -45,17 +45,20 @@
           = render 'shared/autocomplete_form',
                    field:       :ExtraRepositories,
                    placeholder: 'uxteam_personal',
-                   ctrl_as:     'newMassBuildCtrl'
+                   ctrl_as:     'newMassBuildCtrl',
+                   hash:        'mass_build'
 
         = render 'shared/autocomplete_form',
                  field:       :ExtraMassBuilds,
                  placeholder: '1000',
-                 ctrl_as:     'newMassBuildCtrl'
+                 ctrl_as:     'newMassBuildCtrl',
+                 hash:        'mass_build'
 
         = render 'shared/autocomplete_form',
                  field:       :ExtraBuildLists,
                  placeholder: '1000000',
-                 ctrl_as:     'newMassBuildCtrl'
+                 ctrl_as:     'newMassBuildCtrl',
+                 hash:        'mass_build'
 
         h3= t('activerecord.attributes.build_list.preferences')
 

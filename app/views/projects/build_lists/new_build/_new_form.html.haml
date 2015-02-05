@@ -36,12 +36,14 @@
         = render 'shared/autocomplete_form',
                  field:       :ExtraRepositories,
                  placeholder: 'uxteam_personal',
-                 ctrl_as:     'newBuildCtrl'
+                 ctrl_as:     'newBuildCtrl',
+                 hash:        'build_list'
 
       = render 'shared/autocomplete_form',
                field:       :ExtraBuildLists,
                placeholder: '1000000',
-               ctrl_as:     'newBuildCtrl'
+               ctrl_as:     'newBuildCtrl',
+               hash:        'build_list'
 
       = render 'projects/build_lists/new_build/extra_params_and_preferences',
                params: params,
