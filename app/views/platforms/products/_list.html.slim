@@ -11,7 +11,7 @@ table.table.table-striped
         td
           - if can? :destroy, product
             a[href          = platform_product_path(@platform, product)
-              method        = 'delete'
+              data-method   = 'delete'
               data-confirm  = t('layout.products.confirm_delete') ]
               span.glyphicon.glyphicon-remove
                 | &nbsp;

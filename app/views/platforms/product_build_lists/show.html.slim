@@ -110,18 +110,20 @@
   .row
     hr
     - if can?(:cancel, pbl)
-      a.btn.btn-warning[href=cancel_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
-                        method        = 'put'
-                        data-confirm  = t('layout.confirm')
-                        ng-show       = 'pbl.can_cancel' ]
+      a.btn.btn-warning[
+          href=cancel_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
+          data-method   = 'put'
+          data-confirm  = t('layout.confirm')
+          ng-show       = 'pbl.can_cancel' ]
         = t('layout.build_lists.cancel')
       | &nbsp;
 
     - if can?(:destroy, pbl)
-      a.btn.btn-danger[ href=platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
-                        method        = 'delete'
-                        data-confirm  = t('layout.confirm')
-                        ng-show       = 'pbl.can_destroy' ]
+      a.btn.btn-danger[
+          href=platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
+          data-method   = 'delete'
+          data-confirm  = t('layout.confirm')
+          ng-show       = 'pbl.can_destroy' ]
         = t('layout.product_build_lists.delete')
 
   .row.offset20 ng-show="pbl.status == #{ProductBuildList::BUILD_STARTED}"

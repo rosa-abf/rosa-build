@@ -17,7 +17,7 @@
       | &nbsp;
     - if can? :destroy, @product
       a.btn.btn-danger[ href          = platform_product_path(@platform, @product)
-                        method        = 'delete'
+                        data-method   = 'delete'
                         data-confirm  = t('layout.products.confirm_delete') ]
         = t('layout.delete')
       | &nbsp;

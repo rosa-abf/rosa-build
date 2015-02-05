@@ -37,7 +37,7 @@ div ng-controller='RepositoryProjectsController'
             = t('layout.add')
           a[ng-href         = '{{project.remove_path}}'
             ng-show         = 'project.remove_path'
-            method          = 'delete'
+            data-method     = 'delete'
             data-confirm    = t('layout.confirm')]
             span.glyphicon.glyphicon-remove
               | &nbsp;
