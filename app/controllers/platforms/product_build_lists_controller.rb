@@ -11,10 +11,11 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   def new
     product = @product_build_list.product
-    @product_build_list.params = product.params
-    @product_build_list.main_script = product.main_script
-    @product_build_list.time_living = product.time_living
-    @product_build_list.project = product.project
+    @product_build_list.params          = product.params
+    @product_build_list.main_script     = product.main_script
+    @product_build_list.time_living     = product.time_living
+    @product_build_list.project_version = product.project_version
+    @product_build_list.project         = product.project
     unless @product_build_list.project
       flash[:error] = t('flash.product_build_list.no_project')
       redirect_to edit_platform_product_path(@platform, @product)
