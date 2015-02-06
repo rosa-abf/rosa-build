@@ -3,9 +3,9 @@
 
 .col-xs-12.col-md-10.col-md-offset-1 ng-controller = 'IssuesController as issuesCtrl' ng-cloak = true
   .row
-    .col-md-3.col-sm-4.offset20
+    .col-md-3.col-sm-4.offset10
       == render 'index_sidebar', project: @project
-    .col-md-9.col-sm-8.offset20
+    .col-md-9.col-sm-8.offset10
       tabset.boffset10
         tab[ heading  = "#{t "layout.issues.statuses.open"} ({{issuesCtrl.filter.opened_count}})"
              active   = 'issuesCtrl.filter.status_open'

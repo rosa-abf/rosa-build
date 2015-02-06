@@ -53,9 +53,9 @@
         a href="#"
           = t('top_menu.statistics')
 
-    .offset20 ng-show="tab == 'projects'" ng-controller='ProfileController' ng-cloak = true
+    .offset10 ng-show="tab == 'projects'" ng-controller='ProfileController' ng-cloak = true
       = render 'projects', subject: @user
-    #manage-statistics.offset20[ ng-show       = "tab == 'statistics'"
+    #manage-statistics.offset10[ ng-show       = "tab == 'statistics'"
                                  ng-controller = 'StatisticsController'
                                  ng-cloak      = true ]
       = render 'statistics'

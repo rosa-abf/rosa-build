@@ -1,7 +1,7 @@
 tab heading = "{{activity_tab.title | i18n}}" active = "activity_tab.active" select = "getContent('activity')"
   .row
-    .col-md-3.offset20== render 'sidebar'
-    .col-md-9.offset20
+    .col-md-3.offset10== render 'sidebar'
+    .col-md-9.offset10
       h3
         = t 'layout.activity_feed.header'
         = link_to image_tag('rss.ico', width: '15px', height: '15px', class: 'atom_icon'),
@@ -10,7 +10,7 @@ tab heading = "{{activity_tab.title | i18n}}" active = "activity_tab.active" sel
         - (collection = t 'feed_menu').each do |base, title|
           tab heading = title active = (@filter == base) select = "changeActivityFilter('#{base}')"
       / The time line
-      .row.offset20
+      .row.offset10
         .col-md-12.col-sm-12
           ul.timeline
             / timeline time label

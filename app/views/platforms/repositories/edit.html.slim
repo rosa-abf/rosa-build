@@ -33,7 +33,7 @@
           .col-md-2
             = f.button :submit, label, data: { confirm: t('layout.confirm') }, class: 'btn-warning'
 
-    .row.offset20
+    .row.offset10
       = simple_form_for @repository, url: regenerate_metadata_platform_repository_path(@platform, @repository), html: { method: :put } do |f|
         .col-md-6
           = t('layout.repositories.regenerate_metadata')

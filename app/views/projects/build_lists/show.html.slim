@@ -86,7 +86,7 @@ div[class         = 'row'
               = @build_list.update_type
 
         tr
-          td.offset20.ng-hide ng-show='update_type_errors' colspan=2
+          td.offset10.ng-hide ng-show='update_type_errors' colspan=2
             .flash_notify
               .alert ng-class="{ 'alert-danger': update_type_errors }"
                 | {{ update_type_errors }}
@@ -208,7 +208,7 @@ div[class         = 'row'
       .row
         = render 'buttons', build_list: @build_list
 
-      .row.offset20 ng-show="build_list.status == #{BuildList::BUILD_STARTED}"
+      .row.offset10 ng-show="build_list.status == #{BuildList::BUILD_STARTED}"
         = render 'shared/log', { build_started: true, get_log_path: log_build_list_path(@build_list) }
 
       hr

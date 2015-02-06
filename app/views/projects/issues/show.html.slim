@@ -4,7 +4,7 @@
 
 .col-xs-12.col-md-10.col-md-offset-1 ng-controller = 'IssueController as issueCtrl' ng-cloak = true
   .row
-    .col-md-3.col-sm-4.offset20
+    .col-md-3.col-sm-4.offset10
       == render 'status_sidebar'
       - if can?(:write, @project)
         = simple_form_for @issue, url: project_issue_path(@project, @issue) do |f|

@@ -6,11 +6,11 @@
     .row
       - can_write = can?(:write, @project)
       - if can_write
-        .col-md-3.col-sm-4.offset20
+        .col-md-3.col-sm-4.offset10
           == render 'select_labels'
           == render 'manage_labels'
 
-      .col-md-9.col-sm-8.offset20[ class = "#{'col-md-offset-2' unless can_write}" ]
+      .col-md-9.col-sm-8.offset10[ class = "#{'col-md-offset-2' unless can_write}" ]
         h3= title t('layout.issues.create_header')
         == render 'form', f: f
         = submit_tag t('layout.create'),

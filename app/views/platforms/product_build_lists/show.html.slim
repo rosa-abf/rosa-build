@@ -99,7 +99,7 @@
           options_for_select(product_build_list_delete_options),
           { ng_model: "pbl.not_delete", ng_change: 'updateStatus()'}
 
-  .row.alert.alert-danger.offset20 ng-hide='pbl.not_delete'
+  .row.alert.alert-danger.offset10 ng-hide='pbl.not_delete'
     - days = pbl.autostarted? ? ProductBuildList::LIVE_TIME : ProductBuildList::MAX_LIVE_TIME
     - days = (pbl.created_at.to_date - days.ago.to_date).to_i
     - if days > 1
@@ -126,7 +126,7 @@
           ng-show       = 'pbl.can_destroy' ]
         = t('layout.product_build_lists.delete')
 
-  .row.offset20 ng-show="pbl.status == #{ProductBuildList::BUILD_STARTED}"
+  .row.offset10 ng-show="pbl.status == #{ProductBuildList::BUILD_STARTED}"
     = render 'shared/log', { build_started: true, get_log_path: log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
 
   .row

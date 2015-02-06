@@ -16,7 +16,7 @@
           = simple_form_for @pull, url: (@pull.already? ? new_project_pull_request_path : project_pull_requests_path),
               html: {method: (@pull.already? ? :get : :post)} do |f|
 
-            .form-group.offset20
+            .form-group.offset10
               = f.label :from_project, t("#{ar}.from_project"), class: 'col-sm-2 control-label'
               .col-sm-10
                 .row
@@ -40,13 +40,13 @@
 
             .form-group
               .col-sm-offset-2.col-sm-10
-                = f.submit t('.update'), class: 'btn btn-primary offset20',
+                = f.submit t('.update'), class: 'btn btn-primary offset10',
                     style: @pull.already? ? '' : 'display: none;',
                     id: 'update_pull', data: {'disable-with' => t('layout.processing')}
 
             -unless @pull.already?
               .clearfix
-              .offset20 ng-controller = 'IssueController as issueCtrl' ng-cloak = true
+              .offset10 ng-controller = 'IssueController as issueCtrl' ng-cloak = true
                 = f.fields_for :issue do |issue|
                   == render 'projects/issues/form', f: issue
                 .form-group
@@ -55,11 +55,11 @@
                       data: {'disable-with' => t('layout.processing')} unless @pull.already?
         - if !@pull.already? && @stats != nil
           #diff.tab-pane
-            .offset20.content
+            .offset10.content
               == render 'diff_tab'
 
           #commits.tab-pane
-            .offset20.content
+            .offset10.content
               == render 'commits_tab'
 
 - content_for :additional_scripts do

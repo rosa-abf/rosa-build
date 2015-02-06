@@ -63,11 +63,11 @@
           %h4= t 'layout.build_lists.id_search'
           %input#filter_id.form-control{ name: 'filter{id}', size: '30', type: 'text', value: '{{params.filter.id}}' }
         .clearfix
-        .col-md-4.col-sm-6.offset20
+        .col-md-4.col-sm-6.offset10
           = label_tag :autoreload do
             = check_box_tag :autoreload, true, true
             = t 'layout.autoreload_page'
-        .col-md-4.col-sm-6.col-md-offset-4.offset20
+        .col-md-4.col-sm-6.col-md-offset-4.offset10
           .btn-group.btn-group-justified
             .btn-group{ 'ng-show' => 'isRequest' }
               %button.btn.btn-default{ type: 'button', disabled: true }

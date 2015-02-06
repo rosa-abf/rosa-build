@@ -1,4 +1,4 @@
-.offset20 ng-hide='issueCtrl.edit'
+.offset10 ng-hide='issueCtrl.edit'
   h3#issue_title_text
     = @issue.title
   .panel.panel-default
@@ -31,7 +31,7 @@
         == render "projects/comments/add", project: @project, commentable: @issue
 
 - if can?(:update, @issue)
-  .offset20 ng-show = 'issueCtrl.edit'
+  .offset10 ng-show = 'issueCtrl.edit'
     h3= t('layout.issues.edit_header')
 
     = simple_form_for @issue, url: project_issue_path(@project, @issue) do |f|

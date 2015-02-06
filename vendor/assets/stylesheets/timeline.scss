@@ -29,7 +29,7 @@ Component: timeline
 --------------------
 */
 .timeline {
-  margin: 0 0 30px 0;
+  margin: 0 0 10px 0;
   padding: 0;
   list-style: none;
 }
@@ -49,8 +49,8 @@ Component: timeline
 }
 .timeline > li {
   position: relative;
-  margin-right: 10px;
-  margin-bottom: 15px;
+  margin-right: 5px;
+  margin-top:   5px;
 }
 .timeline > li:before,
 .timeline > li:after {
@@ -61,12 +61,12 @@ Component: timeline
   clear: both;
 }
 .timeline > li > .timeline-item {
-  margin-top: 10px;
+  margin-top: 5px;
   border: 0px solid #b2b2b2;
   background: #fff;
   color: #555;
   margin-left: 60px;
-  margin-right: 15px;
+  margin-right: 8px;
   padding: 5px;
   position: relative;
   box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
@@ -88,11 +88,11 @@ Component: timeline
   font-weight: 600;
 }
 .timeline > li > .timeline-item > .timeline-header > a > img {
-  margin: 0 10px 0 10px;
+  margin: 0 5px;
 }
 .timeline > li > .timeline-item > .timeline-body,
 .timeline > li > .timeline-item > .timeline-footer {
-  padding: 5px 10px 5px 10px;
+  padding: 0 8px;
 }
 .timeline > li.time-label > span {
   font-weight: 600;

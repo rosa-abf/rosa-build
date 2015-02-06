@@ -15,7 +15,7 @@
             strong= @page.name
           - else
             = t('wiki.wiki_history')
-      .col-md-6.offset20
+      .col-md-6.offset10
         = simple_form_for :project, url: revert_path(@project, @versions.first[0..6], (@versions.size == 1) ? 'prev' : @versions.last[0..6], @name) do |f|
           - if can? :read, @project
               a.btn.btn-primary> href=(@name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project))

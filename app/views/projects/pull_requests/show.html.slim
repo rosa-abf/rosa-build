@@ -24,15 +24,15 @@
           - if current_user
             hr
             == render 'projects/comments/add', project: @project, commentable: @issue
-        .pull_status.offset20== render 'status'
+        .pull_status.offset10== render 'status'
 
       #diff.tab-pane
-        .offset20.content ng-hide = 'pullCtrl.processing'
-        i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
+        .offset10.content ng-hide = 'pullCtrl.processing'
+        i.fa.fa-spinner.fa-spin.fa-lg.offset10 ng-show = 'pullCtrl.processing'
 
       #commits.tab-pane
-        .offset20.content ng-hide = 'pullCtrl.processing'
-        i.fa.fa-spinner.fa-spin.fa-lg.offset20 ng-show = 'pullCtrl.processing'
+        .offset10.content ng-hide = 'pullCtrl.processing'
+        i.fa.fa-spinner.fa-spin.fa-lg.offset10 ng-show = 'pullCtrl.processing'
 
 div ng-non-bindable = true
   == render 'projects/comments/new_line'

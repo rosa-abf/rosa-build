@@ -5,14 +5,14 @@
 
     .col-md-4
       %h4= t 'activerecord.attributes.build_list.save_to_repository'
-      %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.save_to_repository',
+      %select.form-control.boffset10{ 'ng-model' => 'newBuildCtrl.save_to_repository',
         'ng-options' => 'r.name for r in newBuildCtrl.save_to_repositories track by r.id',
         'ng-change' =>  'newBuildCtrl.selectSaveToRepository()',
         name:           'build_list[save_to_repository_id]',
         required:       true }
 
       %h4= t 'activerecord.attributes.build_list.project_version'
-      %select.form-control.boffset20{ 'ng-model' => 'newBuildCtrl.project_version',
+      %select.form-control.boffset10{ 'ng-model' => 'newBuildCtrl.project_version',
         'ng-options' => 'v.name group by v.kind for v in newBuildCtrl.project_versions track by v.name',
         'ng-change' =>  'newBuildCtrl.selectProjectVersion()',
         'ng-value' =>   'newBuildCtrl.project_version',
@@ -28,9 +28,9 @@
                   name:         'arches[]' }
           {{ arch.name }}
 
-      %h4.offset20= t 'activerecord.attributes.build_list.update_type'
+      %h4.offset10= t 'activerecord.attributes.build_list.update_type'
       - selected = params[:build_list].try(:[], :update_type) ? {selected: params[:build_list][:update_type]} : {}
-      = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control boffset20'
+      = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control boffset10'
 
       %div{ 'ng-hide' => 'newBuildCtrl.is_build_for_main_platform' }
         = render 'shared/autocomplete_form',
@@ -52,7 +52,7 @@
       = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
       = f.submit t('layout.projects.build_button'),
           data: {'disable-with' => t('layout.processing')},
-          class: 'btn btn-primary offset20'
+          class: 'btn btn-primary offset10'
 
 - content_for :additional_scripts do
   = render 'projects/build_lists/new_build/init_service.js.erb'

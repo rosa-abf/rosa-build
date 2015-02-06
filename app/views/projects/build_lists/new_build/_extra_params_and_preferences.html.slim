@@ -5,7 +5,7 @@ h3= t('activerecord.attributes.build_list.extra_params.label')
       placeholder: t("activerecord.attributes.build_list.extra_params.#{field}"),
       class: 'form-control'
 
-h3.offset20= t("activerecord.attributes.build_list.preferences")
+h3.offset10= t("activerecord.attributes.build_list.preferences")
 - selected = params[:build_list].try(:[], :auto_publish_status) ? {selected: params[:build_list][:auto_publish_status]} : {}
 .form-group
   = f.label :auto_publish_status

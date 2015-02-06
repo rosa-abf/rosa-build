@@ -6,7 +6,7 @@
     = render 'settings_menu'
 
     = simple_form_for @hook, url:     project_hooks_path(@project, @hook),
-                             html:    { class: 'form-horizontal offset20' },
+                             html:    { class: 'form-horizontal offset10' },
                              wrapper: :horizontal_form do |f|
 
       h2= t("layout.hooks.services.#{@hook.name}")
@@ -14,6 +14,6 @@
 
       .col-sm-offset-3.col-sm-9
         = f.button :submit, t('layout.update'), data: {'disable-with' => t('layout.processing')},
-          class: 'btn btn-primary boffset20'
+          class: 'btn btn-primary boffset10'
 
     .col-sm-offset-3.col-sm-9= render "projects/hooks/docs/#{@hook.name}"

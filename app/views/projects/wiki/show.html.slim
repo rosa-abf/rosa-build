@@ -13,7 +13,7 @@
           = @page.name
           = "(#{ t("wiki.preview") })" if action_name == 'preview'
       - unless action_name == 'preview'
-        .col-md-8.offset20
+        .col-md-8.offset10
           a.btn.btn-primary> href=history_project_wiki_path(@project, escaped_name)
             = t('wiki.page_history')
           - if @editable

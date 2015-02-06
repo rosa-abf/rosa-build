@@ -1,7 +1,7 @@
 - act = action_name.to_sym
 - contr = controller_name.to_sym
 
-ul.nav.nav-tabs.nav-justified.boffset20[ role = 'tablist' ]
+ul.nav.nav-tabs.nav-justified.boffset10[ role = 'tablist' ]
   - if can? :edit, @project
     li[ class = "#{(act == :edit && contr == :projects) ? 'active' : ''}" ]
       = link_to t("layout.projects.edit"), edit_project_path(@project)
