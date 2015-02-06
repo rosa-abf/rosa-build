@@ -17,9 +17,10 @@ nav.navbar.navbar-inverse.top_menu role = "navigation"
         - if current_user.try(:admin?)
           li[ class = top_menu_class('admin') ]= link_to t('admins_menu_header'), admin_users_path
       = form_tag search_index_path, method: 'get', class: 'navbar-form navbar-left',
-                 role: 'search', style: "width:40%" do
-        .form-group.input-group style = 'width: 100%'
-          = text_field_tag 'query', @query, placeholder: t('layout.search.header'), class: 'form-control'
+                 role: 'search', style: "width:30%" do
+        .form-group style = 'display: inline'
+          .input-group style = 'width: 100%'
+            = text_field_tag 'query', @query, placeholder: t('layout.search.header'), class: 'form-control'
       ul.nav.navbar-nav.navbar-right
         - if current_user
           li
