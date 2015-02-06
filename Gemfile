@@ -85,7 +85,7 @@ gem 'time_diff'
 
 gem 'sass-rails', '~> 4.0'
 gem 'coffee-rails', '~> 4.1'
-gem 'bootstrap-sass', '~> 3.2'
+gem 'bootstrap-sass', '~> 3.3'
 gem 'font-awesome-rails', '~> 4.2'
 gem 'zeroclipboard-rails', '~> 0.1.0'
 
