@@ -22,7 +22,29 @@ module ApplicationHelper
     (controller_name.include?('build_lists') ? controller_name : params[:controller]).include?(base.to_s) ? 'active' : nil
   end
 
-  def title_object object
+  # Public: Get icon css class.
+  #
+  # base - the tab (Symbol).
+  #
+  # Returns String css class.
+  def top_menu_icon(base)
+    case base
+    when :platforms
+      'fa-linux'
+    when :projects
+      'fa-cube'
+    when :build_lists
+      'fa-cogs'
+    when :groups
+      'fa-users'
+    when :advisories
+      'fa-newspaper-o'
+    when :statistics
+      'fa-area-chart'
+    end
+  end
+
+  def title_object(object)
     return object.advisory_id if object.class == Advisory
     name = object.class == Group ? object.uname : object.name
     object_name = t "activerecord.models.#{object.class.name.downcase}"

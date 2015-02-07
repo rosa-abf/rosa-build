@@ -1,5 +1,0 @@
-%p.navbar-text.navbar-left.current_branch #{t('layout.projects.current_branch')}:
-%form.navbar-form.navbar-left
-  .form-group
-    = select_tag :branch, branch_selector_options(project), id: 'branch_selector', class: 'form-control'
-%form{action: '', method: :get, id: 'branch_changer', 'data-action' => "#{controller_name}"}

@@ -69,10 +69,18 @@ div[ role = 'navigation' ng-controller = 'ProjectRepoBlockController' ng-cloak =
     .row
       ul.nav.nav-tabs role = 'tablist'
         li class = ('active' if act == :show && contr == :trees )
-          = link_to t('project_menu.files'), tree_path(project, treeish)
+          a href=tree_path(project, treeish)
+            i.fa.fa-files-o>
+            = t('project_menu.files')
         li class = ('active' if act == :index && contr == :commits )
-          = link_to t('project_menu.commits'), commits_path(project, treeish)
+          a href=commits_path(project, treeish)
+            i.fa.fa-history>
+            = t('project_menu.commits')
         li class = ('active' if act == :branches && contr == :trees )
-          = link_to t('project_menu.branches', count: '{{singleton.project.branches_count}}'), branch_path(project, branch)
+          a href=branch_path(project, branch)
+            i.fa.fa-code-fork>
+            = t('project_menu.branches', count: '{{singleton.project.branches_count}}')
         li.tags class = ('active' if act == :tags && contr == :trees )
-          = link_to t('project_menu.tags', count: project.repo.tags.count), tags_path(project)
+          a href=tags_path(project)
+            i.fa.fa-tag>
+            = t('project_menu.tags', count: project.repo.tags.count)

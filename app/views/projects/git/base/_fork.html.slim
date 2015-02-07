@@ -1,0 +1,34 @@
+= hidden_field_tag :possible_forks_path, possible_forks_project_path(@project)
+
+- if can? :write, @project
+  .pull-right.roffset5
+    a.btn.btn-primary href=new_project_pull_request_path(@project, treeish: @treeish)
+      i.fa.fa-upload>
+      = t('projects.pull_requests.show.pull')
+
+- if can? :fork, @project
+  .pull-right#fork-and-edit.roffset5
+    a.btn.btn-primary href='#' data-toggle='modal' data-target='#forkModal'
+      i.fa.fa-code-fork>
+      = t('layout.projects.fork_and_edit')
+  #forkModal.modal.fade tabindex='-1' role='dialog' aria-labelledby='forkModalLabel' aria-hidden=true
+    .modal-dialog
+      .modal-content
+        .modal-header
+          button.close type="button" data-dismiss="modal"
+            span aria-hidden=true &times;
+            span.sr-only Close
+          h4.modal-title#myModalLabel
+            = t('layout.projects.fork_modal_header')
+          = hidden_field_tag :possible_forks, possible_forks_project_path(@project)
+          p.offset10
+            = text_field_tag 'fork_name', @project.name, id: 'fork_name', class: 'form-control'
+        .modal-body
+          = render 'forks', owner: current_user, name: @project.name
+
+- if @project.is_package && can?(:create, @project.build_lists.new)
+  .pull-right.roffset5
+    - params = { build_list: { project_version: @treeish}}
+    a.btn.btn-primary href=new_project_build_list_path(@project, params)
+      i.fa.fa-plus>
+      = t('layout.projects.new_build_list')

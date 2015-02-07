@@ -13,23 +13,36 @@ nav.navbar.navbar-inverse.top_menu role = "navigation"
       ul.nav.navbar-nav
         - (collection = t 'top_menu').each do |base, title|
           - if can? :index, base.to_s.classify.constantize
-            li[ class = top_menu_class(base) ]= link_to title, send("#{base}_path")
+            li class=top_menu_class(base)
+              a href=send("#{base}_path")
+                i.fa.hidden-sm                     class=top_menu_icon(base)
+                i.fa.visible-sm-inline-block.fa-2x class=top_menu_icon(base)
+                span.hidden-sm
+                  =< title
         - if current_user.try(:admin?)
-          li[ class = top_menu_class('admin') ]= link_to t('admins_menu_header'), admin_users_path
-      = form_tag search_index_path, method: 'get', class: 'navbar-form navbar-left',
-                 role: 'search', style: "width:30%" do
-        .form-group style = 'display: inline'
-          .input-group style = 'width: 100%'
-            = text_field_tag 'query', @query, placeholder: t('layout.search.header'), class: 'form-control'
+          li class=top_menu_class('admin')
+            a href=admin_users_path
+              i.fa.fa-lock.hidden-sm
+              i.fa.fa-lock.visible-sm-inline-block.fa-2x
+              span.hidden-sm
+                =< t('admins_menu_header')
+        li
+          = form_tag search_index_path, method: 'get', class: 'navbar-form navbar-left',
+                     role: 'search' do
+            .form-group
+              = text_field_tag 'query', @query, placeholder: t('layout.search.header'), class: 'form-control'
       ul.nav.navbar-nav.navbar-right
         - if current_user
-          li
-            .avatar= image_tag avatar_url(current_user), alt: 'avatar', class: 'img-responsive'
+          li.hidden-xs
+            .avatar
+              = image_tag avatar_url(current_user), alt: 'avatar', class: 'img-responsive'
           li.dropdown
             a.dropdown[ data-toggle = 'dropdown' href = '#' id = 'userMenuLabel'
                         aria-haspopup = 'true' aria-expanded = 'false' ]
-              = current_user.uname
-              b.caret
+              span.visible-xs-inline-block.visible-lg-inline-block>
+                = current_user.uname
+              i.fa.fa-cog.hidden-sm
+              i.fa.fa-cog.visible-sm-inline-block.fa-2x
             ul.dropdown-menu role = 'menu' aria-labelledby = 'userMenuLabel'
               li= link_to current_user.uname, current_user
               li= link_to t('layout.settings.label'), profile_settings_path

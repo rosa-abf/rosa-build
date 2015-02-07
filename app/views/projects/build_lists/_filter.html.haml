@@ -74,6 +74,7 @@
                 = t('layout.processing')
             .btn-group{ 'ng-hide' => 'isRequest' }
               %button.btn.btn-primary{ type: 'button', 'ng-click' => 'refresh(true)' }
+                %i.fa.fa-search
                 = t('layout.search.header')
             .btn-group
               %button.btn.btn-primary{ type: 'button', 'ng-click' => 'clear()' }= t('reset')
@@ -81,5 +82,6 @@
               .btn-group
                 %button.btn.btn-primary{ id: 'filter_new_build', type: 'button',
                   onclick: "location.href='#{new_project_build_list_path(@project)}'" }
+                  %i.fa.fa-plus
                   = t('layout.build_lists.new_header')
           = hidden_field_tag :name_with_owner, @project.try(:name_with_owner)
