@@ -10,7 +10,6 @@ RosaABF.controller('GitTreeCtrl', ['$scope', '$http', '$location', function($sco
     $scope.project   = project;
     $scope.treeish   = treeish;
     $scope.path      = path;
-    $scope.refresh();
   };
 
   $scope.refresh = function(more) {
@@ -39,7 +38,7 @@ RosaABF.controller('GitTreeCtrl', ['$scope', '$http', '$location', function($sco
 
   $scope.$on('$locationChangeSuccess', function(event) {
     path = typeof $location.search()['path'] !== 'undefined' ? $location.search()['path'] : false;
-    if($scope.path && path) {
+    if(path) {
       $scope.path = path;
     }
     $scope.refresh();
