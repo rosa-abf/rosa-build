@@ -25,7 +25,7 @@ html
     == render 'layouts/noscript'
     == render "layouts/flashes"
 
-    article.container-fluid.offset10
+    article.container-fluid
       == yield
     == render 'layouts/menu/new_bottom'
     == javascript_include_tag 'new_application', cache: 'application'
