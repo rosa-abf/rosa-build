@@ -51,10 +51,12 @@
                f:      f
 
       = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
+
+    .col-sm-8
       %hr
       = button_tag type: :submit,
           data: {'disable-with' => t('layout.processing')},
-          class: 'btn btn-primary' do
+          class: 'btn btn-primary btn-lg btn-block' do
         %i.fa.fa-check
         = t('layout.projects.build_button')
 
