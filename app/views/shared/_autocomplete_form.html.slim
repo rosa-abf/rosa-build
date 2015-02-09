@@ -40,7 +40,7 @@ h4
       i.fa.fa-plus>
       = t('layout.add')
 
-table.table.offset5
+table.table
   tr[ ng-repeat="el in #{ctrl_as}#{field_name}" ]
     td
       a[ ng-href='{{ el.path }}' ] {{ el.label }}
