@@ -34,6 +34,7 @@
 
 //= require extra/pull
 //= require extra/scroller
+//= require extra/fork
 
 //= require_self
 
