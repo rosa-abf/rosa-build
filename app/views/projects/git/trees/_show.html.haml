@@ -1,6 +1,6 @@
 %h3= t 'layout.projects.files_in_project'
 %div{ 'ng-controller' => 'GitTreeCtrl', 'ng-cloak' => true,
-      'ng-init' => "init('#{@project.name_with_owner}', '#{@treeish}', '#{@path}', '#{root_path}')" }
+      'ng-init' => "init('#{@project.name_with_owner}', '#{@treeish}', '#{@path}')" }
   .files
     .pull-left= render 'whereami'
     .pull-right= render 'fork'

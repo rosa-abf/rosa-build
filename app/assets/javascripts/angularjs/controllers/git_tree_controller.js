@@ -6,12 +6,11 @@ RosaABF.controller('GitTreeCtrl', ['$scope', '$http', '$location', function($sco
   $scope.breadcrumb = null;
   $scope.processing = false;
 
-  $scope.init = function(project, treeish, path, root_path) {
+  $scope.init = function(project, treeish, path) {
     $scope.project   = project;
     $scope.treeish   = treeish;
-    $scope.root_path = root_path;
     $scope.path      = path;
-    //$scope.getTree();
+    $scope.refresh();
   };
 
   $scope.refresh = function(more) {

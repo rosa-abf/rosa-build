@@ -24,13 +24,12 @@ else
       else
 
         json.node do
-          options = [@project, @treeish, node_path]
           if node.is_a?(Grit::Tree)
             json.class_name 'fa-folder'
-            json.url        tree_path *options
+            json.url        tree_path(@project, "#{@treeish}/#{node_path}")
           else
             json.class_name 'fa-file-text-o'
-            json.url        blob_path(*options)
+            json.url        blob_path(@project, @treeish, node_path)
             json.is_blob    true
           end
           json.name         node.name
