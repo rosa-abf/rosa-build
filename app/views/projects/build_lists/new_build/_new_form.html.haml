@@ -3,62 +3,63 @@
     .col-xs-12.col-sm-4
       = render 'projects/build_lists/new_build/include_repos'
 
-    .col-xs-12.col-sm-4
-      %h4= t 'activerecord.attributes.build_list.save_to_repository'
-      %select.form-control.boffset10{ 'ng-model' => 'newBuildCtrl.save_to_repository',
-        'ng-options' => 'r.name for r in newBuildCtrl.save_to_repositories track by r.id',
-        'ng-change' =>  'newBuildCtrl.selectSaveToRepository()',
-        name:           'build_list[save_to_repository_id]',
-        required:       true }
+    .col-xs-12.col-sm-8
+      .row
+        .col-xs-12.col-sm-6
+          %h4= t 'activerecord.attributes.build_list.save_to_repository'
+          %select.form-control.boffset10{ 'ng-model' => 'newBuildCtrl.save_to_repository',
+            'ng-options' => 'r.name for r in newBuildCtrl.save_to_repositories track by r.id',
+            'ng-change' =>  'newBuildCtrl.selectSaveToRepository()',
+            name:           'build_list[save_to_repository_id]',
+            required:       true }
 
-      %h4= t 'activerecord.attributes.build_list.project_version'
-      %select.form-control.boffset10{ 'ng-model' => 'newBuildCtrl.project_version',
-        'ng-options' => 'v.name group by v.kind for v in newBuildCtrl.project_versions track by v.name',
-        'ng-change' =>  'newBuildCtrl.selectProjectVersion()',
-        'ng-value' =>   'newBuildCtrl.project_version',
-        name:           'build_list[project_version]',
-        required:       true }
+          %h4= t 'activerecord.attributes.build_list.project_version'
+          %select.form-control.boffset10{ 'ng-model' => 'newBuildCtrl.project_version',
+            'ng-options' => 'v.name group by v.kind for v in newBuildCtrl.project_versions track by v.name',
+            'ng-change' =>  'newBuildCtrl.selectProjectVersion()',
+            'ng-value' =>   'newBuildCtrl.project_version',
+            name:           'build_list[project_version]',
+            required:       true }
 
-      %h4= t 'activerecord.attributes.build_list.arch'
-      .checkbox{ 'ng-repeat' => 'arch in newBuildCtrl.arches' }
-        %label
-          %input{ type:         'checkbox',
-                  'ng-model' => 'arch.checked',
-                  'ng-value' => 'arch.id',
-                  name:         'arches[]' }
-          {{ arch.name }}
+          %h4= t 'activerecord.attributes.build_list.arch'
+          .checkbox{ 'ng-repeat' => 'arch in newBuildCtrl.arches' }
+            %label
+              %input{ type:         'checkbox',
+                      'ng-model' => 'arch.checked',
+                      'ng-value' => 'arch.id',
+                      name:         'arches[]' }
+              {{ arch.name }}
 
-      %h4.offset10= t 'activerecord.attributes.build_list.update_type'
-      - selected = params[:build_list].try(:[], :update_type) ? {selected: params[:build_list][:update_type]} : {}
-      = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control boffset10'
+          %h4.offset10= t 'activerecord.attributes.build_list.update_type'
+          - selected = params[:build_list].try(:[], :update_type) ? {selected: params[:build_list][:update_type]} : {}
+          = f.select :update_type, BuildList::UPDATE_TYPES, selected, class: 'form-control boffset10'
 
-      %div{ 'ng-hide' => 'newBuildCtrl.is_build_for_main_platform' }
-        = render 'shared/autocomplete_form',
-                 field:       :ExtraRepositories,
-                 placeholder: 'uxteam_personal',
-                 ctrl_as:     'newBuildCtrl',
-                 hash:        'build_list'
+          %div{ 'ng-hide' => 'newBuildCtrl.is_build_for_main_platform' }
+            = render 'shared/autocomplete_form',
+                     field:       :ExtraRepositories,
+                     placeholder: 'uxteam_personal',
+                     ctrl_as:     'newBuildCtrl',
+                     hash:        'build_list'
 
-      = render 'shared/autocomplete_form',
-               field:       :ExtraBuildLists,
-               placeholder: '1000000',
-               ctrl_as:     'newBuildCtrl',
-               hash:        'build_list'
+          = render 'shared/autocomplete_form',
+                   field:       :ExtraBuildLists,
+                   placeholder: '1000000',
+                   ctrl_as:     'newBuildCtrl',
+                   hash:        'build_list'
+        .col-xs-12.col-sm-6
+          = render 'projects/build_lists/new_build/extra_params_and_preferences',
+                   params: params,
+                   f:      f
 
-    .col-xs-12.col-sm-4
-      = render 'projects/build_lists/new_build/extra_params_and_preferences',
-               params: params,
-               f:      f
+          = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
 
-      = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
-
-    .col-sm-8
-      %hr
-      = button_tag type: :submit,
-          data: {'disable-with' => t('layout.processing')},
-          class: 'btn btn-primary btn-lg btn-block' do
-        %i.fa.fa-check
-        = t('layout.projects.build_button')
+        .col-xs-12.col-sm-8.col-sm-offset-2
+          %hr
+          = button_tag type: :submit,
+              data: {'disable-with' => t('layout.processing')},
+              class: 'btn btn-primary btn-lg btn-block' do
+            %i.fa.fa-check
+            = t('layout.projects.build_button')
 
 - content_for :additional_scripts do
   = render 'projects/build_lists/new_build/init_service.js.erb'
