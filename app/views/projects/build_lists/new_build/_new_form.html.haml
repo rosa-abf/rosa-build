@@ -1,9 +1,9 @@
 = form_for [@project, @build_list], html: { class: :form, method: :post } do |f|
   .row
-    .col-md-4.col-md-offset-2
+    .col-xs-12.col-sm-4
       = render 'projects/build_lists/new_build/include_repos'
 
-    .col-md-4
+    .col-xs-12.col-sm-4
       %h4= t 'activerecord.attributes.build_list.save_to_repository'
       %select.form-control.boffset10{ 'ng-model' => 'newBuildCtrl.save_to_repository',
         'ng-options' => 'r.name for r in newBuildCtrl.save_to_repositories track by r.id',
@@ -45,6 +45,7 @@
                ctrl_as:     'newBuildCtrl',
                hash:        'build_list'
 
+    .col-xs-12.col-sm-4
       = render 'projects/build_lists/new_build/extra_params_and_preferences',
                params: params,
                f:      f
