@@ -4,4 +4,4 @@ h3
 = simple_form_for @ssh_key, url: ssh_keys_path do |f|
   = f.input :name
   = f.input :key, as: :text
-  = f.button :submit, t('layout.save')
+  = submit_button_tag

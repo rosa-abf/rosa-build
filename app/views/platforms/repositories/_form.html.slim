@@ -7,7 +7,7 @@
 - if @platform.main?
   = f.input :publish_builds_only_from_branch
 
-=> f.button :submit, t('layout.save')
+=> submit_button_tag
 => t('layout.or')
 a.btn.btn-default href=(@repository.new_record? ? platform_repositories_path(@platform) : platform_repository_path(@platform, @repository))
   = t('layout.cancel')

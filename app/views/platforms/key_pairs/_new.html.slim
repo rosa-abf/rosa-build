@@ -6,4 +6,4 @@ h3
   = f.input :secret, as: :text
   = f.input :repository_id, collection: key_pair_repository_options(@platform)
 
-  = f.button :submit, t('layout.save')
+  = submit_button_tag

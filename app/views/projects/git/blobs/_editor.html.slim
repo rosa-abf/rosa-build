@@ -15,9 +15,7 @@ h3= t("layout.projects.files_in_project")
     label[ for = :message ]= t("layout.enter_commit_message")
     = text_area_tag :message, "Updated #{@blob.name}", class: 'form-control'
 
-  => submit_tag t('layout.save'), title: t('layout.save'),
-      data: {'disable-with' => t('layout.saving')},
-      class: 'btn btn-primary'
+  => submit_button_tag
   => t("layout.or")
   = link_to t("layout.cancel"), blob_path(@project, @treeish, @path), class: 'btn btn-default'
 

@@ -1,4 +1,14 @@
 module ApplicationHelper
+
+  def submit_button_tag(icon_class: 'fa-check', text: nil)
+    text ||= I18n.t('layout.save')
+    button_tag type: :submit,
+        data:  {'disable-with' => I18n.t('layout.processing')},
+        class: 'btn btn-primary' do
+      content_tag(:i, nil, class: ['fa', icon_class]) << ' '<< text
+    end
+  end
+
   def layout_class
     case
     when controller_name == 'issues' && action_name == 'new'
