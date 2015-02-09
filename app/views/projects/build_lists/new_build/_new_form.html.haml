@@ -1,9 +1,9 @@
 = form_for [@project, @build_list], html: { class: :form, method: :post } do |f|
   .row
-    .col-xs-12.col-sm-4
+    .col-xs-12.col-sm-3
       = render 'projects/build_lists/new_build/include_repos'
 
-    .col-xs-12.col-sm-8
+    .col-xs-12.col-sm-9
       .row
         .col-xs-12.col-sm-6
           %h4= t 'activerecord.attributes.build_list.save_to_repository'
