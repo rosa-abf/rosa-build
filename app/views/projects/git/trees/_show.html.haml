@@ -50,7 +50,7 @@
           %a{ 'ng-href' => '{{el.commit.url}}' } {{el.commit.short_message}}
 
         %td{ 'ng-show' => 'el.commit',
-             title: '{{el.commit.committed_date | amDateFormat:\'YYYY-MM-DD HH:mm:ss UTC\'}}' }
+             title: '{{el.commit.committed_date_utc}}' }
           {{ el.commit.committed_date | amDateFormat:'YYYY-MM-DD HH:mm' }} (
           %span{ 'am-time-ago' => 'el.commit.committed_date' }
           )

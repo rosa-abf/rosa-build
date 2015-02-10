@@ -38,9 +38,10 @@ else
       end
       if commit
         json.commit do
-          json.committed_date commit.committed_date
-          json.short_message  commit.short_message
-          json.url            commit_path(@project, commit)
+          json.committed_date     commit.committed_date
+          json.committed_date_utc commit.committed_date.utc.strftime('%Y-%m-%d %H:%M:%S UTC')
+          json.short_message      commit.short_message
+          json.url                commit_path(@project, commit)
         end
       end
     end
