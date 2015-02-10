@@ -5,6 +5,7 @@ ru:
       new: Создать
       profile: Профиль
       settings: Настройки
+      builds_settings: Настройки сборок
       new_header: Новый пользователь
       edit_header: Редактировать
       list_header: Пользователи
