@@ -248,6 +248,8 @@ Rosa::Application.routes.draw do
         patch :private
         get :notifiers
         patch :notifiers
+        get :builds_settings
+        patch :builds_settings
         put :reset_auth_token
       end
     end

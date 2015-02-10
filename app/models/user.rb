@@ -18,7 +18,8 @@ class User < Avatar
          :recoverable, :rememberable, :validatable, :lockable, :confirmable
   devise :omniauthable, omniauth_providers: [:facebook, :google_oauth2, :github]
 
-  has_one :notifier, class_name: 'SettingsNotifier', dependent: :destroy #:notifier
+  has_one :notifier,       class_name: 'SettingsNotifier',  dependent: :destroy #:notifier
+  has_one :builds_setting, class_name: 'UserBuildsSetting', dependent: :destroy
 
   has_many :activity_feeds, dependent: :destroy
 

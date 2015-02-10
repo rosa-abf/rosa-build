@@ -1,0 +1,37 @@
+- set_meta_tags title: t('.title')
+= render 'users/base/submenu'
+
+
+.container.col-md-offset-2.col-md-8
+  .row
+    = simple_form_for @user.builds_setting,
+      url:              builds_settings_settings_path,
+      wrapper:          :horizontal_form,
+      wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+
+      fieldset
+        legend
+          = t('.heading')
+
+        .row
+          .col-sm-4
+            = f.label :platforms
+            = f.hint :platforms
+            = f.collection_check_boxes :platforms, availables_main_platforms, :id, :name,
+                checked:                  @user.builds_setting.platforms,
+                collection_wrapper_tag:   :div,
+                collection_wrapper_class: 'form-group',
+                item_wrapper_tag:         :div,
+                item_wrapper_class:       'col-sm-9' do |b|
+              .checkbox
+                = b.label { b.check_box + b.text }
+
+
+          .col-sm-8
+            = f.input :external_nodes, collection: external_nodes, include_blank: true
+            = f.input :use_extra_tests, as: :boolean
+
+            .clearfix
+            hr
+            = submit_button_tag
+
