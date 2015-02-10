@@ -103,7 +103,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def autocomplete_to_project
     items = []
-    term = params[:term].to_s.strip.downcase
+    term = params[:query].to_s.strip.downcase
     [ Project.where(id: @project.pull_requests.last.try(:to_project_id)),
       @project.ancestors,
       Project.accessible_by(current_ability, :membered)
