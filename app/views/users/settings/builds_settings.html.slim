@@ -6,8 +6,7 @@
   .row
     = simple_form_for @user.builds_setting,
       url:              builds_settings_settings_path,
-      wrapper:          :horizontal_form,
-      wrapper_mappings: { boolean: :horizontal_boolean } do |f|
+      wrapper:          :horizontal_form do |f|
 
       fieldset
         legend
@@ -29,7 +28,6 @@
 
           .col-sm-8
             = f.input :external_nodes, collection: external_nodes, include_blank: true
-            = f.input :use_extra_tests, as: :boolean
 
             .clearfix
             hr

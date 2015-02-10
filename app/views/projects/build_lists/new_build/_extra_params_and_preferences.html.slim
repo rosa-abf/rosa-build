@@ -29,7 +29,10 @@ h4.offset10= t("activerecord.attributes.build_list.preferences")
       = f.check_box kind, checked: checked
       = BuildList.human_attribute_name kind
 
-- selected = params[:build_list].try(:[], :external_nodes) ? {selected: params[:build_list][:external_nodes]} : {}
+- selected = params[:build_list].try(:[], :external_nodes)
+- selected = current_user.builds_setting.try(:external_nodes) if selected.nil?
+- selected = selected && { selected: selected } || {}
 = f.label :external_nodes
-= f.select :external_nodes, external_nodes, selected.merge(include_blank: true),
-           class: 'form-control'
+= f.select :external_nodes, external_nodes,
+  selected.merge(include_blank: true),
+  class: 'form-control'

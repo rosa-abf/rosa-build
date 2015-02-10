@@ -629,9 +629,8 @@ ActiveRecord::Schema.define(version: 20150210192749) do
   end
 
   create_table "user_builds_settings", force: true do |t|
-    t.integer "user_id",                        null: false
-    t.text    "platforms",       default: [],   null: false, array: true
-    t.boolean "use_extra_tests", default: true, null: false
+    t.integer "user_id",                     null: false
+    t.text    "platforms",      default: [], null: false, array: true
     t.string  "external_nodes"
     t.index ["user_id"], :name => "index_user_builds_settings_on_user_id", :unique => true
   end

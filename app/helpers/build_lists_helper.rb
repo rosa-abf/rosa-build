@@ -214,6 +214,8 @@ module BuildListsHelper
 
   def save_to_repositories(project, params)
     project.repositories.map do |r|
+      # Show only main platforms which user used as default.
+      next if r.platform.main? && current_user_platforms.present? && current_user_platforms.exclude?(r.platform.id)
       {
         id:                 r.id,
         name:               "#{r.platform.name}/#{r.name}",
@@ -224,11 +226,13 @@ module BuildListsHelper
         default_arches:     ( r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence ||
                               Arch.where(name: Arch::DEFAULT).pluck(:id) )
       }
-    end.sort_by { |e| e[:name] }
+    end.compact.sort_by { |e| e[:name] }
   end
 
   def new_build_list_platforms(params)
     availables_main_platforms.map do |pl|
+      # Show only main platforms which user used as default.
+      next if current_user_platforms.present? && current_user_platforms.exclude?(pl.id)
       platform = { id: pl.id, name: pl.name, repositories: [] }
       Repository.custom_sort(pl.repositories).each do |repo|
         platform[:repositories] << { id:       repo.id,
@@ -237,7 +241,11 @@ module BuildListsHelper
                                      checked:  is_repository_checked(repo, params) }
       end
       platform
-    end
+    end.compact
+  end
+
+  def current_user_platforms
+    @current_user_platforms ||= (current_user.builds_setting.try(:platforms) || []).select(&:present?).map(&:to_i)
   end
 
   def include_repos(params)
