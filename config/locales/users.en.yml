@@ -5,6 +5,7 @@ en:
       new: Create
       profile: Profile
       settings: Settings
+      builds_settings: Builds settings
       new_header: New user
       edit_header: Edit
       list_header: Users

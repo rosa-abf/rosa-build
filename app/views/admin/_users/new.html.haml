@@ -9,7 +9,7 @@
           .rightlist= f.text_field :uname
           .leftlist
             \ 
-          .rightlist= submit_tag t('layout.save'), data: {'disable-with' => t('layout.saving')}
+          .rightlist= submit_button_tag
           .both
         -else
           = render "users/base/form", f: f

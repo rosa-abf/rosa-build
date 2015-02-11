@@ -5,6 +5,7 @@ class BuildList < ActiveRecord::Base
   include Feed::BuildList
   include BuildListObserver
   include EventLoggable
+  include ExternalNodable
 
   self.per_page = 25
 
@@ -32,7 +33,6 @@ class BuildList < ActiveRecord::Base
 
   RELEASE_UPDATE_TYPES = [UPDATE_TYPE_BUGFIX, UPDATE_TYPE_SECURITY]
   EXTRA_PARAMS = %w[cfg_options cfg_urpm_options build_src_rpm build_rpm]
-  EXTERNAL_NODES = %w[owned everything]
 
   AUTO_PUBLISH_STATUSES = [
     AUTO_PUBLISH_STATUS_NONE    = 'none',
@@ -50,7 +50,6 @@ class BuildList < ActiveRecord::Base
             presence: true
 
   validates_numericality_of :priority, greater_than_or_equal_to: 0
-  validates :external_nodes, inclusion: { in:  EXTERNAL_NODES }, allow_blank: true
   validates :auto_publish_status, inclusion: { in: AUTO_PUBLISH_STATUSES }
   validates :update_type, inclusion: UPDATE_TYPES,
             unless: Proc.new { |b| b.advisory.present? }
@@ -80,7 +79,7 @@ class BuildList < ActiveRecord::Base
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :project_version, :auto_create_container,
-                  :extra_repositories, :extra_build_lists, :extra_params, :external_nodes,
+                  :extra_repositories, :extra_build_lists, :extra_params,
                   :include_testing_subrepository, :auto_publish_status,
                   :use_cached_chroot, :use_extra_tests, :save_buildroot
 

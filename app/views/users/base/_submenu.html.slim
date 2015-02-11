@@ -18,10 +18,22 @@
           ul.nav.navbar-nav.left-border
 
             li class=('active' if act == :profile)
-              = link_to t('layout.users.profile'), profile_settings_path
+              a href=profile_settings_path
+                i.fa.fa-user>
+                = t('layout.users.profile')
             li class=('active' if act == :private)
-              = link_to t('layout.users.user_private_settings'), private_settings_path
+              a href=private_settings_path
+                i.fa.fa-cog>
+                = t('layout.users.user_private_settings')
+            li class=('active' if act == :builds_settings)
+              a href=builds_settings_settings_path
+                i.fa.fa-cogs>
+                = t('layout.users.builds_settings')
             li class=('active' if act == :notifiers)
-              = link_to t('layout.users.settings_notifier'), notifiers_settings_path
+              a href=notifiers_settings_path
+                i.fa.fa-inbox>
+                = t('layout.users.settings_notifier')
             li class=('active' if contr == :ssh_keys)
-              = link_to t('ssh_keys'), ssh_keys_path
+              a href=ssh_keys_path
+                i.fa.fa-key>
+                = t('ssh_keys')

@@ -9,4 +9,4 @@
     = simple_form_for @token, url: platform_tokens_path(@platform) do |f|
       = f.input :description, as: :text
 
-      = f.button :submit, t('layout.save')
+      = submit_button_tag

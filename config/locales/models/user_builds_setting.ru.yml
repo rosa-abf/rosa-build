@@ -1,0 +1,18 @@
+ru:
+
+  users:
+    settings:
+      builds_settings:
+        title:          "Настройки сборок"
+        heading:        "Настройки сборок"
+
+  simple_form:
+    labels:
+      user_builds_setting:
+        platforms:       "Платформы"
+        external_nodes:  "Дополнительные ноды"
+    # placeholders:
+    hints:
+      user_builds_setting:
+        platforms:       "Выберите платформы, которые вы хотели бы использовать."
+        external_nodes:  "Выберите ноды, которые вы хотели бы использовать."

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150112204757) do
+ActiveRecord::Schema.define(version: 20150210192749) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -626,6 +626,13 @@ ActiveRecord::Schema.define(version: 20150112204757) do
     t.datetime "updated_at",                              null: false
     t.index ["authentication_token"], :name => "index_tokens_on_authentication_token", :unique => true
     t.index ["subject_id", "subject_type"], :name => "index_tokens_on_subject_id_and_subject_type"
+  end
+
+  create_table "user_builds_settings", force: true do |t|
+    t.integer "user_id",                     null: false
+    t.text    "platforms",      default: [], null: false, array: true
+    t.string  "external_nodes"
+    t.index ["user_id"], :name => "index_user_builds_settings_on_user_id", :unique => true
   end
 
 end

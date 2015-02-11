@@ -1,0 +1,18 @@
+en:
+
+  users:
+    settings:
+      builds_settings:
+        title:          "Builds settings"
+        heading:        "Builds settings"
+
+  simple_form:
+    labels:
+      user_builds_setting:
+        platforms:       "Platforms"
+        external_nodes:  "External nodes"
+    # placeholders:
+    hints:
+      user_builds_setting:
+        platforms:       "Select a platforms that you'd like to use."
+        external_nodes:  "Select the type of nodes that you'd like to use."

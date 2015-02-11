@@ -13,11 +13,10 @@ class Users::SettingsController < Users::BaseController
           @user.send_confirmation_instructions
         end
         flash[:notice] = t('flash.user.saved')
-        redirect_to profile_settings_path
-      else
-        flash[:error] = t('flash.user.save_error')
-        flash[:warning] = @user.errors.full_messages.join('. ')
+        redirect_to profile_settings_path and return
       end
+      flash[:error] = t('flash.user.save_error')
+      flash[:warning] = @user.errors.full_messages.join('. ')
     end
   end
 
@@ -31,12 +30,10 @@ class Users::SettingsController < Users::BaseController
     if request.patch?
       if @user.update_with_password(params[:user])
         flash[:notice] = t('flash.user.saved')
-        redirect_to private_settings_path
-      else
-        flash[:error] = t('flash.user.save_error')
-        flash[:warning] = @user.errors.full_messages.join('. ')
-        render(action: :private)
+        redirect_to private_settings_path and return
       end
+      flash[:error] = t('flash.user.save_error')
+      flash[:warning] = @user.errors.full_messages.join('. ')
     end
   end
 
@@ -44,10 +41,20 @@ class Users::SettingsController < Users::BaseController
     if request.patch?
       if @user.notifier.update_attributes(params[:settings_notifier])
         flash[:notice] = I18n.t("flash.settings.saved")
-        redirect_to notifiers_settings_path
-      else
-        flash[:error] = I18n.t("flash.settings.save_error")
+        redirect_to notifiers_settings_path and return
       end
+      flash[:error] = I18n.t("flash.settings.save_error")
+    end
+  end
+
+  def builds_settings
+    @user.builds_setting ||= @user.build_builds_setting
+    if request.patch?
+      if @user.builds_setting.update_attributes(params[:user_builds_setting])
+        flash[:notice] = I18n.t("flash.settings.saved")
+        redirect_to builds_settings_settings_path and return
+      end
+      flash[:error] = I18n.t("flash.settings.save_error")
     end
   end
 
