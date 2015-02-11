@@ -35,7 +35,6 @@ div ng-controller = 'ProjectFromController' ng-cloak = 'true'
 
       .col-sm-9
         input.form-control.typeahead[
-          name        = 'project[maintainer_id]'
           type        = 'text'
           data-ajax   = autocomplete_maintainers_path(@project)
           ng-disabled = 'loading'
