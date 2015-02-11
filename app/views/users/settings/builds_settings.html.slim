@@ -2,7 +2,7 @@
 = render 'users/base/submenu'
 
 
-.container.col-md-offset-2.col-md-8
+.container.col-md-offset-1.col-md-10
   .row
     = simple_form_for @user.builds_setting,
       url:              builds_settings_settings_path,
@@ -14,17 +14,15 @@
 
         .row
           .col-sm-4
-            = f.label :platforms
-            = f.hint :platforms
-            = f.collection_check_boxes :platforms, availables_main_platforms, :id, :name,
-                checked:                  @user.builds_setting.platforms,
-                collection_wrapper_tag:   :div,
-                collection_wrapper_class: 'form-group',
-                item_wrapper_tag:         :div,
-                item_wrapper_class:       'col-sm-9' do |b|
-              .checkbox
-                = b.label { b.check_box + b.text }
-
+            .form-group
+              = f.label :platforms
+              = f.hint :platforms
+              = f.collection_check_boxes :platforms,
+                  availables_main_platforms, :id, :name,
+                  checked:                  @user.builds_setting.platforms,
+                  item_wrapper_tag:   :div,
+                  item_wrapper_class: 'loffset10 checkbox' do |b|
+                = b.check_box + b.text
 
           .col-sm-8
             = f.input :external_nodes, collection: external_nodes, include_blank: true
