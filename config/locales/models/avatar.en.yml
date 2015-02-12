@@ -1,5 +1,5 @@
 en:
   layout:
     avatars:
-      avatar_notice: Without uploaded avatar will be used avatar from gravar web service.
-      avatar_with_size: Avatar (less than %{max})
+      avatar_notice:    "If you don't have an avatar uploaded, an image from the Gravatar web service will be used."
+      avatar_with_size: "Avatar (less than %{max})"

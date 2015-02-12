@@ -14,5 +14,5 @@ en:
     # placeholders:
     hints:
       user_builds_setting:
-        platforms:       "Select a platforms that you'd like to use."
+        platforms:       "Select a platforms that you'd like to use. If no platform is selected, configs will be disabled."
         external_nodes:  "Select the type of nodes that you'd like to use."
