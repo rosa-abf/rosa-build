@@ -54,7 +54,7 @@ ActiveAdmin.setup do |config|
   # by adding them to the comments array.
   #
   # config.allow_comments_in = [:admin]
-  config.allow_comments = false
+  config.comments = false
 
 
   # == Controller Filters

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails', '4.0.11'
 
-gem 'activeadmin', github: 'gregbell/active_admin'
+gem 'activeadmin',                      github: 'activeadmin'
 gem 'pg', '~> 0.17.1'
 gem 'schema_plus', '~> 1.5'
 ########
@@ -32,7 +32,7 @@ gem 'redis-rails', '~> 4.0'
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git', require: 'git_http'
 gem 'grit', git: 'git://github.com/rosa-abf/grit.git', tag: '2.6.16'
 gem 'charlock_holmes', '~> 0.7'
-gem 'github-linguist', '~> 3.1', require: 'linguist'
+gem 'github-linguist', '3.1.5', require: 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
@@ -49,6 +49,7 @@ gem 'whenever', '~> 0.9.0', require: false
 
 gem 'jbuilder', '~> 2.2'
 gem 'rails3-jquery-autocomplete'
+gem 'sprockets', '2.11.0'
 gem 'will_paginate', '~> 3.0'
 gem 'meta-tags', '~> 2.0', require: 'meta_tags'
 gem "haml-rails", '~> 0.5'
