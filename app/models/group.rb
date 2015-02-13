@@ -4,7 +4,7 @@ class Group < Avatar
 
   belongs_to :owner, class_name: 'User'
 
-  has_many :relations, as: :actor, dependent: :destroy, dependent: :destroy
+  has_many :relations, as: :actor, dependent: :destroy
   has_many :actors, as: :target, class_name: 'Relation', dependent: :destroy
   has_many :targets, as: :actor, class_name: 'Relation', dependent: :destroy
 
