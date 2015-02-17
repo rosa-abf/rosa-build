@@ -26,3 +26,4 @@ html
       == javascript_include_tag 'moment/ru.js', cache: 'moment'
       == javascript_include_tag 'angular-locale_ru-ru', cache: 'angular-locale'
     == yield :additional_scripts if content_for?(:additional_scripts)
+    == render 'layouts/counters' if Rails.env.production?

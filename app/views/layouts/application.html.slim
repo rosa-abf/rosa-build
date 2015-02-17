@@ -35,3 +35,4 @@ html
     == yield :additional_scripts if content_for?(:additional_scripts)
 
     == render '/layouts/scroller'
+    == render 'layouts/counters' if Rails.env.production?
