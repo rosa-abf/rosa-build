@@ -51,7 +51,7 @@ class Platforms::PlatformsController < Platforms::BaseController
     @admin_uname = params[:admin_uname]
 
     platform_params = params[:platform] || {}
-    platform_params = platform_params.slice(:description, :platform_arch_settings_attributes, :released, :automatic_metadata_regeneration)
+    platform_params = platform_params.slice(:description, :platform_arch_settings_attributes, :released, :automatic_metadata_regeneration, :default_branch)
     platform_params[:owner] = User.find(@admin_id) if @admin_id.present?
 
 

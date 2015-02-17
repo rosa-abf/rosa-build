@@ -222,7 +222,7 @@ module BuildListsHelper
         publish_without_qa: r.publish_without_qa?,
         repo_name:          r.name,
         platform_id:        r.platform.id,
-        platform_name:      r.platform.name,
+        default_branch:     r.platform.default_branch,
         default_arches:     ( r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence ||
                               Arch.where(name: Arch::DEFAULT).pluck(:id) )
       }
