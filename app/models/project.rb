@@ -210,10 +210,10 @@ class Project < ActiveRecord::Base
   end
 
   def project_version_for(save_to_platform, build_for_platform)
-    if repo.commits("#{save_to_platform.name}").try(:first).try(:id)
-      save_to_platform.name
-    elsif repo.commits("#{build_for_platform.name}").try(:first).try(:id)
-      build_for_platform.name
+    if repo.commits("#{save_to_platform.default_branch}").try(:first).try(:id)
+      save_to_platform.default_branch
+    elsif repo.commits("#{build_for_platform.default_branch}").try(:first).try(:id)
+      build_for_platform.default_branch
     else
       default_branch
     end
