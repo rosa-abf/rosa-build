@@ -22,6 +22,8 @@
                   value:          @admin_uname,
                   class:          'typeahead' }
 
+= f.input :default_branch
+
 - if %w(edit update).include? controller.action_name
 
   - if can? :change_visibility, @platform

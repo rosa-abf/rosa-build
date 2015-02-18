@@ -18,6 +18,7 @@ describe Platform do
     it { should validate_uniqueness_of(:name).case_insensitive }
     it { should allow_value('Basic_platform-name-1234').for(:name) }
     it { should_not allow_value('.!').for(:name) }
+    it { should validate_presence_of(:default_branch)}
     it { should validate_presence_of(:description) }
     it { should validate_presence_of(:distrib_type) }
     it { should validate_presence_of(:visibility) }

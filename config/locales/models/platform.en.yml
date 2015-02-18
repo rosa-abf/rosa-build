@@ -98,9 +98,14 @@ en:
   simple_form:
     labels:
       platform:
-        term:       Search
-        admin_id:   Owner
+        term:           Search
+        admin_id:       Owner
+        default_branch: Default branch
+    hints:
+      platform:
+        default_branch: "This is the name of branch that will be used by default at creation of build for platform."
     placeholders:
       platform:
-        term:       Enter the name of file or folder here.
+        term:           Enter the name of file or folder here.
+        default_branch: Enter the name of branch here.
 

@@ -12,7 +12,7 @@ NewBuildListController = (dataservice, $http) ->
     result = _.select(vm.save_to_repositories, (e) ->
       e.id is vm.save_to_repository_id or
       !vm.save_to_repository_id and
-      e.platform_name is vm.project_version_name
+      e.default_branch is vm.project_version_name
     )
     return vm.save_to_repositories[0] if result.length is 0
     result[0]
@@ -78,7 +78,7 @@ NewBuildListController = (dataservice, $http) ->
     vm.build_for_platform_id = vm.save_to_repository.platform_id
     vm.is_build_for_main_platform = isBuildForMainPlatform()
 
-    vm.project_version_name = vm.save_to_repository.platform_name
+    vm.project_version_name = vm.save_to_repository.default_branch
     vm.project_version = setProjectVersion() if vm.is_build_for_main_platform
 
     changeStatusRepositories()

@@ -99,8 +99,14 @@ ru:
   simple_form:
     labels:
       platform:
-        term:       Искать
-        admin_id:   Владелец
+        term:           Искать
+        admin_id:       Владелец
+        default_branch: Ветка по умолчанию
+    hints:
+      platform:
+        default_branch: "Это имя ветки, которая будет использоваться по умолчанию при создании сборок для платформы."
     placeholders:
       platform:
-        term:       Введите имя файла или папки здесь.
+        term:           Введите имя файла или папки здесь.
+        default_branch: Введите имя ветки здесь.
+

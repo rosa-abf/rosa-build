@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150210192749) do
+ActiveRecord::Schema.define(version: 20150217215529) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -416,6 +416,7 @@ ActiveRecord::Schema.define(version: 20150210192749) do
     t.integer  "last_regenerated_status"
     t.string   "last_regenerated_log_sha1"
     t.string   "automatic_metadata_regeneration"
+    t.string   "default_branch",                                   null: false
     t.index ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false
   end
 

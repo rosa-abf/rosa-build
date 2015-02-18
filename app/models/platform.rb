@@ -65,7 +65,11 @@ class Platform < ActiveRecord::Base
     uniqueness: { case_sensitive: false },
     presence:   true,
     format:     { with: /\A#{NAME_PATTERN}\z/ },
-    length: { maximum: 100 }
+    length:     { maximum: 100 }
+
+  validates :default_branch,
+    presence:   true,
+    length:     { maximum: 100 }
 
   validates :distrib_type,
     presence:   true,
@@ -114,7 +118,8 @@ class Platform < ActiveRecord::Base
                   :platform_arch_settings_attributes,
                   :automatic_metadata_regeneration,
                   :admin_id,
-                  :term
+                  :term,
+                  :default_branch
 
   attr_accessor :admin_id, :term
 
