@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.11'
+gem 'rails', '4.0.13'
 
 gem 'activeadmin',                      github: 'activeadmin'
 gem 'pg', '~> 0.17.1'
