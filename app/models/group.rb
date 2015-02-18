@@ -1,6 +1,7 @@
 class Group < Avatar
   include ActsLikeMember
   include PersonalRepository
+  include DefaultBranchable
 
   belongs_to :owner, class_name: 'User'
 

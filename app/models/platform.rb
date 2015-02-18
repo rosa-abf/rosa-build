@@ -7,6 +7,7 @@ class Platform < ActiveRecord::Base
   include Owner
   include EventLoggable
   include EmptyMetadata
+  include DefaultBranchable
 
   self.per_page = 20
 
@@ -68,8 +69,7 @@ class Platform < ActiveRecord::Base
     length:     { maximum: 100 }
 
   validates :default_branch,
-    presence:   true,
-    length:     { maximum: 100 }
+    presence:   true
 
   validates :distrib_type,
     presence:   true,
@@ -118,8 +118,7 @@ class Platform < ActiveRecord::Base
                   :platform_arch_settings_attributes,
                   :automatic_metadata_regeneration,
                   :admin_id,
-                  :term,
-                  :default_branch
+                  :term
 
   attr_accessor :admin_id, :term
 

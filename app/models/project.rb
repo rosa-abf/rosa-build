@@ -7,6 +7,7 @@ class Project < ActiveRecord::Base
   include Wiki
   include UrlHelper
   include EventLoggable
+  include DefaultBranchable
 
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
@@ -61,7 +62,7 @@ class Project < ActiveRecord::Base
     errors.delete :project_to_repositories
   end
 
-  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch,
+  attr_accessible :name, :description, :visibility, :srpm, :is_package,
                   :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64,
                   :url, :srpms_list, :mass_import, :add_to_repository_id, :architecture_dependent,
                   :autostart_status
