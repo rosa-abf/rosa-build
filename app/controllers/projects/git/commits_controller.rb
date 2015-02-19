@@ -23,13 +23,13 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
     res = params[:diff].split(/\A(.*)\.\.\.(.*)\z/).select {|e| e.present?}
     if res[1].present?
       params1 = res[0]
-      params2 = res[1] == 'HEAD' ? @project.default_branch : res.last
+      params2 = res[1] == 'HEAD' ? @project.resolve_default_branch : res.last
     else # get only one parameter
-      params1 = @project.default_branch
+      params1 = @project.resolve_default_branch
       params2 = res.first
     end
-    params1.sub! 'HEAD', @project.default_branch
-    params2.sub! 'HEAD', @project.default_branch
+    params1.sub! 'HEAD', @project.resolve_default_branch
+    params2.sub! 'HEAD', @project.resolve_default_branch
 
     ref1 = if @project.repo.branches_and_tags.include? params1
              @project.repo.commits(params1).first

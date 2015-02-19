@@ -23,7 +23,7 @@ module GitHelper
   def render_path
     # TODO: Looks ugly, rewrite with clear mind.
     if @path.present?
-      if @treeish == @project.default_branch
+      if @treeish == @project.resolve_default_branch
         res = "#{link_to @project.name, tree_path(@project)} / "
       else
         res = "#{link_to @project.name, tree_path(@project, @treeish)} / "
@@ -70,7 +70,7 @@ module GitHelper
   def branch_selector_options(project)
     p, tag_enabled = params.dup, !(controller_name == 'trees' && action_name == 'branches')
     p.delete(:path) if p[:path].present? # to root path
-    p.merge!(project_id: project.id, treeish: project.default_branch).delete(:id) unless p[:treeish].present?
+    p.merge!(project_id: project.id, treeish: project.resolve_default_branch).delete(:id) unless p[:treeish].present?
     current = url_for(p).split('?', 2).first
 
     res = []
