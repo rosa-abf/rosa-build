@@ -86,7 +86,7 @@ shared_examples_for 'issue user with project writer rights' do
     end
 
     it 'label should be attached to issue' do
-      @project.issues.last.labels.should have(1).item
+      expect(@project.issues.last.labels.count).to eq 1
     end
   end
 end
@@ -138,7 +138,7 @@ shared_examples_for 'project with issues turned off' do
   end
 end
 
-describe Projects::IssuesController do
+describe Projects::IssuesController, type: :controller do
   include_context "issues controller"
 
   context 'for global admin user' do
@@ -201,7 +201,7 @@ describe Projects::IssuesController do
       end
 
       it 'label should not be attached to issue' do
-        @project.issues.last.labels.should have(:no).items
+        expect(@project.issues.last.labels.count).to eq 0
       end
     end
 

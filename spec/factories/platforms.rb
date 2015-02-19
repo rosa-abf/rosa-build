@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :platform do
     name { FactoryGirl.generate(:unixname) }
+    default_branch { |p| p.name }
     description { FactoryGirl.generate(:string) }
     platform_type 'main'
     distrib_type APP_CONFIG['distr_types'].first

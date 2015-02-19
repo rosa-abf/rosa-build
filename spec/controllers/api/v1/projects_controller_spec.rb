@@ -276,7 +276,7 @@ shared_examples_for 'api projects user without owner rights' do
   end
 end
 
-describe Api::V1::ProjectsController do
+describe Api::V1::ProjectsController, type: :controller do
 
   before(:each) do
     stub_symlink_methods

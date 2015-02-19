@@ -8,19 +8,19 @@ shared_examples_for 'api maintainers user with reader rights' do
 
   it 'loads all of the maintainers into @maintainers' do
     get :index, platform_id: package.platform_id, format: :json
-    assigns(:maintainers).should have(2).items
+    expect(assigns(:maintainers).count).to eq 2
     assigns(:maintainers).should include(package, package2)
   end
 
   it 'loads all of the maintainers into @maintainers when search by name' do
     get :index, platform_id: package.platform_id, package_name: 'package1', format: :json
-    assigns(:maintainers).should have(1).item
+    expect(assigns(:maintainers).count).to eq 1
     assigns(:maintainers).should include(package)
   end
 
 end
 
-describe Api::V1::MaintainersController do
+describe Api::V1::MaintainersController, type: :controller do
   before do
     stub_symlink_methods
     FactoryGirl.create(:build_list_package, platform: package.platform)

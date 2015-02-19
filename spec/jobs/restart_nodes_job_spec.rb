@@ -32,7 +32,7 @@ describe RestartNodesJob do
 
     RestartNodesJob.perform
 
-    NodeInstruction.where(status: NodeInstruction::RESTARTING).should have(2).items
+    expect(NodeInstruction.where(status: NodeInstruction::RESTARTING).count).to eq 2
     NodeInstruction.where(status: NodeInstruction::RESTARTING).should include(ni2, ni3)
     NodeInstruction.where(status: NodeInstruction::RESTARTING).should_not include(ni1)
   end

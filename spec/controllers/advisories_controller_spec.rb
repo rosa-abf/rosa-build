@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AdvisoriesController do
+describe AdvisoriesController, type: :controller do
   context 'for all' do
     it "should be able to perform search action" do
       get :search

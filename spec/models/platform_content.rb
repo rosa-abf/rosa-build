@@ -14,13 +14,13 @@ describe PlatformContent do
 
     it 'ensures that finds files' do
       # + /repository folder
-      subject.find_by_platform(platform, '', '').should have(3).items
+      expect(subject.find_by_platform(platform, '', '').count).to eq 3
     end
 
     context 'ensures that finds files by name' do
-      it { subject.find_by_platform(platform, '', 'test').should            have(2).items }
-      it { subject.find_by_platform(platform, '', 'test001').should         have(1).item }
-      it { subject.find_by_platform(platform, 'repository', 'test').should  have(:no).items }
+      it { expect(subject.find_by_platform(platform, '', 'test').count).to            eq 2 }
+      it { expect(subject.find_by_platform(platform, '', 'test001').count).to         eq 1 }
+      it { expect(subject.find_by_platform(platform, 'repository', 'test').count).to  eq 0 }
     end
 
   end
@@ -28,13 +28,13 @@ describe PlatformContent do
   context '#is_folder?' do
     it 'ensures that returns true for folder' do
       subject.find_by_platform(platform, '', 'repository').first.is_folder?
-             .should be_true
+             .should be_truthy
     end
 
     it 'ensures that returns false for file' do
       File.open(File.join(platform.path, 'test001'), "w")
       subject.find_by_platform(platform, '', 'test').first.is_folder?
-             .should be_false
+             .should be_falsy
     end
   end
 

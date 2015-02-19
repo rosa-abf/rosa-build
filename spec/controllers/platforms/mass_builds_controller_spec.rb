@@ -115,7 +115,7 @@ shared_examples_for 'mass_build platform reader' do
 end
 
 
-describe Platforms::MassBuildsController do
+describe Platforms::MassBuildsController, type: :controller do
   before(:each) do
     stub_symlink_methods
 

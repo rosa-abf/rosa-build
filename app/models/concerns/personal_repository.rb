@@ -10,6 +10,7 @@ module PersonalRepository
       pl                = own_platforms.build
       pl.owner          = self
       pl.name           = "#{self.uname}_personal"
+      pl.default_branch = pl.name
       pl.description    = "#{self.uname}_personal"
       pl.platform_type  = Platform::TYPE_PERSONAL
       pl.distrib_type   = APP_CONFIG['distr_types'].first

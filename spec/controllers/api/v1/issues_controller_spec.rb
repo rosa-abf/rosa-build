@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Api::V1::IssuesController do
+describe Api::V1::IssuesController, type: :controller do
   before do
     stub_symlink_methods
     any_instance_of(Project, versions: ['v1.0', 'v2.0'])
@@ -79,7 +79,7 @@ describe Api::V1::IssuesController do
       it 'should return only assigned issue' do
         get :user_index, format: :json
         assigns[:issues].should include(@own_hidden_issue)
-        assigns[:issues].should have(1).item
+        expect(assigns[:issues].count).to eq 1
       end
 
       it 'should render right template for user index action' do

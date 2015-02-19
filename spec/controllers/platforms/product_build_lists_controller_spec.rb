@@ -43,7 +43,7 @@ shared_examples_for 'product build list admin' do
     put :update, valid_attributes_for_show.merge(product_build_list: {time_living: 100,not_delete: true})
     time_living = @pbl.time_living
     @pbl.reload.time_living.should == time_living
-    @pbl.not_delete.should be_true
+    @pbl.not_delete.should be_truthy
   end
 
   it 'should be able to perform log action' do
@@ -98,7 +98,7 @@ shared_examples_for 'product build list user' do
   end
 end
 
-describe Platforms::ProductBuildListsController do
+describe Platforms::ProductBuildListsController, type: :controller do
   before(:each) { stub_symlink_methods }
 
   context 'crud' do

@@ -298,7 +298,7 @@ shared_examples_for 'api repository user without project manage rights' do
 end
 
 
-describe Api::V1::RepositoriesController do
+describe Api::V1::RepositoriesController, type: :controller do
   before(:each) do
     stub_symlink_methods
 

@@ -57,17 +57,17 @@ describe AbfWorkerService::Rpm do
       it "ensures that repository_status has status publish" do
         build_list.save_to_repository.repository_statuses.
           find_by(platform_id: build_list.build_for_platform_id).publish?.
-          should be_true
+          should be_truthy
       end
 
       it "ensures that 'locked build lists' has only one item" do
         queue = @redis_instance.lrange(subject::LOCKED_BUILD_LISTS, 0, -1)
-        queue.should have(1).item
+        expect(queue.count).to eq 1
         queue.should include(build_list.id.to_s)
       end
 
       it "ensures that new task for publishing has been created" do
-        @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
+        expect(@redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).count).to eq 1
       end
 
     end
@@ -86,14 +86,14 @@ describe AbfWorkerService::Rpm do
         subject.publish!
         subject.publish!
 
-        RepositoryStatus.where(status: RepositoryStatus::PUBLISH).should have(4).items
+        expect(RepositoryStatus.where(status: RepositoryStatus::PUBLISH).count).to eq 4
       end
 
       it "ensures that 'locked build lists' has 4 items" do
         subject.publish!
         subject.publish!
 
-        @redis_instance.lrange(subject::LOCKED_BUILD_LISTS, 0, -1).should have(4).items
+        expect(@redis_instance.lrange(subject::LOCKED_BUILD_LISTS, 0, -1).count).to eq 4
       end
 
       it "ensures that new tasks for publishing has been created" do
@@ -129,14 +129,14 @@ describe AbfWorkerService::Rpm do
       it "ensures that only one repository_status has status publish" do
         subject.publish!
         subject.publish!
-        RepositoryStatus.where(status: RepositoryStatus::PUBLISH).should have(1).item
+        expect(RepositoryStatus.where(status: RepositoryStatus::PUBLISH).count).to eq 1
       end
 
       it "ensures that 'locked build lists' has 2 items" do
         subject.publish!
         subject.publish!
         queue = @redis_instance.lrange(subject::LOCKED_BUILD_LISTS, 0, -1)
-        queue.should have(2).item
+        expect(queue.count).to eq 2
         queue.should include(build_list.id.to_s, build_list2.id.to_s)
       end
 
@@ -173,7 +173,7 @@ describe AbfWorkerService::Rpm do
         subject.publish!
 
         queue = @redis_instance.lrange(subject::PROJECTS_FOR_CLEANUP, 0, -1)
-        queue.should have(1).item
+        expect(queue.count).to eq 1
         queue.should include("testing-#{build_list3.project_id}-#{build_list3.save_to_repository_id}-#{build_list3.build_for_platform_id}")
       end
 
@@ -181,7 +181,7 @@ describe AbfWorkerService::Rpm do
         subject.publish!
         subject.publish!
 
-        RepositoryStatus.where(status: RepositoryStatus::PUBLISH).should have(1).item
+        expect(RepositoryStatus.where(status: RepositoryStatus::PUBLISH).count).to eq 1
       end
 
       it "ensures that 'locked projects for cleanup' has only one item" do
@@ -189,7 +189,7 @@ describe AbfWorkerService::Rpm do
         subject.publish!
 
         queue = @redis_instance.lrange(subject::LOCKED_PROJECTS_FOR_CLEANUP, 0, -1)
-        queue.should have(1).item
+        expect(queue.count).to eq 1
         queue.should include("#{build_list3.project_id}-#{build_list3.save_to_repository_id}-#{build_list3.build_for_platform_id}")
       end
 
@@ -205,7 +205,7 @@ describe AbfWorkerService::Rpm do
         subject.publish!
         
         queue = @redis_instance.lrange(subject::LOCKED_BUILD_LISTS, 0, -1)
-        queue.should have(1).item
+        expect(queue.count).to eq 1
         queue.should include(build_list.id.to_s)
       end
     end

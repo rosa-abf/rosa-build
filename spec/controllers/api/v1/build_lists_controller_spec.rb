@@ -95,7 +95,7 @@ shared_examples_for 'validation error via build list api' do |message|
   end
 end
 
-describe Api::V1::BuildListsController do
+describe Api::V1::BuildListsController, type: :controller do
   before do
     stub_symlink_methods
     allow_any_instance_of(BuildList).to receive(:valid_branch_for_publish?).and_return(true)

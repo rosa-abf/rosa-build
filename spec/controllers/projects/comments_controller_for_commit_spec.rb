@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::CommentsController do
+describe Projects::CommentsController, type: :controller do
   before(:each) do
     stub_symlink_methods
     @project = FactoryGirl.create(:project_with_commit)

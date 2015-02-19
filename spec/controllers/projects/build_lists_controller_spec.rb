@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::BuildListsController do
+describe Projects::BuildListsController, type: :controller do
 
   shared_examples_for 'show build list' do
     it 'should be able to perform show action' do

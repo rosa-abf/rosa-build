@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Api::V1::UsersController do
+describe Api::V1::UsersController, type: :controller do
   before(:all) { User.destroy_all }
   before do
     stub_symlink_methods
@@ -44,7 +44,7 @@ describe Api::V1::UsersController do
       it { response.should_not be_success }
       it 'ensures that user notification settings have not been updated' do
         @user.reload
-        @user.notifier.can_notify.should be_true
+        @user.notifier.can_notify.should be_truthy
       end
     end
 
@@ -85,7 +85,7 @@ describe Api::V1::UsersController do
       it { response.should be_success }
       it 'ensures that user notification settings have been updated' do
         @user.reload
-        @user.notifier.can_notify.should be_false
+        @user.notifier.can_notify.should be_falsy
       end
     end
 

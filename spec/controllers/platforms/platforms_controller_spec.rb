@@ -248,7 +248,7 @@ shared_examples_for 'platform user with show rights' do
   end
 end
 
-describe Platforms::PlatformsController do
+describe Platforms::PlatformsController, type: :controller do
   let(:clone_or_create_params) { {id: @platform.id, platform: {description: 'new description', name: 'new_name', owner_id: @user.id, distrib_type: APP_CONFIG['distr_types'].first}} }
   before do
     stub_symlink_methods

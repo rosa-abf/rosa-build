@@ -175,7 +175,7 @@ shared_examples_for 'api group user without owner rights' do
   end
 end
 
-describe Api::V1::GroupsController do
+describe Api::V1::GroupsController, type: :controller do
   before do
     stub_symlink_methods
 

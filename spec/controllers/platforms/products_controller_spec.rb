@@ -21,7 +21,7 @@ shared_examples_for 'admin user' do
 
 end
 
-describe Platforms::ProductsController do
+describe Platforms::ProductsController, type: :controller do
     before(:each) do
       stub_symlink_methods
 

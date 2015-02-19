@@ -50,7 +50,7 @@ shared_examples_for 'token of platform for simple user or guest' do
   end
 end
 
-describe Platforms::TokensController do
+describe Platforms::TokensController, type: :controller do
   before do
     stub_symlink_methods
 

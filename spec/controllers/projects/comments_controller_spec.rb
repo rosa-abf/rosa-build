@@ -21,7 +21,7 @@ shared_context "comments controller" do
 
 end
 
-describe Projects::CommentsController do
+describe Projects::CommentsController, type: :controller do
   include_context "comments controller"
 
   context 'for global admin user' do

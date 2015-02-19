@@ -207,7 +207,7 @@ shared_examples_for "api platform user with show rights" do
   end
 end
 
-describe Api::V1::PlatformsController do
+describe Api::V1::PlatformsController, type: :controller do
   let(:clone_or_create_params) do
     { id: @platform.id,
       platform: { description: 'new description', name: 'new_name',

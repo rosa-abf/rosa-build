@@ -66,7 +66,7 @@ shared_examples_for 'key_pair platform reader' do
   end
 end
 
-describe Platforms::KeyPairsController do
+describe Platforms::KeyPairsController, type: :controller do
   before(:each) do
     stub_symlink_methods
 

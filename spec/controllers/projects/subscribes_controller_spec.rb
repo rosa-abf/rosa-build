@@ -46,7 +46,7 @@ shared_examples_for 'can not unsubscribe' do
   end
 end
 
-describe Projects::SubscribesController do
+describe Projects::SubscribesController, type: :controller do
   before(:each) do
     stub_symlink_methods
 

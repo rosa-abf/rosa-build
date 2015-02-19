@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe SitemapController do
+describe SitemapController, type: :controller do
   describe 'robots' do
 
     it 'is successful' do

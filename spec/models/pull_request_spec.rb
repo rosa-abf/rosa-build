@@ -37,7 +37,7 @@ describe PullRequest do
       @pull.check
       @project.update_attributes(name: "#{@project.name}-new")
       @pull.reload
-      Dir.exists?(@pull.path).should be_true
+      Dir.exists?(@pull.path).should be_truthy
     end
 
     it 'master should merge with non_conflicts branch' do
