@@ -6,12 +6,12 @@ describe BuildList do
   context 'validates that repository contains project' do
     it 'when repository contains project' do
       bl = FactoryGirl.build(:build_list)
-      bl.valid?.should be_true
+      bl.valid?.should be_truthy
     end
     it 'when repository does not contain project' do
       bl = FactoryGirl.build(:build_list)
       bl.project.repositories = []
-      bl.valid?.should be_false
+      bl.valid?.should be_falsy
     end
   end
 
@@ -65,61 +65,61 @@ describe BuildList do
     shared_examples_for 'build list notifications by email' do
       it "gets notification by email when status - Build complete" do
         build_list.build_success
-        should have(1).item
+        expect(subject.count).to eq 1
       end
 
       it "gets notification by email when status - Build error" do
         build_list.build_error
-        should have(1).item
+        expect(subject.count).to eq 1
       end
 
       it "gets notification by email when status - Unpermitted architecture" do
         build_list.unpermitted_arch
-        should have(1).item
+        expect(subject.count).to eq 1
       end
 
       it "gets notification by email when auto_publish and status - Build error" do
         build_list.auto_publish_status = BuildList::AUTO_PUBLISH_STATUS_DEFAULT
         build_list.build_error
-        should have(1).item
+        expect(subject.count).to eq 1
       end
 
       it "gets notification by email when status - Failed publish" do
         build_list.status = BuildList::BUILD_PUBLISH
         build_list.fail_publish
-        should have(1).item
+        expect(subject.count).to eq 1
       end
 
       it "gets notification by email when auto_publish and status - Failed publish" do
         build_list.auto_publish_status  = BuildList::AUTO_PUBLISH_STATUS_DEFAULT
         build_list.status               = BuildList::BUILD_PUBLISH
         build_list.fail_publish
-        should have(1).item
+        expect(subject.count).to eq 1
       end
 
       it "gets notification by email when status - Build published" do
         build_list.status = BuildList::BUILD_PUBLISH
         build_list.published
-        should have(1).item
+        expect(subject.count).to eq 1
       end
 
       it "gets notification by email when auto_publish and status - Build published" do
         build_list.auto_publish_status  = BuildList::AUTO_PUBLISH_STATUS_DEFAULT
         build_list.status               = BuildList::BUILD_PUBLISH
         build_list.published
-        should have(1).item
+        expect(subject.count).to eq 1
       end
 
       it "doesn't get notification by email when auto_publish and status - Build complete" do
         build_list.auto_publish_status = BuildList::AUTO_PUBLISH_STATUS_DEFAULT
         build_list.build_success
-        should have(:no).items
+        expect(subject.count).to eq 0
       end
 
       it "doesn't get notification by email when auto_publish_into_testing and status - Build complete" do
         build_list.auto_publish_status = BuildList::AUTO_PUBLISH_STATUS_TESTING
         build_list.build_success
-        should have(:no).items
+        expect(subject.count).to eq 0
       end
 
       it "doesn't get notification by email when mass build" do
@@ -127,13 +127,13 @@ describe BuildList do
         build_list.mass_build_id  = mb.id
         build_list.status         = BuildList::BUILD_PUBLISH
         build_list.published
-        should have(:no).items
+        expect(subject.count).to eq 0
       end
 
       it "doesn't get notification by email when notification by email has been disabled" do
         notifier.update_attributes(can_notify: false)
         build_list.build_success
-        should have(:no).items
+        expect(subject.count).to eq 0
       end
     end
 
@@ -151,14 +151,14 @@ describe BuildList do
       it "doesn't get notification by email when 'build list' notifications has been disabled" do
         allow(notifier).to receive(:new_build?).and_return(false)
         build_list.build_success
-        should have(:no).items
+        expect(subject.count).to eq 0
       end
 
       it "doesn't get notification by email when 'build list' notifications - enabled, email notifications - disabled" do
         allow(notifier).to receive(:can_notify?).and_return(false)
         allow(notifier).to receive(:new_build?).and_return(true)
         build_list.build_success
-        should have(:no).items
+        expect(subject.count).to eq 0
       end
     end
 
@@ -174,13 +174,13 @@ describe BuildList do
       it "doesn't get notification by email when 'associated build list' notifications has been disabled" do
         notifier.update_attributes(new_associated_build: false)
         build_list.build_success
-        should have(:no).items
+        expect(subject.count).to eq 0
       end
 
       it "doesn't get notification by email when 'associated build list' notifications - enabled, email notifications - disabled" do
         notifier.update_attributes(can_notify: false, new_associated_build: true)
         build_list.build_success
-        should have(:no).items
+        expect(subject.count).to eq 0
       end
     end
 
@@ -194,7 +194,7 @@ describe BuildList do
       bl.update_attributes({commit_hash: bl.project.repo.commits('master').last.id,
         status: BuildList::BUILD_PUBLISH}, without_protection: true)
       bl.published
-      should have(1).item
+      expect(subject.count).to eq 1
     end
 
   end # notify_users
@@ -224,34 +224,34 @@ describe BuildList do
 
     it 'ensures that return false if version of packages are same and platform is released' do
       build_list.save_to_platform.update_attributes(released: true)
-      build_list.has_new_packages?.should be_false
+      build_list.has_new_packages?.should be_falsy
     end
 
     it 'ensures that return true if version of packages are same and platform RHEL is released' do
       build_list.save_to_platform.update_attributes(released: true, distrib_type: 'rhel')
-      build_list.has_new_packages?.should be_true
+      build_list.has_new_packages?.should be_truthy
     end
 
     it 'ensures that return true if version of packages are same and platform is not released' do
-      build_list.has_new_packages?.should be_true
+      build_list.has_new_packages?.should be_truthy
     end
 
     context 'ensures that return false if version of published package >' do
 
       it 'published: 3.1.13, new: 3.1.12' do
         published_build_list_package.update_attributes(version: '3.1.13')
-        build_list.has_new_packages?.should be_false
+        build_list.has_new_packages?.should be_falsy
       end
 
       it 'published: 3.1.12, new: 3.0.999' do
         build_list_package.update_attributes(version: '3.0.999')
-        build_list.has_new_packages?.should be_false
+        build_list.has_new_packages?.should be_falsy
       end
 
       it 'published: 3.0.0, new: 3.0.rc1' do
         published_build_list_package.update_attributes(version: '3.0.0')
         build_list_package.update_attributes(version: '3.0.rc1')
-        build_list.has_new_packages?.should be_false
+        build_list.has_new_packages?.should be_falsy
       end
 
     end
@@ -260,25 +260,25 @@ describe BuildList do
 
       it 'published: 3.1.11, new: 3.1.12' do
         published_build_list_package.update_attributes(version: '3.1.11')
-        build_list.has_new_packages?.should be_true
+        build_list.has_new_packages?.should be_truthy
       end
 
       it 'published: 3.0.999, new: 3.1.12' do
         published_build_list_package.update_attributes(version: '3.0.999')
-        build_list.has_new_packages?.should be_true
+        build_list.has_new_packages?.should be_truthy
       end
 
       it 'published: 3.0.rc1, new: 3.0.0' do
         published_build_list_package.update_attributes(version: '3.0.rc1')
         build_list_package.update_attributes(version: '3.0.0')
-        build_list.has_new_packages?.should be_true
+        build_list.has_new_packages?.should be_truthy
       end
 
     end
 
     it 'ensures that return true if release of published package <' do
       published_build_list_package.update_attributes(release: 5)
-      build_list.has_new_packages?.should be_true
+      build_list.has_new_packages?.should be_truthy
     end
 
   end
@@ -292,22 +292,22 @@ describe BuildList do
     end
 
     it 'returns true for eligible build' do
-      expect(build_list.can_publish?).to be_true
+      expect(build_list.can_publish?).to be_truthy
     end
 
     it 'returns false if branch invalid' do
       allow(build_list).to receive(:valid_branch_for_publish?).and_return(false)
-      expect(build_list.can_publish?).to be_false
+      expect(build_list.can_publish?).to be_falsy
     end
 
     it 'returns false if extra builds not published' do
       allow(build_list).to receive(:extra_build_lists_published?).and_return(false)
-      expect(build_list.can_publish?).to be_false
+      expect(build_list.can_publish?).to be_falsy
     end
 
     it 'returns false if project does not exist in repository' do
       build_list.stub_chain(:save_to_repository, :projects, :exists?).and_return(false)
-      expect(build_list.can_publish?).to be_false
+      expect(build_list.can_publish?).to be_falsy
     end
   end
 
@@ -320,12 +320,12 @@ describe BuildList do
 
     it 'returns true for eligible build' do
       allow(build_list).to receive(:valid_branch_for_publish?).and_return(true)
-      expect(build_list.can_publish_into_testing?).to be_true
+      expect(build_list.can_publish_into_testing?).to be_truthy
     end
 
     it 'returns false if branch invalid' do
       allow(build_list).to receive(:valid_branch_for_publish?).and_return(false)
-      expect(build_list.can_publish_into_testing?).to be_false
+      expect(build_list.can_publish_into_testing?).to be_falsy
     end
   end
 

@@ -114,7 +114,7 @@ shared_examples_for 'api user with admin rights' do
   #end
 end
 
-describe Api::V1::ProductsController do
+describe Api::V1::ProductsController, type: :controller do
   before(:each) do
     stub_symlink_methods
 

@@ -14,7 +14,7 @@ shared_examples_for 'not able search' do
   end
 end
 
-describe SearchController do
+describe SearchController, type: :controller do
   before { stub_symlink_methods }
 
   context 'as guest' do

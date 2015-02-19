@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Api::V1::ArchesController do
+describe Api::V1::ArchesController, type: :controller do
 
   before { FactoryGirl.create(:arch) }
 

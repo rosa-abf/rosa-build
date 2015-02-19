@@ -95,7 +95,7 @@ shared_examples_for 'validation error via build list api' do |message|
   end
 end
 
-describe Api::V1::BuildListsController do
+describe Api::V1::BuildListsController, type: :controller do
   before do
     stub_symlink_methods
     allow_any_instance_of(BuildList).to receive(:valid_branch_for_publish?).and_return(true)
@@ -468,7 +468,7 @@ describe Api::V1::BuildListsController do
 
       context "do reject_publish" do
         before do
-          any_instance_of(BuildList, current_duration: 100)
+          allow_any_instance_of(BuildList).to receive(:current_duration).and_return(100)
           @build_list.save_to_repository.update_column(:publish_without_qa, false)
         end
 
@@ -636,7 +636,7 @@ describe Api::V1::BuildListsController do
         # Create and show params:
         @create_params = {build_list: @build_list.attributes.symbolize_keys}
         @create_params = @create_params.merge(arches: [@params[:arch_id]], build_for_platform_id: @platform.id, format: :json)
-        any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+        allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 
         # Groups:
         @owner_group = FactoryGirl.create(:group, owner: @owner_user)

@@ -7,7 +7,7 @@ def set_testable_data
   @project = FactoryGirl.create(:project)
   @issue = FactoryGirl.create(:issue, project_id: @project.id)
 
-  any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+  allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 end
 
 describe Subscribe do

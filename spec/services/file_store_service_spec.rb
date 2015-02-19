@@ -12,17 +12,17 @@ describe FileStoreService::File do
 
     it 'returns true if file exists' do
       stub_request(:get, url).to_return(body: response)
-      expect(subject.exist?).to be_true
+      expect(subject.exist?).to be_truthy
     end
 
     it 'returns false if file does not exist' do
       stub_request(:get, url).to_return(body: '[]')
-      expect(subject.exist?).to be_false
+      expect(subject.exist?).to be_falsy
     end
 
     it 'returns false on error' do
       stub_request(:get, url).to_raise(StandardError)
-      expect(subject.exist?).to be_false
+      expect(subject.exist?).to be_falsy
     end
   end
 

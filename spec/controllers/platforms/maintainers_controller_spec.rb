@@ -8,7 +8,7 @@ shared_examples_for 'guest user' do
   end
 end
 
-describe Platforms::MaintainersController do
+describe Platforms::MaintainersController, type: :controller do
   before(:each) do
     stub_symlink_methods
 

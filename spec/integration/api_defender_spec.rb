@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ApiDefender do
+describe ApiDefender, type: :request do
   def get_basic_auth user = @user, by_token = false, by_email = false
     u,pass = if by_token
                [user.authentication_token, '']

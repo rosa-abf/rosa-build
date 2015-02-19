@@ -21,7 +21,7 @@ def set_comments_data_for_commit
   @subscribe_params = {project_id: @project.id, subscribeable_id: @commit.id.hex, subscribeable_type: @commit.class.name}
   Subscribe.destroy_all
 
-  any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+  allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 end
 
 def should_send_email(args={})

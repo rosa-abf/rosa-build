@@ -44,12 +44,12 @@ shared_examples_for 'project admin user' do
 
   it 'should add new collaborator with reader role' do
     post :create, @create_params.merge(collaborator: @user_params)
-    @project.relations.exists?(actor_type: 'User', actor_id: @another_user.id, role: 'reader').should be_true
+    @project.relations.exists?(actor_type: 'User', actor_id: @another_user.id, role: 'reader').should be_truthy
   end
 
   it 'should add new group with reader role' do
     post :create, @create_params.merge(collaborator: @group_params)
-    @project.relations.exists?(actor_type: 'Group', actor_id: @group.id, role: 'reader').should be_true
+    @project.relations.exists?(actor_type: 'Group', actor_id: @group.id, role: 'reader').should be_truthy
   end
 
   it 'should be able to set reader role for any user' do
@@ -75,7 +75,7 @@ shared_examples_for 'user with no rights for this project' do
   end
 end
 
-describe Projects::CollaboratorsController do
+describe Projects::CollaboratorsController, type: :controller do
   include_context "collaborators controller"
 
   context 'for guest' do

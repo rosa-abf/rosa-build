@@ -56,7 +56,7 @@ shared_examples_for 'content platform user with member rights' do
   end
 end
 
-describe Platforms::ContentsController do
+describe Platforms::ContentsController, type: :controller do
   before do
     stub_symlink_methods
 

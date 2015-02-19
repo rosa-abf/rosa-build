@@ -22,7 +22,7 @@ describe Token do
       it 'ensures that authentication_token unique' do
         token = FactoryGirl.create(:platform_token)
         token.authentication_token = platform_token.authentication_token
-        token.valid?.should be_false
+        token.valid?.should be_falsy
       end
     end
   end

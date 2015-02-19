@@ -1,6 +1,6 @@
 json.platform do
   json.partial! 'platform', platform: @platform
-  json.(@platform, :description, :parent_platform_id, :released, :visibility, :platform_type, :distrib_type)
+  json.(@platform, :description, :parent_platform_id, :released, :distrib_type, :default_branch)
   json.created_at @platform.created_at.to_i
   json.updated_at @platform.updated_at.to_i
   json.partial! 'api/v1/shared/owner', owner: @platform.owner

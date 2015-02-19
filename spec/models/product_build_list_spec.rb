@@ -12,7 +12,7 @@ describe ProductBuildList do
     it 'is valid given valid attributes' do
       arch = FactoryGirl.create(:arch, name: 'x86_64')
       allow(Arch).to receive(:find_by).with(name: 'x86_64').and_return(arch)
-      FactoryGirl.create(:product_build_list).should be_true
+      FactoryGirl.create(:product_build_list).should be_truthy
     end
 
     it { should belong_to(:product) }

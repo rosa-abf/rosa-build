@@ -45,7 +45,7 @@ shared_examples_for 'user without change projects in repository rights' do
   it 'should not be able to perform regenerate_metadata action' do
     put :regenerate_metadata, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
-    @repository.repository_statuses.should have(:no).items
+    expect(@repository.repository_statuses.count).to eq 0
   end
 
   it 'should not be able to remove project from repository' do
@@ -64,13 +64,13 @@ shared_examples_for 'registered user or guest' do
   it 'should not be able to perform regenerate_metadata action' do
     put :regenerate_metadata, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
-    @repository.repository_statuses.should have(:no).items
+    expect(@repository.repository_statuses.count).to eq 0
   end
 
   it 'should not be able to perform regenerate_metadata action of personal repository' do
     put :regenerate_metadata, id: @personal_repository, platform_id: @personal_repository.platform
     response.should redirect_to(redirect_path)
-    @personal_repository.repository_statuses.should have(:no).items
+    expect(@personal_repository.repository_statuses.count).to eq 0
   end
 
   it 'should not be able to perform create action' do
@@ -108,7 +108,7 @@ shared_examples_for 'registered user or guest' do
   it 'should not be able to destroy repository in main platform' do
     delete :destroy, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
-    lambda { delete :destroy, id: @repository, platform_id: @platform }.should_not change{ Repository.count }.by(-1)
+    lambda { delete :destroy, id: @repository, platform_id: @platform }.should change{ Repository.count }.by(0)
   end
 
   it 'should not be able to destroy personal repository' do
@@ -150,20 +150,20 @@ shared_examples_for 'platform admin user' do
     put :regenerate_metadata, id: @repository, platform_id: @platform
     response.should redirect_to(platform_repository_path(@platform, @repository))
     @repository.repository_statuses.find_by(platform_id: @platform).
-      waiting_for_regeneration?.should be_true
+      waiting_for_regeneration?.should be_truthy
   end
 
   it 'should be able to perform regenerate_metadata action of personal repository' do
     put :regenerate_metadata, id: @personal_repository, platform_id: @personal_repository.platform, build_for_platform_id: @platform.id
     response.should redirect_to(platform_repository_path(@personal_repository.platform, @personal_repository))
     @personal_repository.repository_statuses.find_by(platform_id: @platform).
-      waiting_for_regeneration?.should be_true
+      waiting_for_regeneration?.should be_truthy
   end
 
   it 'should not be able to perform regenerate_metadata action of personal repository when build_for_platform does not exist' do
     put :regenerate_metadata, id: @personal_repository, platform_id: @personal_repository.platform
     response.should render_template(file: "#{Rails.root}/public/404.html")
-    @personal_repository.repository_statuses.should have(:no).items
+    expect(@personal_repository.repository_statuses.count).to eq 0
   end
 
   it 'should be able to create repository' do
@@ -215,7 +215,7 @@ shared_examples_for 'platform admin user' do
   it_should_behave_like 'user with change projects in repository rights'
 end
 
-describe Platforms::RepositoriesController do
+describe Platforms::RepositoriesController, type: :controller do
   before(:each) do
     stub_symlink_methods
 

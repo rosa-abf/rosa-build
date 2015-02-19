@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Groups::MembersController do
+describe Groups::MembersController, type: :controller do
   before(:each) do
     stub_symlink_methods
     @group = FactoryGirl.create(:group)

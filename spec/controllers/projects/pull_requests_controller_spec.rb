@@ -160,7 +160,7 @@ shared_examples_for 'pull request when project with issues turned off' do
   end
 end
 
-describe Projects::PullRequestsController do
+describe Projects::PullRequestsController, type: :controller do
   include_context "pull request controller"
 
   context 'for global admin user' do

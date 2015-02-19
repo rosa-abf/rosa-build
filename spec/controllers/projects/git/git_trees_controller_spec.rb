@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::Git::TreesController do
+describe Projects::Git::TreesController, type: :controller do
 
   before(:each) do
     stub_symlink_methods

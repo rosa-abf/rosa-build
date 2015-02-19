@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe Projects::WikiController do
+describe Projects::WikiController, type: :controller do
 
 end

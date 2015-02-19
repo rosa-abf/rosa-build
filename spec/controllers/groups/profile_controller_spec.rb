@@ -68,7 +68,7 @@ shared_examples_for 'group owner' do
   end
 end
 
-describe Groups::ProfileController do
+describe Groups::ProfileController, type: :controller do
   before(:each) do
     stub_symlink_methods
     @group = FactoryGirl.create(:group)

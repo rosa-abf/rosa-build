@@ -44,7 +44,7 @@ shared_examples_for 'api platform user with owner rights' do
       response.should_not be_success
     end
     it 'ensures that personal platform has not been destroyed' do
-      lambda { delete :destroy, id: @personal_platform.id, format: :json }.should_not change{ Platform.count }
+      lambda { delete :destroy, id: @personal_platform.id, format: :json }.should change{ Platform.count }.by(0)
     end
   end
 end
@@ -168,7 +168,7 @@ shared_examples_for 'api platform user without global admin rights' do
         response.should_not be_success
       end
       it "ensures that platform has not been #{action}d" do
-        lambda { post action, clone_or_create_params }.should_not change{ Platform.count }
+        lambda { post action, clone_or_create_params }.should change{ Platform.count }.by(0)
       end
     end
   end
@@ -207,11 +207,11 @@ shared_examples_for "api platform user with show rights" do
   end
 end
 
-describe Api::V1::PlatformsController do
+describe Api::V1::PlatformsController, type: :controller do
   let(:clone_or_create_params) do
     { id: @platform.id,
       platform: { description: 'new description', name: 'new_name',
-                  owner_id: @user.id, distrib_type: APP_CONFIG['distr_types'].first }, format: :json }
+                  owner_id: @user.id, distrib_type: APP_CONFIG['distr_types'].first, default_branch: 'new_name' }, format: :json }
   end
   before do
     stub_symlink_methods

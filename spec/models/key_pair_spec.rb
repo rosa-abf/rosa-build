@@ -15,7 +15,7 @@ describe KeyPair do
   describe 'check_keys validation' do
     subject { FactoryGirl.build(:key_pair) }
 
-    it { subject.valid?.should be_true }
+    it { subject.valid?.should be_truthy }
     it 'checks error when wrong public key' do
       subject.public =  'test'
       subject.valid?

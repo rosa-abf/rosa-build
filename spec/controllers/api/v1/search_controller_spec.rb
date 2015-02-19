@@ -14,7 +14,7 @@ shared_examples_for 'not able search with api' do
   end
 end
 
-describe Api::V1::SearchController do
+describe Api::V1::SearchController, type: :controller do
   before { stub_symlink_methods }
 
   context 'as guest' do
