@@ -31,7 +31,7 @@ Rosa::Application.routes.draw do
   }, skip: [:registrations]
 
   namespace :api do
-    namespace :v1 do
+    namespace :v1, constraints: { format: 'json' }, defaults: { format: 'json' } do
       resources :advisories, only: [:index, :show, :create, :update]
       resources :search, only: [:index]
       resources :build_lists, only: [:index, :create, :show] do
