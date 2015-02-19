@@ -57,7 +57,7 @@ shared_examples_for 'platform user with owner rights' do
       response.should_not be_success
     end
     it 'ensures that personal platform has not been destroyed' do
-      lambda { delete :destroy, id: @personal_platform.id }.should_not change{ Platform.count }
+      lambda { delete :destroy, id: @personal_platform.id }.should change{ Platform.count }.by(0)
     end
   end
 end
@@ -249,7 +249,7 @@ shared_examples_for 'platform user with show rights' do
 end
 
 describe Platforms::PlatformsController, type: :controller do
-  let(:clone_or_create_params) { {id: @platform.id, platform: {description: 'new description', name: 'new_name', owner_id: @user.id, distrib_type: APP_CONFIG['distr_types'].first}} }
+  let(:clone_or_create_params) { {id: @platform.id, platform: {description: 'new description', name: 'new_name', owner_id: @user.id, distrib_type: APP_CONFIG['distr_types'].first, default_branch: 'new_name'}} }
   before do
     stub_symlink_methods
 

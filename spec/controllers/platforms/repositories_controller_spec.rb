@@ -108,7 +108,7 @@ shared_examples_for 'registered user or guest' do
   it 'should not be able to destroy repository in main platform' do
     delete :destroy, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
-    lambda { delete :destroy, id: @repository, platform_id: @platform }.should_not change{ Repository.count }.by(-1)
+    lambda { delete :destroy, id: @repository, platform_id: @platform }.should change{ Repository.count }.by(0)
   end
 
   it 'should not be able to destroy personal repository' do
