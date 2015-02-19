@@ -125,15 +125,15 @@ group :development do
 end
 
 group :development, :test do
-  gem 'rspec-rails'#, '~> 2.14.1'
+  gem 'rspec-rails'
 end
 
 group :test do
-  gem 'factory_girl_rails'#, '~> 4.4.1'
-  gem 'rr'#,                 '~> 1.1.2'
+  gem 'factory_girl_rails'
+  gem 'rr'
   gem 'shoulda'
   gem 'shoulda-matchers'
-  gem 'mock_redis'#,         '~> 0.11'
+  gem 'mock_redis'
   gem 'webmock'
   gem 'rake'
   gem 'test_after_commit'
