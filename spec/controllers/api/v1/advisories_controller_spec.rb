@@ -80,7 +80,7 @@ shared_examples_for 'api advisories user without admin rights' do
   end
 end
 
-describe Api::V1::AdvisoriesController do
+describe Api::V1::AdvisoriesController, type: :controller do
 
   before do
     stub_symlink_methods

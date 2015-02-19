@@ -31,7 +31,7 @@ describe CanCan do
     end
 
     it 'should manage all' do
-      #(@ability.can? :manage, :all).should be_true
+      #(@ability.can? :manage, :all).should be_truthy
       @ability.should be_able_to(:manage, :all)
     end
 

@@ -37,7 +37,7 @@ describe Statistic do
           )
         }
       end.should_not raise_exception
-      expect(Statistic).to have(1).item
+      expect(Statistic.count).to eq 1
       expect(Statistic.first.counter).to eq 2
     end
   end
@@ -52,8 +52,8 @@ describe Statistic do
       FactoryGirl.create(:statistic, project: project1)
       FactoryGirl.create(:statistic, project: project2)
 
-      expect(Statistic.for_groups([group1.id])).to have(1).item
-      expect(Statistic.for_groups([group1.id, group2])).to have(2).items
+      expect(Statistic.for_groups([group1.id]).count).to eq 1
+      expect(Statistic.for_groups([group1.id, group2]).count).to eq 2
     end
   end
 

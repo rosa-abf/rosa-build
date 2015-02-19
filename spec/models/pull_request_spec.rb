@@ -10,7 +10,7 @@ def set_data_for_pull
 
   @other_project = FactoryGirl.create(:project_with_commit, owner: @user)
 
-  any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+  allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 end
 
 describe PullRequest do
@@ -37,7 +37,7 @@ describe PullRequest do
       @pull.check
       @project.update_attributes(name: "#{@project.name}-new")
       @pull.reload
-      Dir.exists?(@pull.path).should be_true
+      Dir.exists?(@pull.path).should be_truthy
     end
 
     it 'master should merge with non_conflicts branch' do

@@ -46,7 +46,7 @@ shared_examples_for 'can not unsubscribe' do
   end
 end
 
-describe Projects::SubscribesController do
+describe Projects::SubscribesController, type: :controller do
   before(:each) do
     stub_symlink_methods
 
@@ -56,7 +56,7 @@ describe Projects::SubscribesController do
     @create_params =  { issue_id: @issue.serial_id, name_with_owner: @project.name_with_owner }
     @destroy_params = { issue_id: @issue.serial_id, name_with_owner: @project.name_with_owner }
 
-    any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+    allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 
     @request.env['HTTP_REFERER'] = project_issue_path(@project, @issue)
   end

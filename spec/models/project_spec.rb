@@ -106,7 +106,7 @@ describe Project do
 
     it "ensures that personal repository has not been attached when project had been created as not package" do
       project = FactoryGirl.create(:project, owner: user, is_package: false)
-      project.repositories.should have(:no).items
+      expect(project.repositories.count).to eq 0
     end
 
     it "ensures that personal repository has been attached when project had been updated as package" do
@@ -118,7 +118,7 @@ describe Project do
     it "ensures that personal repository has been removed from project when project had been updated as not package" do
       project = FactoryGirl.create(:project, owner: user, is_package: true)
       project.update_attribute(:is_package, false)
-      project.repositories.should have(:no).items
+      expect(project.repositories.count).to eq 0
     end
   end
 
@@ -126,7 +126,7 @@ describe Project do
     let!(:project) { FactoryGirl.build(:project, name: '  test_name  ') }
 
     it 'ensures that validation passed' do
-      project.valid?.should be_true
+      project.valid?.should be_truthy
     end
 
     it 'ensures that name has been truncated' do
@@ -146,7 +146,7 @@ describe Project do
   it 'ensures that path to git repository has been changed after rename of project' do
     project = FactoryGirl.create(:project_with_commit)
     project.update_attributes(name: "#{project.name}-new")
-    Dir.exists?(project.path).should be_true
+    Dir.exists?(project.path).should be_truthy
   end
 
   context 'manage branches' do
@@ -157,7 +157,7 @@ describe Project do
 
     context '#delete_branch' do
       it 'ensures that returns true on success' do
-        project.delete_branch(branch, user).should be_true
+        project.delete_branch(branch, user).should be_truthy
       end
 
       it 'ensures that branch has been deleted' do
@@ -165,7 +165,7 @@ describe Project do
       end
 
       it 'ensures that returns false on delete master' do
-        project.delete_branch(master, user).should be_false
+        project.delete_branch(master, user).should be_falsy
       end
 
       it 'ensures that master has not been deleted' do
@@ -174,7 +174,7 @@ describe Project do
 
       it 'ensures that returns false on delete wrong branch' do
         project.delete_branch(branch, user)
-        project.delete_branch(branch, user).should be_false
+        project.delete_branch(branch, user).should be_falsy
       end
     end
 
@@ -184,7 +184,7 @@ describe Project do
       end
 
       it 'ensures that returns true on success' do
-        project.create_branch(branch.name, branch.commit.id, user).should be_true
+        project.create_branch(branch.name, branch.commit.id, user).should be_truthy
       end
 
       it 'ensures that branch has been created' do
@@ -192,7 +192,7 @@ describe Project do
       end
 
       it 'ensures that returns false on create wrong branch' do
-        project.create_branch(branch.name, GitHook::ZERO, user).should be_false
+        project.create_branch(branch.name, GitHook::ZERO, user).should be_falsy
       end
     end
 
@@ -233,8 +233,8 @@ describe Project do
       Project.run_mass_import(url, "abf-worker-service-1-3.src.rpm\nredir-2.2.1-7.res6.src.rpm\n", visibility, owner, repository.id)
 
       Project.count.should == 2
-      repository.projects.should have(2).items
-      owner.projects.should have(2).items
+      expect(repository.projects.count).to eq 2
+      expect(owner.projects.count).to eq 2
     end
   end
 
@@ -261,8 +261,8 @@ describe Project do
       FactoryGirl.create(:platform_arch_setting, platform: repository.platform, default: false)
     end
 
-    it { ProjectToRepository.autostart_enabled.should have(1).item }
-    it { repository.platform.platform_arch_settings.should have(2).item }
+    it { expect(ProjectToRepository.autostart_enabled.count).to eq 1 }
+    it { expect(repository.platform.platform_arch_settings.count).to eq 2 }
 
     context 'once_a_12_hours' do
       before { project.update_attributes(autostart_status: Autostart::ONCE_A_12_HOURS) }
@@ -317,8 +317,8 @@ describe Project do
     end
 
     # 1(personal) + 2(main) + 1(hidden) + 1(main, without main repository)
-    it { ProjectToRepository.autostart_enabled.should have(5).item }
-    it { main_repository.platform.platform_arch_settings.should have(2).item }
+    it { expect(ProjectToRepository.autostart_enabled.count).to eq 5 }
+    it { expect(main_repository.platform.platform_arch_settings.count).to eq 2 }
 
     # into main platforms: 2 + 1(hidden)
     # into personal platform: 3(main) * 1

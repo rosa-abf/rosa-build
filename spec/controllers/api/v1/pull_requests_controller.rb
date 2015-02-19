@@ -8,7 +8,7 @@ def create_pull to_ref, from_ref, owner, project = @project
   pull
 end
 
-describe Api::V1::PullRequestsController do
+describe Api::V1::PullRequestsController, type: :controller do
   before(:all) do
     stub_symlink_methods
 
@@ -87,7 +87,7 @@ describe Api::V1::PullRequestsController do
       it 'should return only assigned pull request' do
         get :user_index, format: :json
         assigns[:pulls].should include(@own_hidden_pull)
-        assigns[:pulls].should have(1).item
+        expect(assigns[:pulls].count).to eq 1
       end
 
       it 'should render right template for user index action' do

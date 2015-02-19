@@ -6,7 +6,7 @@ describe MassBuild do
   context 'ensures that validations and associations exist' do
 
     it 'is valid given valid attributes' do
-      FactoryGirl.create(:mass_build).should be_true
+      FactoryGirl.create(:mass_build).should be_truthy
     end
 
     it { should belong_to(:build_for_platform) }
@@ -37,7 +37,7 @@ describe MassBuild do
     mass_build = FactoryGirl.build(:mass_build, projects_list: projects_list)
     mass_build.should be_valid
     list = mass_build.projects_list.split(/[\r]*\n/)
-    list.should have(2).items
+    expect(list.count).to eq 2
     list.should include('at', 'ab')
   end
 

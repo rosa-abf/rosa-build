@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AutocompletesController do
+describe AutocompletesController, type: :controller do
   before {stub_symlink_methods}
 
   context 'for user' do

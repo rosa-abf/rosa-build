@@ -54,7 +54,7 @@ shared_examples_for 'hooks user without project admin rights' do
   end
 end
 
-describe Projects::HooksController do
+describe Projects::HooksController, type: :controller do
 
   before(:each) do
     stub_symlink_methods

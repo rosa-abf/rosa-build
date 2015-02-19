@@ -116,7 +116,7 @@ shared_examples_for 'projects user without project admin rights' do
   end
 end
 
-describe Projects::ProjectsController do
+describe Projects::ProjectsController, type: :controller do
 
   before(:each) do
     stub_symlink_methods

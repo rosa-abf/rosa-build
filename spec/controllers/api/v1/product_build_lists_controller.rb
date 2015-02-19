@@ -103,7 +103,7 @@ shared_examples_for 'api user with admin rights' do
   it "ensures that only not_delete field of product build list has been updated" do
     put :update, @update_params.merge(id: @product_build_list.id), format: :json
     @product_build_list.reload.time_living.should == 150*60 # in seconds
-    @product_build_list.not_delete.should be_true
+    @product_build_list.not_delete.should be_truthy
   end
 
   it 'ensures that return correct answer for wrong creating action' do
@@ -112,7 +112,7 @@ shared_examples_for 'api user with admin rights' do
   end
 end
 
-describe Api::V1::ProductBuildListsController do
+describe Api::V1::ProductBuildListsController, type: :controller do
   before(:each) do
     stub_symlink_methods
     FactoryGirl.create(:arch, name: 'x86_64')

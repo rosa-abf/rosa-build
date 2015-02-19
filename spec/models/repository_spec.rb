@@ -8,7 +8,7 @@ describe Repository do
   context 'ensures that validations and associations exist' do
 
     it 'is valid given valid attributes' do
-      repository.should be_true
+      repository.should be_truthy
     end
 
     it { should belong_to(:platform) }
@@ -42,34 +42,34 @@ describe Repository do
     before { FileUtils.mkdir_p path }
 
     it 'ensures that #sync_lock_file_exists? returns false if .sync.lock file does not exist' do
-      repository.sync_lock_file_exists?.should be_false
+      repository.sync_lock_file_exists?.should be_falsy
     end
 
     it 'ensures that #sync_lock_file_exists? returns true if .sync.lock file does exist' do
       FileUtils.touch "#{path}/.sync.lock"
-      repository.sync_lock_file_exists?.should be_true
+      repository.sync_lock_file_exists?.should be_truthy
     end
 
     it 'ensures that #add_sync_lock_file creates .sync.lock file' do
       repository.add_sync_lock_file
-      File.exist?("#{path}/.sync.lock").should be_true
+      File.exist?("#{path}/.sync.lock").should be_truthy
     end
 
     it 'ensures that #remove_sync_lock_file removes .sync.lock file' do
       FileUtils.touch "#{path}/.sync.lock"
       repository.remove_sync_lock_file
-      File.exist?("#{path}/.sync.lock").should be_false
+      File.exist?("#{path}/.sync.lock").should be_falsy
     end
 
     it 'ensures that #add_repo_lock_file creates .repo.lock file' do
       repository.add_repo_lock_file
-      File.exist?("#{path}/.repo.lock").should be_true
+      File.exist?("#{path}/.repo.lock").should be_truthy
     end
 
     it 'ensures that #remove_repo_lock_file removes .repo.lock file' do
       FileUtils.touch "#{path}/.repo.lock"
       repository.remove_repo_lock_file
-      File.exist?("#{path}/.repo.lock").should be_false
+      File.exist?("#{path}/.repo.lock").should be_falsy
     end
 
   end
@@ -97,7 +97,7 @@ describe Repository do
         map{ |type| "#{r.platform.path}/repository/#{type}/#{r.name}" }.
         each{ |path| FileUtils.mkdir_p path }
       r.destroy
-      paths.each{ |path| Dir.exists?(path).should be_false }
+      paths.each{ |path| Dir.exists?(path).should be_falsy }
     end
 
     it "repository of personal platform" do
@@ -108,7 +108,7 @@ describe Repository do
         map{ |type| "#{r.platform.path}/repository/#{main_platform.name}/#{type}/#{r.name}" }.
         each{ |path| FileUtils.mkdir_p path }
       r.destroy
-      paths.each{ |path| Dir.exists?(path).should be_false }
+      paths.each{ |path| Dir.exists?(path).should be_falsy }
     end
 
   end
@@ -118,14 +118,14 @@ describe Repository do
       repository = FactoryGirl.create(:repository)
       project = FactoryGirl.create(:project)
       repository.add_projects(project.name_with_owner, FactoryGirl.create(:user))
-      repository.projects.should have(1).item
+      expect(repository.projects.count).to eq 1
     end
 
     it 'user has no ability to read of adding project' do
       repository = FactoryGirl.create(:repository)
       project = FactoryGirl.create(:project, visibility: 'hidden')
       repository.add_projects(project.name_with_owner, FactoryGirl.create(:user))
-      repository.projects.should have(:no).items
+      expect(repository.projects.count).to eq 0
     end
   end
 
@@ -135,7 +135,7 @@ describe Repository do
     repository.projects << project
     repository.remove_projects(project.name)
     repository.reload
-    repository.projects.should have(:no).items
+    expect(repository.projects.count).to eq 0
   end
 
 end

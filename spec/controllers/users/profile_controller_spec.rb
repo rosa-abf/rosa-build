@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Users::ProfileController do
+describe Users::ProfileController, type: :controller do
   before(:each) do
     stub_symlink_methods
 

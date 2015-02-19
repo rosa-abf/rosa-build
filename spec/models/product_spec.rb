@@ -9,7 +9,7 @@ describe Product do
     it 'is valid given valid attributes' do
       # arch = FactoryGirl.create(:arch, name: 'x86_64')
       # allow(Arch).to receive(:find_by).with(name: 'x86_64').and_return(arch)
-      FactoryGirl.create(:product).should be_true
+      FactoryGirl.create(:product).should be_truthy
     end
 
     it { should belong_to(:platform) }
@@ -57,7 +57,7 @@ describe Product do
 
       it 'product should has product_build_list' do
         Product.autostart_iso_builds Product::ONCE_A_12_HOURS
-        product.product_build_lists.should have(1).item
+        expect(product.product_build_lists.count).to eq 1
       end
 
     end

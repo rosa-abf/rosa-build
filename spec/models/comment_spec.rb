@@ -10,7 +10,7 @@ def set_commentable_data
   @comment = FactoryGirl.create(:comment, commentable: @issue, user: @user, project: @project)
   @stranger_comment = FactoryGirl.create(:comment, commentable: @issue, user: @stranger, project: @project)
 
-  any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+  allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 end
 
 def create_comment_in_issue issue, body
@@ -170,8 +170,8 @@ describe Comment do
       it 'should create automatic comment by issue title' do
         issue = FactoryGirl.create(:issue, project: @project, user: @user,
                                    title: "link to ##{@issue.serial_id}")
-        Comment.where(automatic: true,
-                      created_from_issue_id: issue.id).should have(1).item
+        expect(Comment.where(automatic: true,
+                            created_from_issue_id: issue.id).count).to eq 1
       end
 
       it 'should create automatic comment from issue body' do

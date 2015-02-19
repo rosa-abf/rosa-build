@@ -30,7 +30,7 @@ describe Advisory do
       it_should_behave_like 'attach advisory to build_list'
 
       it 'ensure that advisory has been created' do
-        Advisory.should have(1).item
+        expect(Advisory.count).to eq 1
       end
     end
 
