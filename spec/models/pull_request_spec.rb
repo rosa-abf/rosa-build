@@ -10,7 +10,7 @@ def set_data_for_pull
 
   @other_project = FactoryGirl.create(:project_with_commit, owner: @user)
 
-  any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+  allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 end
 
 describe PullRequest do

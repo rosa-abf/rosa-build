@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Api::V1::IssuesController, type: :controller do
   before do
     stub_symlink_methods
-    any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+    allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 
     @project = FactoryGirl.create(:project_with_commit)
     @issue = FactoryGirl.create(:issue, project: @project)

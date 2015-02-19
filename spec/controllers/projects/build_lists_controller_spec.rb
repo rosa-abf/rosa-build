@@ -92,7 +92,7 @@ describe Projects::BuildListsController, type: :controller do
         arches: [FactoryGirl.create(:arch).id],
         build_for_platforms: [@platform.id]
       }
-      any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+      allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
     end
 
     context 'for guest' do
@@ -110,7 +110,7 @@ describe Projects::BuildListsController, type: :controller do
 
     context 'for user' do
       before do
-        any_instance_of(BuildList, current_duration: 100)
+        allow_any_instance_of(BuildList).to receive(:current_duration).and_return(100)
         @build_list = FactoryGirl.create(:build_list)
         @project = @build_list.project
         @owner_user = @project.owner

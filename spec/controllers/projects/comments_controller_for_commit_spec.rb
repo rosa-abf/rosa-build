@@ -10,7 +10,8 @@ describe Projects::CommentsController, type: :controller do
                        commit_id: @commit.id, format: :json }
     @update_params = { comment: { body: 'updated' }, name_with_owner: @project.name_with_owner, commit_id: @commit.id }
 
-    any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+    allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
+
     @comment = FactoryGirl.create(:comment, commentable: @commit, project: @project)
     @user = FactoryGirl.create(:user)
     @own_comment = FactoryGirl.create(:comment, commentable: @commit, user: @user, project: @project)

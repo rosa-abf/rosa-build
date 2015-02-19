@@ -10,7 +10,7 @@ def set_commentable_data
   @comment = FactoryGirl.create(:comment, commentable: @issue, user: @user, project: @project)
   @stranger_comment = FactoryGirl.create(:comment, commentable: @issue, user: @stranger, project: @project)
 
-  any_instance_of(Project, versions: ['v1.0', 'v2.0'])
+  allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 end
 
 def create_comment_in_issue issue, body
