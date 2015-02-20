@@ -2,5 +2,6 @@
 - if [:new, :create].include? act
   = f.input :uname
 = f.input :description, as: :text
+= f.input :default_branch
 = render 'shared/avatar_form', subject: @group, f: f
 = submit_button_tag

@@ -7,6 +7,7 @@ class Project < ActiveRecord::Base
   include Wiki
   include UrlHelper
   include EventLoggable
+  include Project::DefaultBranch
 
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
@@ -51,7 +52,6 @@ class Project < ActiveRecord::Base
   validates :add_to_repository, presence: true, if: :mass_import
   validates :visibility, presence: true, inclusion: { in: VISIBILITIES }
   validate { errors.add(:base, :can_have_less_or_equal, count: MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
-  validate :check_default_branch
   # throws validation error message from ProjectToRepository model into Project model
   validate do |project|
     project.project_to_repositories.each do |p_to_r|
@@ -61,7 +61,7 @@ class Project < ActiveRecord::Base
     errors.delete :project_to_repositories
   end
 
-  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch,
+  attr_accessible :name, :description, :visibility, :srpm, :is_package,
                   :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64,
                   :url, :srpms_list, :mass_import, :add_to_repository_id, :architecture_dependent,
                   :autostart_status
@@ -97,7 +97,6 @@ class Project < ActiveRecord::Base
   before_save -> { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
   after_save :attach_to_personal_repository
-  after_update :set_new_git_head
   after_update -> { update_path_to_project(name_was) }, if: :name_changed?
 
   attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
@@ -209,16 +208,6 @@ class Project < ActiveRecord::Base
     build_list.save
   end
 
-  def project_version_for(save_to_platform, build_for_platform)
-    if repo.commits("#{save_to_platform.default_branch}").try(:first).try(:id)
-      save_to_platform.default_branch
-    elsif repo.commits("#{build_for_platform.default_branch}").try(:first).try(:id)
-      build_for_platform.default_branch
-    else
-      default_branch
-    end
-  end
-
   def fork(new_owner, new_name: nil, is_alias: false)
     new_name = new_name.presence || name
     dup.tap do |c|
@@ -230,18 +219,6 @@ class Project < ActiveRecord::Base
       # Hack to call protected method :)
       c.send :set_maintainer
       c.save
-    end
-  end
-
-  def default_head treeish = nil # maybe need change 'head'?
-    # Attention!
-    # repo.commit(nil) => <Grit::Commit "b6c0f81deb17590d22fc07ba0bbd4aa700256f61">
-    # repo.commit(nil.to_s) => nil
-    return treeish if treeish.present? && repo.commit(treeish).present?
-    if repo.branches_and_tags.map(&:name).include?(treeish || default_branch)
-      treeish || default_branch
-    else
-      repo.branches_and_tags[0].try(:name) || default_branch
     end
   end
 
@@ -394,10 +371,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def set_new_git_head
-    `cd #{path} && git symbolic-ref HEAD refs/heads/#{self.default_branch}` if self.default_branch_changed? && self.repo.branches.map(&:name).include?(self.default_branch)
-  end
-
   def update_path_to_project(old_name)
     new_name, new_path = name, path
     self.name = old_name
@@ -419,9 +392,4 @@ class Project < ActiveRecord::Base
   end
   later :update_path_to_project, queue: :middle
 
-  def check_default_branch
-    if self.repo.branches.count > 0 && self.repo.branches.map(&:name).exclude?(self.default_branch)
-      errors.add :default_branch, I18n.t('activerecord.errors.project.default_branch')
-    end
-  end
 end

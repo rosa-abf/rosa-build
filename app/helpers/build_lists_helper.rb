@@ -257,7 +257,7 @@ module BuildListsHelper
   end
 
   def project_version(project, params)
-    @project_version ||= params[:build_list].try(:[], :project_version) || project.default_branch
+    @project_version ||= params[:build_list].try(:[], :project_version) || project.resolve_default_branch
   end
 
   def build_list_project_versions(project)

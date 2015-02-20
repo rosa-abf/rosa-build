@@ -337,4 +337,40 @@ describe Project do
       it_should_behave_like 'autostart build_lists', 0, 0, 6
     end
   end
+
+  context '#resolve_default_branch' do
+    let(:project)       { FactoryGirl.build(:project) }
+    let(:group_project) { FactoryGirl.build(:group_project) }
+
+    it 'returns project default branch if owner is User' do
+      expect(project.resolve_default_branch).to eq 'master'
+    end
+
+    it 'returns project default branch if Group has no default branch' do
+      expect(group_project.resolve_default_branch).to eq 'master'
+    end
+
+    it 'returns project default branch if Group default branch does not exist in project' do
+      group_project.owner.default_branch = 'rosa'
+      expect(group_project.repo).to receive(:branches).and_return([])
+      expect(group_project.resolve_default_branch).to eq 'master'
+    end
+
+    context 'default branch of Group exists in project' do
+      before do
+        group_project.owner.default_branch = 'rosa'
+        expect(group_project.repo).to receive(:branches).and_return([double(:branch, name: 'rosa')])
+      end
+
+      it 'returns Group default branch' do
+        expect(group_project.resolve_default_branch).to eq 'rosa'
+      end
+
+      it 'returns project default branch if it not equal to master' do
+        group_project.default_branch = 'cooker'
+        expect(group_project.resolve_default_branch).to eq 'cooker'
+      end
+    end
+
+  end
 end

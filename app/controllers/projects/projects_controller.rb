@@ -173,7 +173,8 @@ class Projects::ProjectsController < Projects::BaseController
 
   def refs_list
     refs = @project.repo.branches_and_tags.map(&:name)
-    @selected = (refs.include? params[:selected]) ? params[:selected] : @project.default_branch
+    @selected   = params[:selected] if refs.include?(params[:selected])
+    @selected ||= @project.resolve_default_branch
     render layout: false
   end
 

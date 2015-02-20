@@ -54,7 +54,14 @@ en:
         description:    Description
         avatar:         Avatar
         delete_avatar:  Delete avatar
+        default_branch: Default branch
+    hints:
+      group:
+        default_branch: >
+          This is the name of branch that will be used by default for all projects.
+          Ignored, if project already has a default branch different from <i>master</i>.
     placeholders:
       group:
         uname:          Enter the name here.
         description:    Enter the description here.
+        default_branch: Enter the name of branch here.

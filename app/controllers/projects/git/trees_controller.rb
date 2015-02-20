@@ -1,6 +1,6 @@
 class Projects::Git::TreesController < Projects::Git::BaseController
 
-  before_filter -> {redirect_to @project if params[:treeish] == @project.default_branch and params[:path].blank?}, only: :show
+  before_filter -> {redirect_to @project if params[:treeish] == @project.resolve_default_branch and params[:path].blank?}, only: :show
   skip_before_filter :set_branch_and_tree, :set_treeish_and_path, only: :archive
   before_filter -> { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, only: [:branch, :destroy]
 
