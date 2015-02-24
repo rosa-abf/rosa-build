@@ -18,7 +18,7 @@ namespace :repositories do
         next
       end
 
-      project = main.projects.create(name: project_name, name: project_name)
+      project = main.projects.create(name: project_name)
 
       puts "Executing: 'rm -rf #{project.path}'"
       `rm -rf #{project.path}`
