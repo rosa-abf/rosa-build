@@ -213,7 +213,7 @@ class Project < ActiveRecord::Base
     dup.tap do |c|
       c.name          = new_name
       c.parent_id     = id
-      c.alias_from_id = alias_from_id || id if is_alias
+      c.alias_from_id = is_alias ? (alias_from_id || id) : nil
       c.owner         = new_owner
       c.updated_at    = nil; c.created_at = nil # :id = nil
       # Hack to call protected method :)
