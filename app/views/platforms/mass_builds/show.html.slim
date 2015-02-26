@@ -1,4 +1,7 @@
--set_meta_tags title: title_object(@mass_build)
+- set_meta_tags title: title_object(@mass_build)
+- set_meta_tags og: { title:       title_object(@mass_build),
+                      description: truncate(@mass_build.description, length: 255) }
+
 = render 'submenu'
 
 .col-xs-12.col-md-10.col-md-offset-1

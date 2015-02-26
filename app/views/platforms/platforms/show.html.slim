@@ -1,4 +1,7 @@
--set_meta_tags title: title_object(@platform)
+- set_meta_tags title: title_object(@platform)
+- set_meta_tags og: { title:       title_object(@platform),
+                      description: truncate(@platform.description, length: 255) }
+
 = render 'submenu'
 
 .col-xs-12.col-md-10.col-md-offset-1

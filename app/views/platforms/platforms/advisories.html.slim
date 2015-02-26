@@ -1,4 +1,5 @@
 - set_meta_tags title: [title_object(@platform), t('layout.advisories.list_header')]
+- set_meta_tags og: { title: t('layout.advisories.list_header') + ' - ' + title_object(@platform) }
 == render 'submenu'
 
 .col-xs-12.col-md-10.col-md-offset-1

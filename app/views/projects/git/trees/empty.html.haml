@@ -1,4 +1,8 @@
--set_meta_tags title: title_object(@project)
+- title = title_object(@project)
+- set_meta_tags title: title
+- set_meta_tags og: { title:       title,
+                      description: truncate(@project.description, length: 255) }
+
 = render 'submenu'
 = render 'repo_block', project: @project
 = render 'about_block', project: @project

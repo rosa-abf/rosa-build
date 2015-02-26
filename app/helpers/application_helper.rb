@@ -59,8 +59,14 @@ module ApplicationHelper
     name = object.class == Group ? object.uname : object.name
     object_name = t "activerecord.models.#{object.class.name.downcase}"
     case object.class.name
-    when 'Project', 'Platform'
+    when 'Project'
       "#{object_name} #{object.owner.uname}/#{object.name}"
+    when 'Platform'
+      if object.main?
+        "#{object_name} #{object.name}"
+      else
+        "#{object_name} #{object.owner.uname}/#{object.name}"
+      end
     when 'Repository', 'Product'
       "#{object_name} #{object.name} - #{title_object object.platform}"
     when 'Group'

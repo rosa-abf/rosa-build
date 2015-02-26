@@ -1,4 +1,6 @@
--set_meta_tags title: title_object(@repository)
+- set_meta_tags title: title_object(@repository)
+- set_meta_tags og: { title:       title_object(@repository),
+                      description: truncate(@repository.description, length: 255) }
 = render 'submenu'
 
 .container.col-md-offset-2.col-md-8

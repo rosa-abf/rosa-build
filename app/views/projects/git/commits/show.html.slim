@@ -1,4 +1,7 @@
--set_meta_tags title: [title_object(@project), shortest_hash_id(@commit.id), @commit.message]
+- title = [title_object(@project), shortest_hash_id(@commit.id)]
+- set_meta_tags title: [title, @commit.message].flatten
+- set_meta_tags og: { title:       title * ' - ',
+                      description: truncate(@commit.message, length: 255) }
 == render 'submenu'
 
 .col-xs-12.col-md-10.col-md-offset-1

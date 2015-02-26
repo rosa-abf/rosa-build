@@ -1,4 +1,8 @@
-- set_meta_tags title: [title_object(@advisory), t('activerecord.models.advisory')]
+- title = [title_object(@advisory), t('activerecord.models.advisory')]
+- set_meta_tags title: title
+- set_meta_tags og: { title:       title.reverse * ' - ',
+                      description: truncate(@advisory.description, length: 255) }
+
 - render partial: 'submenu'
 
 .container.col-md-offset-2.col-md-8
