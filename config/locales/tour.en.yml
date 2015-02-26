@@ -1,5 +1,6 @@
 en:
   tour:
+    meta_description: "A distributed environment to build distributions, supporting all steps from managing source code to create ISO images."
     read_more: more...
     projects: Project Management
     sources: Source Code

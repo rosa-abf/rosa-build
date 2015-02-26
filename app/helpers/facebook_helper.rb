@@ -4,7 +4,7 @@ module FacebookHelper
   def facebook_meta_image
     resource         = get_resource
     @fb_meta_image ||= avatar_url(resource, :big) if resource.respond_to?(:avatar)
-    @fb_meta_image ||= asset_url('logo-mini.png')
+    @fb_meta_image ||= asset_url('fb-image.png')
 
     @fb_meta_image
   end
