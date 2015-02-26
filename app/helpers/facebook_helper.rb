@@ -1,22 +1,5 @@
 module FacebookHelper
 
-  # Returns a facebook-specific title for the current page.
-  def facebook_meta_title
-    resource         = get_resource
-    @fb_meta_title ||= resource.fb_meta_title if resource.respond_to?(:fb_meta_title)
-    @fb_meta_title   = APP_CONFIG['project_name'] if @fb_meta_title.blank?
-    @fb_meta_title
-  end
-
-  # Returns a facebook-specific description for the current page.
-  def facebook_meta_description
-    resource               = get_resource
-    @fb_meta_description ||= resource.fb_meta_description if resource.respond_to?(:fb_meta_description)
-    @fb_meta_description ||= resource.description if resource.respond_to?(:description)
-    @fb_meta_description   = I18n.t('helpers.facebook.meta_description') if @fb_meta_description.blank?
-    truncate(@fb_meta_description, length: 255)
-  end
-
   # Returns a facebook-specific image for the current page.
   def facebook_meta_image
     resource         = get_resource
@@ -74,11 +57,6 @@ module FacebookHelper
       else
         instance_variable_get "@#{controller_name.singularize}"
       end
-    end
-
-    # Hack to check if a translation is defined for a particular key.
-    def translation_defined?(key)
-      I18n.backend.exists?(:en, key)
     end
 
 end

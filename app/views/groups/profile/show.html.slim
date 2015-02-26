@@ -1,4 +1,7 @@
 - set_meta_tags title: title_object(@group)
+- set_meta_tags og: { title:       title_object(@group),
+                      description: truncate(@group.description, length: 255) }
+
 
 = render 'groups/base/submenu'
 

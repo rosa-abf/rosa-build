@@ -1,4 +1,7 @@
 -set_meta_tags title: title_object(@product)
+- set_meta_tags og: { title:       title_object(@product),
+                      description: truncate(@product.description, length: 255) }
+
 = render 'submenu'
 
 .container.col-md-offset-2.col-md-8
