@@ -33,12 +33,13 @@ RosaABF.controller 'ContentsController', ['$scope', '$http', '$location', ($scop
     )
     true
 
-  $scope.open = (content) ->
-    return if $scope.processing
+  $scope.open = ($event, content) ->
+    return $event.preventDefault() if $scope.processing and $event
     if $.type(content) == 'string'
       $location.search('path', content)
     else if content.is_folder
       $location.search('path', content.subpath)
+    $event.preventDefault() if $event
 
   $scope.destroy  = (content) ->
     params  =
