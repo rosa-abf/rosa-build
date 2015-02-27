@@ -1,5 +1,8 @@
-- set_meta_tags title: "#{title_object @project} #{t('at') if @branch} #{@branch.try :name}"
-- set_meta_tags og: { title:       title_object(@project),
-                      description: truncate(@project.description, length: 255) }
+- title = title_object(@project)
+- set_meta_tags title: "#{title} #{t('at') if @branch} #{@branch.try :name}"
+- set_meta_tags og:      { title:       title,
+                           description: truncate(@project.description, length: 255) }
+- set_meta_tags twitter: { title:       title,
+                           description: truncate(@project.description, length: 200) }
 
 == render partial: "show", layout: 'layout'
