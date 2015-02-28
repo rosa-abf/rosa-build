@@ -1,6 +1,9 @@
-- set_meta_tags title: title_object(@mass_build)
-- set_meta_tags og: { title:       title_object(@mass_build),
-                      description: truncate(@mass_build.description, length: 255) }
+- title = title_object(@mass_build)
+- set_meta_tags title: title
+- set_meta_tags og:      { title:       title,
+                           description: truncate(@mass_build.description, length: 255) }
+- set_meta_tags twitter: { title:       title,
+                           description: truncate(@mass_build.description, length: 200) }
 
 = render 'submenu'
 

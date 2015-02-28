@@ -1,6 +1,8 @@
 - set_meta_tags title: [title_object(@project), @issue.title]
-- set_meta_tags og: { title:       @issue.title,
-                      description: truncate(@issue.body, length: 255) }
+- set_meta_tags og:      { title:       @issue.title,
+                           description: truncate(@issue.body, length: 255) }
+- set_meta_tags twitter: { title:       @issue.title,
+                           description: truncate(@issue.body, length: 200) }
 
 == render 'submenu'
 == render 'projects/comments/markdown_help' if current_user

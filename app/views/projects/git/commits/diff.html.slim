@@ -1,8 +1,11 @@
 - title = "#{t('diff')} #{shortest_hash_id @commit1.id}...#{shortest_hash_id @commit.id}"
 - title = [title_object(@project), title]
 - set_meta_tags title: title
-- set_meta_tags og: { title:       title * ' - ',
-                      description: truncate(@project.description, length: 255) }
+- title = title * ' - '
+- set_meta_tags og:      { title:       title,
+                           description: truncate(@project.description, length: 255) }
+- set_meta_tags twitter: { title:       title,
+                           description: truncate(@project.description, length: 200) }
 == render 'submenu'
 
 .col-xs-12.col-md-10.col-md-offset-1
