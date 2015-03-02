@@ -46,7 +46,8 @@ ru:
   simple_form:
     labels:
       mass_build:
-        description:       Описание
+        description:           "Описание"
+        build_for_platform_id: "Собрано для платформы"
     placeholders:
       mass_build:
         description:       Введите описание массовой сборки здесь.

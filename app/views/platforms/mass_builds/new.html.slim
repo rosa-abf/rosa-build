@@ -42,6 +42,13 @@
                 = arch.name
 
         - if @platform.personal?
+          = f.input :build_for_platform_id,
+            as:            :select,
+            collection:    availables_main_platforms,
+            label_method:  :name,
+            value_method:  :id,
+            include_blank: false
+
           = render 'shared/autocomplete_form',
                    field:       :ExtraRepositories,
                    placeholder: 'uxteam_personal',
@@ -62,7 +69,9 @@
 
         h3= t('activerecord.attributes.build_list.preferences')
 
-        = f.input :auto_publish_status, collection: auto_publish_statuses
+        = f.input :auto_publish_status,
+          collection:    auto_publish_statuses,
+          include_blank: false
 
         - %i(auto_create_container increase_release_tag include_testing_subrepository use_cached_chroot use_extra_tests).each do |field|
           .checkbox

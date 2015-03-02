@@ -45,7 +45,8 @@ en:
   simple_form:
     labels:
       mass_build:
-        description:       Description
+        description:           "Description"
+        build_for_platform_id: "Build for platform"
     placeholders:
       mass_build:
         description:       Enter the description of mass build here.
