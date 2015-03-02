@@ -210,6 +210,12 @@ module BuildListsHelper
     include_repos(params).include? repo.id.to_s
   end
 
+  def filter_by_save_to_platform
+    pls = availables_main_platforms
+    pls = pls.select{ |p| current_user_platforms.include?(p.id) } if current_user_platforms.present?
+    pls.map{ |pl| [pl.name, pl.id] }
+  end
+
   private
 
   def save_to_repositories(project, params)
