@@ -1,7 +1,7 @@
 # Internal: various definitions and instance methods related to status.
 #
 # This module gets mixed in into ProductBuildList class.
-module ProductBuildList::Statusable
+module ProductBuildLists::Statusable
   extend ActiveSupport::Concern
 
   BUILD_COMPLETED            = 0

@@ -4,8 +4,8 @@ class ProductBuildList < ActiveRecord::Base
   include FileStoreClean
   include UrlHelper
   include EventLoggable
-  include ProductBuildList::Statusable
-  include ProductBuildList::AbfWorkerable
+  include ProductBuildLists::Statusable
+  include ProductBuildLists::AbfWorkerable
 
   LIVE_TIME     = 2.week  # for autostart
   MAX_LIVE_TIME = 3.month # for manual start;

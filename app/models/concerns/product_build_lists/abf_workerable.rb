@@ -1,7 +1,7 @@
 # Internal: various definitions and instance methods related to AbfWorker.
 #
 # This module gets mixed in into ProductBuildList class.
-module ProductBuildList::AbfWorkerable
+module ProductBuildLists::AbfWorkerable
   extend ActiveSupport::Concern
 
   CACHED_CHROOT_TOKEN_DESCRIPTION = 'cached-chroot'
