@@ -251,7 +251,7 @@ module BuildListsHelper
   end
 
   def current_user_platforms
-    @current_user_platforms ||= (current_user.builds_setting.try(:platforms) || []).select(&:present?).map(&:to_i)
+    @current_user_platforms ||= (current_user.try(:builds_setting).try(:platforms) || []).select(&:present?).map(&:to_i)
   end
 
   def include_repos(params)
