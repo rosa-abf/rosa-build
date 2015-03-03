@@ -82,7 +82,9 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
         scoped_to_product_name(@product_build_list.product_name).
         for_status(@product_build_list.status)
     end
-    @product_build_lists = @product_build_lists.recent.paginate page: params[:page]
+    @product_build_lists = @product_build_lists.
+      includes(:project, product: :platform).
+      recent.paginate(page: params[:page])
     @build_server_status = AbfWorkerStatusPresenter.new.products_status
   end
 

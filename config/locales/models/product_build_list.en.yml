@@ -21,6 +21,7 @@ en:
         build_started: Build started
         build_canceled: Build canceled
         build_canceling: Build is canceling
+        build_completed_partially: Build complete (partially)
 
       ownership:
         header: Build list ownership
@@ -36,7 +37,6 @@ en:
         id: Id
         user: User
         product: Product
-        container_path: Container
         status: Status
         user: User
         notified_at: Notified at

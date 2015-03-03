@@ -11,7 +11,14 @@ module AbfWorker
       when COMPLETED
         subject.build_success
       when FAILED
-        subject.build_error
+
+        case options['exit_status'].to_i
+        when ProductBuildList::BUILD_COMPLETED_PARTIALLY
+          subject.build_success_partially
+        else
+          subject.build_error
+        end
+
       when STARTED
         subject.start_build
       when CANCELED

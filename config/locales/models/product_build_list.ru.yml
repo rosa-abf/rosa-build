@@ -21,6 +21,7 @@ ru:
         build_started: Собирается
         build_canceled: Сборка отменена
         build_canceling: Сборка отменяется
+        build_completed_partially: Собран (частично)
 
       ownership:
         header: Принадлежность заданий
@@ -36,7 +37,6 @@ ru:
         id: Id
         user: Пользователь
         product: Продукт
-        container_path: Контейнер
         status: Статус
         user: Пользователь
         notified_at: Информация получена

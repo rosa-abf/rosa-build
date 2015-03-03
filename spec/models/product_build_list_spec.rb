@@ -12,28 +12,28 @@ describe ProductBuildList do
     it 'is valid given valid attributes' do
       arch = FactoryGirl.create(:arch, name: 'x86_64')
       allow(Arch).to receive(:find_by).with(name: 'x86_64').and_return(arch)
-      FactoryGirl.create(:product_build_list).should be_truthy
+      expect(FactoryGirl.create(:product_build_list)).to be_truthy
     end
 
-    it { should belong_to(:product) }
+    it { is_expected.to belong_to(:product) }
 
-    it { should ensure_length_of(:main_script).is_at_most(255) }
-    it { should ensure_length_of(:params).is_at_most(255) }
+    it { is_expected.to validate_length_of(:main_script).is_at_most(255) }
+    it { is_expected.to validate_length_of(:params).is_at_most(255) }
 
-    it { should validate_presence_of(:product_id) }
-    it { should validate_presence_of(:status) }
+    it { is_expected.to validate_presence_of(:product_id) }
+    it { is_expected.to validate_presence_of(:status) }
 
     ProductBuildList::STATUSES.each do |value|
-      it { should allow_value(value).for(:status) }
+      it { is_expected.to allow_value(value).for(:status) }
     end
 
-    it { should_not allow_value(555).for(:status) }
+    it { is_expected.to_not allow_value(555).for(:status) }
 
-    it { should have_readonly_attribute(:product_id) }
+    it { is_expected.to have_readonly_attribute(:product_id) }
     #it { should_not allow_mass_assignment_of(:product_id) }
 
-    it { should allow_mass_assignment_of(:status) }
-    it { should allow_mass_assignment_of(:base_url) }
+    it { is_expected.to allow_mass_assignment_of(:status) }
+    it { is_expected.to allow_mass_assignment_of(:base_url) }
   end
 
   # see app/ability.rb
@@ -43,6 +43,6 @@ describe ProductBuildList do
     FactoryGirl.create(:product_build_list)
     user = FactoryGirl.create(:user)
     ability = Ability.new user
-    ProductBuildList.accessible_by(ability).count.should == 1
+    expect(ProductBuildList.accessible_by(ability).count).to eq 1
   end
 end
