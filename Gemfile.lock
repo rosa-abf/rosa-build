@@ -514,6 +514,7 @@ GEM
       sprockets (>= 2.8, < 4.0)
     sqlite3 (1.3.10)
     state_machine (1.2.0)
+    state_machines-activerecord (0.0.0)
     stringex (2.5.2)
     temple (0.7.5)
     test_after_commit (0.4.0)
@@ -657,6 +658,7 @@ DEPENDENCIES
   soundmanager-rails
   sprockets
   state_machine
+  state_machines-activerecord
   test_after_commit
   therubyracer
   therubyrhino

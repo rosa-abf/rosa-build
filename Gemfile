@@ -27,6 +27,7 @@ gem 'perform_later', git: 'git://github.com/KensoDev/perform_later.git' # should
 gem 'russian'
 gem 'highline', '~> 1.6.20'
 gem 'state_machine'
+gem 'state_machines-activerecord'
 gem 'redis-rails'
 
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git', require: 'git_http'
