@@ -1,6 +1,6 @@
 class Api::V1::BuildListsController < Api::V1::BaseController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:show, :index] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:show, :index] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :build_list, only: [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing, :rerun_tests]
 

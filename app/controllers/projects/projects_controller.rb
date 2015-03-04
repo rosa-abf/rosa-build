@@ -2,9 +2,9 @@ class Projects::ProjectsController < Projects::BaseController
   include DatatableHelper
   include ProjectsHelper
 
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   load_and_authorize_resource id_param: :name_with_owner # to force member actions load
-  before_filter :who_owns, only: [:new, :create, :mass_import, :run_mass_import]
+  before_action :who_owns, only: [:new, :create, :mass_import, :run_mass_import]
 
   def index
     @projects = Project.accessible_by(current_ability, :membered).search(params[:search])

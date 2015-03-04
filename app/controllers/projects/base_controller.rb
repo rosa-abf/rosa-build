@@ -1,6 +1,6 @@
 class Projects::BaseController < ApplicationController
-  prepend_before_filter :find_project
-  before_filter :init_statistics
+  prepend_before_action :find_project
+  before_action :init_statistics
 
   protected
 

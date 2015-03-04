@@ -1,6 +1,6 @@
 class Users::UsersController < Users::BaseController
-  skip_before_filter :authenticate_user!, only: [:allowed, :check, :discover]
-  before_filter :find_user_by_key, only: [:allowed, :discover]
+  skip_before_action :authenticate_user!, only: [:allowed, :check, :discover]
+  before_action :find_user_by_key, only: [:allowed, :discover]
 
   def allowed
     project = Project.find_by_owner_and_name! params[:project]

@@ -1,7 +1,7 @@
 class Api::V1::PlatformsController < Api::V1::BaseController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: :allowed
-  skip_before_filter :authenticate_user!, only: [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: :allowed
+  skip_before_action :authenticate_user!, only: [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource except: :allowed
 
   def allowed

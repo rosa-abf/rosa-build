@@ -1,8 +1,8 @@
 class Api::V1::PullRequestsController < Api::V1::BaseController
   respond_to :json
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:show, :index, :group_index, :commits, :files] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:show, :index, :group_index, :commits, :files] if APP_CONFIG['anonymous_access']
 
   load_resource :group, only: :group_index, find_by: :id, parent: false
   load_resource :project

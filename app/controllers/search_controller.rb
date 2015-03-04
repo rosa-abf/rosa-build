@@ -1,7 +1,7 @@
 class SearchController < ApplicationController
   include PaginateHelper
 
-  before_filter :authenticate_user! unless APP_CONFIG['anonymous_access']
+  before_action :authenticate_user! unless APP_CONFIG['anonymous_access']
   # load_and_authorize_resource
 
   def index

@@ -1,8 +1,8 @@
 class Api::V1::AdvisoriesController < Api::V1::BaseController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :advisory, find_by: :advisory_id
-  before_filter :find_and_authorize_build_list, only: [:create, :update]
+  before_action :find_and_authorize_build_list, only: [:create, :update]
   authorize_resource :build_list, only: [:create, :update]
 
   def index

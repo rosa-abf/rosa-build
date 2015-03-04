@@ -1,9 +1,9 @@
 class Platforms::ProductBuildListsController < Platforms::BaseController
   include FileStoreHelper
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :show, :log] if APP_CONFIG['anonymous_access']
-  before_filter :redirect_to_full_path_if_short_url, only: [:show, :update]
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :show, :log] if APP_CONFIG['anonymous_access']
+  before_action :redirect_to_full_path_if_short_url, only: [:show, :update]
   load_and_authorize_resource :platform, except: :index
   load_and_authorize_resource :product, through: :platform, except: :index
   load_and_authorize_resource :product_build_list, through: :product, except: :index

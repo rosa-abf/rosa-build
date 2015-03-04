@@ -1,8 +1,8 @@
 class Platforms::MassBuildsController < Platforms::BaseController
   include DatatableHelper
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :get_list] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :get_list] if APP_CONFIG['anonymous_access']
 
   load_resource :platform
   load_and_authorize_resource :through  => :platform, :shallow  => true

@@ -1,11 +1,11 @@
 class Projects::IssuesController < Projects::BaseController
   NON_RESTFUL_ACTION = [:create_label, :update_label, :destroy_label]
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
   load_and_authorize_resource :issue, through: :project, find_by: :serial_id, only: [:show, :edit, :update, :destroy, :new, :create, :index]
-  before_filter :load_and_authorize_label, only: NON_RESTFUL_ACTION
-  before_filter :find_collaborators, only: [:new, :create, :show, :search_collaborators]
+  before_action :load_and_authorize_label, only: NON_RESTFUL_ACTION
+  before_action :find_collaborators, only: [:new, :create, :show, :search_collaborators]
 
   layout false, only: [:update, :search_collaborators]
 

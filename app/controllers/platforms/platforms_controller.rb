@@ -1,8 +1,8 @@
 class Platforms::PlatformsController < Platforms::BaseController
   include FileStoreHelper
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
 
   def index

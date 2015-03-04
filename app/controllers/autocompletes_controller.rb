@@ -1,5 +1,5 @@
 class AutocompletesController < ApplicationController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
   def autocomplete_user_uname
     results = User.opened.search(params[:query]).search_order.limit(5)

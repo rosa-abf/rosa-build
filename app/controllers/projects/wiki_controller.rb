@@ -4,13 +4,13 @@ require 'cgi'
 class Projects::WikiController < Projects::BaseController
   WIKI_OPTIONS = {}
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:show, :index, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:show, :index, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages] if APP_CONFIG['anonymous_access']
   load_resource :project
 
-  before_filter :authorize_read_actions,  only: [:index, :show, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages]
-  before_filter :authorize_write_actions, only: [:edit, :update, :new, :create, :destroy, :revert, :revert_wiki, :preview]
-  before_filter :get_wiki
+  before_action :authorize_read_actions,  only: [:index, :show, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages]
+  before_action :authorize_write_actions, only: [:edit, :update, :new, :create, :destroy, :revert, :revert_wiki, :preview]
+  before_action :get_wiki
 
   def index
     @name = 'Home'

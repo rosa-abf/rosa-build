@@ -3,7 +3,7 @@ class Groups::ProfileController < Groups::BaseController
   include PaginateHelper
 
   load_and_authorize_resource class: Group, instance_name: 'group'
-  skip_before_filter :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
+  skip_before_action :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
 
   def index
     @groups = current_user.groups.paginate(page: params[:group_page]) # accessible_by(current_ability)

@@ -1,6 +1,6 @@
 class AdvisoriesController < ApplicationController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user! if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user! if APP_CONFIG['anonymous_access']
   load_resource find_by: :advisory_id
   authorize_resource
 

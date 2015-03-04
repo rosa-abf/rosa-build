@@ -1,6 +1,6 @@
 class Api::V1::IssuesController < Api::V1::BaseController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :group_index, :show] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :group_index, :show] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :group, only: :group_index, find_by: :id, parent: false
   load_and_authorize_resource :project

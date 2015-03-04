@@ -4,12 +4,12 @@ class Platforms::RepositoriesController < Platforms::BaseController
   include RepositoriesHelper
   include PaginateHelper
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :repository, through: :platform, shallow: true
-  before_filter :set_members, only: [:edit, :update]
+  before_action :set_members, only: [:edit, :update]
 
   def index
     @repositories = Repository.custom_sort(@repositories).paginate(page: current_page)
