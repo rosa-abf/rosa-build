@@ -64,6 +64,5 @@ else
 
   json.path @path
   json.root_path @path.present? ? @path.split('/')[0...-1].join('/') : nil
-  params[:page].to_i
   json.next_page page.next if @tree && @tree.contents.count >= Project::CONTENT_LIMIT*(page+1)
 end
