@@ -10,7 +10,7 @@ GIT
 
 GIT
   remote: git://github.com/activeadmin/activeadmin.git
-  revision: ed1fbca8c64af827616c58f274d7be256ca513b6
+  revision: e27ccba8a7ea1f7f3085748decec1f6911f6d5d2
   specs:
     activeadmin (1.0.0.pre)
       arbre (~> 1.0, >= 1.0.2)
@@ -53,32 +53,34 @@ GEM
   remote: https://rubygems.org/
   specs:
     RedCloth (4.2.9)
-    actionmailer (4.0.13)
-      actionpack (= 4.0.13)
+    actionmailer (4.1.9)
+      actionpack (= 4.1.9)
+      actionview (= 4.1.9)
       mail (~> 2.5, >= 2.5.4)
-    actionpack (4.0.13)
-      activesupport (= 4.0.13)
-      builder (~> 3.1.0)
-      erubis (~> 2.7.0)
+    actionpack (4.1.9)
+      actionview (= 4.1.9)
+      activesupport (= 4.1.9)
       rack (~> 1.5.2)
       rack-test (~> 0.6.2)
-    activemodel (4.0.13)
-      activesupport (= 4.0.13)
-      builder (~> 3.1.0)
-    activerecord (4.0.13)
-      activemodel (= 4.0.13)
-      activerecord-deprecated_finders (~> 1.0.2)
-      activesupport (= 4.0.13)
-      arel (~> 4.0.0)
-    activerecord-deprecated_finders (1.0.3)
-    activesupport (4.0.13)
+    actionview (4.1.9)
+      activesupport (= 4.1.9)
+      builder (~> 3.1)
+      erubis (~> 2.7.0)
+    activemodel (4.1.9)
+      activesupport (= 4.1.9)
+      builder (~> 3.1)
+    activerecord (4.1.9)
+      activemodel (= 4.1.9)
+      activesupport (= 4.1.9)
+      arel (~> 5.0.0)
+    activesupport (4.1.9)
       i18n (~> 0.6, >= 0.6.9)
-      minitest (~> 4.2)
-      multi_json (~> 1.3)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
       thread_safe (~> 0.1)
-      tzinfo (~> 0.3.37)
+      tzinfo (~> 1.1)
     addressable (2.3.7)
-    airbrake (3.2.1)
+    airbrake (4.1.0)
       builder
       multi_json
     ancestry (2.1.0)
@@ -89,13 +91,13 @@ GEM
       sprockets
       tilt
     angular-ui-bootstrap-rails (0.12.0)
-    angularjs-rails (1.2.26)
+    angularjs-rails (1.3.14)
     arbre (1.0.3)
       activesupport (>= 3.0.0)
-    arel (4.0.2)
+    arel (5.0.1.20140414130214)
     attr_encrypted (1.3.3)
       encryptor (>= 1.3.0)
-    autoprefixer-rails (5.1.5)
+    autoprefixer-rails (5.1.7)
       execjs
       json
     bcrypt (3.1.10)
@@ -108,10 +110,10 @@ GEM
     bootstrap-sass (3.3.3)
       autoprefixer-rails (>= 5.0.0.1)
       sass (>= 3.2.19)
-    bourbon (4.2.0)
+    bourbon (4.2.1)
       sass (~> 3.4)
       thor
-    builder (3.1.4)
+    builder (3.2.2)
     callsite (0.0.11)
     cape (1.8.0)
     capistrano (2.15.5)
@@ -126,9 +128,9 @@ GEM
     chunky_png (1.3.4)
     climate_control (0.0.3)
       activesupport (>= 3.0)
-    cocaine (0.5.5)
+    cocaine (0.5.7)
       climate_control (>= 0.0.3, < 1.0)
-    codemirror-rails (4.8)
+    codemirror-rails (4.13)
       railties (>= 3.0, < 5)
     coderay (1.1.0)
     coffee-rails (4.1.0)
@@ -203,7 +205,7 @@ GEM
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3)
-    gli (2.12.2)
+    gli (2.13.0)
     gollum-lib (3.0.0)
       github-markup (~> 1.1.0)
       gitlab-grit (~> 2.6.5)
@@ -237,11 +239,11 @@ GEM
       has_scope (~> 0.6.0.rc)
       railties (>= 3.2, < 5)
       responders
-    jbuilder (2.2.7)
+    jbuilder (2.2.9)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
     jquery-migrate-rails (1.2.1)
-    jquery-rails (2.3.0)
+    jquery-rails (3.1.2)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     jquery-ui-rails (5.0.3)
@@ -250,7 +252,7 @@ GEM
       railties (>= 3.2)
       sprockets-rails
     json (1.8.2)
-    jwt (1.2.1)
+    jwt (1.3.0)
     kaminari (0.16.3)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -280,12 +282,12 @@ GEM
       railties (>= 3.0.0, < 5.0.0)
     mime-types (1.25.1)
     mini_portile (0.6.2)
-    minitest (4.7.5)
+    minitest (5.5.1)
     mock_redis (0.14.0)
     momentjs-rails (2.9.0)
       railties (>= 3.1)
     mono_logger (1.1.0)
-    multi_json (1.10.1)
+    multi_json (1.11.0)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     nest (1.1.2)
@@ -297,7 +299,7 @@ GEM
     net-ssh (2.9.2)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
-    netrc (0.10.2)
+    netrc (0.10.3)
     newrelic_rpm (3.10.0.279)
     ng-rails-csrf (0.1.0)
     ngmin-rails (0.4.0)
@@ -319,7 +321,7 @@ GEM
     omniauth (1.2.2)
       hashie (>= 1.2, < 4)
       rack (~> 1.0)
-    omniauth-facebook (2.0.0)
+    omniauth-facebook (2.0.1)
       omniauth-oauth2 (~> 1.2)
     omniauth-github (1.1.2)
       omniauth (~> 1.0)
@@ -338,7 +340,7 @@ GEM
       activesupport (>= 3.0.0)
       cocaine (~> 0.5.3)
       mime-types
-    pg (0.17.1)
+    pg (0.18.1)
     polyamorous (1.1.0)
       activerecord (>= 3.0)
     posix-spawn (0.3.10)
@@ -358,21 +360,23 @@ GEM
       rack (>= 1.0)
     rack-throttle (0.3.0)
       rack (>= 1.0.0)
-    rails (4.0.13)
-      actionmailer (= 4.0.13)
-      actionpack (= 4.0.13)
-      activerecord (= 4.0.13)
-      activesupport (= 4.0.13)
+    rails (4.1.9)
+      actionmailer (= 4.1.9)
+      actionpack (= 4.1.9)
+      actionview (= 4.1.9)
+      activemodel (= 4.1.9)
+      activerecord (= 4.1.9)
+      activesupport (= 4.1.9)
       bundler (>= 1.3.0, < 2.0)
-      railties (= 4.0.13)
+      railties (= 4.1.9)
       sprockets-rails (~> 2.0)
     rails3-generators (1.0.0)
       railties (>= 3.0.0)
     rails3-jquery-autocomplete (1.0.15)
       rails (>= 3.2)
-    railties (4.0.13)
-      actionpack (= 4.0.13)
-      activesupport (= 4.0.13)
+    railties (4.1.9)
+      actionpack (= 4.1.9)
+      activesupport (= 4.1.9)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
@@ -424,28 +428,28 @@ GEM
       resque (~> 1.19)
     resque_mailer (2.2.7)
       actionmailer (>= 3.0)
-    rest-client (1.7.2)
+    rest-client (1.7.3)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     rouge (1.3.4)
     rr (1.1.2)
-    rspec-core (3.2.0)
+    rspec-core (3.2.1)
       rspec-support (~> 3.2.0)
     rspec-expectations (3.2.0)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.2.0)
-    rspec-mocks (3.2.0)
+    rspec-mocks (3.2.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.2.0)
-    rspec-rails (3.2.0)
-      actionpack (>= 3.0, <= 4.2)
-      activesupport (>= 3.0, <= 4.2)
-      railties (>= 3.0, <= 4.2)
+    rspec-rails (3.2.1)
+      actionpack (>= 3.0, < 4.3)
+      activesupport (>= 3.0, < 4.3)
+      railties (>= 3.0, < 4.3)
       rspec-core (~> 3.2.0)
       rspec-expectations (~> 3.2.0)
       rspec-mocks (~> 3.2.0)
       rspec-support (~> 3.2.0)
-    rspec-support (3.2.1)
+    rspec-support (3.2.2)
     ruby-haml-js (0.0.5)
       execjs
       sprockets (>= 2.0.0)
@@ -461,17 +465,19 @@ GEM
     safe_yaml (1.0.4)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)
-    sass (3.4.12)
-    sass-rails (4.0.1)
+    sass (3.4.13)
+    sass-rails (5.0.1)
       railties (>= 4.0.0, < 5.0)
-      sass (>= 3.1.10)
-      sprockets-rails (~> 2.0.0)
+      sass (~> 3.1)
+      sprockets (>= 2.8, < 4.0)
+      sprockets-rails (>= 2.0, < 4.0)
+      tilt (~> 1.1)
     schema_plus (1.8.7)
       activerecord (>= 3.2, < 4.3)
       valuable
     scrivener (0.0.3)
     sexp_processor (4.4.5)
-    shotgun (0.9)
+    shotgun (0.9.1)
       rack (>= 1.0)
     shoulda (3.5.0)
       shoulda-context (~> 1.0, >= 1.0.1)
@@ -479,7 +485,7 @@ GEM
     shoulda-context (1.2.1)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
-    simple_form (3.1.0.rc2)
+    simple_form (3.1.0)
       actionpack (~> 4.0)
       activemodel (~> 4.0)
     sinatra (1.4.5)
@@ -497,15 +503,15 @@ GEM
       temple (~> 0.7.3)
       tilt (>= 1.3.3, < 2.1)
     soundmanager-rails (1.0.1)
-    sprockets (2.11.0)
+    sprockets (2.12.3)
       hike (~> 1.2)
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
-    sprockets-rails (2.0.1)
+    sprockets-rails (2.2.4)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
-      sprockets (~> 2.8)
+      sprockets (>= 2.8, < 4.0)
     sqlite3 (1.3.10)
     state_machine (1.2.0)
     stringex (2.5.2)
@@ -525,15 +531,16 @@ GEM
     time_diff (0.3.0)
       activesupport
       i18n
-    timecop (0.7.1)
+    timecop (0.7.3)
     tmp_cache (0.1.1)
     twitter-text (1.11.0)
       unf (~> 0.1.0)
-    tzinfo (0.3.43)
-    uglifier (2.7.0)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
+    uglifier (2.7.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
-    underscore-rails (1.7.0)
+    underscore-rails (1.8.2)
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.6)
@@ -563,46 +570,46 @@ PLATFORMS
 DEPENDENCIES
   RedCloth
   activeadmin!
-  airbrake (~> 3.1)
-  ancestry (~> 2.1)
-  angular-i18n (= 0.1.2)
+  airbrake
+  ancestry
+  angular-i18n
   angular-rails-templates
   angular-ui-bootstrap-rails
-  angularjs-rails (~> 1.2.15)
-  attr_encrypted (~> 1.3)
+  angularjs-rails
+  attr_encrypted
   better_errors
   binding_of_caller
-  bootstrap-sass (~> 3.3)
+  bootstrap-sass
   cancan!
   cape
   capistrano
   capistrano_colors
-  charlock_holmes (~> 0.7)
+  charlock_holmes
   codemirror-rails (~> 4.5)
-  coffee-rails (~> 4.1)
-  compass-rails (~> 2.0)
+  coffee-rails
+  compass-rails
   creole
-  devise (~> 3.3)
-  diff-display (~> 0.0.1)
+  devise
+  diff-display
   factory_girl_rails
-  ffi (~> 1.9.3)
-  font-awesome-rails (~> 4.2)
-  friendly_id (~> 5.0)
-  gemoji (~> 2.1)
+  ffi
+  font-awesome-rails
+  friendly_id
+  gemoji
   github-linguist (= 3.1.5)
   gollum-lib (~> 3.0)
   grack!
   grit!
-  haml-rails (~> 0.5)
+  haml-rails
   highline (~> 1.6.20)
   hirb
-  jbuilder (~> 2.2)
+  jbuilder
   jquery-migrate-rails
-  jquery-rails (~> 2.3)
+  jquery-rails
   js-routes
   localeapp
   mailcatcher
-  meta-tags (~> 2.0)
+  meta-tags
   meta_request
   mock_redis
   momentjs-rails
@@ -615,50 +622,50 @@ DEPENDENCIES
   omniauth-facebook
   omniauth-github
   omniauth-google-oauth2
-  paperclip (~> 4.2)
+  paperclip
   perform_later!
-  pg (~> 0.17.1)
+  pg
   protected_attributes
   puma
   rack-throttle (~> 0.3.0)
-  rails (= 4.0.13)
+  rails (= 4.1.9)
   rails3-generators
   rails3-jquery-autocomplete
   rake
   rdiscount
   redcarpet (~> 3.1)
-  redis-rails (~> 4.0)
-  resque (~> 1.25)
+  redis-rails
+  resque
   resque-scheduler (~> 2.5.4)
-  resque-status (~> 0.4)
-  resque_mailer (~> 2.2)
-  rest-client (~> 1.7)
+  resque-status
+  resque_mailer
+  rest-client
   rr
   rspec-rails
-  ruby-haml-js (~> 0.0.5)
-  russian (~> 0.6.0)
+  ruby-haml-js
+  russian
   rvm-capistrano
-  sass-rails (~> 4.0)
+  sass-rails
   schema_plus (~> 1.5)
   shotgun
   shoulda
   shoulda-matchers
-  simple_form (= 3.1.0.rc2)
+  simple_form
   sitemap_generator
   skype
   slim
   soundmanager-rails
-  sprockets (= 2.11.0)
-  state_machine (~> 1.2)
+  sprockets
+  state_machine
   test_after_commit
-  therubyracer (~> 0.12.1)
-  therubyrhino (~> 2.0)
+  therubyracer
+  therubyrhino
   time_diff
   timecop
-  uglifier (~> 2.5)
+  uglifier
   underscore-rails
   webmock
-  whenever (~> 0.9.0)
+  whenever
   wikicloth
-  will_paginate (~> 3.0)
-  zeroclipboard-rails (~> 0.1.0)
+  will_paginate
+  zeroclipboard-rails
