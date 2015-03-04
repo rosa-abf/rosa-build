@@ -59,6 +59,6 @@
         %td{ 'ng-hide' => 'el.commit' }
 
   %hr
-  %btn.center-block.btn.btn-primary{ 'ng-show' => 'next_page', 'ng-disabled' => 'processing',
+  %btn.center-block.btn.btn-primary{ 'ng-show' => 'next_page', 'ng-disabled' => 'load_more || processing',
                                      'ng-click' => 'getTree($event, null, true)' }
     = t 'layout.activity_feed.load_more'

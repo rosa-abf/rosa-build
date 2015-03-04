@@ -13,12 +13,14 @@ RosaABF.controller('GitTreeCtrl', ['$scope', '$http', '$location', function($sco
   };
 
   $scope.refresh = function(more) {
-    $scope.processing = true;
-
     var params = { format: 'json', path: $scope.path };
 
     if(more) {
-      params.page = $scope.next_page;
+      params.page      = $scope.next_page;
+      $scope.load_more = true;
+    }
+    else {
+      $scope.processing = true;
     }
 
     $http.get(Routes.tree_path($scope.project, $scope.treeish, params)).then(function(res) {
@@ -28,11 +30,12 @@ RosaABF.controller('GitTreeCtrl', ['$scope', '$http', '$location', function($sco
       $scope.next_page  = res.data.next_page;
       if(more) {
         $scope.tree.push.apply($scope.tree, res.data.tree);
+        $scope.load_more = false;
       }
       else {
-        $scope.tree     = res.data.tree;
+        $scope.tree       = res.data.tree;
+        $scope.processing = false;
       }
-      $scope.processing = false;
     });
   };
 
