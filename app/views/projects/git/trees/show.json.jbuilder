@@ -10,6 +10,7 @@ if params[:info] == 'true'
 else
 
   page = params[:page].to_i
+  page = page < 1 ? 0 : page
 
   json.tree do
     json.array! @project.tree_info(@tree, @treeish, @path, page).each do |node, node_path, commit|
