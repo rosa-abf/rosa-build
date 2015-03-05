@@ -26,7 +26,6 @@ gem 'resque-scheduler', '~> 2.5.4'
 gem 'perform_later', git: 'git://github.com/KensoDev/perform_later.git' # should be after resque_mailer
 gem 'russian'
 gem 'highline', '~> 1.6.20'
-gem 'state_machine'
 gem 'state_machines-activerecord'
 gem 'redis-rails'
 
