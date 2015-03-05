@@ -82,7 +82,7 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.json { render json: {status: status, message: t("flash.#{status}_message")}.to_json, status: status }
       format.all  { render file: "public/#{status}.html", status: status,
-                           alert: t("flash.#{status}_message"), layout: false }
+                           alert: t("flash.#{status}_message"), layout: false, content_type: 'text/html' }
     end
   end
 
