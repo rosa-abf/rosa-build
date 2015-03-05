@@ -21,7 +21,7 @@ shared_context "pull request controller" do
       to_project: @project.name_with_owner,
       name_with_owner: @project.name_with_owner
     }
-    @update_params = @create_params.merge(pull_request_action: 'close', id: @pull.serial_id)
+    @update_params = @create_params.merge(pull_request_action: 'close', id: @pull.reload.serial_id)
     @wrong_update_params = @create_params.merge(
       pull_request: { issue_attributes: { title: 'update', body: 'updating', id: @pull.issue.id }},
       id: @pull.serial_id
@@ -38,114 +38,124 @@ shared_examples_for 'pull request user with project guest rights' do
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
     get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
-    response.should render_template(:show)
+    expect(response).to render_template(:show)
   end
 end
 
 shared_examples_for 'pull request user with project reader rights' do
   it 'should be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(project_pull_request_path(@project, @project.pull_requests.last))
+    expect(response).to redirect_to(project_pull_request_path(@project, @project.pull_requests.last))
   end
 
   it 'should create pull request object into db' do
-    lambda{ post :create, @create_params }.should change{ PullRequest.joins(:issue).
-      where(issues: {title: 'create', body: 'creating'}).count }.by(1)
+    expect do
+      post :create, @create_params
+    end.to change {
+      PullRequest.joins(:issue).where(issues: {title: 'create', body: 'creating'}).count
+    }.by(1)
   end
 
   it "should not create same pull" do
-    post :create, @create_params.merge({pull_request: {issue_attributes: {title: 'same', body: 'creating'}, from_ref: 'non_conflicts', to_ref: 'master'}, to_project_id: @project.id})
-    PullRequest.joins(:issue).where(issues: {title: 'same', body: 'creating'}).count.should == 0
+    expect do
+      post :create, @create_params.merge({pull_request: {issue_attributes: {title: 'same', body: 'creating'}, from_ref: 'non_conflicts', to_ref: 'master'}, to_project_id: @project.id})
+    end.to change(PullRequest, :count).by(0)
   end
 
   it "should not create already up-to-date pull" do
-    lambda{
+    expect do
       post :create, @create_params.merge({pull_request: {issue_attributes: {title: 'already', body: 'creating'},
-                                         to_ref: 'master', from_ref: 'master'}, to_project_id: @project.id}) }.should
-      change{ PullRequest.count }.by(0)
+                                         to_ref: 'master', from_ref: 'master'}, to_project_id: @project.id})
+    end.to change(PullRequest, :count).by(0)
   end
 
   it "should create pull request to the same project" do
     @parent = FactoryGirl.create(:project)
     @project.update_attributes({parent_id: @parent}, without_protection: true)
 
-    lambda{ post :create, @create_params }.should change{ PullRequest.joins(:issue).
-      where(issues: {user_id: @user}, to_project_id: @project, from_project_id: @project).count }.by(1)
+    expect do
+      post :create, @create_params
+    end.to change {
+      PullRequest.joins(:issue).where(issues: {user_id: @user}, to_project_id: @project, from_project_id: @project).count
+    }.by(1)
   end
 
   it "should create pull request to the parent project" do
     @parent = FactoryGirl.create(:project_with_commit)
     @project.update_attributes({parent_id: @parent}, without_protection: true)
 
-    lambda{ post :create, @create_params.merge({to_project: @parent.name_with_owner}) }.should change{ PullRequest.joins(:issue).
-      where(issues: {user_id: @user}, to_project_id: @parent, from_project_id: @project).count }.by(1)
+    expect do
+      post :create, @create_params.merge({to_project: @parent.name_with_owner})
+    end.to change {
+      PullRequest.joins(:issue).where(issues: {user_id: @user}, to_project_id: @parent, from_project_id: @project).count
+    }.by(1)
   end
 end
 
 shared_examples_for 'user with pull request update rights' do
   it 'should be able to perform update action' do
     put :update, @update_params
-    response.should be_success
+    expect(response).to be_success
   end
 
   it 'should be able to perform merge action' do
     @pull.check
     put :merge, @update_params
-    response.should be_success
+    expect(response).to be_success
   end
 
   let(:pull) { @project.pull_requests.find(@pull) }
   it 'should update pull request status' do
     put :update, @update_params
-    pull.status.should =='closed'
+    expect(pull.status).to eq 'closed'
   end
 
   it 'should not update pull request title' do
     put :update, @wrong_update_params
-    pull.issue.title.should =='test'
+    expect(pull.issue.title).to eq 'test'
   end
 
   it 'should not update pull request body' do
     put :update, @wrong_update_params
-    pull.issue.body.should =='testing'
+    expect(pull.issue.body).to eq 'testing'
   end
 
   it 'should not update pull request title direct' do
     put :update, @wrong_update_params
-    pull.issue.title.should_not =='update'
+    expect(pull.issue.title).to_not eq 'update'
   end
 
   it 'should not update pull request body direct' do
     put :update, @wrong_update_params
-    pull.issue.body.should_not =='updating'
+    expect(pull.issue.body).to_not eq 'updating'
   end
 end
 
 shared_examples_for 'user without pull request update rights' do
   it 'should not be able to perform update action' do
     put :update, @update_params
-    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
+    expect(response).to redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
   end
 
   let(:pull) { @project.pull_requests.find(@pull) }
   it 'should not update pull request status' do
     put :update, @update_params
-    pull.status.should_not =='closed'
+    expect(pull.status).to_not eq 'closed'
   end
   it 'should not update pull request title' do
     put :update, @wrong_update_params
-    pull.issue.title.should_not =='update'
+    expect(pull.issue.title).to_not eq 'update'
   end
 
   it 'should not update pull request body' do
     put :update, @wrong_update_params
-    pull.issue.body.should_not =='updating'
+    expect(pull.issue.body).to_not eq 'updating'
   end
 
   it 'should not be able to perform merge action' do
     @pull.check
     put :merge, @update_params
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
 end
@@ -156,7 +166,7 @@ shared_examples_for 'pull request when project with issues turned off' do
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
     get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
-    response.should render_template(:show)
+    expect(response).to render_template(:show)
   end
 end
 
@@ -210,12 +220,12 @@ describe Projects::PullRequestsController, type: :controller do
 
     it 'should return 404' do
       get :show, name_with_owner: @project.name_with_owner, id: 999999
-      render_template(file: "#{Rails.root}/public/404.html")
+      expect(response).to render_template(file: "#{Rails.root}/public/404.html")
     end
 
     it 'should redirect to issue page' do
       get :show, name_with_owner: @project.name_with_owner, id: @issue.serial_id
-      response.should redirect_to(project_issue_path(@project, @issue))
+      expect(response).to redirect_to(project_issue_path(@project, @issue))
     end
   end
 
@@ -256,24 +266,26 @@ describe Projects::PullRequestsController, type: :controller do
       it 'should not be able to perform show action' do
         @pull.check
         get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
     it 'should not be able to perform create action' do
       post :create, @create_params
-      response.should redirect_to(new_user_session_path)
+      expect(response).to redirect_to(new_user_session_path)
     end
 
     it 'should not create pull request object into db' do
-      lambda{ post :create, @create_params }.should_not change{ PullRequest.count }
+      expect do
+        post :create, @create_params
+      end.to change(PullRequest, :count).by(0)
     end
 
     it_should_behave_like 'user without pull request update rights'
   end
 
   context 'send email messages' do
-    before(:each) do
+    before do
       @project_reader = FactoryGirl.create :user
       create_relation(@project, @project_reader, 'reader')
       @project_admin = FactoryGirl.create :user
@@ -286,19 +298,22 @@ describe Projects::PullRequestsController, type: :controller do
     end
 
     it 'should send two email messages to project admins' do
-      post :create, @create_params
-      ActionMailer::Base.deliveries.count.should == 2
+      expect do
+        post :create, @create_params
+      end.to change(ActionMailer::Base.deliveries, :count).by(2)
     end
 
     it 'should send two email messages to admins and one to assignee' do
-      post :create, @create_params.deep_merge(issue: {assignee_id: @project_reader.id})
-      ActionMailer::Base.deliveries.count.should == 3
+      expect do
+        post :create, @create_params.deep_merge(issue: {assignee_id: @project_reader.id})
+      end.to change(ActionMailer::Base.deliveries, :count).by(3)
     end
 
     it 'should not duplicate email message' do
-      post :create, @create_params.deep_merge(issue: {assignee_id: @project_admin.id})
-      ActionMailer::Base.deliveries.count.should == 2 # send only to admins
-      ActionMailer::Base.deliveries.first.to != ActionMailer::Base.deliveries.last.to
+      expect do
+        post :create, @create_params.deep_merge(issue: {assignee_id: @project_admin.id})
+      end.to change(ActionMailer::Base.deliveries, :count).by(2) # send only to admins
+      expect(ActionMailer::Base.deliveries.first.to).to_not eq ActionMailer::Base.deliveries.last.to
     end
   end
 end
