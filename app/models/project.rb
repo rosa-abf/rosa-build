@@ -93,6 +93,11 @@ class Project < ActiveRecord::Base
       (projects.owner_id in (?) AND projects.owner_type = 'User')", group_owner_ids, user_owner_ids)
   }
 
+  scope :project_aliases, ->(project)  {
+    where.not(id: project.id).
+      where('alias_from_id IN (:ids) OR id IN (:ids)', { ids: [project.alias_from_id, project.id].compact })
+  }
+
   before_validation :truncate_name, on: :create
   before_save -> { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
