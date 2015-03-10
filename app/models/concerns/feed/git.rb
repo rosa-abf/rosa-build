@@ -47,12 +47,12 @@ module Feed::Git
       options.merge!({user_id: record.user.id, user_name: record.user.name, user_email: record.user.email}) if record.user
 
       record.project.admins.each do |recipient|
-        next if record.user && record.user.id == recipient.id
         ActivityFeed.create!(
           user: recipient,
           kind: kind,
           data: options
         )
+        next if record.user && record.user.id == recipient.id
         if recipient.notifier.can_notify && recipient.notifier.update_code
           UserMailer.send(kind, recipient, options).deliver
         end
@@ -63,8 +63,6 @@ module Feed::Git
       project = Project.find record[:project_id]
 
       project.admins.each do |recipient|
-        next if actor && actor.id == recipient.id
-
         ActivityFeed.create!(
           user: recipient,
           kind: 'wiki_new_commit_notification',

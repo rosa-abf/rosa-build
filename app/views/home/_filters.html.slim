@@ -1,0 +1,15 @@
+hr.offset10
+  h3=t('layout.relations.filters')
+
+input.form-control[ name        = 'search'
+                    size        = 30
+                    type        = 'text'
+                    ng-model    = 'search'
+                    placeholder = t('layout.find_project')
+                    ng-change   = 'filterProjects()' ]
+
+ul.nav.nav-pills.nav-stacked
+  - options_for_filters(@projects, @groups, @owners).each do |options|
+    li{ 'ng-class' => "{active: #{options[:class_name]}_filter_#{options[:id]}_class}" }
+      a{ href: '#', 'ng-click' => "change_#{options[:class_name]}_filter(#{options[:id]})" }
+        = options[:uname]

@@ -1,6 +1,6 @@
 en:
   layout:
-    activity_feed: 
+    activity_feed:
       header: Activity Feed
       my_last_projects: My last projects
       all_my_projects: All my projects
@@ -9,6 +9,10 @@ en:
       new_project: Create project
       load_messages: show previous messages
       atom_title: Activity Feed
+      filters:
+        all: All
+        my:  Mine
+        others: Others
 
   notifications:
     subjects:
@@ -24,12 +28,12 @@ en:
 
     bodies:
       view_it_on: View it on
-      new_comment_notification: 
+      new_comment_notification:
         title: '%{user_link} added a new comment'
         content: in issue %{issue_link}
         commit_content: in commit %{commit_link}
       new_issue_notification: '%{user_link} added a new <a href="%{issue_link}">issue</a>'
-      new_user_notification: 
+      new_user_notification:
         title: Hello, %{user_name}.
         content: You have registered in project «ROSA ABF» and now you can sign in.
         email: ==Your email %{user_email}

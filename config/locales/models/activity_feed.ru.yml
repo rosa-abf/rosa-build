@@ -9,6 +9,10 @@ ru:
       new_project: Создать проект
       load_messages: показать предыдущие сообщения
       atom_title: Лента активности
+      filters:
+        all: Вся
+        my:  Моя
+        others: Чужая
 
   notifications:
     subjects:

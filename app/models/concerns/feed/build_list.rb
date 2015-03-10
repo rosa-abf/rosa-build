@@ -20,7 +20,7 @@ module Feed::BuildList
       )
 
       updater = publisher || user
-      (project.admins | [publisher].compact).each do |recipient|
+      (project.all_members | [publisher].compact).each do |recipient|
         ActivityFeed.create(
           user: recipient,
           kind: 'build_list_notification',
