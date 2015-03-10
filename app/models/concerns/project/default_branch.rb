@@ -63,7 +63,10 @@ module Project::DefaultBranch
 
   # Private: Set git head.
   def set_new_git_head
-    `cd #{path} && git symbolic-ref HEAD refs/heads/#{self.default_branch}` if self.default_branch_changed? && self.repo.branches.map(&:name).include?(self.default_branch)
+    if self.default_branch_changed? && self.repo.branches.map(&:name).include?(self.default_branch)
+      self.repo.git.send(:'symbolic-ref', {}, 'HEAD', "refs/heads/#{self.default_branch}")
+      Project.project_aliases(self).update_all default_branch: self.default_branch
+    end
   end
 
   # Private: Validation for checking that the default branch is exist.
