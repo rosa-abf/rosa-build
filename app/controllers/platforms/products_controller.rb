@@ -1,8 +1,8 @@
 class Platforms::ProductsController < Platforms::BaseController
   include GitHelper
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :product, through: :platform, except: :autocomplete_project

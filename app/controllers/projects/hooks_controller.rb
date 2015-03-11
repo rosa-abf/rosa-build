@@ -1,5 +1,5 @@
 class Projects::HooksController < Projects::BaseController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   load_and_authorize_resource :project
   load_and_authorize_resource :hook, through: :project
 

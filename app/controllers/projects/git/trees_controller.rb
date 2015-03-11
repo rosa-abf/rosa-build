@@ -1,11 +1,12 @@
 class Projects::Git::TreesController < Projects::Git::BaseController
 
-  before_filter -> { redirect_to_project }, only: :show
-  skip_before_filter :set_branch_and_tree, :set_treeish_and_path, only: :archive
-  before_filter -> { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, only: [:branch, :destroy]
+  skip_before_action :set_branch_and_tree,      only: :archive
+  skip_before_action :set_treeish_and_path,     only: :archive
+  before_action      :redirect_to_project,      only: :show
+  before_action      :resolve_treeish,          only: [:branch, :destroy]
 
-  skip_authorize_resource :project,                       only: [:destroy, :restore_branch, :create]
-  before_filter -> { authorize!(:write, @project) },  only: [:destroy, :restore_branch, :create]
+  skip_authorize_resource :project,                   only: [:destroy, :restore_branch, :create]
+  before_action -> { authorize!(:write, @project) },  only: [:destroy, :restore_branch, :create]
 
   def show
     unless request.xhr?
@@ -80,6 +81,10 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   protected
+
+  def resolve_treeish
+    raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name)
+  end
 
   def redirect_to_project
     if params[:treeish] == @project.resolve_default_branch && params[:path].blank? && !request.xhr?

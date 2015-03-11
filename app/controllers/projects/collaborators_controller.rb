@@ -1,12 +1,12 @@
 class Projects::CollaboratorsController < Projects::BaseController
   respond_to :html, :json
 
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   load_resource :project
-  before_filter :authorize_collaborators
+  before_action :authorize_collaborators
 
-  before_filter :find_users
-  before_filter :find_groups
+  before_action :find_users
+  before_action :find_groups
 
   def index
     @collaborators = Collaborator.find_by_project(@project)

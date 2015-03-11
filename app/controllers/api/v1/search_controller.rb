@@ -1,5 +1,5 @@
 class Api::V1::SearchController < Api::V1::BaseController
-  before_filter :authenticate_user! unless APP_CONFIG['anonymous_access']
+  before_action :authenticate_user! unless APP_CONFIG['anonymous_access']
 
   def index
     search    = Search.new(params[:query], current_ability, paginate_params)

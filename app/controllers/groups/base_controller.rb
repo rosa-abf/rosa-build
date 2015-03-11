@@ -1,6 +1,6 @@
 class Groups::BaseController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :find_group
+  before_action :authenticate_user!
+  before_action :find_group
 
   protected
 

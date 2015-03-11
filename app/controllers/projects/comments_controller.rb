@@ -1,8 +1,8 @@
 class Projects::CommentsController < Projects::BaseController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   load_and_authorize_resource :project
-  before_filter :find_commentable
-  before_filter :find_or_build_comment
+  before_action :find_commentable
+  before_action :find_or_build_comment
   load_and_authorize_resource new: :new_line
 
   include CommentsHelper

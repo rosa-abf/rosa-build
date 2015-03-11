@@ -1,7 +1,7 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:get_id, :show, :refs_list] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:get_id, :show, :refs_list] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :project
 

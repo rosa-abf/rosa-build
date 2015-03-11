@@ -4,17 +4,17 @@ class Projects::BuildListsController < Projects::BaseController
 
   NESTED_ACTIONS = [:index, :new, :create]
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:show, :index, :log] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:show, :index, :log] if APP_CONFIG['anonymous_access']
 
-  before_filter :find_build_list, only: [:show, :publish, :cancel, :update, :log, :create_container, :dependent_projects]
+  before_action :find_build_list, only: [:show, :publish, :cancel, :update, :log, :create_container, :dependent_projects]
 
   load_and_authorize_resource :project, only: [:new, :create]
   load_resource :project, only: :index, parent: false
   load_and_authorize_resource :build_list, through: :project, only: NESTED_ACTIONS, shallow: true
   load_and_authorize_resource except: NESTED_ACTIONS
 
-  before_filter :create_from_build_list, only: :new
+  before_action :create_from_build_list, only: :new
 
   def index
     authorize!(:show, @project) if @project

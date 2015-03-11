@@ -1,6 +1,6 @@
 class Projects::Git::BlobsController < Projects::Git::BaseController
-  before_filter :set_blob
-  before_filter -> {authorize! :write, @project}, only: [:edit, :update]
+  before_action :set_blob
+  before_action -> {authorize! :write, @project}, only: [:edit, :update]
 
   def show
   end

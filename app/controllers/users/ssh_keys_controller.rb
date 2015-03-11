@@ -1,5 +1,5 @@
 class Users::SshKeysController < Users::BaseController
-  before_filter :set_current_user
+  before_action :set_current_user
 
   def index
     @ssh_key  = SshKey.new

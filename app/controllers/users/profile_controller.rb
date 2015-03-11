@@ -1,7 +1,7 @@
 class Users::ProfileController < Users::BaseController
   include PaginateHelper
 
-  skip_before_filter :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
+  skip_before_action :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
 
   def show
     respond_to do |format|

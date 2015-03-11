@@ -297,7 +297,7 @@ Rosa::Application.routes.draw do
         get   :mass_import
       end
     end
-    scope ':name_with_owner', constraints: { name_with_owner: Project::OWNER_AND_NAME_REGEXP } do # project
+    scope '*name_with_owner', constraints: { name_with_owner: Project::OWNER_AND_NAME_REGEXP } do # project
       scope as: 'project' do
         resources :wiki do
           collection do
@@ -369,7 +369,7 @@ Rosa::Application.routes.draw do
         constraints Rosa::Constraints::Treeish do
           # Tree
           get '/' => "git/trees#show", as: :project
-          get '/tree/:treeish' => "git/trees#show", as: :tree, format: false
+          get '/tree/*treeish' => "git/trees#show", as: :tree, format: false
           # Tags
           get '/tags' => "git/trees#tags", as: :tags
           # Branches

@@ -1,5 +1,5 @@
 class Users::RegisterRequestsController < ApplicationController
-  before_filter :user_choose_locale
+  before_action :user_choose_locale
   layout 'invite'
 
   def new

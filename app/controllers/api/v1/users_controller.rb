@@ -1,9 +1,9 @@
 class Api::V1::UsersController < Api::V1::BaseController
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:show] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource :user, only: :show
-  before_filter :set_current_user, except: :show
+  before_action :set_current_user, except: :show
 
   def show
     @user = User.opened.find params[:id] # dont show system users
