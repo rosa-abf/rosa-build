@@ -7,17 +7,15 @@ namespace :buildlist do
       say "[#{Time.zone.now}] Removing outdated BuildLists"
       say "[#{Time.zone.now}] There are #{BuildList.outdated.count} outdated BuildLists"
       counter = 0
-      BuildList.outdated.order(:id).find_in_batches(batch_size: 100) do |build_lists|
-        build_lists.each do |bl|
-          bl.destroy && (counter += 1) if bl.id != bl.last_published.first.try(:id)
-        end
+      BuildList.outdated.find_each(batch_size: 100) do |bl|
+        bl.destroy && (counter += 1) if bl.id != bl.last_published.first.try(:id)
       end
       say "[#{Time.zone.now}] #{counter} outdated BuildLists have been removed"
 
       say "[#{Time.zone.now}] Removing outdated MassBuilds"
       say "[#{Time.zone.now}] There are #{MassBuild.outdated.count} outdated MassBuilds"
       counter = 0
-      MassBuild.outdated.each do |mb|
+      MassBuild.outdated.find_each do |mb|
         mb.destroy && (counter += 1) if mb.build_lists.count == 0
       end
       say "[#{Time.zone.now}] #{counter} outdated MassBuilds have been removed"
@@ -36,7 +34,7 @@ namespace :buildlist do
 
       counter = 0
       scope.find_each do |bl|
-          bl.destroy && (counter += 1)
+        bl.destroy && (counter += 1)
       end
 
       say "[#{Time.zone.now}] #{counter} outdated BuildLists have been removed"
