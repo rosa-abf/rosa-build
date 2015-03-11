@@ -32,7 +32,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def find_for_ouath(auth, resource=nil)
     provider, uid   = auth['provider'], auth['uid']
-    authentication  = Authentication.find_or_initialize_by_provider_and_uid(provider, uid)
+    authentication  = Authentication.find_or_initialize_by(provider: provider, uid: uid)
     if authentication.new_record?
       if user_signed_in? # New authentication method for current_user
         authentication.user = current_user
