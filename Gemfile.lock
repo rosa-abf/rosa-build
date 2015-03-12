@@ -485,7 +485,7 @@ GEM
     shoulda-context (1.2.1)
     shoulda-matchers (2.8.0)
       activesupport (>= 3.0.0)
-    simple_form (3.1.0)
+    simple_form (3.1.0.rc2)
       actionpack (~> 4.0)
       activemodel (~> 4.0)
     sinatra (1.4.5)
@@ -656,7 +656,7 @@ DEPENDENCIES
   shotgun
   shoulda
   shoulda-matchers
-  simple_form
+  simple_form (= 3.1.0.rc2)
   sitemap_generator
   skype
   slim
