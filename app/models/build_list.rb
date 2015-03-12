@@ -154,9 +154,16 @@ class BuildList < ActiveRecord::Base
     joins(:project).where('projects.name LIKE ?', "%#{project_name}%") if project_name.present?
   }
   scope :scoped_to_new_core, ->(new_core) { where(new_core: new_core) }
-  scope :outdated, -> {
-    where("#{table_name}.created_at < ? AND #{table_name}.status NOT IN (?) OR #{table_name}.created_at < ?",
-          Time.now - LIVE_TIME, [BUILD_PUBLISHED,BUILD_PUBLISHED_INTO_TESTING], Time.now - MAX_LIVE_TIME)
+  scope :outdated, -> (now = Time.now) {
+    where(<<-SQL, now - LIVE_TIME, [BUILD_PUBLISHED,BUILD_PUBLISHED_INTO_TESTING], now - MAX_LIVE_TIME)
+      (
+        #{table_name}.created_at < ?    AND
+        #{table_name}.status NOT IN (?) AND
+        #{table_name}.mass_build_id IS NULL
+      ) OR (
+        #{table_name}.created_at < ?
+      )
+    SQL
   }
   scope :published_container, -> { where(container_status: BUILD_PUBLISHED) }
 
