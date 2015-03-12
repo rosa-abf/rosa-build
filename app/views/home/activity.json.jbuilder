@@ -15,7 +15,7 @@ json.feed do
       end if user
 
       project_name_with_owner = "#{item.data[:project_owner]}/#{item.data[:project_name]}"
-      @project = Project.find_by_owner_and_name(item.data[:project_owner], item.data[:project_name])
+      @project = Project.find_by_owner_and_name_cached(item.data[:project_owner], item.data[:project_name])
 
       json.project_name_with_owner project_name_with_owner
       json.partial! item.partial, item: item, project_name_with_owner: project_name_with_owner

@@ -16,7 +16,7 @@ html
     == yield :submenu if content_for?(:submenu)
 
     - if current_user || APP_CONFIG['anonymous_access']
-      - if (flash_notify = FlashNotify.published.first) && flash_notify.should_show?(cookies[:flash_notify_hash])
+      - if (flash_notify = FlashNotify.published_first_cached) && flash_notify.should_show?(cookies[:flash_notify_hash])
         javascript:
           var FLASH_HASH_ID = "#{flash_notify.hash_id}";
         .notify.alert.alert-dismissable.text-center class=alert_class(flash_notify.status)

@@ -3,14 +3,14 @@ class Platforms::PlatformsController < Platforms::BaseController
 
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource
+  # load_and_authorize_resource
 
   def index
     respond_to do |format|
       format.html {}
 
       format.json {
-        @platforms = @platforms.accessible_by(current_ability, :related)
+        @platforms = PlatformPolicy::Scope.new(current_user, Platform).related
         @platforms_count = @platforms.count
         @platforms = @platforms.paginate(page: current_page, per_page: Platform.per_page)
       }
@@ -18,6 +18,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def show
+    authorize @platform = Platform.find_cached(params[:id])
   end
 
   def new

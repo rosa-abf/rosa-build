@@ -12,7 +12,7 @@ nav.navbar.navbar-inverse.top_menu role = "navigation"
     #top-menu-navbar-collapse.collapse.navbar-collapse
       ul.nav.navbar-nav
         - (collection = t 'top_menu').each do |base, title|
-          - if can? :index, base.to_s.classify.constantize
+          - if policy(base).index?
             li class=top_menu_class(base)
               a href=send("#{base}_path")
                 i.fa.hidden-sm                     class=top_menu_icon(base)

@@ -109,7 +109,7 @@ class Issue < ActiveRecord::Base
     owner_uname   = Regexp.last_match[1].presence || Regexp.last_match[2].presence || project.owner.uname
     project_name  = Regexp.last_match[1] ? Regexp.last_match[2] : project.name
     serial_id     = Regexp.last_match[3]
-    project       = Project.find_by_owner_and_name(owner_uname.chomp('/'), project_name)
+    project       = Project.find_by_owner_and_name_cached(owner_uname.chomp('/'), project_name)
     return nil unless project
     return nil unless current_ability.can? :show, project
     project.issues.where(serial_id: serial_id).first

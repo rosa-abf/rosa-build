@@ -1,0 +1,3 @@
+class ProjectPolicy < ApplicationPolicy
+
+end

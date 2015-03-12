@@ -8,6 +8,7 @@ class Project < ActiveRecord::Base
   include UrlHelper
   include EventLoggable
   include Project::DefaultBranch
+  include Project::Finders
 
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
@@ -67,37 +68,6 @@ class Project < ActiveRecord::Base
                   :autostart_status
   attr_readonly :owner_id, :owner_type
 
-  scope :recent, -> { order(:name) }
-  scope :search_order, -> { order('CHAR_LENGTH(projects.name) ASC') }
-  scope :search, ->(q) {
-    q = q.to_s.strip
-    by_name("%#{q}%").search_order if q.present?
-  }
-  scope :by_name,   ->(name) { where('projects.name ILIKE ?', name) if name.present? }
-  scope :by_owner,  ->(name) { where('projects.owner_uname ILIKE ?', "%#{name}%") if name.present? }
-  scope :by_owner_and_name, ->(*params) {
-    term = params.map(&:strip).join('/').downcase
-    where("lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%") if term.present?
-  }
-  scope :by_visibilities, ->(v) { where(visibility: v) }
-  scope :opened, -> { where(visibility: 'open') }
-  scope :package, -> { where(is_package: true) }
-  scope :addable_to_repository, ->(repository_id) {
-    where('projects.id NOT IN (
-            SELECT ptr.project_id
-            FROM project_to_repositories AS ptr
-            WHERE ptr.repository_id = ?)', repository_id)
-  }
-  scope :by_owners, ->(group_owner_ids, user_owner_ids) {
-    where("(projects.owner_id in (?) AND projects.owner_type = 'Group') OR
-      (projects.owner_id in (?) AND projects.owner_type = 'User')", group_owner_ids, user_owner_ids)
-  }
-
-  scope :project_aliases, ->(project)  {
-    where.not(id: project.id).
-      where('alias_from_id IN (:ids) OR id IN (:ids)', { ids: [project.alias_from_id, project.id].compact })
-  }
-
   before_validation :truncate_name, on: :create
   before_save -> { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
@@ -105,19 +75,6 @@ class Project < ActiveRecord::Base
   after_update -> { update_path_to_project(name_was) }, if: :name_changed?
 
   attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
-
-  class << self
-    def find_by_owner_and_name(first, last = nil)
-      arr = first.try(:split, '/') || []
-      arr = (arr << last).compact
-      return nil if arr.length != 2
-      where(owner_uname: arr.first, name: arr.last).first || by_owner_and_name(*arr).first
-    end
-
-    def find_by_owner_and_name!(first, last = nil)
-      find_by_owner_and_name(first, last) or raise ActiveRecord::RecordNotFound
-    end
-  end
 
   def init_mass_import
     Project.perform_later :low, :run_mass_import, url, srpms_list, visibility, owner, add_to_repository_id

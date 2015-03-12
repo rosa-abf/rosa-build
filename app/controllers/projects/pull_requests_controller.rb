@@ -136,7 +136,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def find_destination_project bang=true
-    project = Project.find_by_owner_and_name params[:to_project]
+    project = Project.find_by_owner_and_name_cached params[:to_project]
     raise ActiveRecord::RecordNotFound if bang && !project
     project || @project.pull_requests.last.try(:to_project) || @project.root
   end

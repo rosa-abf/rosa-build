@@ -4,7 +4,7 @@ class Api::V1::BaseController < ApplicationController
 
   helper_method :member_path
 
-  rescue_from CanCan::AccessDenied do |exception|
+  rescue_from Pundit::NotAuthorizedError do |exception|
     respond_to do |format|
       format.json { render json: {message: t('flash.exception_message')}.to_json, status: 403 }
       format.csv  { render text: t('flash.exception_message'), status: 403 }

@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::Base
+  include StrongParams
+  include Pundit
+
   AIRBRAKE_IGNORE = [
     ActionController::InvalidAuthenticityToken,
     AbstractController::ActionNotFound
@@ -14,6 +17,7 @@ class ApplicationController < ActionController::Base
   before_action :set_locale
   before_action -> { EventLog.current_controller = self },
                 only: [:create, :destroy, :open_id, :cancel, :publish, :change_visibility] # :update
+  before_action :banned?
   after_action -> { EventLog.current_controller = nil }
 
   helper_method :get_owner
@@ -27,7 +31,7 @@ class ApplicationController < ActionController::Base
                 AbstractController::ActionNotFound, with: :render_404
   end
 
-  rescue_from CanCan::AccessDenied do |exception|
+  rescue_from Pundit::NotAuthorizedError do |exception|
     redirect_to forbidden_url, alert: t("flash.exception_message")
   end
 
@@ -39,6 +43,16 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  # Disables access to site for banned users
+  def banned?
+    authorize :user, :banned?
+    # if user_signed_in? && current_user.is_banned?
+    #   sign_out current_user
+    #   flash[:error] = I18n.t('messages.account_suspended')
+    #   redirect_to root_path
+    # end
+  end
 
   # For this example, we are simply using token authentication
   # via parameters. However, anyone could use Rails's token

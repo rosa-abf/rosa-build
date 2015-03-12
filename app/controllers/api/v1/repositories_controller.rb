@@ -40,7 +40,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
     key, now = [@repository.platform.id, :repository_packages], Time.zone.now
     last_request = Rails.cache.read(key)
     if last_request.present? && last_request + 15.minutes > now
-      raise CanCan::AccessDenied
+      raise Pundit::NotAuthorizedError
     else
 
       Rails.cache.write(key, now, expires_at: 15.minutes)

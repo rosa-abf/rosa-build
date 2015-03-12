@@ -8,6 +8,7 @@ class Platform < ActiveRecord::Base
   include EventLoggable
   include EmptyMetadata
   include DefaultBranchable
+  include Platform::Finders
 
   self.per_page = 20
 
@@ -95,16 +96,6 @@ class Platform < ActiveRecord::Base
 
   after_create  -> { symlink_directory unless hidden? }
   after_destroy -> { remove_symlink_directory unless hidden? }
-
-  scope :search_order,              -> { order(:name) }
-  scope :search,                    -> (q) { where("#{table_name}.name ILIKE ?", "%#{q.to_s.strip}%") }
-  scope :by_visibilities,           -> (v) { where(visibility: v) }
-  scope :opened,                    -> { where(visibility: VISIBILITY_OPEN) }
-  scope :hidden,                    -> { where(visibility: VISIBILITY_HIDDEN) }
-  scope :by_type,                   -> (type) { where(platform_type: type) if type.present? }
-  scope :main,                      -> { by_type(TYPE_MAIN) }
-  scope :personal,                  -> { by_type(TYPE_PERSONAL) }
-  scope :waiting_for_regeneration,  -> { where(status: WAITING_FOR_REGENERATION) }
 
   accepts_nested_attributes_for :platform_arch_settings, allow_destroy: true
   attr_accessible :name,

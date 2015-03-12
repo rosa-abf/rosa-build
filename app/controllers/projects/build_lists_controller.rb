@@ -125,7 +125,7 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def dependent_projects
-    raise CanCan::AccessDenied if @build_list.save_to_platform.personal?
+    raise Pundit::NotAuthorizedError if @build_list.save_to_platform.personal?
 
     if request.post?
       prs = params[:build_list]

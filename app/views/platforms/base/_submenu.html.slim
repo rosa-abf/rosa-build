@@ -22,24 +22,24 @@
             = link_to t("layout.repositories.list_header"), platform_repositories_path(@platform)
           li class=('active' if contr == :contents)
             = link_to t('layout.platforms.contents'), platform_contents_path(@platform)
-          - if can? :show, @platform
+          - if policy(@platform).show?
             li class=('active' if act == :index && contr == :maintainers)
               = link_to t("layout.platforms.maintainers"), platform_maintainers_path(@platform)
             li class=('active' if contr == :mass_builds)
               = link_to t("layout.platforms.mass_build"), platform_mass_builds_path(@platform)
-          - if can? :read, @platform.products.build
+          - if policy(@platform.products.build).index?
             li class=('active' if contr == :products)
               = link_to t("layout.products.list_header"), platform_products_path(@platform)
-          - if can? :advisories, @platform
+          - if policy(@platform.advisories.build).index?
             li class=('active' if contr == :platforms && act == :advisories)
               = link_to t("layout.advisories.list_header"), advisories_platform_path(@platform)
-          - if can? :update, @platform
+          - if policy(@platform).update?
             li class=('active' if act == :edit && contr == :platforms)
               = link_to t("platform_menu.settings"), edit_platform_path(@platform)
-          - if can? :members, @platform
+          - if policy(@platform).members?
             li class=('active' if act == :members && contr == :platforms)
               = link_to t("layout.platforms.members"), members_platform_path(@platform)
-          - if can? :edit, @platform
+          - if policy(@platform).update?
             li class=('active' if contr == :key_pairs)
               = link_to t("layout.key_pairs.header"), platform_key_pairs_path(@platform)
             li class=('active' if contr == :tokens)

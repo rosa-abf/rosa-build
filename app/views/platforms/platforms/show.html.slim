@@ -47,7 +47,7 @@
           b= t('layout.platforms.distrib_type')
         .col-md-8= @platform.distrib_type
 
-      - if can? :clone, @platform
+      - if policy(@platform).clone?
         .row
           .col-md-4
           .col-md-8

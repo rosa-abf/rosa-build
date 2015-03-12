@@ -6,7 +6,7 @@ class Groups::MembersController < Groups::BaseController
   end
 
   def update
-    raise CanCan::AccessDenied if @group.owner_id.to_s == params[:member_id]
+    raise Pundit::NotAuthorizedError if @group.owner_id.to_s == params[:member_id]
 
     relation   = @group.actors.where(actor_id: params[:member_id], actor_type: 'User').first
     relation ||= @group.actors.build(actor_id: params[:member_id], actor_type: 'User')
