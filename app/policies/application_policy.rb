@@ -52,15 +52,6 @@ class ApplicationPolicy
     def resolve
       scope
     end
-
-    # Public: Get user's group ids.
-    #
-    # Returns the Array of group ids.
-    def user_group_ids
-      Rails.cache.fetch(['ApplicationPolicy#user_group_ids', user.id]) do
-        user.group_ids
-      end
-    end
   end
 
   protected
@@ -112,6 +103,56 @@ class ApplicationPolicy
   # Returns true if he is, false otherwise.
   def is_banned?
     user.role == 'banned'
+  end
+
+  # Private: Check if provided user is at least record admin.
+  #
+  # Returns true if he is, false otherwise.
+  def local_admin?
+    best_role == 'admin'
+  end
+
+  # Private: Check if provided user is at least record reader.
+  #
+  # Returns true if he is, false otherwise.
+  def local_reader?
+    %w(reader writer admin).include?(best_role)
+  end
+
+  # Private: Check if provided user is at least record writer.
+  #
+  # Returns true if he is, false otherwise.
+  def local_writer?
+    %w(writer admin).include?(best_role)
+  end
+
+  # Private: Check if provided user is record owner.
+  #
+  # Returns true if he is, false otherwise.
+  def owner?
+    (
+      record.owner_type == 'User'  && record.owner_id == user.id
+    ) || (
+      record.owner_type == 'Group' && user_group_ids.include?(record.owner_id)
+    )
+  end
+
+  # Private: Get the best role of user for record.
+  #
+  # Returns the String role or nil.
+  def best_role
+    Rails.cache.fetch(['ApplicationPolicy#best_role', record, user]) do
+      user.best_role(record)
+    end
+  end
+
+  # Public: Get user's group ids.
+  #
+  # Returns the Array of group ids.
+  def user_group_ids
+    Rails.cache.fetch(['ApplicationPolicy#user_group_ids', user.id]) do
+      user.group_ids
+    end
   end
 
 end

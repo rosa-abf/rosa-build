@@ -1,7 +1,7 @@
 - namespace = which_menu == 'admins_menu' ? 'admin_' : ''
 %ul
   - (collection = t which_menu).each do |base, title|
-    - if can? :index, base.to_s.classify.constantize
+    - if policy(base).index?
       %li= link_to title, send(:"#{namespace}#{base}_path"), class: top_menu_class(base)
   - if current_user.try(:admin?) and which_menu == 'top_menu'
     %li= link_to t('admins_menu_header'), admin_root_path, class: top_menu_class('admin')

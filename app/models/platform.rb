@@ -272,8 +272,7 @@ class Platform < ActiveRecord::Base
       return false  if token.blank?
       return true   if platform.tokens.by_active.where(authentication_token: token).exists?
       user = User.find_by(authentication_token: token)
-      current_ability = Ability.new(user)
-      user && current_ability.can?(:show, platform) ? true : false
+      !!(user && PlatformPolicy.new(user, platform).show?)
     end
   end
 

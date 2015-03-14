@@ -26,7 +26,8 @@ class PlatformPolicy < ApplicationPolicy
   class Scope < Scope
 
     def related
-      scope.where <<-SQL, { user_id: user.id, user_group_ids: user_group_ids, platform_ids: related_platform_ids }
+      policy = Pundit.policy!(user_context, :platform)
+      scope.where <<-SQL, { user_id: user.id, user_group_ids: policy.user_group_ids, platform_ids: related_platform_ids }
         (
           platforms.id IN (:platform_ids)
         ) OR (
@@ -43,19 +44,6 @@ class PlatformPolicy < ApplicationPolicy
       Rails.cache.fetch(['PlatformPolicy::Scope#related_platform_ids', user.id]) do
         user.repositories.pluck(:platform_id)
       end
-    end
-  end
-
-  protected
-
-  def owner?
-    record.owner == user ||
-    record.owner.is_a?(Group) && user_group_ids.include?(record.owner_id)
-  end
-
-  def local_admin?
-    Rails.cache.fetch(['PlatformPolicy#local_admin?', record, user]) do
-      user.best_role(record) == 'admin'
     end
   end
 

@@ -46,7 +46,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def update
-    unless can?(:write, @project)
+    unless policy(@project).write?
       params.delete :update_labels
       [:assignee_id, :labelings, :labelings_attributes].each do |k|
         params[:issue].delete k

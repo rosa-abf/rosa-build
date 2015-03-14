@@ -5,8 +5,8 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   before_action      :redirect_to_project,      only: :show
   before_action      :resolve_treeish,          only: [:branch, :destroy]
 
-  skip_authorize_resource :project,                   only: [:destroy, :restore_branch, :create]
-  before_action -> { authorize!(:write, @project) },  only: [:destroy, :restore_branch, :create]
+  # skip_authorize_resource :project,                 only: [:destroy, :restore_branch, :create]
+  before_action -> { authorize(@project, :write?) },  only: [:destroy, :restore_branch, :create]
 
   def show
     unless request.xhr?

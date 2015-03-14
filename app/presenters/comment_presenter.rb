@@ -60,12 +60,12 @@ class CommentPresenter < ApplicationPresenter
     res = [ link_to(content_tag(:i, nil, class: 'fa fa-link'),
                     link_to_comment,
                     class: klass).html_safe ]
-    if controller.can? :update, @comment
+    if controller.policy(@comment).update?
       res << link_to(content_tag(:i, nil, class: 'fa fa-edit'),
                      "#update-comment#{comment.id}",
                      'ng-click' => "commentsCtrl.toggleEditForm(#{comment_id})" ).html_safe
     end
-    if controller.can? :destroy, @comment
+    if controller.policy(@comment).destroy?
       res << link_to(content_tag(:i, nil, class: 'fa fa-close'),
                      '',
                      'ng-click' => "commentsCtrl.remove(#{comment_id})").html_safe

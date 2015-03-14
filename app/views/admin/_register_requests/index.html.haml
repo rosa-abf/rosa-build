@@ -25,9 +25,9 @@
         %td= request.created_at
         %td
           - links = []
-          - if can? :approve, request
+          - if policy(request).approve?
             - links << link_to(t("layout.approve"), approve_admin_register_request_path(request))
-          - if can? :reject, request
+          - if policy(request).reject?
             - links << link_to(t("layout.reject"), reject_admin_register_request_path(request))
           - if request.token
             - links << link_to('Link', new_user_registration_url(invitation_token: request.token))

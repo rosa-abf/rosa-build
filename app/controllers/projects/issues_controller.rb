@@ -79,7 +79,7 @@ class Projects::IssuesController < Projects::BaseController
   def create
     @issue.user_id = current_user.id
 
-    unless can?(:write, @project)
+    unless policy(@project).write?
       @issue.assignee_id  = nil
       @issue.labelings    = []
     end
@@ -104,7 +104,7 @@ class Projects::IssuesController < Projects::BaseController
 
       format.json {
         status = 200
-        unless can?(:write, @project)
+        unless policy(@project).write?
           params.delete :update_labels
           [:assignee_id, :labelings, :labelings_attributes].each do |k|
             params[:issue].delete k

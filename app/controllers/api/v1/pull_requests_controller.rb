@@ -51,7 +51,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     @pull.build_issue title: pull_params[:title], body: pull_params[:body]
     @pull.from_project            = from_project
     @pull.to_ref, @pull.from_ref  = pull_params[:to_ref], pull_params[:from_ref]
-    @pull.issue.assignee_id       = pull_params[:assignee_id] if can?(:write, @project)
+    @pull.issue.assignee_id       = pull_params[:assignee_id] if policy(@project).write?
     @pull.issue.user, @pull.issue.project = current_user, @project
     @pull.issue.new_pull_request  = true
     render_validation_error(@pull, "#{@pull.class.name} has not been created") && return unless @pull.valid?
@@ -75,7 +75,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
     if pull_params.present?
       attrs = pull_params.slice(:title, :body)
-      attrs.merge!(assignee_id: pull_params[:assignee_id]) if can?(:write, @project)
+      attrs.merge!(assignee_id: pull_params[:assignee_id]) if policy(@project).write?
 
       if (action = pull_params[:status]) && %w(close reopen).include?(pull_params[:status])
         if @pull.send("can_#{action}?")

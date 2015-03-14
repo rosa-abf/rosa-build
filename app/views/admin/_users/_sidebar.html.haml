@@ -3,7 +3,7 @@
     .bordered
       = link_to t("layout.users.list_header"), admin_users_path, class: 'button'
   .bordered
-    - if can? :create, User.new
+    - if policy(:user).create?
       = link_to t("layout.users.new"), new_admin_user_path(system: @filter == 'system'), class: 'button'
     %h3= t("layout.users.filter_header")
     %table

@@ -29,7 +29,7 @@ class AutocompletesController < ApplicationController
       value:  mb.id,
       label:  "#{mb.id} - #{mb.name}",
       path:   platform_mass_build_path(mb.save_to_platform, mb)
-    } if mb && can?(:show, mb)
+    } if mb && policy(mb).show?
     render json: results.to_json
   end
 

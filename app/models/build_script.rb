@@ -57,7 +57,7 @@ class BuildScript < ActiveRecord::Base
 
   def attach_project
     if @project_name.present?
-      self.project = Project.find_by_owner_and_name_cached(@project_name)
+      self.project = Project.find_by_owner_and_name(@project_name)
     end
   end
 

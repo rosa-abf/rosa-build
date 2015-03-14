@@ -155,7 +155,7 @@ class Comment < ActiveRecord::Base
 
     elements.each do |element|
       element[1].scan(ISSUES_REGEX).each do |hash|
-        issue = Issue.find_by_hash_tag hash, current_ability, item.project
+        issue = Issue.find_by_hash_tag hash, linker, item.project
         next unless issue
         # dont create link to the same issue
         next if opts[:created_from_issue_id] == issue.id

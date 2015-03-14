@@ -48,21 +48,17 @@ module Project::Finders
     #
     # Returns Project record.
     # Raises ActiveRecord::RecordNotFound if nothing was found.
-    def find_by_owner_and_name_cached(first, last = nil)
-      Rails.cache.fetch(['Project.find_by_owner_and_name', first, last]) do
-        find_by_owner_and_name(first, last)
-      end
-    end
-
     def find_by_owner_and_name(first, last = nil)
       arr = first.try(:split, '/') || []
       arr = (arr << last).compact
       return nil if arr.length != 2
-      where(owner_uname: arr.first, name: arr.last).first || by_owner_and_name(*arr).first
+      Rails.cache.fetch(['Project.find_by_owner_and_name', arr.first, arr.last]) do
+        find_by(owner_uname: arr.first, name: arr.last)
+      end || by_owner_and_name(*arr).first
     end
 
     def find_by_owner_and_name!(first, last = nil)
-      find_by_owner_and_name_cached(first, last) or raise ActiveRecord::RecordNotFound
+      find_by_owner_and_name(first, last) or raise ActiveRecord::RecordNotFound
     end
   end
 

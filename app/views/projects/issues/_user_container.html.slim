@@ -7,7 +7,7 @@
 
   span[ ng-hide = 'issueCtrl.assignee.id' ]= t('layout.issues.no_one_is_assigned')
 
-  -if can?(:write, @project)
+  - if policy(@project).write?
     input.hidden name = 'issue[assignee_id]' ng-value = 'issueCtrl.assignee.id'
     a< href = ''
       i [ class    = 'fa fa-share-square-o boffset10'

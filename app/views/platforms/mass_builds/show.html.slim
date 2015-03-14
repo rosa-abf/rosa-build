@@ -128,7 +128,7 @@
           = link_to_list @platform, @mass_build, 'success_builds_list'
 
     .buttons_block
-      - if can?(:publish, @mass_build)
+      - if policy(@mass_build).publish?
         - unless @mass_build.auto_publish_status == BuildList::AUTO_PUBLISH_STATUS_DEFAULT
           = link_to t('layout.mass_builds.publish_success'),
             publish_platform_mass_build_path(@platform, @mass_build.id),
@@ -142,14 +142,14 @@
           data:   { confirm: t("layout.confirm") },
           class:  'btn btn-warning'
         hr
-      - if can?(:cancel, @mass_build)
+      - if policy(@mass_build).cancel?
         = link_to t('layout.cancel'),
           cancel_platform_mass_build_path(@platform, @mass_build.id),
           method: :post,
           class:  'btn btn-danger',
           data:   { confirm: t('layout.mass_builds.cancel_confirm') }
         hr
-      - if can? :create, @mass_build
+      - if policy(@mass_build).create?
         = link_to t('layout.mass_builds.recreate'),
           new_platform_mass_build_path(@platform, mass_build_id: @mass_build.id),
           class: 'btn btn-primary'

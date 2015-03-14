@@ -6,7 +6,7 @@
     \|
   = number_to_human_size @blob.size
 .pull-right
-  - if @blob.render_as == :text && can?(:write, @project) && @branch.present?
+  - if @blob.render_as == :text && policy(@project).write? && @branch.present?
     = link_to "Edit", edit_blob_path(@project, @treeish, @path)
     \|
   - if @blob.render_as == :text && params[:action] != 'show'

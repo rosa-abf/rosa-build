@@ -82,7 +82,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
     end
     if params[:project_id].present?
       @project = Project.find(params[:project_id])
-      if can?(:read, @project)
+      if policy(@project).read?
         begin
           @repository.projects << @project
           flash[:notice] = t('flash.repository.project_added')

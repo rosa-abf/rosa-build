@@ -17,17 +17,17 @@
 
     p= @product.description
 
-    - if can? :update, @product
+    - if policy(@product).update?
       a.btn.btn-primary href=edit_platform_product_path(@platform, @product)
         = t('layout.edit')
       | &nbsp;
-    - if can? :destroy, @product
+    - if policy(@product).destroy?
       a.btn.btn-danger[ href          = platform_product_path(@platform, @product)
                         data-method   = 'delete'
                         data-confirm  = t('layout.products.confirm_delete') ]
         = t('layout.delete')
       | &nbsp;
-    - if can?(:create, @product.product_build_lists.build)
+    - if policy(@product.product_build_lists.build).create?
       a.btn.btn-primary href=new_platform_product_product_build_list_path(@platform, @product)
         = t('layout.products.build')
 

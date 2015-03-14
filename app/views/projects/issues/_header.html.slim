@@ -5,7 +5,7 @@
     .panel-body
       .pull-left.roffset5
         = image_tag(avatar_url(@issue.user, :medium), alt: 'avatar') if @issue.user
-      - if can? :update, @issue
+      - if policy(@issue).update?
         .pull-right
           a href='#'
             i.fa.fa-edit ng-click='issueCtrl.edit = true'
@@ -30,7 +30,7 @@
         hr
         == render "projects/comments/add", project: @project, commentable: @issue
 
-- if can?(:update, @issue)
+- if policy(@issue).update?
   .offset10 ng-show = 'issueCtrl.edit'
     h3= t('layout.issues.edit_header')
 

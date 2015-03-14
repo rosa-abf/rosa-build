@@ -36,7 +36,7 @@ class Projects::PullRequestsController < Projects::BaseController
     authorize! :read, to_project
 
     @pull = to_project.pull_requests.new pull_params
-    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if can?(:write, to_project)
+    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if policy(to_project).write?
     @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
     @pull.from_project_owner_uname  = @pull.from_project.owner.uname
     @pull.from_project_name         = @pull.from_project.name
@@ -136,7 +136,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def find_destination_project bang=true
-    project = Project.find_by_owner_and_name_cached params[:to_project]
+    project = Project.find_by_owner_and_name params[:to_project]
     raise ActiveRecord::RecordNotFound if bang && !project
     project || @project.pull_requests.last.try(:to_project) || @project.root
   end

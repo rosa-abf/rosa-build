@@ -12,7 +12,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def get_id
-    if @project = Project.find_by_owner_and_name_cached(params[:owner], params[:name])
+    if @project = Project.find_by_owner_and_name(params[:owner], params[:name])
       authorize! :show, @project
     else
       raise ActiveRecord::RecordNotFound

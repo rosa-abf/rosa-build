@@ -15,7 +15,7 @@
           class: 'btn btn-primary center-block',
           'data-loading-text' => t('layout.processing'), id: 'create_fork'
 
-  - if can? :alias, @project
+  - if policy(@project).alias?
     = form_for @project, url: alias_project_path(@project), html: { class: :form, multipart: true, method: :post } do |f|
       = hidden_field_tag :group, owner.id if owner.class == Group
       = hidden_field_tag :fork_name, name, name: 'fork_name'

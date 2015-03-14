@@ -20,7 +20,7 @@
   %li
     = image_tag 'square.png'
     = link_to t('bottom_menu.developer_api'), t('bottom_menu.developer_api_url')
-  -if pr = Project.find_by_owner_and_name_cached('abf/abf-ideas')
+  -if pr = Project.find_by_owner_and_name('abf/abf-ideas')
     %li
       = image_tag 'square.png'
       = link_to t('bottom_menu.abf_ideas'), project_issues_url(pr)

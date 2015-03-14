@@ -262,11 +262,11 @@ class Projects::WikiController < Projects::BaseController
     def show_or_create_page
       if @page
         @content = @page.formatted_data
-        @editable = can?(:write, @project)
+        @editable = policy(@project).write?
         render :show
       elsif file = @wiki.file(@name)
         render text: file.raw_data, content_type: file.mime_type
-      elsif can? :write, @project
+      elsif policy(@project).write?
         @new = true
         render :new
       else
