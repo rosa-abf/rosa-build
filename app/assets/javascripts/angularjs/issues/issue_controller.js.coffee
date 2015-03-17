@@ -46,7 +46,7 @@ IssueController = (dataservice, $http, Issue, $rootScope, Preview, Label, confir
 
     promise = Preview.get_preview(vm.project, body)
     promise.success( (response) ->
-      vm.preview_body  = response
+      vm.preview_body  = response.html
       Preview.old_text = body
     ).error( (response) ->
       vm.preview_body = 'Error :('
