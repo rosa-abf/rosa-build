@@ -36,10 +36,9 @@
           - if policy(@platform).update?
             li class=('active' if act == :edit && contr == :platforms)
               = link_to t("platform_menu.settings"), edit_platform_path(@platform)
-          - if policy(@platform).members?
+          - if policy(@platform).local_admin_manage?
             li class=('active' if act == :members && contr == :platforms)
               = link_to t("layout.platforms.members"), members_platform_path(@platform)
-          - if policy(@platform).update?
             li class=('active' if contr == :key_pairs)
               = link_to t("layout.key_pairs.header"), platform_key_pairs_path(@platform)
             li class=('active' if contr == :tokens)

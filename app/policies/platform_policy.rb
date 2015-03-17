@@ -15,15 +15,16 @@ class PlatformPolicy < ApplicationPolicy
   end
 
   def update?
+    owner?
+  end
+
+  def local_admin_manage?
     owner? || local_admin?
   end
+  alias_method :add_project?, :local_admin_manage?
 
   def clone?
     return false if record.personal?
-    owner? || local_admin?
-  end
-
-  def add_project?
     owner? || local_admin?
   end
 
