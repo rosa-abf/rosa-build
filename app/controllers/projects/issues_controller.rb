@@ -166,7 +166,7 @@ class Projects::IssuesController < Projects::BaseController
   private
 
   def load_and_authorize_label
-    authorize! :write, @project
+    authorize @project, :write?
     @label = Label.find(params[:label_id]) if params[:label_id]
   end
 end

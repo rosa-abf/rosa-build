@@ -1,5 +1,5 @@
 class Groups::MembersController < Groups::BaseController
-  before_action -> { authorize! :manage_members, @group }
+  before_action -> { authorize @group, :update?  }
 
   def index
     @members = @group.members.order(:uname) - [@group.owner]

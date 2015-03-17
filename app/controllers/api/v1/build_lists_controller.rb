@@ -2,15 +2,17 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:show, :index] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :build_list, only: [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing, :rerun_tests]
+  # load_and_authorize_resource :build_list, only: [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing, :rerun_tests]
 
   def show
+    authorize @build_list
     respond_to :json
   end
 
   def index
+    authorize :build_list
     @project = Project.find(params[:project_id]) if params[:project_id].present?
-    authorize!(:show, @project) if @project
+    authorize @project, :show? if @project
     filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
     @build_lists = filter.find.includes(:build_for_platform,
                                         :save_to_repository,
@@ -36,6 +38,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def cancel
+    authorize @build_list, :create?
     render_json :cancel
   end
 

@@ -279,11 +279,11 @@ class Projects::WikiController < Projects::BaseController
     end
 
     def authorize_read_actions
-      authorize! :show, @project
+      authorize @project, :show?
     end
 
     def authorize_write_actions
-      authorize! :write, @project
+      authorize @project, :write?
     end
 end
 

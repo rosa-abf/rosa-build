@@ -45,7 +45,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   def create
     from_project = Project.find(pull_params[:from_project_id]) if pull_params[:from_project_id].present?
     from_project ||= @project
-    authorize! :read, from_project
+    authorize from_project, :show?
 
     @pull = @project.pull_requests.new
     @pull.build_issue title: pull_params[:title], body: pull_params[:body]

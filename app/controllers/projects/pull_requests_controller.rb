@@ -9,7 +9,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def new
     to_project = find_destination_project(false)
-    authorize! :read, to_project
+    authorize to_project, :show?
 
     @pull = to_project.pull_requests.new
     @pull.issue = to_project.issues.new
@@ -33,7 +33,7 @@ class Projects::PullRequestsController < Projects::BaseController
       redirect :back
     end
     to_project = find_destination_project
-    authorize! :read, to_project
+    authorize to_project, :show?
 
     @pull = to_project.pull_requests.new pull_params
     @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if policy(to_project).write?

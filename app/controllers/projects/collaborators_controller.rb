@@ -74,6 +74,6 @@ class Projects::CollaboratorsController < Projects::BaseController
   end
 
   def authorize_collaborators
-    authorize! :update, @project
+    authorize @project, :update?
   end
 end

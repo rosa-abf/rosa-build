@@ -2,7 +2,7 @@ class Groups::ProfileController < Groups::BaseController
   include AvatarHelper
   include PaginateHelper
 
-  load_and_authorize_resource class: Group, instance_name: 'group'
+  # load_and_authorize_resource class: Group, instance_name: 'group'
   skip_before_action :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
 
   def index
@@ -21,9 +21,10 @@ class Groups::ProfileController < Groups::BaseController
         when 'open'
           @projects = @projects.opened
         when 'hidden'
-          @projects = @projects.by_visibilities('hidden').accessible_by(current_ability, :read)
+          @projects = @projects.by_visibilities('hidden')
+          @projects = @projects.none unless policy(@group).reader?
         else
-          @projects = @projects.accessible_by(current_ability, :read)
+          @projects = @projects.opened unless policy(@group).reader?
         end
         @total_items  = @projects.count
         @projects     = @projects.paginate(paginate_params)
@@ -33,6 +34,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def new
+    @group = current_user.own_groups.build
   end
 
   def edit

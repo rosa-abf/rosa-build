@@ -70,7 +70,9 @@ module ProjectsHelper
   end
 
   def alone_member?(project)
-    Relation.by_target(project).by_actor(current_user).size > 0
+    Rails.cache.fetch(['ProjectsHelper#alone_member?', project, current_user]) do
+      Relation.by_target(project).by_actor(current_user).exists?
+    end
   end
 
   def participant_path(participant)

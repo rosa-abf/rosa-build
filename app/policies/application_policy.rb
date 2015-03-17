@@ -54,6 +54,15 @@ class ApplicationPolicy
     end
   end
 
+  # Public: Get user's group ids.
+  #
+  # Returns the Array of group ids.
+  def user_group_ids
+    Rails.cache.fetch(['ApplicationPolicy#user_group_ids', user]) do
+      user.group_ids
+    end
+  end
+
   protected
 
   # Public: Check if provided user is the current user.
@@ -131,9 +140,11 @@ class ApplicationPolicy
   # Returns true if he is, false otherwise.
   def owner?
     (
-      record.owner_type == 'User'  && record.owner_id == user.id
+      !record.try(:owner_type) && record.owner_id == user.id
     ) || (
-      record.owner_type == 'Group' && user_own_group_ids.include?(record.owner_id)
+      record.try(:owner_type) == 'User'  && record.owner_id == user.id
+    ) || (
+      record.try(:owner_type) == 'Group' && user_own_group_ids.include?(record.owner_id)
     )
   end
 
@@ -152,15 +163,6 @@ class ApplicationPolicy
   def user_own_group_ids
     Rails.cache.fetch(['ApplicationPolicy#user_own_group_ids', user]) do
       user.own_group_ids
-    end
-  end
-
-  # Public: Get user's group ids.
-  #
-  # Returns the Array of group ids.
-  def user_group_ids
-    Rails.cache.fetch(['ApplicationPolicy#user_group_ids', user]) do
-      user.group_ids
     end
   end
 

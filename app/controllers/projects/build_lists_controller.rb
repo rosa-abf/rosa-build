@@ -17,7 +17,8 @@ class Projects::BuildListsController < Projects::BaseController
   before_action :create_from_build_list, only: :new
 
   def index
-    authorize!(:show, @project) if @project
+    authorize :build_list
+    authorize @project, :show? if @project
     params[:filter].each{|k,v| params[:filter].delete(k) if v.blank? } if params[:filter]
 
     respond_to do |format|

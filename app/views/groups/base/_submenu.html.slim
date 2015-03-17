@@ -15,7 +15,7 @@
       / Collect the nav links, forms, and other content for toggling
       #submenu-navbar-collapse.collapse.navbar-collapse
         ul.nav.navbar-nav.left-border
-          - if policy(@group).edit?
+          - if policy(@group).update?
             li class=('active' if act == :edit && contr == :profile)
               = link_to t('layout.groups.edit'), edit_group_path(@group)
           - if policy(@group).manage_members?

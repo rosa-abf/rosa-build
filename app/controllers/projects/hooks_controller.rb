@@ -1,10 +1,10 @@
 class Projects::HooksController < Projects::BaseController
   before_action :authenticate_user!
-  load_and_authorize_resource :project
-  load_and_authorize_resource :hook, through: :project
+  before_action -> { authorize @project, :update? }
+  # load_and_authorize_resource :project
+  # load_and_authorize_resource :hook, through: :project
 
   def index
-    authorize! :edit, @project
     @name = params[:name]
     @hooks = @project.hooks.for_name(@name).order('name asc, created_at desc')
     render(:show) if @name.present?
