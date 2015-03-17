@@ -108,22 +108,22 @@ class ApplicationPolicy
   # Private: Check if provided user is at least record admin.
   #
   # Returns true if he is, false otherwise.
-  def local_admin?
-    best_role == 'admin'
+  def local_admin?(r = record)
+    best_role(r) == 'admin'
   end
 
   # Private: Check if provided user is at least record reader.
   #
   # Returns true if he is, false otherwise.
-  def local_reader?
-    %w(reader writer admin).include?(best_role)
+  def local_reader?(r = record)
+    %w(reader writer admin).include? best_role(r)
   end
 
   # Private: Check if provided user is at least record writer.
   #
   # Returns true if he is, false otherwise.
-  def local_writer?
-    %w(writer admin).include?(best_role)
+  def local_writer?(r = record)
+    %w(writer admin).include? best_role(r)
   end
 
   # Private: Check if provided user is record owner.
@@ -133,16 +133,25 @@ class ApplicationPolicy
     (
       record.owner_type == 'User'  && record.owner_id == user.id
     ) || (
-      record.owner_type == 'Group' && user_group_ids.include?(record.owner_id)
+      record.owner_type == 'Group' && user_own_group_ids.include?(record.owner_id)
     )
   end
 
   # Private: Get the best role of user for record.
   #
   # Returns the String role or nil.
-  def best_role
-    Rails.cache.fetch(['ApplicationPolicy#best_role', record, user]) do
-      user.best_role(record)
+  def best_role(r = record)
+    Rails.cache.fetch(['ApplicationPolicy#best_role', r, user]) do
+      user.best_role(r)
+    end
+  end
+
+  # Public: Get own user's group ids.
+  #
+  # Returns the Array of own group ids.
+  def user_own_group_ids
+    Rails.cache.fetch(['ApplicationPolicy#user_own_group_ids', user]) do
+      user.own_group_ids
     end
   end
 
@@ -150,7 +159,7 @@ class ApplicationPolicy
   #
   # Returns the Array of group ids.
   def user_group_ids
-    Rails.cache.fetch(['ApplicationPolicy#user_group_ids', user.id]) do
+    Rails.cache.fetch(['ApplicationPolicy#user_group_ids', user]) do
       user.group_ids
     end
   end
