@@ -3,7 +3,6 @@ class Platforms::PlatformsController < Platforms::BaseController
 
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
-  # load_and_authorize_resource
 
   def index
     respond_to do |format|

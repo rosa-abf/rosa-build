@@ -25,11 +25,10 @@
   .row
     hr
     h3= t("layout.projects.list_header")
-    - if policy(@repository).add_project?
+    - if policy(@repository).update?
       a.btn.btn-primary href=add_project_platform_repository_path(@platform, @repository)
         = t('layout.projects.add')
       | &nbsp;
-    - if policy(@repository).remove_project?
       a.btn.btn-primary href=remove_project_platform_repository_path(@platform, @repository)
         = t('layout.repositories.mass_delete')
   .row

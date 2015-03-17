@@ -7,11 +7,14 @@ class Platforms::RepositoriesController < Platforms::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :platform
-  load_and_authorize_resource :repository, through: :platform, shallow: true
+  # load_and_authorize_resource :platform
+  # load_and_authorize_resource :repository, through: :platform, shallow: true
   before_action :set_members, only: [:edit, :update]
+  before_action :load_repository
+  before_action -> { @repository = @platform.repositories.find(params[:id]) if params[:id] }
 
   def index
+    @repositories = @platform.repositories
     @repositories = Repository.custom_sort(@repositories).paginate(page: current_page)
   end
 
@@ -168,7 +171,11 @@ class Platforms::RepositoriesController < Platforms::BaseController
     redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
-  protected
+protected
+
+  def load_repository
+    @repository = @platform.repositories.find(params[:id]) if params[:id]
+  end
 
   def set_members
     @members = @repository.members.order('name')
