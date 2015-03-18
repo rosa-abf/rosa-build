@@ -56,7 +56,7 @@
               a href=edit_project_path(@project)
                 i.fa.fa-cog>
                 = t('project_menu.settings')
-        - if contr == :build_lists && act == 'index'
+        - if contr == :build_lists && act == :index
           .clearfix
           == render 'server_status'
       / /.navbar-collapse
