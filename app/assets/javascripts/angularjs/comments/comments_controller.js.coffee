@@ -170,7 +170,7 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
     vm.commentable = commentable
     vm.processing  = false
     vm.k = 10
-    if commentable.kind is 'issue'
+    if commentable.kind is 'issue' or commentable.kind is 'commit'
       list = $('#comments_list')
     else if commentable.kind is 'pull'
       list = $('#pull-activity')

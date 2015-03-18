@@ -17,8 +17,12 @@
   .both
   #repo-wrapper
     == render 'show'
+
+    - ctrl_params = "{ kind: 'commit', id: '#{@commit.id}' }"
     -comments = @comments.select {|c| c.data.blank? } # dont work @comments.where(data: nil)
-    == render "projects/comments/list", list: comments, project: @project, commentable: @commit
-    == render "projects/comments/add", project: @project, commentable: @commit if current_user
+    div[ ng-controller = 'CommentsController as commentsCtrl'
+         ng-init       = "commentsCtrl.init('#{@project.name_with_owner}', #{ctrl_params})" ]
+      == render "projects/comments/list", list: comments, project: @project, commentable: @commit
+      == render "projects/comments/add", project: @project, commentable: @commit if current_user
 
   = hidden_field_tag :preview_url, project_md_preview_path(@project)

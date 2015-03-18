@@ -1,9 +1,13 @@
 commentService = ($http) ->
   getPath = (kind, project, commentable, id) ->
-    if kind is 'remove' or kind is 'update'
+    if (kind is 'remove' or kind is 'update') and commentable.kind is 'issue'
       return Routes.project_issue_comment_path(project, commentable.id, id)
-    else if kind is 'add'
+    else if kind is 'add' and commentable.kind is 'issue'
       return Routes.project_issue_comments_path(project, commentable.id)
+    else if (kind is 'remove' or kind is 'update') and commentable.kind is 'commit'
+      return Routes.project_commit_comment_path(project, commentable.id, id)
+    else if kind is 'add' and commentable.kind is 'commit'
+      return Routes.project_commit_comments_path(project, commentable.id)
 
   {
     add: (project, commentable, body) ->
@@ -24,7 +28,7 @@ commentService = ($http) ->
     update: (project, commentable, id) ->
       path = getPath('update', project, commentable, id)
       params = { comment: { body:  $('#comment-'+id+'-body').val() }}
-      $http.put(path, params)
+      $http.patch(path, params)
 
     remove: (project, commentable, id) ->
       path = getPath('remove', project, commentable, id)
