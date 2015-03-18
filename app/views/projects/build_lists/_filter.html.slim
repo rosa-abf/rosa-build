@@ -54,15 +54,12 @@
                 = f.text_field attr, size: 10, class: 'form-control',
                   'datepicker-popup' => '{{datePickerCtrl.format}}',
                   'ng-model' => "$scope.$parent.params.filter.#{attr}",
-                  'is-opened' => "datePickerCtrl.#{attr}_opened",
+                  'is-open' => "datePickerCtrl.#{attr}_opened",
                   min: 'datePickerCtrl.minDate',
                   max: 'datePickerCtrl.maxDate',
                   'datepicker-options' => 'datePickerCtrl.dateOptions',
-                  'date-disabled' => "datePickerCtrl.disabled(date, mode)"
-                span.input-group-btn
-                  button.btn.btn-default type='button' ng-click="datePickerCtrl.open_#{attr}($event)"
-                    i.fa.fa-calendar
-            | {{datePickerCtrl.updated_at_start_opened}}
+                  'date-disabled' => "datePickerCtrl.disabled(date, mode)",
+                  'ng-click' => "datePickerCtrl.open_#{attr}($event)"
           h4.medium= t 'layout.build_lists.project_name_search'
           input#filter_project_name.form-control[ name     = 'filter[project_name]'
                                                   size     = '30'
