@@ -1,7 +1,7 @@
 - content_for :submenu do
   - act = action_name.to_sym; contr = controller_name.to_sym; treeish = @project.default_head(params[:treeish])
   nav.navbar.navbar-default role='navigation'
-    .container-fluid
+    .container-fluid ng-cloak = true
       / Brand and toggle get grouped for better mobile display
       .navbar-header
         button.navbar-toggle data-target='#submenu-navbar-collapse' data-toggle='collapse' type='button'

@@ -1,38 +1,30 @@
 p.navbar-text.navbar-left
-  i.fa.fa-info-circle.fa-lg
+  i.fa.fa-info-circle.fa-lg.text-primary
 
-p.navbar-text.navbar-left
+p.navbar-text.navbar-left.bg-success
   = t 'layout.build_lists.build_server_status.rpm_workers'
   ' :
   => t 'layout.build_lists.build_server_status.abf'
-  span.bg-primary.badge[] {{server_status.rpm.workers}}
-  ' ;
-  => t 'layout.build_lists.build_server_status.custom'
-  span.bg-primary.badge[] {{server_status.rpm.other_workers}}
-  ' .
+  span.badge.bg-primary[] {{server_status.rpm.workers}}
+  =<> t 'layout.build_lists.build_server_status.custom'
+  span.badge.bg-primary[] {{server_status.rpm.other_workers}}
 
-p.navbar-text.navbar-left
+p.navbar-text.navbar-left.bg-info
   = t('layout.build_lists.build_server_status.tasks').mb_chars.capitalize
   ' :
   => t 'layout.build_lists.build_server_status.custom'
-  span.bg-primary.badge[] {{server_status.rpm.default_tasks}}
-  ' ;
-  => t 'layout.build_lists.build_server_status.mass_build_tasks'
-  span.bg-primary.badge[] {{server_status.rpm.low_tasks}}
-  ' ;
-  => t 'layout.build_lists.build_server_status.build_tasks'
-  span.bg-primary.badge[] {{server_status.rpm.build_tasks}}
-  | .
+  span.badge.bg-primary[] {{server_status.rpm.default_tasks}}
+  =<> t 'layout.build_lists.build_server_status.mass_build_tasks'
+  span.badge.bg-primary[] {{server_status.rpm.low_tasks}}
+  =<> t 'layout.build_lists.build_server_status.build_tasks'
+  span.badge.bg-primary[] {{server_status.rpm.build_tasks}}
 
-p.navbar-text.navbar-left
+p.navbar-text.navbar-left.bg-warning
   = t 'layout.build_lists.build_server_status.publish_workers'
   ' :
   => t 'layout.build_lists.build_server_status.amount'
-  span.bg-primary.badge[] {{server_status.publish.workers}}
-  ' ;
-  => t 'layout.build_lists.build_server_status.tasks'
-  span.bg-primary.badge[] {{server_status.publish.tasks}}
-  ' ;
-  => t 'layout.build_lists.build_server_status.build_tasks'
-  span.bg-primary.badge[] {{server_status.publish.build_tasks}}
-  | .
+  span.badge.bg-primary[] {{server_status.publish.workers}}
+  =<> t 'layout.build_lists.build_server_status.tasks'
+  span.badge.bg-primary[] {{server_status.publish.tasks}}
+  =<> t 'layout.build_lists.build_server_status.build_tasks'
+  span.badge.bg-primary[] {{server_status.publish.build_tasks}}
