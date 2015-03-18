@@ -14,4 +14,4 @@
             li class=('active' if controller_name == 'product_build_lists')
               = link_to t('layout.products.list_header'), product_build_lists_path
 
-        == render 'server_status'
+        == render 'server_status' if action_name == 'index'
