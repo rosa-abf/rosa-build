@@ -1,6 +1,6 @@
 ul.nav.navbar-nav.navbar-left
   li.bg-success
-    a.no-pointer href='#'
+    a.no-pointer href=''
       i.fa.fa-info-circle.fa-lg.text-primary
       =< t 'layout.build_lists.build_server_status.rpm_workers'
       ' :
@@ -10,7 +10,7 @@ ul.nav.navbar-nav.navbar-left
       span.badge.bg-primary[] {{server_status.rpm.other_workers}}
 
   li.bg-info
-    a.no-pointer href='#'
+    a.no-pointer href=''
       = t('layout.build_lists.build_server_status.tasks').mb_chars.capitalize
       ' :
       => t 'layout.build_lists.build_server_status.custom'
@@ -21,7 +21,7 @@ ul.nav.navbar-nav.navbar-left
       span.badge.bg-primary[] {{server_status.rpm.build_tasks}}
 
   li.bg-warning
-    a.no-pointer href='#'
+    a.no-pointer href=''
       = t 'layout.build_lists.build_server_status.publish_workers'
       ' :
       => t 'layout.build_lists.build_server_status.amount'
