@@ -3,21 +3,38 @@ class ProjectPolicy < ApplicationPolicy
   def index?
     !user.guest?
   end
+  alias_method :remove_user?,               :index?
+  alias_method :preview?,                   :index?
 
   def show?
-    record.public? || local_reader?
+    return true if record.public?
+    return true if record.owner == user
+    return true if record.owner.is_a?(Group) && user_group_ids.inclide?(record.owner_id)
+    local_reader?
   end
-  alias_method :read?, :show?
-  alias_method :fork?, :show?
+  alias_method :read?,                      :show?
+  alias_method :fork?,                      :show?
+  alias_method :archive?,                   :show?
+  alias_method :get_id?,                    :show?
+  alias_method :refs_list?,                 :show?
 
   def create?
     !user.guest? && (!record.try(:owner) || policy(record.owner).write?)
   end
 
   def update?
-    local_admin?
+    owner? || local_admin?
   end
-  alias_method :alias?, :update?
+  alias_method :alias?,                     :update?
+  alias_method :sections?,                  :update?
+  alias_method :manage_collaborators?,      :update?
+  alias_method :autocomplete_maintainers?,  :update?
+  alias_method :add_member?,                :update?
+  alias_method :remove_member?,             :update?
+  alias_method :remove_members?,            :update?
+  alias_method :update_member?,             :update?
+  alias_method :members?,                   :update?
+  alias_method :schedule?,                  :update?
 
   def destroy?
     owner? || record.owner.is_a?(Group) && record.owner.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin')
@@ -35,7 +52,7 @@ class ProjectPolicy < ApplicationPolicy
 
   # for grack
   def write?
-    local_writer?
+    owner? || local_writer?
   end
 
   def possible_forks

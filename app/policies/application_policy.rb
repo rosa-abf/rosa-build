@@ -118,33 +118,33 @@ class ApplicationPolicy
   #
   # Returns true if he is, false otherwise.
   def local_admin?(r = record)
-    best_role(r) == 'admin'
+    owner?(r) || best_role(r) == 'admin'
   end
 
   # Private: Check if provided user is at least record reader.
   #
   # Returns true if he is, false otherwise.
   def local_reader?(r = record)
-    %w(reader writer admin).include? best_role(r)
+    owner?(r) || %w(reader writer admin).include? best_role(r)
   end
 
   # Private: Check if provided user is at least record writer.
   #
   # Returns true if he is, false otherwise.
   def local_writer?(r = record)
-    %w(writer admin).include? best_role(r)
+    owner?(r) || %w(writer admin).include? best_role(r)
   end
 
   # Private: Check if provided user is record owner.
   #
   # Returns true if he is, false otherwise.
-  def owner?
+  def owner?(r = record)
     (
-      !record.try(:owner_type) && record.owner_id == user.id
+      !r.try(:owner_type) && r.owner_id == user.id
     ) || (
-      record.try(:owner_type) == 'User'  && record.owner_id == user.id
+      r.try(:owner_type) == 'User'  && r.owner_id == user.id
     ) || (
-      record.try(:owner_type) == 'Group' && user_own_group_ids.include?(record.owner_id)
+      r.try(:owner_type) == 'Group' && user_own_group_ids.include?(r.owner_id)
     )
   end
 
@@ -163,6 +163,15 @@ class ApplicationPolicy
   def user_own_group_ids
     Rails.cache.fetch(['ApplicationPolicy#user_own_group_ids', user]) do
       user.own_group_ids
+    end
+  end
+
+  # Public: Get user's platform ids.
+  #
+  # Returns the Array of platform ids.
+  def user_platform_ids
+    Rails.cache.fetch(['ApplicationPolicy#user_platform_ids', user]) do
+      user.repositories.pluck(:platform_id)
     end
   end
 

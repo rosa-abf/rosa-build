@@ -175,7 +175,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def preview
-    authorize @project, :show?
+    authorize @project
     respond_to do |format|
       format.json {}
       format.html {render inline: view_context.markdown(params[:text]), layout: false}

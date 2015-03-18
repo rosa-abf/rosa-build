@@ -7,7 +7,16 @@ class PlatformPolicy < ApplicationPolicy
   def show?
     return true unless record.hidden?
     return true if record.owner == user
-    return true if owner?
+    owner? || local_reader? || user_platform_ids.include?(record.id)
+  end
+  alias_method :advisories?, :show?
+  alias_method :members?,    :show?
+  alias_method :owned?,      :show?
+  alias_method :read?,       :show?
+  alias_method :related?,    :show?
+
+  def platforms_for_build?
+    true
   end
 
   def create?
@@ -17,15 +26,29 @@ class PlatformPolicy < ApplicationPolicy
   def update?
     owner?
   end
+  alias_method :change_visibility?, :update?
+
+  def destroy?
+    record.main? && owner?
+  end
 
   def local_admin_manage?
     owner? || local_admin?
   end
-  alias_method :add_project?, :local_admin_manage?
+  alias_method :add_project?,         :local_admin_manage?
+  alias_method :remove_file?,         :local_admin_manage?
 
   def clone?
-    return false if record.personal?
-    owner? || local_admin?
+    record.main? && ( owner? || local_admin? )
+  end
+  alias_method :add_member?,          :clone?
+  alias_method :members?,             :clone?
+  alias_method :regenerate_metadata?, :clone?
+  alias_method :remove_member?,       :clone?
+  alias_method :remove_members?,      :clone?
+
+  def clear?
+    record.personal? && owner?
   end
 
   class Scope < Scope

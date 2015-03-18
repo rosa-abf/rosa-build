@@ -23,8 +23,19 @@ class GroupPolicy < ApplicationPolicy
   def update?
     owner? || local_admin?
   end
-  alias_method :manage_members?, :update?
-  alias_method :remove_members?, :update?
-  alias_method :add_member?, :update?
+  alias_method :manage_members?,  :update?
+  alias_method :members?,         :update?
+  alias_method :add_member?,      :update?
+  alias_method :remove_member?,   :update?
+  alias_method :remove_members?,  :update?
+  alias_method :update_member?,   :update?
+
+  def destroy?
+    owner?
+  end
+
+  def remove_user?
+    !user.guest?
+  end
 
 end

@@ -1,3 +1,19 @@
 class ProductPolicy < ApplicationPolicy
 
+  def index?
+    record.platform.main?
+  end
+
+  def show?
+    policy(record.platform).show?
+  end
+  alias_method :read?,          :show?
+
+  def create?
+    record.platform.main? && local_admin?(record.platform)
+  end
+  alias_method :clone?,   :create?
+  alias_method :destroy?, :create?
+  alias_method :update?,  :create?
+
 end
