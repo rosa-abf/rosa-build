@@ -1,6 +1,6 @@
 RosaABF.controller('BuildListsController',
-  ['$scope', '$http', '$location', '$timeout', 'datepickerPopupConfig', '$cookies',
-   function($scope, $http, $location, $timeout, datepickerPopupConfig, $cookies) {
+  ['$scope', '$http', '$location', '$timeout', '$cookies',
+   function($scope, $http, $location, $timeout, $cookies) {
 
   $scope.params         = null;
   $scope.first_run      = true;
@@ -8,8 +8,8 @@ RosaABF.controller('BuildListsController',
   $scope.build_lists    = [];
   $scope.isRequest      = false; // Disable 'Search' button
   $scope.pages          = [];
-
   $scope.opened         = {};
+
   $scope.map_priorities = {
     <%=BuildList::WAITING_FOR_RESPONSE%>: 13,
     <%=BuildList::BUILD_PENDING%>: 12,
@@ -26,13 +26,6 @@ RosaABF.controller('BuildListsController',
     <%=BuildList::FAILED_PUBLISH%>: 1,
     <%=BuildList::REJECTED_PUBLISH%>: 0
   };
-  $scope.minDate = new Date(2010, 1, 1);
-  $scope.maxDate = moment().add(1, 'months').calendar();
-
-  $scope.today = function() {
-    $scope.dt = new Date();
-  };
-  $scope.today();
 
   $scope.clear = function () {
     //$scope.dt     = null;
@@ -42,42 +35,22 @@ RosaABF.controller('BuildListsController',
                     };
   };
 
-  // Disable weekend selection
-  $scope.disabled = function(date, mode) {
-    return ( mode === 'day' && ( date.getDay() === 0 || date.getDay() === 6 ) );
-  };
-
-  $scope.toggleMin = function() {
-    $scope.minDate = $scope.minDate ? null : new Date();
-  };
-  $scope.toggleMin();
-
-  $scope.dateOptions = {
-    formatYear: 'yy',
-    startingDay: <%=  I18n.locale == :ru ? 1 : 0 %>,
-    'show-weeks': false
-  };
-
-  $scope.initDate = $scope.today();
-  $scope.format = 'mediumDate';
-
-  <% if I18n.locale == :ru %>
-    // TRANSLATION
-    datepickerPopupConfig.currentText = 'Сегодня';
-    datepickerPopupConfig.clearText = 'Очистить';
-    datepickerPopupConfig.weeksText = 'Недели';
-    datepickerPopupConfig.closeText = 'Закрыть';
-  <% end %>
-  datepickerPopupConfig.appendToBody = 'true';
-
   $scope.init = function init() {
-    $scope.isOpenServerStatus = $cookies.isOpenServerStatus === 'true' ? true : false;
+    $scope.name_with_owner = $('#name_with_owner').val();
+    if ($scope.name_with_owner) {
+      $scope.build_lists_path = Routes.project_build_lists_path($scope.name_with_owner, {format: 'json'});
+    }
+    else {
+      $scope.build_lists_path = Routes.build_lists_path({format: 'json'});
+    }
+
+    //$scope.isOpenServerStatus = $cookies.isOpenServerStatus === 'true' ? true : false;
     $scope.isOpenFilters      = $cookies.isOpenFilters === 'true' ? true : false;
   };
 
-  $scope.$watch('isOpenServerStatus', function(){
-      $cookies.isOpenServerStatus =  $scope.isOpenServerStatus.toString();
-  }, true);
+  // $scope.$watch('isOpenServerStatus', function(){
+  //     $cookies.isOpenServerStatus =  $scope.isOpenServerStatus.toString();
+  // }, true);
 
   $scope.$watch('isOpenFilters', function(){
       $cookies.isOpenFilters =  $scope.isOpenFilters.toString();
@@ -88,9 +61,9 @@ RosaABF.controller('BuildListsController',
     $scope.isRequest = true;
 
 
-    $http.get(Routes.build_lists_path({format: 'json'}), {params: $location.search()}).success(function(results) {
+    $http.get($scope.build_lists_path, {params: $location.search()}).success(function(results) {
       // Render Server status
-      $scope.server_status  = results.server_status;
+      $scope.$parent.server_status  = results.server_status;
 
       // TMP fields
       var dictionary  = results.dictionary;

@@ -1,0 +1,61 @@
+DatePickerController = ($scope, datepickerPopupConfig) ->
+
+  vm = this
+
+  vm.minDate = new Date(2010, 1, 1)
+  vm.maxDate = moment().add(1, 'months').calendar()
+
+  vm.today = ->
+    vm.dt = new Date()
+
+  vm.today()
+
+  vm.clear = ->
+    dt = null
+
+  # Disable weekend selection
+  vm.disabled = (date, mode)->
+    mode is 'day' and ( date.getDay() is 0 or date.getDay() is 6 )
+
+  vm.toggleMin = ->
+    vm.minDate = vm.minDate ? null : new Date()
+
+  vm.toggleMin()
+
+  vm.open_updated_at_start = ($event)->
+    $event.preventDefault()
+    $event.stopPropagation()
+
+    vm.updated_at_start_opened = true
+
+  vm.open_updated_at_end = ($event)->
+    $event.preventDefault()
+    $event.stopPropagation()
+
+    vm.updated_at_end_opened = true
+
+  vm.dateOptions =
+    formatYear: 'yy'
+    startingDay: <%=  I18n.locale == :ru ? 1 : 0 %>
+    'show-weeks': false
+
+  vm.initDate = vm.today()
+  vm.format = 'dd/MM/yyyy'
+
+  <% if I18n.locale == :ru %>
+  # TRANSLATION
+  datepickerPopupConfig.currentText = 'Сегодня'
+  datepickerPopupConfig.clearText = 'Очистить'
+  datepickerPopupConfig.weeksText = 'Недели'
+  datepickerPopupConfig.closeText = 'Закрыть'
+  <% end %>
+  #datepickerPopupConfig.appendToBody = 'true'
+
+angular
+  .module("RosaABF")
+  .controller "DatePickerController", DatePickerController
+
+DatePickerController.$inject = [
+                                '$scope'
+                                'datepickerPopupConfig'
+                               ]
