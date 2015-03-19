@@ -1,7 +1,7 @@
 class PlatformPolicy < ApplicationPolicy
 
   def index?
-    true
+    !user.guest?
   end
 
   def show?

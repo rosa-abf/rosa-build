@@ -5,6 +5,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   skip_before_action :authenticate_user!, only: [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
 
   def index
+    authorize :platform
     respond_to do |format|
       format.html {}
 
@@ -17,22 +18,23 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def show
-    authorize @platform = Platform.find_cached(params[:id])
   end
 
   def new
+    authorize @platform = Platform.new
     @admin_uname  = current_user.uname
     @admin_id     = current_user.id
-    @platform     = Platform.new
   end
 
   def edit
+    authorize @platform
     @admin_id = @platform.owner.id
     @admin_uname = @platform.owner.uname
   end
 
   def create
-    @admin_id = params[:admin_id]
+    authorize @platform = Platform.new(params[:platform])
+    @admin_id    = params[:admin_id]
     @admin_uname = params[:admin_uname]
     # FIXME: do not allow manipulate owner model, only platforms onwer_id and onwer_type
     @platform.owner = @admin_id.blank? ? get_owner : User.find(@admin_id)
@@ -47,13 +49,13 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def update
+    authorize @platform
     @admin_id = params[:admin_id]
     @admin_uname = params[:admin_uname]
 
     platform_params = params[:platform] || {}
     platform_params = platform_params.slice(:description, :platform_arch_settings_attributes, :released, :automatic_metadata_regeneration, :default_branch)
     platform_params[:owner] = User.find(@admin_id) if @admin_id.present?
-
 
     respond_to do |format|
       format.html do
@@ -76,6 +78,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def regenerate_metadata
+    authorize @platform
     if @platform.regenerate
       flash[:notice] = I18n.t('flash.platform.saved')
     else
@@ -85,6 +88,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def change_visibility
+    authorize @platform
     if @platform.change_visibility
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
@@ -96,12 +100,14 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def clone
+    authorize @platform
     @cloned = Platform.new
     @cloned.name = @platform.name + "_clone"
     @cloned.description = @platform.description + "_clone"
   end
 
   def make_clone
+    authorize @platform
     @cloned = @platform.full_clone params[:platform].merge(owner: current_user)
     if @cloned.persisted?
       flash[:notice] = I18n.t("flash.platform.clone_success")
@@ -113,16 +119,19 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def destroy
+    authorize @platform
     @platform.destroy # later with resque
     flash[:notice] = t("flash.platform.destroyed")
     redirect_to platforms_path
   end
 
   def members
+    authorize @platform
     @members = @platform.members.order(:uname)
   end
 
   def remove_members
+    authorize @platform
     User.where(id: params[:members]).each do |user|
       @platform.remove_member(user)
     end
@@ -130,7 +139,8 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def add_member
-    member = User.where(id: params[:member_id]).first
+    authorize @platform
+    member = User.find_by(id: params[:member_id])
     if !member
       flash[:error] = t("flash.collaborators.wrong_user", uname: params[:member_id])
     elsif @platform.add_member(member)
@@ -142,13 +152,22 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def advisories
+    authorize @platform
     @advisories = @platform.advisories.paginate(page: params[:page])
   end
 
   def clear
+    authorize @platform
     @platform.clear
     flash[:notice] = t('flash.repository.clear')
     redirect_to edit_platform_path(@platform)
+  end
+
+  private
+
+  # Private: before_action hook which loads Platform.
+  def load_platform
+    authorize @platform = Platform.find_cached(params[:id]), :show? if params[:id]
   end
 
 end
