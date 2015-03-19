@@ -16,7 +16,4 @@ class UserPolicy < ApplicationPolicy
     record == user
   end
 
-  def banned?
-    !is_banned?
-  end
 end

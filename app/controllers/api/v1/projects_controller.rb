@@ -3,30 +3,25 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:get_id, :show, :refs_list] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :project
+  before_action :load_project
 
   def index
-    @projects = Project.accessible_by(current_ability, :membered)
-                       .paginate(paginate_params)
+    authorize :project
+    @projects = ProjectPolicy::Scope.new(current_user, Project).
+      membered.paginate(paginate_params)
     respond_to :json
   end
 
   def get_id
-    if @project = Project.find_by_owner_and_name(params[:owner], params[:name])
-      authorize @project, :show?
-    else
-      raise ActiveRecord::RecordNotFound
-    end
+    authorize @project = Project.find_by_owner_and_name!(params[:owner], params[:name])
     respond_to :json
   end
 
   def show
-    authorize @project, :show?
     respond_to :json
   end
 
   def refs_list
-    authorize @project, :show?
     @refs = @project.repo.branches + @project.repo.tags.select{ |t| t.commit }
     respond_to :json
   end
@@ -40,11 +35,11 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def create
-    p_params = params[:project] || {}
-    owner_type = p_params[:owner_type]
-    if owner_type.present? && %w(User Group).include?(owner_type)
-      @project.owner = owner_type.constantize.
-        where(id: p_params[:owner_id]).first
+    @project   = Project.new(params[:project])
+    p_params   = params[:project] || {}
+    owner_type = %w(User Group).find{ |t| t == p_params[:owner_type] }
+    if owner_type.present?
+      @project.owner = owner_type.constantize.find_by(id: p_params[:owner_id])
     else
       @project.owner = nil
     end
@@ -81,5 +76,12 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
   def alias
     fork(true)
+  end
+
+  private
+
+  # Private: before_action hook which loads Project.
+  def load_project
+    authorize @project = Project.find(params[:id]) if params[:id]
   end
 end

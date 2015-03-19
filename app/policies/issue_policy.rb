@@ -1,7 +1,8 @@
 class IssuePolicy < ApplicationPolicy
 
   def index?
-    record.project.has_issues?
+    # record.project.has_issues?
+    true
   end
 
   def show?

@@ -20,7 +20,7 @@ class AdvisoriesController < ApplicationController
   end
 
   def search
-    authorize :advisories, :index?
+    authorize :advisories
     @advisory = Advisory.by_update_type(params[:bl_type]).search_by_id(params[:query]).first
     if @advisory.nil?
       render nothing: true, status: 404

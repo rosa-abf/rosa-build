@@ -2,10 +2,10 @@ class Groups::ProfileController < Groups::BaseController
   include AvatarHelper
   include PaginateHelper
 
-  # load_and_authorize_resource class: Group, instance_name: 'group'
   skip_before_action :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
 
   def index
+    authorize :group
     @groups = current_user.groups.paginate(page: params[:group_page]) # accessible_by(current_ability)
     @groups = @groups.search(params[:query]) if params[:query].present?
   end
@@ -34,14 +34,15 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def new
-    @group = current_user.own_groups.build
+    authorize @group = current_user.own_groups.build
   end
 
   def edit
+    authorize @group
   end
 
   def create
-    @group = current_user.own_groups.new params[:group]
+    authorize @group = current_user.own_groups.build(params[:group])
     if @group.save
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
@@ -53,6 +54,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def update
+    authorize @group
     if @group.update_attributes(params[:group])
       update_avatar(@group, params)
       flash[:notice] = t('flash.group.saved')
@@ -64,12 +66,14 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def destroy
+    authorize @group
     @group.destroy
     flash[:notice] = t("flash.group.destroyed")
     redirect_to groups_path
   end
 
   def remove_user
+    authorize @group
     Relation.by_actor(current_user).by_target(@group).destroy_all
     redirect_to groups_path
   end

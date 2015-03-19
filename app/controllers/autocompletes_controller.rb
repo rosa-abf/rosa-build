@@ -1,5 +1,6 @@
 class AutocompletesController < ApplicationController
-  before_action :authenticate_user!
+  before_action     :authenticate_user!
+  skip_after_action :verify_authorized
 
   def autocomplete_user_uname
     results = User.opened.search(params[:query]).search_order.limit(5)
@@ -13,7 +14,8 @@ class AutocompletesController < ApplicationController
   end
 
   def autocomplete_extra_build_list
-    bl = BuildList.for_extra_build_lists(params[:term], current_ability, save_to_platform).first
+    bl = BuildListPolicy::Scope.new(current_user, BuildList).read.
+      for_extra_build_lists(params[:term], save_to_platform).first
     results << {  :id     => bl.id,
                   :value  => bl.id,
                   :label  => "#{bl.id} (#{bl.project.name} - #{bl.arch.name})",
@@ -35,10 +37,10 @@ class AutocompletesController < ApplicationController
 
   def autocomplete_extra_repositories
     # Only personal and build for platform repositories can be attached to the build
-    Platform.includes(:repositories).search(params[:term]).search_order
-            .accessible_by(current_ability, :read).limit(5)
-            .where("platforms.platform_type = 'personal' OR platforms.id = ?",
-                    params[:build_for_platform_id].to_i).each do |platform|
+    platforms = PlatformPolicy::Scope.new(current_user, Platform).related.
+      includes(:repositories).search(params[:term]).search_order.limit(5).
+      where("platforms.platform_type = 'personal' OR platforms.id = ?", params[:build_for_platform_id])
+    platforms.each do |platform|
       platform.repositories.each do |repository|
         results <<
           {
@@ -56,7 +58,7 @@ class AutocompletesController < ApplicationController
   protected
 
   def save_to_platform
-    @save_to_platform ||= Platform.find(params[:platform_id])
+    @save_to_platform ||= Platform.find_cached(params[:platform_id])
   end
 
   def results

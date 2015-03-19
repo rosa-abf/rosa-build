@@ -4,7 +4,8 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :repository, through: :platform, shallow: true
+  before_action :load_platform
+  before_action :load_repository
 
   def show
     respond_to :json
@@ -108,6 +109,18 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
     else
       render_json_response @repository, error_message(key_pair, 'Signatures have not been updated for repository'), 422
     end
+  end
+
+  private
+
+  # Private: before_action hook which loads Platform.
+  def load_platform
+    authorize @platform = Platform.find_cached(params[:platform_id]), :show?
+  end
+
+  # Private: before_action hook which loads Repository.
+  def load_repository
+    authorize @repository = @platform.repositories.find(params[:id]) if params[:id]
   end
 
 end

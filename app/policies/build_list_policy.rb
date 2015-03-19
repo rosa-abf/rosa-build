@@ -1,5 +1,9 @@
 class BuildListPolicy < ApplicationPolicy
 
+  def index?
+    true
+  end
+
   def show?
     record.user_id == user.id || policy(record.project).show?
   end
@@ -48,5 +52,39 @@ class BuildListPolicy < ApplicationPolicy
     policy(record.project).write?
   end
 
+  class Scope < Scope
+
+    def read
+      policy = Pundit.policy!(user, :build_list)
+      scope  = scope.joins(:project)
+      scope.where <<-SQL, { user_id: user.id, user_group_ids: policy.user_group_ids }
+        (
+          build_lists.user_id = :user_id
+        ) OR (
+          projects.visibility = 'open'
+        ) OR (
+          projects.owner_type = 'User'  AND projects.owner_id = :user_id
+        ) OR (
+          projects.owner_type = 'Group' AND projects.owner_id IN (:user_group_ids)
+        ) OR (
+          projects.id = ANY (
+            ARRAY (
+              SELECT target_id
+              FROM relations
+              INNER JOIN projects ON projects.id = relations.target_id
+              WHERE relations.target_type = 'Project' AND
+              (
+                projects.owner_type = 'User' AND projects.owner_id != :user_id OR
+                projects.owner_type = 'Group' AND projects.owner_id NOT IN (:user_group_ids)
+              ) AND (
+                relations.actor_type = 'User' AND relations.actor_id = :user_id OR
+                relations.actor_type = 'Group' AND relations.actor_id IN (:user_group_ids)
+              )
+            )
+          )
+        )
+      SQL
+    end
+  end
 
 end

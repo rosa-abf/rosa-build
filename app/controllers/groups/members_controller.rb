@@ -1,5 +1,5 @@
 class Groups::MembersController < Groups::BaseController
-  before_action -> { authorize @group, :update?  }
+  before_action -> { authorize @group, :manage_members?  }
 
   def index
     @members = @group.members.order(:uname) - [@group.owner]
@@ -25,7 +25,7 @@ class Groups::MembersController < Groups::BaseController
   end
 
   def add
-    @user = User.where(id: params[:member_id]).first
+    @user = User.find_by(id: params[:member_id])
     if !@user
       flash[:error] = t("flash.collaborators.wrong_user", uname: params[:user_uname])
     elsif @group.add_member(@user, params[:role])

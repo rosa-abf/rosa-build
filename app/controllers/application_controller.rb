@@ -19,6 +19,7 @@ class ApplicationController < ActionController::Base
                 only: [:create, :destroy, :open_id, :cancel, :publish, :change_visibility] # :update
   before_action :banned?
   after_action -> { EventLog.current_controller = nil }
+  after_action :verify_authorized
 
   helper_method :get_owner
 
@@ -46,12 +47,11 @@ class ApplicationController < ActionController::Base
 
   # Disables access to site for banned users
   def banned?
-    authorize :user, :banned?
-    # if user_signed_in? && current_user.is_banned?
-    #   sign_out current_user
-    #   flash[:error] = I18n.t('messages.account_suspended')
-    #   redirect_to root_path
-    # end
+    if user_signed_in? && current_user.is_banned?
+      sign_out current_user
+      flash[:error] = I18n.t('devise.failure.locked')
+      redirect_to root_path
+    end
   end
 
   # For this example, we are simply using token authentication

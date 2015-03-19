@@ -3,9 +3,7 @@ class AdvisoryPolicy < ApplicationPolicy
   def index?
     true
   end
-
-  def show?
-    true
-  end
+  alias_method :search?, :index?
+  alias_method :show?, :index?
 
 end

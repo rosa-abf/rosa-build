@@ -131,9 +131,8 @@ class BuildList < ActiveRecord::Base
   HUMAN_STATUSES.freeze
 
   scope :recent, -> { order(updated_at: :desc) }
-  scope :for_extra_build_lists, ->(ids, current_ability, save_to_platform) {
-    s = all
-    s = s.where(id: ids).published_container.accessible_by(current_ability, :read)
+  scope :for_extra_build_lists, ->(ids, save_to_platform) {
+    s = s.where(id: ids)
     s = s.where(save_to_platform_id: save_to_platform.id) if save_to_platform && save_to_platform.main?
     s
   }
@@ -745,7 +744,8 @@ class BuildList < ActiveRecord::Base
       extra_build_lists.flatten!
     end
     return if extra_build_lists.blank?
-    bls = BuildList.for_extra_build_lists(extra_build_lists, current_ability, save_to_platform)
+    bls = BuildListPolicy::Scope.new(user, BuildList).read.
+      for_extra_build_lists(extra_build_lists, save_to_platform)
     if save_to_platform
       if save_to_platform.distrib_type == 'rhel'
         bls = bls.where('
