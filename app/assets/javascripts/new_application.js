@@ -30,8 +30,9 @@
 //= require lib/Chart
 //= require lib/bootstrap-typeahead
 //= require lib/custom-bootstrap-typeahead
-//= require extra/highlight
+//= require lib/notifier
 
+//= require extra/highlight
 //= require extra/pull
 //= require extra/scroller
 //= require extra/fork

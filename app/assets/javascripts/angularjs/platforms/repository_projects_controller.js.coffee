@@ -1,4 +1,4 @@
-RosaABF.controller 'RepositoryProjectsController', ['$scope', '$http', '$location', ($scope, $http, $location) ->
+RosaABF.controller 'RepositoryProjectsController', ['$scope', '$http', '$location', 'confirmMessage', ($scope, $http, $location, confirmMessage) ->
 
   $scope.added          = $('#added').val()
   $scope.platform_id    = $('#platform_id').val()
@@ -50,5 +50,15 @@ RosaABF.controller 'RepositoryProjectsController', ['$scope', '$http', '$locatio
 
   $scope.goToPage = (number) ->
     $location.search('page', number)
+
+  $scope.removeProject = (project) ->
+    return false unless confirmMessage.show()
+    $scope.processing = true
+    $http.delete(project.remove_path).success (data) ->
+      Notifier.success(data.message)
+      $scope.projects = _.reject($scope.projects, (pr) ->
+       return pr.id is project.id
+      )
+    $scope.processing  = false
 
 ]

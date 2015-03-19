@@ -140,7 +140,11 @@ class Platforms::RepositoriesController < Platforms::BaseController
     end
     if params[:project_id].present?
       ProjectToRepository.where(project_id: params[:project_id], repository_id: @repository.id).destroy_all
-      redirect_to platform_repository_path(@platform, @repository), notice: t('flash.repository.project_removed')
+      message = t('flash.repository.project_removed')
+      respond_to do |format|
+        format.html {redirect_to platform_repository_path(@platform, @repository), notice: message}
+        format.json {render json: { message: message }}
+      end
     end
   end
 
