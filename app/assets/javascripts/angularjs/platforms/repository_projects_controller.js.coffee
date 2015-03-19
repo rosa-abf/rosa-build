@@ -59,6 +59,5 @@ RosaABF.controller 'RepositoryProjectsController', ['$scope', '$http', '$locatio
       $scope.projects = _.reject($scope.projects, (pr) ->
        return pr.id is project.id
       )
-    $scope.processing  = false
-
+      $scope.processing  = false
 ]
