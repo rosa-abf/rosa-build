@@ -125,14 +125,14 @@ class ApplicationPolicy
   #
   # Returns true if he is, false otherwise.
   def local_reader?(r = record)
-    owner?(r) || %w(reader writer admin).include? best_role(r)
+    owner?(r) || %w(reader writer admin).include?(best_role(r))
   end
 
   # Private: Check if provided user is at least record writer.
   #
   # Returns true if he is, false otherwise.
   def local_writer?(r = record)
-    owner?(r) || %w(writer admin).include? best_role(r)
+    owner?(r) || %w(writer admin).include?(best_role(r))
   end
 
   # Private: Check if provided user is record owner.

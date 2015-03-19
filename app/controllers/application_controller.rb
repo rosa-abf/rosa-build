@@ -47,7 +47,7 @@ class ApplicationController < ActionController::Base
 
   # Disables access to site for banned users
   def banned?
-    if user_signed_in? && current_user.is_banned?
+    if user_signed_in? && current_user.access_locked?
       sign_out current_user
       flash[:error] = I18n.t('devise.failure.locked')
       redirect_to root_path
