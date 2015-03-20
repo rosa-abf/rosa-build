@@ -23,7 +23,7 @@ div ng-controller='RepositoryProjectsController'
         th= t("activerecord.attributes.project.description")
         th
     tbody ng-hide='processing'
-      tr ng-repeat='project in projects'
+      tr ng-repeat='project in projects' ng-cloak = true
 
         td
           i.fa ng-class='project.visibility_class'

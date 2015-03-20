@@ -98,6 +98,9 @@ gem 'sitemap_generator'
 
 gem 'codemirror-rails', '~> 4.5'
 
+source 'https://rails-assets.org' do
+  gem 'rails-assets-notifyjs'
+end
 
 group :production do
   gem 'airbrake'

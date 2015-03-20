@@ -53,11 +53,11 @@ RosaABF.controller 'RepositoryProjectsController', ['$scope', '$http', '$locatio
 
   $scope.removeProject = (project) ->
     return false unless confirmMessage.show()
-    $scope.processing = true
     $http.delete(project.remove_path).success (data) ->
-      Notifier.success(data.message)
-      $scope.projects = _.reject($scope.projects, (pr) ->
-       return pr.id is project.id
-      )
-      $scope.processing  = false
+      $.notify(data.message, 'success')
+
+    $scope.projects = _.reject($scope.projects, (pr) ->
+      return pr.id is project.id
+    )
+    false
 ]

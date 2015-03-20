@@ -27,10 +27,12 @@
 
 //= require zeroclipboard
 
+//= require notifyjs
+//= require notifyjs/styles/bootstrap/notify-bootstrap
+
 //= require lib/Chart
 //= require lib/bootstrap-typeahead
 //= require lib/custom-bootstrap-typeahead
-//= require lib/notifier
 
 //= require extra/highlight
 //= require extra/pull
