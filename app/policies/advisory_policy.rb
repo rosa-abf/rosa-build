@@ -6,4 +6,8 @@ class AdvisoryPolicy < ApplicationPolicy
   alias_method :search?, :index?
   alias_method :show?, :index?
 
+  def update?
+    true
+  end
+
 end

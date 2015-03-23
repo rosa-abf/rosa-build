@@ -27,10 +27,10 @@
               = link_to t("layout.platforms.maintainers"), platform_maintainers_path(@platform)
             li class=('active' if contr == :mass_builds)
               = link_to t("layout.platforms.mass_build"), platform_mass_builds_path(@platform)
-          - if policy(@platform.products.build).index?
+          - if policy(@platform.products.build).show?
             li class=('active' if contr == :products)
               = link_to t("layout.products.list_header"), platform_products_path(@platform)
-          - if policy(@platform.advisories.build).index?
+          - if policy(@platform.advisories.build).show?
             li class=('active' if contr == :platforms && act == :advisories)
               = link_to t("layout.advisories.list_header"), advisories_platform_path(@platform)
           - if policy(@platform).update?
@@ -39,6 +39,7 @@
           - if policy(@platform).local_admin_manage?
             li class=('active' if act == :members && contr == :platforms)
               = link_to t("layout.platforms.members"), members_platform_path(@platform)
+          - if policy(@platform).edit?
             li class=('active' if contr == :key_pairs)
               = link_to t("layout.key_pairs.header"), platform_key_pairs_path(@platform)
             li class=('active' if contr == :tokens)

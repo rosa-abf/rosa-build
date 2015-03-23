@@ -100,7 +100,7 @@ class Api::V1::BaseController < ApplicationController
         id: id,
         message: message
       }
-    }.to_json, status: status
+    }, status: status
   end
 
   def render_validation_error(subject, message)

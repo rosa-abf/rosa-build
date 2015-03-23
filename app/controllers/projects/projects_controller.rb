@@ -95,10 +95,10 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def schedule
-    authorize @project, :update?
+    authorize @project
     p_to_r = @project.project_to_repositories.where(repository_id: params[:repository_id]).first
     unless p_to_r.repository.publish_without_qa
-      authorize p_to_r.repository.platform, :update?
+      authorize p_to_r.repository.platform, :local_admin_manage?
     end
     p_to_r.user_id      = current_user.id
     p_to_r.enabled      = params[:enabled].present?
@@ -154,7 +154,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def remove_user
-    authorize @project, :update?
+    authorize @project
     @project.relations.by_actor(current_user).destroy_all
     respond_to do |format|
       format.html do
@@ -166,7 +166,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def autocomplete_maintainers
-    authorize @project, :update?
+    authorize @project
     term, limit = params[:query], params[:limit] || 10
     items = User.member_of_project(@project)
                 .where("users.name ILIKE ? OR users.uname ILIKE ?", "%#{term}%", "%#{term}%")
@@ -183,7 +183,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def refs_list
-    authorize @project, :show?
+    authorize @project
     refs = @project.repo.branches_and_tags.map(&:name)
     @selected   = params[:selected] if refs.include?(params[:selected])
     @selected ||= @project.resolve_default_branch
