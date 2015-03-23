@@ -3,94 +3,93 @@ require 'spec_helper'
 shared_examples_for 'show build list via api' do
   it 'should be able to perform show action' do
     get :show, @show_params
-    response.should render_template("api/v1/build_lists/show")
+    expect(response).to render_template("api/v1/build_lists/show")
   end
 
   it 'should be able to perform index action' do
     get :index, format: :json
-    response.should render_template("api/v1/build_lists/index")
+    expect(response).to render_template("api/v1/build_lists/index")
   end
 end
 
 shared_examples_for 'not show build list via api' do
   it 'should not be able to perform show action' do
     get :show, @show_params
-    response.body.should == {"message" => "Access violation to this page!"}.to_json
+    expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
   end
 
   pending 'should not be able to perform index action' do
     get :index, format: :json
-    response.body.should == {"message" => "Access violation to this page!"}.to_json
+    expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
   end
 end
 
 shared_examples_for 'create build list via api' do
 
   it 'should create one more build list' do
-    lambda { post :create, @create_params }.should change{ BuildList.count }.by(1)
+    expect { post :create, @create_params }.to change(BuildList, :count).by(1)
   end
 
   it 'should return 200 response code' do
     post :create, @create_params
-    response.should be_success
+    expect(response).to be_success
   end
 
   it 'should save correct commit_hash for branch based build' do
     post :create, @create_params
-    #@project.build_lists.last.commit_hash.should == @project.repo.commits('master').last.id
-    @project.build_lists.last.commit_hash.should == @params[:commit_hash]
+    expect(@project.build_lists.last.commit_hash).to eq @params[:commit_hash]
   end
 
   it 'should save correct commit_hash for tag based build' do
     system("cd #{@project.repo.path} && git tag 4.7.5.3") # TODO REDO through grit
     post :create, @create_params
-    #@project.build_lists.last.commit_hash.should == @project.repo.commits('4.7.5.3').last.id
-    @project.build_lists.last.commit_hash.should == @params[:commit_hash]
+    expect(@project.build_lists.last.commit_hash).to eq @params[:commit_hash]
   end
 
   it 'should not create without existing commit hash in project' do
-    lambda{ post :create, @create_params.deep_merge(build_list: {commit_hash: 'wrong'})}.should change{@project.build_lists.count}.by(0)
+    expect {
+      post :create, @create_params.deep_merge(build_list: {commit_hash: 'wrong'})
+    }.to change{@project.build_lists.count}.by(0)
   end
 
   it 'should not create without existing arch' do
-    lambda{ post :create, @create_params.deep_merge(build_list: {arch_id: -1})}.should change{@project.build_lists.count}.by(0)
+    expect {
+      post :create, @create_params.deep_merge(build_list: {arch_id: -1})
+    }.to change{@project.build_lists.count}.by(0)
   end
 
   it 'should not create without existing save_to_platform' do
-    lambda{
+    expect {
       post :create, @create_params.deep_merge(build_list: {save_to_platform_id: -1, save_to_repository_id: -1})
-    }.should change{@project.build_lists.count}.by(0)
+    }.to change{@project.build_lists.count}.by(0)
   end
 
   it 'should not create without existing save_to_repository' do
-    lambda{ post :create, @create_params.deep_merge(build_list: {save_to_repository_id: -1})}.should change{@project.build_lists.count}.by(0)
+    expect {
+      post :create, @create_params.deep_merge(build_list: {save_to_repository_id: -1})
+    }.to change{@project.build_lists.count}.by(0)
   end
 end
 
 shared_examples_for 'not create build list via api' do
-  before {
-    #@project.update_attributes({repositories: @platform.repositories})
-    #test_git_commit(@project)
-  }
-
   it 'should not be able to perform create action' do
     post :create, @create_params
-    response.body.should == {"message" => "Access violation to this page!"}.to_json
+    expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
   end
 
   it 'should not create one more build list' do
-    lambda { post :create, @create_params }.should change{ BuildList.count }.by(0)
+    expect { post :create, @create_params }.to change(BuildList, :count).by(0)
   end
 
   it 'should return 403 response code' do
     post :create, @create_params
-    response.status.should == 403
+    expect(response.status).to eq 403
   end
 end
 
 shared_examples_for 'validation error via build list api' do |message|
   it 'should return 422 response code and correct json error message' do
-    expect(response.status).to eq(422)
+    expect(response.status).to eq 422
     expect(response.body).to eq({ build_list: {id: nil, message: message} }.to_json)
   end
 end
@@ -208,15 +207,15 @@ describe Api::V1::BuildListsController, type: :controller do
               do_create_container
             end
             it "should return correct json message" do
-              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.create_container_success')} }.to_json
+              expect(response.body).to eq({ build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.create_container_success')} }.to_json)
             end
 
             it 'should return 200 response code' do
-              response.should be_success
+              expect(response).to be_success
             end
 
             it "should create container" do
-              @build_list.reload.container_status.should == BuildList::BUILD_PUBLISH
+              expect(@build_list.reload.container_status).to eq BuildList::BUILD_PUBLISH
             end
           end
 
@@ -229,7 +228,7 @@ describe Api::V1::BuildListsController, type: :controller do
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.create_container_fail')
 
             it "should not create container" do
-              @build_list.reload.container_status.should == BuildList::WAITING_FOR_RESPONSE
+              expect(@build_list.reload.container_status).to eq BuildList::WAITING_FOR_RESPONSE
             end
           end
         end
@@ -241,11 +240,11 @@ describe Api::V1::BuildListsController, type: :controller do
           end
 
           it "should return access violation message" do
-            response.body.should == {"message" => "Access violation to this page!"}.to_json
+            expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
           end
 
           it "should not create container" do
-            @build_list.reload.container_status.should == BuildList::WAITING_FOR_RESPONSE
+            expect(@build_list.reload.container_status).to eq BuildList::WAITING_FOR_RESPONSE
           end
         end
       end
@@ -266,15 +265,15 @@ describe Api::V1::BuildListsController, type: :controller do
               do_publish_into_testing
             end
             it "should return correct json message" do
-              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json
+              expect(response.body).to eq({ build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json)
             end
 
             it 'should return 200 response code' do
-              response.should be_success
+              expect(response).to be_success
             end
 
             it "should change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_PUBLISH_INTO_TESTING
+              expect(@build_list.reload.status).to eq BuildList::BUILD_PUBLISH_INTO_TESTING
             end
           end
 
@@ -285,15 +284,15 @@ describe Api::V1::BuildListsController, type: :controller do
             end
 
             it "should return correct json message" do
-              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json
+              expect(response.body).to eq({ build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json)
             end
 
             it 'should return 200 response code' do
-              response.should be_success
+              expect(response).to be_success
             end
 
             it "should change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_PUBLISH_INTO_TESTING
+              expect(@build_list.reload.status).to eq BuildList::BUILD_PUBLISH_INTO_TESTING
             end
           end
 
@@ -304,11 +303,11 @@ describe Api::V1::BuildListsController, type: :controller do
             end
 
             it "should return access violation message" do
-              response.body.should == {"message" => "Access violation to this page!"}.to_json
+              expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_CANCELED
+              expect(@build_list.reload.status).to eq BuildList::BUILD_CANCELED
             end
           end
 
@@ -323,15 +322,15 @@ describe Api::V1::BuildListsController, type: :controller do
             end
 
             it 'should not be able to perform create action' do
-              response.body.should == {"message" => "Access violation to this page!"}.to_json
+              expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
             end
 
             it 'should return 403 response code' do
-              response.status.should == 403
+              expect(response.status).to eq 403
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_PUBLISHED_INTO_TESTING
+              expect(@build_list.reload.status).to eq BuildList::BUILD_PUBLISHED_INTO_TESTING
             end
           end
 
@@ -341,11 +340,11 @@ describe Api::V1::BuildListsController, type: :controller do
               do_publish_into_testing
             end
             it "should return access violation message" do
-              response.body.should == {"message" => "Access violation to this page!"}.to_json
+              expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::FAILED_PUBLISH_INTO_TESTING
+              expect(@build_list.reload.status).to eq BuildList::FAILED_PUBLISH_INTO_TESTING
             end
           end
         end
@@ -367,15 +366,15 @@ describe Api::V1::BuildListsController, type: :controller do
               do_publish
             end
             it "should return correct json message" do
-              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json
+              expect(response.body).to eq({ build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json)
             end
 
             it 'should return 200 response code' do
-              response.should be_success
+              expect(response).to be_success
             end
 
             it "should change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_PUBLISH
+              expect(@build_list.reload.status).to eq BuildList::BUILD_PUBLISH
             end
           end
 
@@ -386,15 +385,15 @@ describe Api::V1::BuildListsController, type: :controller do
             end
 
             it "should return correct json message" do
-              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json
+              expect(response.body).to eq({ build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json)
             end
 
             it 'should return 200 response code' do
-              response.should be_success
+              expect(response).to be_success
             end
 
             it "should change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_PUBLISH
+              expect(@build_list.reload.status).to eq BuildList::BUILD_PUBLISH
             end
           end
 
@@ -405,11 +404,11 @@ describe Api::V1::BuildListsController, type: :controller do
             end
 
             it "should return access violation message" do
-              response.body.should == {"message" => "Access violation to this page!"}.to_json
+              expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_CANCELED
+              expect(@build_list.reload.status).to eq BuildList::BUILD_CANCELED
             end
           end
 
@@ -420,11 +419,11 @@ describe Api::V1::BuildListsController, type: :controller do
               do_publish
             end
             it "should return access violation message" do
-              response.body.should == {"message" => "Access violation to this page!"}.to_json
+              expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::FAILED_PUBLISH
+              expect(@build_list.reload.status).to eq BuildList::FAILED_PUBLISH
             end
           end
         end
@@ -438,15 +437,15 @@ describe Api::V1::BuildListsController, type: :controller do
             end
 
             it 'should not be able to perform create action' do
-              response.body.should == {"message" => "Access violation to this page!"}.to_json
+              expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
             end
 
             it 'should return 403 response code' do
-              response.status.should == 403
+              expect(response.status).to eq 403
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_PUBLISHED
+              expect(@build_list.reload.status).to eq BuildList::BUILD_PUBLISHED
             end
           end
 
@@ -456,11 +455,11 @@ describe Api::V1::BuildListsController, type: :controller do
               do_publish
             end
             it "should return access violation message" do
-              response.body.should == {"message" => "Access violation to this page!"}.to_json
+              expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::FAILED_PUBLISH
+              expect(@build_list.reload.status).to eq BuildList::FAILED_PUBLISH
             end
           end
         end
@@ -486,15 +485,15 @@ describe Api::V1::BuildListsController, type: :controller do
 
           context "if it has :success status" do
             it "should return correct json message" do
-              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.reject_publish_success')} }.to_json
+              expect(response.body).to eq({ build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.reject_publish_success')} }.to_json)
             end
 
             it 'should return 200 response code' do
-              response.should be_success
+              expect(response).to be_success
             end
 
             it "should reject publish build list" do
-              @build_list.reload.status.should == BuildList::REJECTED_PUBLISH
+              expect(@build_list.reload.status).to eq BuildList::REJECTED_PUBLISH
             end
           end
 
@@ -507,7 +506,7 @@ describe Api::V1::BuildListsController, type: :controller do
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.reject_publish_fail')
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_CANCELED
+              expect(@build_list.reload.status).to eq BuildList::BUILD_CANCELED
             end
           end
         end
@@ -520,12 +519,12 @@ describe Api::V1::BuildListsController, type: :controller do
           end
 
           it "should return access violation message" do
-            response.body.should == {"message" => "Access violation to this page!"}.to_json
+            expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
           end
 
           it "should not change status of build list" do
             do_reject_publish
-            @build_list.reload.status.should == BuildList::SUCCESS
+            expect(@build_list.reload.status).to eq BuildList::SUCCESS
           end
         end
 
@@ -540,12 +539,12 @@ describe Api::V1::BuildListsController, type: :controller do
           end
 
           it "should return access violation message" do
-            response.body.should == {"message" => "Access violation to this page!"}.to_json
+            expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
           end
 
           it "should not change status of build list" do
             do_reject_publish
-            @build_list.reload.status.should == BuildList::SUCCESS
+            expect(@build_list.reload.status).to eq BuildList::SUCCESS
           end
         end
 
@@ -560,15 +559,15 @@ describe Api::V1::BuildListsController, type: :controller do
           end
 
           it "should return correct json message" do
-            response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.reject_publish_success')} }.to_json
+            expect(response.body).to eq({ build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.reject_publish_success')} }.to_json)
           end
 
           it 'should return 200 response code' do
-            response.should be_success
+            expect(response).to be_success
           end
 
           it "should reject publish build list" do
-            @build_list.reload.status.should == BuildList::REJECTED_PUBLISH
+            expect(@build_list.reload.status).to eq BuildList::REJECTED_PUBLISH
           end
         end
       end
@@ -724,32 +723,30 @@ describe Api::V1::BuildListsController, type: :controller do
     context 'for guest' do
       it 'should be able to perform index action', anonymous_access: true do
         get :index, format: :json
-        response.should be_success
+        expect(response).to be_success
       end
 
       it 'should not be able to perform index action', anonymous_access: false do
         get :index, format: :json
-        response.status.should == 401
+        expect(response.status).to eq 401
       end
     end
 
     context 'for all build lists' do
-      before {
-        http_login(@user)
-      }
+      before { http_login(@user) }
 
       it 'should be able to perform index action' do
         get :index, format: :json
-        response.should be_success
+        expect(response).to be_success
       end
 
       it 'should show only accessible build_lists' do
         get :index, filter: { ownership: 'index' }, format: :json
-        assigns(:build_lists).should include(@build_list1)
-        assigns(:build_lists).should_not include(@build_list2)
-        assigns(:build_lists).should include(@build_list3)
-        assigns(:build_lists).should include(@build_list4)
-        assigns(:build_lists).count.should eq 7
+        expect(assigns(:build_lists)).to include(@build_list1)
+        expect(assigns(:build_lists)).to_not include(@build_list2)
+        expect(assigns(:build_lists)).to include(@build_list3)
+        expect(assigns(:build_lists)).to include(@build_list4)
+        expect(assigns(:build_lists).count).to eq 7
       end
     end
 
@@ -760,16 +757,16 @@ describe Api::V1::BuildListsController, type: :controller do
 
       it 'should filter by id' do
         get :index, filter: {id: @filter_build_list1.id, project_name: 'fdsfdf', any_other_field: 'do not matter'}, format: :json
-        assigns[:build_lists].should include(@filter_build_list1)
-        assigns[:build_lists].should_not include(@filter_build_list2)
-        assigns[:build_lists].should_not include(@filter_build_list3)
+        expect(assigns[:build_lists]).to include(@filter_build_list1)
+        expect(assigns[:build_lists]).to_not include(@filter_build_list2)
+        expect(assigns[:build_lists]).to_not include(@filter_build_list3)
       end
 
       it 'should filter by project_name' do
         get :index, filter: {project_name: @filter_build_list2.project.name, ownership: 'index'}, format: :json
-        assigns[:build_lists].should_not include(@filter_build_list1)
-        assigns[:build_lists].should include(@filter_build_list2)
-        assigns[:build_lists].should_not include(@filter_build_list3)
+        expect(assigns[:build_lists]).to_not include(@filter_build_list1)
+        expect(assigns[:build_lists]).to include(@filter_build_list2)
+        expect(assigns[:build_lists]).to_not include(@filter_build_list3)
       end
 
       it 'should filter by project_name and start_date' do
@@ -777,10 +774,10 @@ describe Api::V1::BuildListsController, type: :controller do
                               :"updated_at_start(1i)" => @filter_build_list3.updated_at.year.to_s,
                               :"updated_at_start(2i)" => @filter_build_list3.updated_at.month.to_s,
                               :"updated_at_start(3i)" => @filter_build_list3.updated_at.day.to_s}, format: :json
-        assigns[:build_lists].should_not include(@filter_build_list1)
-        assigns[:build_lists].should_not include(@filter_build_list2)
-        assigns[:build_lists].should include(@filter_build_list3)
-        assigns[:build_lists].should_not include(@filter_build_list4)
+        expect(assigns[:build_lists]).to_not include(@filter_build_list1)
+        expect(assigns[:build_lists]).to_not include(@filter_build_list2)
+        expect(assigns[:build_lists]).to include(@filter_build_list3)
+        expect(assigns[:build_lists]).to_not include(@filter_build_list4)
       end
 
     end
