@@ -18,10 +18,8 @@ en:
       empty_repo: Empty git repository
       blocked: This pull request cannot be automatically merged.
       ready: This pull request can be automatically merged.
-      merged: |
-        %{user} merged into <span class="label-bootstrap label-info font14">%{to_ref}</span>
-        from <span class="label-bootstrap label-info font14">%{from_ref}</span> at %{time}
-      closed: '%{user} closed this pull request at %{time}'
+      merged: merged at
+      closed: closed this pull request at
       is_big: This pull request is big! We're only showing the most recent %{count} commits.
       open: ''
       statuses:

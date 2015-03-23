@@ -27,15 +27,27 @@ json.pull_request do
     json.(@pull.issue.assignee, :id, :name, :uname)
   end if @pull.issue.assignee
   json.mergeable @pull.can_merging?
-  json.merged_at @pull.issue.closed_at.to_i if @pull.merged?
 
-  json.closed_at @pull.issue.closed_at.to_i if @pull.merged? || @pull.closed?
+  if @pull.merged?
+    json.merged_at     @pull.issue.closed_at
+    json.merged_at_utc @pull.issue.closed_at.strftime('%Y-%m-%d %H:%M:%S UTC')
+  end
+
+  if @pull.merged? || @pull.closed?
+    json.closed_at     @pull.issue.closed_at.to_i
+    json.closed_at_utc @pull.issue.closed_at.strftime('%Y-%m-%d %H:%M:%S UTC')
+  end
+
   if @pull.issue.closer
     json.closed_by do
-      json.(@pull.issue.closer, :id, :name, :uname)
+      json.(@pull.issue.closer, :uname, :fullname)
+      json.path  user_path(@pull.issue.closer)
+      json.image avatar_url(@pull.issue.closer)
     end
     json.merged_by do
-      json.(@pull.issue.closer, :id, :name, :uname)
+      json.(@pull.issue.closer, :uname, :fullname)
+      json.path  user_path(@pull.issue.closer)
+      json.image avatar_url(@pull.issue.closer)
     end if @pull.merged?
   end
 

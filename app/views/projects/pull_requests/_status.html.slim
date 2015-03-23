@@ -2,19 +2,31 @@
   button.btn.btn-primary[ href = '' ng-click = 'pullCtrl.merge()' ng-show = "pullCtrl.pull.status == 'ready'" ]
     = t 'projects.pull_requests.ready'
 
-h3 ng-show = '!pullCtrl.pull.mergeable'
-  .label.label-warning ng-show = "pullCtrl.pull.status == 'blocked'"
+h5 ng-show = '!pullCtrl.pull.mergeable'
+  .label.label-warning ng-show="pullCtrl.pull.status == 'blocked'"
     = t 'projects.pull_requests.blocked'
-  .label.label-important ng-show = "pullCtrl.pull.status == 'merged'"
-    = t('projects.pull_requests.merged',
-        user: '{{pull.merged_by.uname}}',
-        to_ref: show_ref(@pull, 'to'),
-        from_ref: show_ref(@pull, 'from'),
-        time: '{{merged_at}}').html_safe
-  .label.label-important ng-show = "pullCtrl.pull.status == 'closed'"
-    = t('projects.pull_requests.closed',
-        user: '{{pull.closed_by.uname}}',
-        time: '{{closed_at}}')
+  div ng-show="pullCtrl.pull.status == 'merged'"
+    a>[ ng-href='{{pullCtrl.pull.merged_by.path}}' title='{{pullCtrl.pull.merged_by.fullname}}' ]
+      img>[ ng-src='{{pullCtrl.pull.merged_by.image}}' ]
+      | {{pullCtrl.pull.merged_by.uname}}
+
+    => t 'projects.pull_requests.merged'
+
+    span title='{{pullCtrl.pull.merged_at_utc}}'
+      | {{ pullCtrl.pull.merged_at | amDateFormat:'ddd, D MMM YYYY, HH:mm' }} (
+      span am-time-ago='pullCtrl.pull.merged_at'
+      | )
+
+  div ng-show="pullCtrl.pull.status == 'closed'"
+    a>[ ng-href='{{pullCtrl.pull.closed_by.path}}' title='{{pullCtrl.pull.closed_by.fullname}}' ]
+      img>[ ng-src='{{pullCtrl.pull.closed_by.image}}' ]
+      | {{pullCtrl.pull.closed_by.uname}}
+    => t 'projects.pull_requests.closed'
+
+    span title='{{pullCtrl.pull.closed_at_utc}}'
+      | {{ pullCtrl.pull.closed_at | amDateFormat:'ddd, D MMM YYYY, HH:mm' }} (
+      span am-time-ago='pullCtrl.pull.closed_at'
+      | )
 
 - if !@pull.cross_pull? && can?(:write, @project)
   div[ ng-init = "pullCtrl.getBranch('#{@pull.from_ref}')"
