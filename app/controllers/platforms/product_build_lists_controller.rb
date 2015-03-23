@@ -74,7 +74,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   def index
     @product_build_list = ProductBuildList.new(params[:product_build_list])
-    @product_build_list.status = nil if params[:product_build_list].blank?
+    @product_build_list.status = nil if params[:product_build_list].try(:[], :status).blank?
     if @product_build_list.product_id.present?
       @product_build_lists = @product_build_lists.where(id: @product_build_list.product_id)
     else
@@ -84,7 +84,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     end
     @product_build_lists = @product_build_lists.
       includes(:project, product: :platform).
-      recent.paginate(page: params[:page])
+      recent.paginate(page: current_page)
     @build_server_status = AbfWorkerStatusPresenter.new.products_status
   end
 

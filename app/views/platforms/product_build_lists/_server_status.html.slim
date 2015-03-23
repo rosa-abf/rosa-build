@@ -1,21 +1,12 @@
-.row
-  .col-md-6.col-sm-6
-    h5= t 'layout.build_lists.build_server_status.iso_workers'
-    ul.list-unstyled
-      li
-        = t 'layout.build_lists.build_server_status.amount'
-        ul
-          li
-            = t 'layout.build_lists.build_server_status.abf'
-            span.bg-primary.badge.pull-right
-              = @build_server_status[:iso][:workers]
-  .col-md-6.col-sm-6
-    h5= t 'layout.build_lists.build_server_status.tasks'
-    ul.list-unstyled
-      li
-        ul
-          - %i(tasks build_tasks).each do |metric|
-            li
-              = t "layout.build_lists.build_server_status.#{metric}"
-              span.bg-primary.badge.pull-right
-                = @build_server_status[:iso][metric]
+ul.nav.navbar-nav.navbar-left
+  li.bg-success
+    a.no-pointer href=''
+      i.fa.fa-info-circle.fa-lg.text-primary
+      =< t 'layout.build_lists.build_server_status.iso_workers'
+      ' :
+      => t 'layout.build_lists.build_server_status.abf'
+      span.badge.bg-primary= @build_server_status[:iso][:workers]
+      => t 'layout.build_lists.build_server_status.tasks'
+      span.badge.bg-primary[]= @build_server_status[:iso][:tasks]
+      =<> t 'layout.build_lists.build_server_status.build_tasks'
+      span.badge.bg-primary[]= @build_server_status[:iso][:build_tasks]
