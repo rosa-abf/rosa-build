@@ -15,6 +15,7 @@ module UsersHelper
   end
 
   def gravatar_url(email, size = 30)
-    "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
+    hex = email.present? ? Digest::MD5.hexdigest(email.try :downcase) : ''
+    "https://secure.gravatar.com/avatar/#{}?s=#{size}&r=pg"
   end
 end
