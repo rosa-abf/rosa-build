@@ -102,6 +102,8 @@ source 'https://rails-assets.org' do
   gem 'rails-assets-notifyjs'
 end
 
+gem 'rack-utf8_sanitizer'
+
 group :production do
   gem 'airbrake'
   #gem 'bluepill', '~> 0.0.60', require: false
