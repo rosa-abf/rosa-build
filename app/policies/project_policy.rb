@@ -19,7 +19,8 @@ class ProjectPolicy < ApplicationPolicy
   alias_method :refs_list?,                 :show?
 
   def create?
-    !user.guest? && (!record.try(:owner) || policy(record.owner).write?)
+    return false if user.guest?
+    !record.try(:owner) || owner_policy.write?
   end
 
   def update?
@@ -45,9 +46,9 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def run_mass_import?
-    return false unless policy(record.owner).write?
+    return false unless owner_policy.write?
     repo = Repository.find(record.add_to_repository_id)
-    repo.platform.main? && policy(repo.platform).add_project?
+    repo.platform.main? && PlatformPolicy.new(user, repo.platform).add_project?
   end
 
   # for grack
@@ -86,6 +87,16 @@ class ProjectPolicy < ApplicationPolicy
           )
         )
       SQL
+    end
+  end
+
+  private
+
+  def owner_policy
+    if record.owner.is_a?(User)
+      UserPolicy.new(user, record.owner)
+    else
+      GroupPolicy.new(user, record.owner)
     end
   end
 

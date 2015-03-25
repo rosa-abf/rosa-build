@@ -2,7 +2,6 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   before_action :authenticate_user!
   before_action :load_build_list, only: %i(
                                             cancel
-                                            create
                                             create_container
                                             publish
                                             publish_into_testing
@@ -21,7 +20,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     authorize :build_list
     @project = Project.find(params[:project_id]) if params[:project_id].present?
     authorize @project, :show? if @project
-    filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
+    filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
     @build_lists = filter.find.includes(:build_for_platform,
                                         :save_to_repository,
                                         :save_to_platform,

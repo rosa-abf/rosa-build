@@ -44,7 +44,7 @@ module Project::Finders
 
   module ClassMethods
 
-    # Public: Get cached Project record by ID or slug.
+    # Public: Get cached Project record by owner and name.
     #
     # Returns Project record.
     # Raises ActiveRecord::RecordNotFound if nothing was found.
@@ -67,12 +67,5 @@ module Project::Finders
   # Private: after_commit and after_touch hook which clears find_cached cache.
   def clear_caches
     Rails.cache.delete(['Project.find_by_owner_and_name', owner_uname, name])
-    Rails.cache.delete(['Project.find_by_owner_and_name', name_with_owner])
-    Rails.cache.delete(['Project.find', id])
-    Rails.cache.delete(['Project.find', slug])
-
-    if chg = previous_changes["slug"]
-      Rails.cache.delete(['Project.find', chg.first])
-    end
   end
 end

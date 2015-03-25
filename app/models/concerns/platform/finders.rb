@@ -23,9 +23,9 @@ module Platform::Finders
 
   module ClassMethods
 
-    # Public: Get cached Platform record by ID or slug.
+    # Public: Get cached Platform record by ID or name.
     #
-    # platform_id - ID or Slug (Numeric/String)
+    # platform_id - ID or Name (Numeric/String)
     #
     # Returns Platform record.
     # Raises ActiveRecord::RecordNotFound if nothing was found.
@@ -41,9 +41,9 @@ module Platform::Finders
   # Private: after_commit and after_touch hook which clears find_cached cache.
   def clear_caches
     Rails.cache.delete(['Platform.find', id])
-    Rails.cache.delete(['Platform.find', slug])
+    Rails.cache.delete(['Platform.find', name])
 
-    if chg = previous_changes["slug"]
+    if chg = previous_changes["name"]
       Rails.cache.delete(['Platform.find', chg.first])
     end
   end

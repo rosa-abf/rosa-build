@@ -5,7 +5,7 @@ class ProductPolicy < ApplicationPolicy
   end
 
   def show?
-    policy(record.platform).show?
+    PlatformPolicy.new(user, record.platform).show?
   end
   alias_method :read?,          :show?
 

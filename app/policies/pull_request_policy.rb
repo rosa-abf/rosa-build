@@ -1,7 +1,7 @@
 class PullRequestPolicy < ApplicationPolicy
 
   def show?
-    policy(record.to_project).show?
+    ProjectPolicy.new(user, record.to_project).show?
   end
   alias_method :read?,      :show?
   alias_method :commits?,   :show?

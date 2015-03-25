@@ -1,7 +1,7 @@
 class RepositoryPolicy < ApplicationPolicy
 
   def show?
-    policy(record.platform).show?
+    PlatformPolicy.new(user, record.platform).show?
   end
   alias_method :projects?,      :show?
   alias_method :projects_list?, :show?

@@ -6,7 +6,7 @@ class IssuePolicy < ApplicationPolicy
   end
 
   def show?
-    policy(record.project).show?
+    ProjectPolicy.new(user, record.project).show?
   end
   alias_method :create?, :show?
   alias_method :read?,   :show?

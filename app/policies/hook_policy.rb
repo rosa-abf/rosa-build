@@ -1,7 +1,7 @@
 class HookPolicy < ApplicationPolicy
 
   def show?
-    policy(record.project).update?
+    ProjectPolicy.new(user, record.project).update?
   end
   alias_method :read?,    :show?
   alias_method :create?,  :show?

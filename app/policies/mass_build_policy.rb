@@ -1,7 +1,7 @@
 class MassBuildPolicy < ApplicationPolicy
 
   def show?
-    policy(record.save_to_platform).show?
+    ProjectPolicy.new(user, record.save_to_platform).show?
   end
   alias_method :read?,       :show?
   alias_method :get_list?,   :show?
