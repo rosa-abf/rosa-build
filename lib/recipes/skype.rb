@@ -3,6 +3,7 @@ require 'skype'
 Capistrano::Configuration.instance(:must_exist).load do
   Skype.config app_name: 'test-message'
   set :skype_send_notification, true
+  set :start_time, Time.now
 
   namespace :skype do
     task :trigger_notification do
@@ -35,8 +36,8 @@ Capistrano::Configuration.instance(:must_exist).load do
         if self.respond_to?(:stage)
           environment_string = "#{stage} (#{env})"
         end
-
-        send("Finished deploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}.\n#{'#'*60}")
+        elapsed = (Time.now - start_time).to_i
+        send("(#{elapsed} secs) Finished deploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}.\n#{'#'*60}")
       end
     end
 
