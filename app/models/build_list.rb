@@ -81,8 +81,7 @@ class BuildList < ActiveRecord::Base
     end
   }
   before_validation -> {
-    self.include_repos = []
-    (self.include_repos << include_repos).flatten.uniq if include_repos.present?
+    (self.include_repos = [] << include_repos).flatten.uniq if include_repos.present?
   }, on: :create
   before_validation :prepare_extra_repositories,  on: :create
   before_validation :prepare_extra_build_lists,   on: :create
