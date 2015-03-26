@@ -51,9 +51,9 @@ hr
                           wrapper:  :inline_form do |f|
 
   => f.input :uname,
-      input_html: {'ng-model' => 'membersCtrl.selected_new_collaborator.actor_uname',
-                  'typeahead' => 'member.actor_uname for member in membersCtrl.getCollaborators($viewValue)',
-        'typeahead-on-select' => 'membersCtrl.selectCollaborator($item, $model, $label)' }
+      input_html: {'ng-model'  => 'membersCtrl.new_collaborator_uname',
+                   'typeahead' => 'member.actor_uname for member in membersCtrl.getCollaborators($viewValue)',
+         'typeahead-on-select' => 'membersCtrl.selectCollaborator($item, $model, $label)' }
 
   => f.input :role,
     collection:     options_for_collaborators_roles_select,
