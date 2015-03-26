@@ -30,8 +30,8 @@
           @
           %a{ 'ng-href' => '{{el.submodule.tree_url}}' } {{el.submodule.id}}
 
-        %td{ 'ng-show' => 'el.is_submodule && !el.submodule.url' }
-        %td{ 'ng-show' => 'el.is_submodule && !el.submodule.url' }
+        %td{ 'ng-show' => 'el.submodule && !el.submodule.url' }
+        %td{ 'ng-show' => 'el.submodule && !el.submodule.url' }
           {{el.submodule.name+' @ '+el.submodule.id}}
 
         %td{ 'ng-show' => '!el.submodule' }
