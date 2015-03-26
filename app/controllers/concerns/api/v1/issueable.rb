@@ -17,7 +17,7 @@ module Api
 
       # Private: before_action hook which loads Issue.
       def load_issue
-        authorize @issue = @project.issues.find_by(serial_id: params[:id]), :show?
+        authorize @issue = @project.issues.find_by!(serial_id: params[:id]), :show?
       end
 
       # Private: Get membered projects.

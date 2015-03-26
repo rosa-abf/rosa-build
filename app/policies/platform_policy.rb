@@ -54,9 +54,22 @@ class PlatformPolicy < ApplicationPolicy
   class Scope < Scope
 
     def related
-      policy = Pundit.policy!(user, :platform)
-      scope.where <<-SQL, { user_id: user.id, user_group_ids: policy.user_group_ids, platform_ids: related_platform_ids }
+      scope.where <<-SQL, { user_id: policy.user.id, user_group_ids: policy.user_group_ids, platform_ids: related_platform_ids }
         (
+          platforms.id IN (:platform_ids)
+        ) OR (
+          platforms.owner_type = 'User'  AND platforms.owner_id = :user_id
+        ) OR (
+          platforms.owner_type = 'Group' AND platforms.owner_id IN (:user_group_ids)
+        )
+      SQL
+    end
+
+    def show
+      scope.where <<-SQL, { user_id: policy.user.id, user_group_ids: policy.user_group_ids, platform_ids: related_platform_ids, visibility: Platform::VISIBILITY_OPEN }
+        (
+          platforms.visibility = :visibility
+        ) OR (
           platforms.id IN (:platform_ids)
         ) OR (
           platforms.owner_type = 'User'  AND platforms.owner_id = :user_id
@@ -68,9 +81,13 @@ class PlatformPolicy < ApplicationPolicy
 
     protected
 
+    def policy
+      @policy ||= Pundit.policy!(user, :platform)
+    end
+
     def related_platform_ids
-      Rails.cache.fetch(['PlatformPolicy::Scope#related_platform_ids', user]) do
-        user.repositories.pluck(:platform_id)
+      Rails.cache.fetch(['PlatformPolicy::Scope#related_platform_ids', policy.user]) do
+        policy.user.repositories.pluck(:platform_id)
       end
     end
   end

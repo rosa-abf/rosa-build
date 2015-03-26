@@ -106,7 +106,7 @@ class Projects::PullRequestsController < Projects::BaseController
     term = params[:query].to_s.strip.downcase
     [ Project.where(id: @project.pull_requests.last.try(:to_project_id)),
       @project.ancestors,
-      Project.accessible_by(current_ability, :membered)
+      ProjectPolicy::Scope.new(current_user, Project).membered
     ].each do |p|
       items.concat p.by_owner_and_name(term)
     end

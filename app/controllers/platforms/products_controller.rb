@@ -53,8 +53,8 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def autocomplete_project
-    @items = Project.accessible_by(current_ability, :membered)
-                    .by_owner_and_name(params[:query]).limit(20)
+    @items = ProjectPolicy::Scope.new(current_user, Project).membered.
+      by_owner_and_name(params[:query]).limit(20)
     #items.select! {|e| e.repo.branches.count > 0}
   end
 

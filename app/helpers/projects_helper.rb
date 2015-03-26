@@ -33,7 +33,7 @@ module ProjectsHelper
 
   def mass_import_repositories_for_group_select
     groups = {}
-    Platform.accessible_by(current_ability, :related).order(:name).each do |platform|
+    PlatformPolicy::Scope.new(current_user, Platform).related.order(:name).each do |platform|
       next unless policy(platform).local_admin_manage?
       groups[platform.name] = Repository.custom_sort(platform.repositories).map{ |r| [r.name, r.id] }
     end

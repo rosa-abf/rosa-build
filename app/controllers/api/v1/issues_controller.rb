@@ -7,7 +7,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   before_action :load_group,        only: :group_index
   before_action :load_project
   skip_before_action :load_project, only: %i(all_index user_index group_index)
-  before_action :load_issue,        only: %i(show update create index)
+  before_action :load_issue,        only: %i(show update index)
 
   def index
     @issues = @project.issues
@@ -46,7 +46,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   def create
     @issue      = @project.issues.new(params[:issue])
     @issue.user = current_user
-    @issue.assignee = nil if cannot?(:write, @project)
+    @issue.assignee = nil unless policy(@project).write?
     create_subject @issue
   end
 

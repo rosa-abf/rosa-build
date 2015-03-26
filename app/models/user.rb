@@ -161,8 +161,7 @@ class User < Avatar
     if target.is_a? Project
       assigned_issues.where(project_id: target.id).update_all(assignee_id: nil)
     else
-      ability = Ability.new self
-      project_ids = Project.accessible_by(ability, :membered).uniq.pluck(:id)
+      project_ids = ProjectPolicy::Scope.new(self, Project).membered.uniq.pluck(:id)
 
       issues = assigned_issues
       issues = issues.where('project_id not in (?)', project_ids) if project_ids.present?

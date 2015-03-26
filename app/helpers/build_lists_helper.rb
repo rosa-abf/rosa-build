@@ -20,7 +20,7 @@ module BuildListsHelper
   end
 
   def availables_main_platforms
-    Platform.availables_main_platforms current_user, current_ability
+    Platform.availables_main_platforms current_user
   end
 
   def dependent_projects(package)

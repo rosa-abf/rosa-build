@@ -14,9 +14,9 @@ class Users::ProfileController < Users::BaseController
         when 'open'
           @projects = @projects.opened
         when 'hidden'
-          @projects = @projects.by_visibilities('hidden').accessible_by(current_ability, :read)
+          @projects = ProjectPolicy::Scope.new(current_user, @projects.by_visibilities('hidden')).read
         else
-          @projects = @projects.accessible_by(current_ability, :read)
+          @projects = ProjectPolicy::Scope.new(current_user, @projects).read
         end
         @total_items  = @projects.count
         @projects     = @projects.paginate(paginate_params)

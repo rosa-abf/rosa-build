@@ -134,7 +134,6 @@ class Comment < ActiveRecord::Base
 
   def self.create_link_on_issues_from_item item, commits = nil
     linker = item.user
-    current_ability = Ability.new(linker)
 
     case
     when item.is_a?(GitHook)

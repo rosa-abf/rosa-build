@@ -63,8 +63,7 @@ class ProjectPolicy < ApplicationPolicy
   class Scope < Scope
 
     def membered
-      policy = Pundit.policy!(user, :project)
-      scope.where <<-SQL, { user_id: user.id, user_group_ids: policy.user_group_ids }
+      scope.where <<-SQL, { user_id: policy.user.id, user_group_ids: policy.user_group_ids }
         (
           projects.owner_type = 'User'  AND projects.owner_id = :user_id
         ) OR (
@@ -87,6 +86,40 @@ class ProjectPolicy < ApplicationPolicy
           )
         )
       SQL
+    end
+
+    def read
+      scope.where <<-SQL, { user_id: policy.user.id, user_group_ids: policy.user_group_ids }
+        (
+          projects.visibility = 'open'
+        ) OR (
+          projects.owner_type = 'User'  AND projects.owner_id = :user_id
+        ) OR (
+          projects.owner_type = 'Group' AND projects.owner_id IN (:user_group_ids)
+        ) OR (
+          projects.id = ANY (
+            ARRAY (
+              SELECT target_id
+              FROM relations
+              INNER JOIN projects ON projects.id = relations.target_id
+              WHERE relations.target_type = 'Project' AND
+              (
+                projects.owner_type = 'User' AND projects.owner_id != :user_id OR
+                projects.owner_type = 'Group' AND projects.owner_id NOT IN (:user_group_ids)
+              ) AND (
+                relations.actor_type = 'User' AND relations.actor_id = :user_id OR
+                relations.actor_type = 'Group' AND relations.actor_id IN (:user_group_ids)
+              )
+            )
+          )
+        )
+      SQL
+    end
+
+    protected
+
+    def policy
+      @policy ||= Pundit.policy!(user, :project)
     end
   end
 

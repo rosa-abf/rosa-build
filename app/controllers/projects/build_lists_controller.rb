@@ -24,7 +24,7 @@ class Projects::BuildListsController < Projects::BaseController
     respond_to do |format|
       format.html
       format.json do
-        @filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
+        @filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
         params[:page] = params[:page].to_i == 0 ? nil : params[:page]
         params[:per_page] = if BuildList::Filter::PER_PAGE.include? params[:per_page].to_i
                               params[:per_page].to_i
