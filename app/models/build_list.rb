@@ -71,7 +71,7 @@ class BuildList < ActiveRecord::Base
     end
   }
   validate -> {
-    if build_for_platform && build_for_platform.repositories.where(id: include_repos).count != include_repos.size
+    if build_for_platform && build_for_platform.repositories.where(id: include_repos).count != include_repos.try(:size)
       errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos'))
     end
   }
@@ -80,7 +80,10 @@ class BuildList < ActiveRecord::Base
       errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project'))
     end
   }
-  before_validation -> { self.include_repos = ([] << include_repos).flatten.uniq if include_repos.present? }, on: :create
+  before_validation -> {
+    self.include_repos = []
+    (self.include_repos << include_repos).flatten.uniq if include_repos.present?
+  }, on: :create
   before_validation :prepare_extra_repositories,  on: :create
   before_validation :prepare_extra_build_lists,   on: :create
   before_validation :prepare_extra_params,        on: :create

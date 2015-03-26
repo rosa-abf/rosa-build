@@ -92,6 +92,7 @@ class Ability
 
         can(:publish_into_testing, BuildList) { |build_list| ( can?(:create, build_list) || can?(:publish, build_list) ) && build_list.save_to_platform.main? }
         can([:create, :rerun_tests], BuildList) {|build_list|
+          build_list.project &&
           build_list.project.is_package &&
           can?(:write, build_list.project) &&
           (build_list.build_for_platform.blank? || can?(:show, build_list.build_for_platform))
