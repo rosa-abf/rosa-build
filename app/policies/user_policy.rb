@@ -5,15 +5,15 @@ class UserPolicy < ApplicationPolicy
   end
 
   def update?
-    record == user
+    is_admin? || record == user
   end
 
   def write?
-    record == user
+    is_admin? || record == user
   end
 
   def update?
-    record == user
+    is_admin? || record == user
   end
 
 end

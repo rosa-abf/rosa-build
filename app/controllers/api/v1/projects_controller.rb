@@ -3,27 +3,23 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:get_id, :show, :refs_list] if APP_CONFIG['anonymous_access']
 
-  before_action :load_project
+  before_action :load_project, except: [:index, :create, :get_id]
 
   def index
     authorize :project
     @projects = ProjectPolicy::Scope.new(current_user, Project).
       membered.paginate(paginate_params)
-    respond_to :json
   end
 
   def get_id
     authorize @project = Project.find_by_owner_and_name!(params[:owner], params[:name])
-    respond_to :json
   end
 
   def show
-    respond_to :json
   end
 
   def refs_list
     @refs = @project.repo.branches + @project.repo.tags.select{ |t| t.commit }
-    respond_to :json
   end
 
   def update
@@ -49,7 +45,6 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
   def members
     @members = @project.collaborators.order('uname').paginate(paginate_params)
-    respond_to :json
   end
 
   def add_member
@@ -82,6 +77,6 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
   # Private: before_action hook which loads Project.
   def load_project
-    authorize @project = Project.find(params[:id]) if params[:id]
+    authorize @project = Project.find(params[:id])
   end
 end
