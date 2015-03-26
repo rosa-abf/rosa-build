@@ -4,16 +4,27 @@ class PlatformPolicy < ApplicationPolicy
     !user.guest?
   end
 
+  def allowed?
+    true
+  end
+
   def show?
+    return true if is_admin?
     return true unless record.hidden?
     return true if record.owner == user
     owner? || local_reader? || user_platform_ids.include?(record.id)
   end
   alias_method :advisories?, :show?
-  alias_method :members?,    :show?
   alias_method :owned?,      :show?
   alias_method :read?,       :show?
   alias_method :related?,    :show?
+
+  def members?
+    return true if is_admin?
+    return true unless record.hidden?
+    return true if record.owner == user
+    owner? || local_reader?
+  end
 
   def platforms_for_build?
     true
@@ -24,31 +35,33 @@ class PlatformPolicy < ApplicationPolicy
   end
 
   def update?
-    owner?
+    is_admin? || owner?
   end
   alias_method :change_visibility?, :update?
 
   def destroy?
-    record.main? && owner?
+    record.main? && ( is_admin? || owner? )
   end
 
   def local_admin_manage?
-    owner? || local_admin?
+    is_admin? || owner? || local_admin?
   end
   alias_method :add_project?,         :local_admin_manage?
   alias_method :remove_file?,         :local_admin_manage?
 
   def clone?
-    record.main? && ( owner? || local_admin? )
+    record.main? && is_admin?
   end
-  alias_method :add_member?,          :clone?
-  alias_method :members?,             :clone?
-  alias_method :regenerate_metadata?, :clone?
-  alias_method :remove_member?,       :clone?
-  alias_method :remove_members?,      :clone?
+
+  def add_member?
+    record.main? && ( is_admin? || owner? || local_admin? )
+  end
+  alias_method :regenerate_metadata?, :add_member?
+  alias_method :remove_member?,       :add_member?
+  alias_method :remove_members?,      :add_member?
 
   def clear?
-    record.personal? && owner?
+    record.personal? && ( is_admin? || owner? )
   end
 
   class Scope < Scope

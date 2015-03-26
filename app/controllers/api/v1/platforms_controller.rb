@@ -2,9 +2,10 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: :allowed
   skip_before_action :authenticate_user!, only: [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
-  before_action :load_platform, except: :allowed
+  before_action :load_platform, except: [:index, :allowed, :platforms_for_build, :create]
 
   def allowed
+    authorize :platform
     if request.authorization.present?
       token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
     end
@@ -17,7 +18,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   def index
     authorize :platform
-    @platforms = PlatformPolicy::Scope.new(current_user, Platform).related.
+    @platforms = PlatformPolicy::Scope.new(current_user, Platform).show.
       by_type(params[:type]).paginate(paginate_params)
   end
 
@@ -25,6 +26,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def platforms_for_build
+    authorize :platform
     @platforms = Platform.availables_main_platforms(current_user).paginate(paginate_params)
     render :index
   end
@@ -32,6 +34,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   def create
     platform_params = params[:platform] || {}
     owner = User.where(id: platform_params[:owner_id]).first
+    @platform       = Platform.new platform_params
     @platform.owner = owner || get_owner
     create_subject @platform
   end
