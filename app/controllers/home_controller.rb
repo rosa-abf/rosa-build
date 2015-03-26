@@ -2,7 +2,9 @@ class HomeController < ApplicationController
   before_action :authenticate_user!, only: [:activity, :issues, :pull_requests]
 
   def root
-    render 'pages/tour/abf-tour-project-description-1'
+    respond_to do |format|
+      format.html { render 'pages/tour/abf-tour-project-description-1' }
+    end
   end
 
   def activity
