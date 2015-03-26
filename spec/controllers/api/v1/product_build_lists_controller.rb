@@ -37,8 +37,7 @@ shared_examples_for 'api user with reader rights' do
   end
 
   it 'should be able to perform show action for the hidden main platform' do
-    allow_any_instance_of(PlatformPolicy).to receive(:show?).and_return(true
-    )
+    allow_any_instance_of(PlatformPolicy).to receive(:show?).and_return(true)
     @product_build_list.product.platform.update_column :visibility, 'hidden'
     get :show, id: @product_build_list.id, format: :json
     expect(response).to be_success
