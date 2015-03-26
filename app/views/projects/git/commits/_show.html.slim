@@ -1,5 +1,5 @@
-- stats = @commit.stats
 - begin
+  - stats = @commit.stats
   = render_commit_stats(stats)
 
   .pull-right
@@ -10,4 +10,4 @@
 
   == render partial: 'commit_diff', collection: @commit.diffs
 - rescue Grit::Git::GitTimeout
-  p= t('layout.git.repositories.commit_diff_too_big')
+  h3.text-danger= t('layout.git.repositories.commit_diff_too_big')
