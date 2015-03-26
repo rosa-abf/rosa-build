@@ -10,6 +10,7 @@ class ProductPolicy < ApplicationPolicy
   alias_method :read?, :show?
 
   def create?
+    return false unless record.platform
     is_admin? || record.platform.main? && local_admin?(record.platform)
   end
   alias_method :clone?,   :create?
