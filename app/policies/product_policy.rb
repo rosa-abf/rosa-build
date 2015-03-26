@@ -5,12 +5,12 @@ class ProductPolicy < ApplicationPolicy
   end
 
   def show?
-    PlatformPolicy.new(user, record.platform).show?
+    is_admin? || PlatformPolicy.new(user, record.platform).show?
   end
-  alias_method :read?,          :show?
+  alias_method :read?, :show?
 
   def create?
-    record.platform.main? && local_admin?(record.platform)
+    is_admin? || record.platform.main? && local_admin?(record.platform)
   end
   alias_method :clone?,   :create?
   alias_method :destroy?, :create?

@@ -7,6 +7,7 @@ class ProjectPolicy < ApplicationPolicy
   alias_method :preview?,                   :index?
 
   def show?
+    return true if is_admin?
     return true if record.public?
     return true if record.owner == user
     return true if record.owner.is_a?(Group) && user_group_ids.inclide?(record.owner_id)
@@ -19,12 +20,13 @@ class ProjectPolicy < ApplicationPolicy
   alias_method :refs_list?,                 :show?
 
   def create?
+    return true if is_admin?
     return false if user.guest?
     !record.try(:owner) || owner_policy.write?
   end
 
   def update?
-    owner? || local_admin?
+    is_admin? || owner? || local_admin?
   end
   alias_method :alias?,                     :update?
   alias_method :sections?,                  :update?
@@ -38,14 +40,15 @@ class ProjectPolicy < ApplicationPolicy
   alias_method :schedule?,                  :update?
 
   def destroy?
-    owner? || record.owner.is_a?(Group) && record.owner.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin')
+    is_admin? || owner? || record.owner.is_a?(Group) && record.owner.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin')
   end
 
   def mass_import?
-    user.platforms.main.find{ |p| local_admin?(p) }.present?
+    is_admin? || user.platforms.main.find{ |p| local_admin?(p) }.present?
   end
 
   def run_mass_import?
+    return true if is_admin?
     return false unless owner_policy.write?
     repo = Repository.find(record.add_to_repository_id)
     repo.platform.main? && PlatformPolicy.new(user, repo.platform).add_project?
@@ -53,7 +56,7 @@ class ProjectPolicy < ApplicationPolicy
 
   # for grack
   def write?
-    owner? || local_writer?
+    is_admin? || owner? || local_writer?
   end
 
   def possible_forks

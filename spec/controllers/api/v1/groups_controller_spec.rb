@@ -221,6 +221,17 @@ describe Api::V1::GroupsController, type: :controller do
     it_should_behave_like 'api group user without owner rights'
   end
 
+  context 'for global admin' do
+    before do
+      @admin = FactoryGirl.create(:admin)
+      http_login(@admin)
+    end
+
+    it_should_behave_like 'api group user with reader rights'
+    it_should_behave_like 'api group user with admin rights'
+    it_should_behave_like 'api group user with owner rights'
+  end
+
   context 'for owner user' do
     before do
       @group = FactoryGirl.create(:group, owner: @user)

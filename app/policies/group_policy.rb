@@ -13,15 +13,15 @@ class GroupPolicy < ApplicationPolicy
   end
 
   def reader?
-    local_reader?
+    is_admin? || local_reader?
   end
 
   def write?
-    owner? || local_writer?
+    is_admin? || owner? || local_writer?
   end
 
   def update?
-    owner? || local_admin?
+    is_admin? || owner? || local_admin?
   end
   alias_method :add_member?,      :update?
   alias_method :manage_members?,  :update?
@@ -32,7 +32,7 @@ class GroupPolicy < ApplicationPolicy
   alias_method :update_member?,   :update?
 
   def destroy?
-    owner?
+    is_admin? || owner?
   end
 
   def remove_user?

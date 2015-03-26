@@ -114,6 +114,16 @@ describe Api::V1::AdvisoriesController, type: :controller do
     it_should_behave_like 'api advisories user without admin rights'
   end
 
+  context 'for admin' do
+    before do
+      @admin = FactoryGirl.create(:admin)
+      http_login(@admin)
+    end
+
+    it_should_behave_like 'api advisories user with show rights'
+    it_should_behave_like 'api advisories user with admin rights'
+  end
+
   context 'for user who has access to update build_list' do
     before do
       @user = FactoryGirl.create(:user)
