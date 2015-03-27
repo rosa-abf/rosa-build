@@ -8,10 +8,9 @@
 
 = render 'submenu'
 
-div[class         = 'row'
-    ng-controller = 'BuildListController'
-    ng-init       = "advisoriable_types = #{ BuildList::RELEASE_UPDATE_TYPES }"
-    ng-cloak      = true ]
+row[ ng-controller='BuildListController'
+     ng-init      ="advisoriable_types = #{ BuildList::RELEASE_UPDATE_TYPES }"
+     ng-cloak     =true ]
   = hidden_field_tag :build_list_id, @build_list.id
   .col-md-8.col-md-offset-2.alert.alert-info
     .alert.pull-left.submenu ng-class='"alert-" + build_list.status_color'
