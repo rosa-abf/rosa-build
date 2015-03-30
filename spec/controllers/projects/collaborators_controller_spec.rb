@@ -71,7 +71,7 @@ shared_examples_for 'user with no rights for this project' do
 
   it 'should not be able to set reader role for any user' do
     put :update, {id: @collaborator.id}.merge(@update_params)
-    expect(@another_user.relations.exists? target_id: @project.id, target_type: 'Project', role: 'read').to be false
+    expect(@another_user.relations.exists? target_id: @project.id, target_type: 'Project', role: 'reader').to be false
   end
 end
 
