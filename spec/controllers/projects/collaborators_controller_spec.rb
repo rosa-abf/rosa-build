@@ -34,44 +34,44 @@ end
 shared_examples_for 'project admin user' do
   it 'should be able to view collaborators list' do
     get :index, name_with_owner: @project.name_with_owner
-    response.should be_success
+    expect(response).to be_success
   end
 
   it 'should be able to perform update action' do
     put :update, {id: @collaborator.id}.merge(@update_params)
-    response.should be_success
+    expect(response).to be_success
   end
 
   it 'should add new collaborator with reader role' do
     post :create, @create_params.merge(collaborator: @user_params)
-    @project.relations.exists?(actor_type: 'User', actor_id: @another_user.id, role: 'reader').should be_truthy
+    expect(@project.relations.exists?(actor_type: 'User', actor_id: @another_user.id, role: 'reader')).to be true
   end
 
   it 'should add new group with reader role' do
     post :create, @create_params.merge(collaborator: @group_params)
-    @project.relations.exists?(actor_type: 'Group', actor_id: @group.id, role: 'reader').should be_truthy
+    expect(@project.relations.exists?(actor_type: 'Group', actor_id: @group.id, role: 'reader')).to be true
   end
 
   it 'should be able to set reader role for any user' do
     put :update, {id: @collaborator.id}.merge(@update_params)
-    @another_user.relations.exists? target_id: @project.id, target_type: 'Project', role: 'read'
+    expect(@collaborator.actor.relations.exists? target_id: @project.id, target_type: 'Project', role: 'reader').to be true
   end
 end
 
 shared_examples_for 'user with no rights for this project' do
   it 'should not be able to view collaborators list' do
     get :index, name_with_owner: @project.name_with_owner
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform update action' do
     put :update, {id: @collaborator.id}.merge(@update_params)
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not be able to set reader role for any user' do
     put :update, {id: @collaborator.id}.merge(@update_params)
-    !@another_user.relations.exists? target_id: @project.id, target_type: 'Project', role: 'read'
+    expect(@another_user.relations.exists? target_id: @project.id, target_type: 'Project', role: 'read').to be false
   end
 end
 
@@ -84,12 +84,12 @@ describe Projects::CollaboratorsController, type: :controller do
     end
     it 'should not be able to perform index action' do
       get :index, name_with_owner: @project.name_with_owner
-      response.should redirect_to(new_user_session_path)
+      expect(response).to redirect_to(new_user_session_path)
     end
 
     it 'should not be able to perform update action' do
       put :update, {id: @collaborator.id}.merge(@update_params)
-      response.code.should == '401'
+      expect(response.code).to eq '401'
     end
   end
 
@@ -132,6 +132,10 @@ describe Projects::CollaboratorsController, type: :controller do
       create_relation(@project, @user, 'writer')
     end
 
+    it_should_behave_like 'user with no rights for this project'
+  end
+
+  context 'for another user' do
     it_should_behave_like 'user with no rights for this project'
   end
 end
