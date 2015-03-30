@@ -33,8 +33,8 @@ json.pull_request do
     json.merged_at_utc @pull.issue.closed_at.strftime('%Y-%m-%d %H:%M:%S UTC')
   end
 
-  if @pull.merged? || @pull.closed?
-    json.closed_at     @pull.issue.closed_at.to_i
+  if @pull.closed?
+    json.closed_at     @pull.issue.closed_at
     json.closed_at_utc @pull.issue.closed_at.strftime('%Y-%m-%d %H:%M:%S UTC')
   end
 
