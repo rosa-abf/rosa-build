@@ -2,7 +2,6 @@ class Projects::CollaboratorsController < Projects::BaseController
   respond_to :html, :json
 
   before_action :authenticate_user!
-  load_resource :project
   before_action :authorize_collaborators
 
   before_action :find_users
