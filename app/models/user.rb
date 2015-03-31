@@ -180,8 +180,13 @@ class User < Avatar
 
       gr = gr.where('groups.id != ?', target.owner.id) # exclude target owner group from users group list
     end
+
+    if target.class == Group
+      roles += target.actors.where(actor_id: self.id, actor_type: 'User') # user is member of a target group
+    else
+      roles += rel.where(actor_id: gr.pluck('DISTINCT groups.id'), actor_type: 'Group') # user group is member
+    end
     roles += rel.where(actor_id: self.id, actor_type: 'User') # user is member
-    roles += rel.where(actor_id: gr.pluck('DISTINCT groups.id'), actor_type: 'Group') # user group is member
     roles.map(&:role).uniq
   end
 

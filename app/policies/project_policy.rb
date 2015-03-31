@@ -22,7 +22,7 @@ class ProjectPolicy < ApplicationPolicy
   def create?
     return true if is_admin?
     return false if user.guest?
-    !record.try(:owner) || owner_policy.write?
+    owner_policy.write?
   end
 
   def update?
