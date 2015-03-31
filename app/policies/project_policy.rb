@@ -10,7 +10,7 @@ class ProjectPolicy < ApplicationPolicy
     return true if is_admin?
     return true if record.public?
     return true if record.owner == user
-    return true if record.owner.is_a?(Group) && user_group_ids.inclide?(record.owner_id)
+    return true if record.owner.is_a?(Group) && user_group_ids.include?(record.owner_id)
     local_reader?
   end
   alias_method :read?,                      :show?
