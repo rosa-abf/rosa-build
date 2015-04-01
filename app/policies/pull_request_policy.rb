@@ -1,5 +1,9 @@
 class PullRequestPolicy < ApplicationPolicy
 
+  def index?
+    true
+  end
+
   def show?
     ProjectPolicy.new(user, record.to_project).show?
   end

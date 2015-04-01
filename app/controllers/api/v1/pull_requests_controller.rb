@@ -4,10 +4,10 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: %i(show index group_index commits files) if APP_CONFIG['anonymous_access']
 
-  before_action :load_group, only: :group_index
-  before_action :load_project
-  before_action :load_issue, only: %i(show index commits files merge update)
-  before_action :load_pull,  only: %i(show index commits files merge update)
+  before_action :load_group,   only:   %i(group_index)
+  before_action :load_project, except: %i(all_index user_index)
+  before_action :load_issue,   only:   %i(show index commits files merge update)
+  before_action :load_pull,    only:   %i(show index commits files merge update)
 
   def index
     @pulls = @project.pull_requests
@@ -40,8 +40,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   end
 
   def show
-    redirect_to api_v1_project_issue_path(@project.id, @issue.serial_id) if @pull.nil?
-    respond_to :json
+    redirect_to api_v1_project_issue_path(@project.id, @issue.serial_id) and return if @pull.nil?
   end
 
   def create
@@ -49,7 +48,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     from_project ||= @project
     authorize from_project, :show?
 
-    @pull = @project.pull_requests.new
+    @pull = @project.pull_requests.build
     @pull.build_issue title: pull_params[:title], body: pull_params[:body]
     @pull.from_project            = from_project
     @pull.to_ref, @pull.from_ref  = pull_params[:to_ref], pull_params[:from_ref]
@@ -101,13 +100,11 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   def commits
     authorize @pull
     @commits = @pull.repo.commits_between(@pull.to_commit, @pull.from_commit).paginate(paginate_params)
-    respond_to :json
   end
 
   def files
     authorize @pull
     @stats = @pull.diff_stats.zip(@pull.diff).paginate(paginate_params)
-    respond_to :json
   end
 
   def merge
@@ -124,7 +121,8 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
   # Private: before_action hook which loads PullRequest.
   def load_pull
-    authorize @pull = @issue.pull_request, :show?
+    @pull = @issue.pull_request
+    authorize @pull, :show? if @pull
   end
 
   def render_pulls_list
@@ -165,9 +163,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     @pulls = @pulls.where('issues.created_at >= to_timestamp(?)', params[:since]) if params[:since] =~ /\A\d+\z/
     @pulls = @pulls.paginate(paginate_params)
 
-    respond_to do |format|
-      format.json { render :index }
-    end
+    render :index
   end
 
   def pull_params
