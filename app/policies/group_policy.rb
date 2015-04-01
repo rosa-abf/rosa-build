@@ -39,4 +39,10 @@ class GroupPolicy < ApplicationPolicy
     !user.guest?
   end
 
+  class Scope < Scope
+    def show
+      scope
+    end
+  end
+
 end

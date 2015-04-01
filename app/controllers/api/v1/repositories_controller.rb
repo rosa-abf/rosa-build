@@ -3,17 +3,13 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
 
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
-
-  before_action :load_platform
   before_action :load_repository
 
   def show
-    respond_to :json
   end
 
   def projects
     @projects = @repository.projects.recent.paginate(paginate_params)
-    respond_to :json
   end
 
   def update
@@ -33,7 +29,6 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   end
 
   def key_pair
-    respond_to :json
   end
 
   # Only one request per 15 minutes for each platform
@@ -113,14 +108,9 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
 
   private
 
-  # Private: before_action hook which loads Platform.
-  def load_platform
-    authorize @platform = Platform.find_cached(params[:platform_id]), :show?
-  end
-
   # Private: before_action hook which loads Repository.
   def load_repository
-    authorize @repository = @platform.repositories.find(params[:id]) if params[:id]
+    authorize @repository = Repository.find(params[:id])
   end
 
 end

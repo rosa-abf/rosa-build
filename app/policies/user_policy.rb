@@ -7,13 +7,14 @@ class UserPolicy < ApplicationPolicy
   def update?
     is_admin? || record == user
   end
+  alias_method :notifiers?,         :update?
+  alias_method :show_current_user?, :update?
+  alias_method :write?,             :update?
 
-  def write?
-    is_admin? || record == user
-  end
-
-  def update?
-    is_admin? || record == user
+  class Scope < Scope
+    def show
+      scope
+    end
   end
 
 end

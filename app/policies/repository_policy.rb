@@ -8,28 +8,28 @@ class RepositoryPolicy < ApplicationPolicy
   alias_method :read?,          :show?
 
   def reader?
-    local_reader?(record.platform)
+    is_admin? || local_reader?(record.platform)
   end
 
   def write?
-    local_writer?(record.platform)
+    is_admin? || local_writer?(record.platform)
   end
 
   def update?
-    local_admin?(record.platform)
+    is_admin? || local_admin?(record.platform)
   end
   alias_method :manage_members?,        :update?
   alias_method :regenerate_metadata?,   :update?
   alias_method :signatures?,            :update?
 
   def create?
-    return false if record.platform.personal? && name == 'main'
-    local_admin?(record.platform)
+    return false if record.platform.personal? && record.name == 'main'
+    is_admin? || owner?(record.platform) || local_admin?(record.platform)
   end
   alias_method :destroy?, :create?
 
   def packages?
-    record.platform.main? && local_admin?(record.platform)
+    record.platform.main? && ( is_admin? || local_admin?(record.platform) )
   end
   alias_method :remove_member?,         :packages?
   alias_method :remove_members?,        :packages?
@@ -37,21 +37,25 @@ class RepositoryPolicy < ApplicationPolicy
   alias_method :sync_lock_file?,        :packages?
 
   def add_project?
-    local_admin?(record.platform) || repository_user_ids.include?(user.id)
+    is_admin? || local_admin?(record.platform) || repository_user_ids.include?(user.id)
   end
   alias_method :remove_project?, :add_project?
 
   def destroy?
-    owner?(record.platform)
+    return false if record.platform.personal? && record.name == 'main'
+    is_admin? || owner?(record.platform) || local_admin?(record.platform)
   end
-  alias_method :settings?, :destroy?
+
+  def settings?
+    is_admin? || owner?(record.platform) || local_admin?(record.platform)
+  end
 
   def key_pair?
     user.system?
   end
 
   def add_repo_lock_file?
-    user.system? || ( record.platform.main? && local_admin?(record.platform) )
+    is_admin? || user.system? || ( record.platform.main? && local_admin?(record.platform) )
   end
   alias_method :remove_repo_lock_file?, :add_repo_lock_file?
 

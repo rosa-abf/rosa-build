@@ -118,6 +118,7 @@ class ProjectPolicy < ApplicationPolicy
         )
       SQL
     end
+    alias_method :show, :read
 
     protected
 
