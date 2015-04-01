@@ -3,12 +3,10 @@ module DiffHelper
   MAX_LINES_WITHOUT_COLLAPSE = 50
 
   def render_diff_stats(stats)
-    path = @pull.try(:id) ? polymorphic_path([@project, @pull]) : ''
-
     res = ["<table class='table table-responsive boffset0'>"]
     stats.each_with_index do |stat, ind|
       res << "<tr>"
-      res << "<td>#{link_to stat.filename.rtruncate(120), "#{path}#diff-#{ind}"}</td>"
+      res << "<td>#{link_to stat.filename.rtruncate(120), "#diff-#{ind}"}</td>"
       res << "<td class='diffstat'>"
       res << I18n.t("layout.projects.inline_changes_count", count: stat.additions + stat.deletions).strip +
              " (" +

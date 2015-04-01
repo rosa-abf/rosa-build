@@ -39,6 +39,7 @@
 //= require extra/scroller
 //= require extra/fork
 //= require extra/diff_chevrons
+//= require extra/diff
 
 //= require_self
 
