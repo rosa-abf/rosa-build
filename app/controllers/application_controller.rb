@@ -23,14 +23,14 @@ class ApplicationController < ActionController::Base
 
   helper_method :get_owner
 
-  # unless Rails.env.development?
-  #   rescue_from Exception, with: :render_500
-  #   rescue_from ActiveRecord::RecordNotFound,
-  #               # ActionController::RoutingError, # see: config/routes.rb:<last line>
-  #               ActionController::UnknownController,
-  #               ActionController::UnknownFormat,
-  #               AbstractController::ActionNotFound, with: :render_404
-  # end
+  unless Rails.env.development?
+    rescue_from Exception, with: :render_500
+    rescue_from ActiveRecord::RecordNotFound,
+                # ActionController::RoutingError, # see: config/routes.rb:<last line>
+                ActionController::UnknownController,
+                ActionController::UnknownFormat,
+                AbstractController::ActionNotFound, with: :render_404
+  end
 
   rescue_from Pundit::NotAuthorizedError do |exception|
     redirect_to forbidden_url, alert: t("flash.exception_message")
