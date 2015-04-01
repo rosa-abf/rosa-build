@@ -38,6 +38,7 @@
 //= require extra/pull
 //= require extra/scroller
 //= require extra/fork
+//= require extra/diff_chevrons
 
 //= require_self
 

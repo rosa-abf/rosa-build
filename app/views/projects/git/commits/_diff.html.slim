@@ -1,0 +1,36 @@
+- commit_id = diff.deleted_file ? parent_commit.try(:id) : @commit.id
+- diff_counter_content = "diff-#{diff_counter}_content"
+
+- if diff.diff.present?
+  - blob = @project.repo.tree(commit_id) / diff.a_path
+  - is_file_open = 'in' if !blob.binary? && diff.diff.split("\n").count <= DiffHelper::MAX_LINES_WITHOUT_COLLAPSE
+
+.file.offset10
+  a name = "diff-#{diff_counter}"
+  .top
+    button.btn.btn-link.pull-left[ type = 'button'
+              data-toggle   = 'collapse'
+              data-target   = "##{diff_counter_content}"
+              aria-expanded = 'true'
+              aria-controls = diff_counter_content ]
+      span.fa class= (is_file_open ? 'fa-chevron-down' : 'fa-chevron-up')
+      =< h(diff.a_path.rtruncate 120)
+    - if diff.b_path.present?
+      button.btn.btn-link.pull-right
+        = link_to "view file @ #{shortest_hash_id(commit_id)}", blob_path(@project, commit_id, diff.b_path)
+    .clearfix
+
+  - if diff.diff.present?
+    .diff_data.collapse[ id = diff_counter_content class = is_file_open ]
+
+      - if blob.render_as == :image
+        table.table.diff.inline.table-bordered[ cellspacing = 0 cellpadding = 0 ]
+          tr
+            td.diff-image
+              span.diff-image
+                img[ src   = "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"
+                     style = 'max-width: 600px;' ]
+      - elsif !blob.binary?
+        - if (@project.repo.tree(commit_id) / diff.b_path).nil?
+          = "a_path=#{diff.a_path}; b_path=#{diff.b_path}"
+        == render_diff(diff, diff_counter: diff_counter, comments: @comments)
