@@ -1,8 +1,9 @@
 class KeyPairPolicy < ApplicationPolicy
 
   def create?
-    key_pair.repository.blank? || local_admin?(record.repository.platform)
+    return false unless record.repository
+    is_admin? || local_admin?(record.repository.platform)
   end
-  alias_method :destroy?,    :create?
+  alias_method :destroy?, :create?
 
 end
