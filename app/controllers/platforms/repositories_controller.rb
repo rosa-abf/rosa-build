@@ -149,7 +149,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def regenerate_metadata
-    if @repository.regenerate(params[:build_for_platform_id])
+    if @repository.regenerate(params[:repository].try :[], :build_for_platform_id)
       flash[:notice] = t('flash.repository.regenerate_in_queue')
     else
       flash[:error] = t('flash.repository.regenerate_already_in_queue')
