@@ -52,6 +52,7 @@ class PlatformPolicy < ApplicationPolicy
   def clone?
     record.main? && is_admin?
   end
+  alias_method :make_clone?, :clone?
 
   def add_member?
     record.main? && ( is_admin? || owner? || local_admin? )
