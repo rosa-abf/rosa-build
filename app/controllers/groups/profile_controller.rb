@@ -11,6 +11,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
+    authorize @group
     respond_to do |format|
       format.html do
         @members = @group.members.order(:uname)
