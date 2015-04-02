@@ -1,13 +1,13 @@
 class MassBuildPolicy < ApplicationPolicy
 
   def show?
-    ProjectPolicy.new(user, record.save_to_platform).show?
+    is_admin? || PlatformPolicy.new(user, record.save_to_platform).show?
   end
   alias_method :read?,       :show?
   alias_method :get_list?,   :show?
 
   def create?
-    owner?(record.save_to_platform) || local_admin?(record.save_to_platform)
+    is_admin? || owner?(record.save_to_platform) || local_admin?(record.save_to_platform)
   end
   alias_method :publish?, :create?
 
