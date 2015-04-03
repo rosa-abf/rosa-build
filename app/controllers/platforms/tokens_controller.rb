@@ -1,11 +1,10 @@
 class Platforms::TokensController < Platforms::BaseController
   before_action :authenticate_user!
 
-  load_resource :platform
-  load_and_authorize_resource :through  => :platform, :shallow  => true
+  before_action :load_token, except: [:index, :create, :new]
 
   def index
-    authorize! :local_admin_manage, @platform
+    authorize @platform, :local_admin_manage?
     @tokens = @platform.tokens.includes(:creator, :updater)
                               .paginate(per_page: 20, page: params[:page])
   end
@@ -24,11 +23,13 @@ class Platforms::TokensController < Platforms::BaseController
   end
 
   def new
+    authorize @token = @platform.tokens.new
   end
 
   def create
     @token = @platform.tokens.build params[:token]
     @token.creator = current_user
+    authorize @token
     if @token.save
       flash[:notice] = t('flash.tokens.saved')
       redirect_to platform_tokens_path(@platform)
@@ -37,6 +38,13 @@ class Platforms::TokensController < Platforms::BaseController
       flash[:warning] = @token.errors.full_messages.join('. ') unless @token.errors.blank?
       render :new
     end
+  end
+
+  protected
+
+  # Private: before_action hook which loads Repository.
+  def load_token
+    authorize @token = @platform.tokens.find(params[:id])
   end
 
 end
