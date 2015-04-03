@@ -11,7 +11,6 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
         @product.product_build_lists
       else
        PlatformPolicy::Scope.new(current_user, ProductBuildList.joins(product: :platform)).show
-      #  ProductBuildList.accessible_by current_ability, :read
       end
     @product_build_lists = @product_build_lists.joins(:product, :project, :arch)
     @product_build_lists = @product_build_lists.recent.paginate(paginate_params)

@@ -3,6 +3,7 @@ class ProjectPolicy < ApplicationPolicy
   def index?
     !user.guest?
   end
+  alias_method :autocomplete_project?,      :index?
   alias_method :remove_user?,               :index?
   alias_method :preview?,                   :index?
 
