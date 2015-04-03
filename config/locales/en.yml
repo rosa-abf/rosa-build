@@ -137,12 +137,17 @@ en:
     404_message: Error 404. Resource not found!
 
     collaborators:
-      successfully_changed: Collaborators list successfully changed
-      error_in_changing: Collaborators list changing error
+      successfully_added: Member %{uname} successfully added
+      error_in_adding: Error adding member
+      successfully_removed: Member %{uname} successfully removed
+      error_in_removing: Error removing %{uname} member
+      successfully_updated: Member %{uname} role has been updated
+      error_in_updating: Error updating role
+
+      successfully_changed: Members list successfully changed
+      error_in_changing: Members list changing error
       member_already_added: Member %s already added
       group_already_added: Group already added
-      successfully_added: Member %s successfully added
-      error_in_adding: Member %s adding error
       wrong_user: "User with nickname '%{uname}' not found!"
 
     blob:

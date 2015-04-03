@@ -137,12 +137,17 @@ ru:
     404_message: Ошибка 404. Страница не найдена!
 
     collaborators:
-      successfully_changed: Список коллабораторов успешно изменен
-      error_in_changing: Ошибка изменения списка коллабораторов
+      successfully_added: Участник %{uname} успешно добавлен
+      error_in_adding: Ошибка при добавлении участника
+      successfully_removed: Участник %{uname} успешно удален
+      error_in_removing: Ошибка при удалении участника %{uname}
+      successfully_updated: Участнику %{uname} изменена роль
+      error_in_updating: Ошибка при изменении роли
+
+      successfully_changed: Список участников успешно изменен
+      error_in_changing: Ошибка изменения списка участников
       member_already_added: Участник %s уже добавлен
       group_already_added: Группа уже добавлена
-      successfully_added: Участник %s успешно добавлен
-      error_in_adding: Ошибка при добавлении участника %s
       wrong_user: "Пользователь с ником '%{uname}' не найден."
 
     blob:
