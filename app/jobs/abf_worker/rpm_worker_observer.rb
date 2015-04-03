@@ -14,7 +14,7 @@ module AbfWorker
     end
 
     def perform
-      return if restart_task
+      return if subject.valid? && restart_task
       if options['feedback_from_user']
         user = User.find options['feedback_from_user']
         return if !user.system? && subject.builder != user
