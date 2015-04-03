@@ -7,8 +7,8 @@ class Platforms::RepositoriesController < Platforms::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
 
-  before_action :set_members, only: [:edit, :update]
-  before_action :load_repository
+  before_action :load_repository, except: [:index, :create, :new]
+  before_action :set_members,     only:   [:edit, :update]
   before_action -> { @repository = @platform.repositories.find(params[:id]) if params[:id] }
 
   def index
@@ -21,11 +21,10 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def edit
-    authorize @repository
   end
 
   def update
-    authorize @repository
+    authorize @repository = @platform.repositories.build(params[:repository])
     if @repository.update_attributes params[:repository].slice(:description, :synchronizing_publications, :publish_builds_only_from_branch).merge(publish_without_qa: (params[:repository][:publish_without_qa] || @repository.publish_without_qa))
       flash[:notice] = I18n.t("flash.repository.updated")
       redirect_to platform_repository_path(@platform, @repository)
@@ -37,7 +36,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_members
-    authorize @repository
     User.where(id: params[:members]).find_each do |user|
       @repository.remove_member(user)
     end
@@ -45,7 +43,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def add_member
-    authorize @repository
     if member = User.find_by(id: params[:member_id])
       if @repository.add_member(member)
         flash[:notice] = t('flash.repository.members.successfully_added', name: member.uname)
@@ -106,7 +103,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def projects_list
-    authorize @repository
     render(text: @repository.projects.map(&:name).join("\n")) && return if params[:text] == 'true'
 
     owner_subquery = "
@@ -142,7 +138,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_project
-    authorize @repository
     if projects_list = params.try(:[], :repository).try(:[], :projects_list)
       @repository.remove_projects projects_list
       redirect_to platform_repository_path(@platform, @repository), notice: t('flash.repository.projects_will_be_removed')
@@ -168,7 +163,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def sync_lock_file
-    authorize @repository
     if params[:remove]
       @repository.remove_sync_lock_file
       flash[:notice] = t('flash.repository.sync_lock_file_removed')
@@ -183,7 +177,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
   # Private: before_action hook which loads Repository.
   def load_repository
-    authorize @repository = @platform.repositories.find(params[:id]), :show? if params[:id]
+    authorize @repository = @platform.repositories.find(params[:id])
   end
 
   def set_members
