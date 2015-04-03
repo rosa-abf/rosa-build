@@ -89,6 +89,8 @@ class ApplicationController < ActionController::Base
     if Rails.env.production? && !AIRBRAKE_IGNORE.include?(e.class)
       notify_airbrake(e)
     end
+    Rails.logger.error e.message
+    Rails.logger.error e.backtrace.inspect
     render_error 500
   end
 

@@ -48,6 +48,7 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
 
   private
 
+  # Private: before_action hook which loads ProductBuildList.
   def load_product_build_list
     authorize @product_build_list = ProductBuildList.find(params[:id])
   end
