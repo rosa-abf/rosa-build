@@ -21,6 +21,10 @@ class BuildListPolicy < ApplicationPolicy
   end
   alias_method :rerun_tests?, :create?
 
+  def dependent_projects?
+    record.save_to_platform.main? && create?
+  end
+
   def publish_into_testing?
     return false unless record.new_core?
     return false unless record.can_publish_into_testing?

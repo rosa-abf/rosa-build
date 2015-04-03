@@ -7,18 +7,12 @@ class Projects::BuildListsController < Projects::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:show, :index, :log] if APP_CONFIG['anonymous_access']
 
-  before_action :find_build_list, only: [:show, :publish, :cancel, :update, :log, :create_container, :dependent_projects]
-
-  load_and_authorize_resource :project, only: [:new, :create]
-  load_resource :project, only: :index, parent: false
-  load_and_authorize_resource :build_list, through: :project, only: NESTED_ACTIONS, shallow: true
-  load_and_authorize_resource except: NESTED_ACTIONS
+  before_action :load_build_list, except: NESTED_ACTIONS
 
   before_action :create_from_build_list, only: :new
 
   def index
     authorize :build_list
-    authorize @project, :show? if @project
     params[:filter].each{|k,v| params[:filter].delete(k) if v.blank? } if params[:filter]
 
     respond_to do |format|
@@ -47,6 +41,7 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def new
+    authorize @build_list = @project.build_lists.build
     if params[:show] == 'inline' && params[:build_list_id].present?
       render json: new_build_list_data(@build_list, @project, params), layout: false
     else
@@ -74,7 +69,8 @@ class Projects::BuildListsController < Projects::BaseController
         @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
         flash_options = { project_version: @build_list.project_version, arch: arch.name, build_for_platform: build_for_platform.name }
-        if authorize!(:create, @build_list) && @build_list.save
+        authorize @build_list
+        if @build_list.save
           build_lists << @build_list
           notices << t('flash.build_list.saved', flash_options)
         else
@@ -126,8 +122,6 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def dependent_projects
-    raise Pundit::NotAuthorizedError if @build_list.save_to_platform.personal?
-
     if request.post?
       prs = params[:build_list]
       if prs.present? && prs[:projects].present? && prs[:arches].present?
@@ -212,15 +206,21 @@ class Projects::BuildListsController < Projects::BaseController
 
   protected
 
+  # Private: before_action hook which loads BuidList.
+  def load_build_list
+    authorize @build_list =
+      if @project
+        @project.build_lists
+      else
+        BuildList
+      end.find(params[:id])
+  end
+
   def do_and_back(action, prefix, success = 'success', fail = 'fail')
     result  = @build_list.send("can_#{action}?") && @build_list.send(action)
     message = result ? success : fail
     flash[result ? :notice : :error] = t("layout.build_lists.#{prefix}#{message}")
     redirect_to :back
-  end
-
-  def find_build_list
-    @build_list = BuildList.find(params[:id])
   end
 
   def create_from_build_list
