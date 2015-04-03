@@ -60,13 +60,13 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def create
-    authorize @project
+    authorize @project, :write?
     status = @project.create_branch(params[:new_ref], params[:from_ref], current_user) ? 200 : 422
     render nothing: true, status: status
   end
 
   def destroy
-    authorize @project
+    authorize @project, :write?
     status = @branch && @project.delete_branch(@branch, current_user) ? 200 : 422
     render nothing: true, status: status
   end
