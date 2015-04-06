@@ -5,7 +5,7 @@ class PullRequestPolicy < ApplicationPolicy
   end
 
   def show?
-    ProjectPolicy.new(user, record.to_project).show?
+    is_admin? || ProjectPolicy.new(user, record.to_project).show?
   end
   alias_method :read?,      :show?
   alias_method :commits?,   :show?
@@ -16,11 +16,11 @@ class PullRequestPolicy < ApplicationPolicy
   end
 
   def update?
-    record.user_id == record.id || local_writer?(record.to_project)
+    is_admin? || record.user_id == record.id || local_writer?(record.to_project)
   end
 
   def merge?
-    local_writer?(record.to_project)
+    is_admin? || local_writer?(record.to_project)
   end
 
 end
