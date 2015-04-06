@@ -1,8 +1,7 @@
 class Projects::HooksController < Projects::BaseController
   before_action :authenticate_user!
   before_action -> { authorize @project, :update? }
-  # load_and_authorize_resource :project
-  # load_and_authorize_resource :hook, through: :project
+  before_action :load_hook, except: %i(index new create)
 
   def index
     @name = params[:name]
@@ -11,12 +10,14 @@ class Projects::HooksController < Projects::BaseController
   end
 
   def new
+    @hook = @project.hooks.build
   end
 
   def edit
   end
 
   def create
+    authorize @hook = @project.hooks.build(params[:hook])
     if @hook.save
       redirect_to project_hooks_path(@project, name: @hook.name), notice: t('flash.hook.created')
     else
@@ -39,6 +40,13 @@ class Projects::HooksController < Projects::BaseController
   def destroy
     @hook.destroy
     redirect_to project_hooks_path(@project, name: @hook.name)
+  end
+
+  private
+
+  # Private: before_action hook which loads Hook.
+  def load_hook
+    authorize @hook = @project.hooks.find(params[:id])
   end
 
 end
