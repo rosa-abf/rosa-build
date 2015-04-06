@@ -3,22 +3,26 @@ require 'spec_helper'
 shared_examples_for 'can subscribe' do
   it 'should be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(project_issue_path(@project, @issue))
+    expect(response).to redirect_to(project_issue_path(@project, @issue))
   end
 
   it 'should create subscribe object into db' do
-    lambda{ post :create, @create_params }.should change{ Subscribe.count }.by(1)
+    expect do
+      post :create, @create_params
+    end.to change(Subscribe, :count).by(1)
   end
 end
 
 shared_examples_for 'can not subscribe' do
   it 'should not be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not create subscribe object into db' do
-    lambda{ post :create, @create_params }.should change{ Subscribe.count }.by(0)
+    expect do
+      post :create, @create_params
+    end.to_not change(Subscribe, :count)
   end
 end
 
@@ -26,11 +30,13 @@ shared_examples_for 'can unsubscribe' do
   it 'should be able to perform destroy action' do
     delete :destroy, @destroy_params
 
-    response.should redirect_to([@project, @issue])
+    expect(response).to redirect_to([@project, @issue])
   end
 
   it 'should reduce subscribes count' do
-    lambda{ delete :destroy, @destroy_params }.should change{ Subscribe.count }.by(-1)
+    expect do
+      delete :destroy, @destroy_params
+    end.to change(Subscribe, :count).by(-1)
   end
 end
 
@@ -38,11 +44,13 @@ shared_examples_for 'can not unsubscribe' do
   it 'should not be able to perform destroy action' do
     delete :destroy, @destroy_params
 
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not reduce subscribes count' do
-    lambda{ delete :destroy, @destroy_params }.should change{ Subscribe.count }.by(0)
+    expect do
+      delete :destroy, @destroy_params
+    end.to_not change(Subscribe, :count)
   end
 end
 
