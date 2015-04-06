@@ -1,9 +1,11 @@
 - commit_id = diff.deleted_file ? parent_commit.try(:id) : @commit.id
 - diff_counter_content = "diff-#{diff_counter}_content"
-
-- if diff.diff.present?
+- if diff.renamed_file
+  - blob = @project.repo.tree(commit_id) / diff.b_path
+- else
   - blob = @project.repo.tree(commit_id) / diff.a_path
-  - is_file_open = 'in' if !blob.binary? && diff.diff.split("\n").count <= DiffHelper::MAX_LINES_WITHOUT_COLLAPSE
+
+- is_file_open = 'in' if is_file_open_in_diff(blob, diff)
 
 .file.offset10
   a name = "diff-#{diff_counter}"
@@ -34,3 +36,5 @@
         - if (@project.repo.tree(commit_id) / diff.b_path).nil?
           = "a_path=#{diff.a_path}; b_path=#{diff.b_path}"
         == render_diff(diff, diff_counter: diff_counter, comments: @comments)
+  - if diff.a_mode != diff.b_mode && diff.diff.blank?
+    == render 'file_change_mode', blob: blob, diff: diff, diff_counter_content: diff_counter_content

@@ -1,6 +1,7 @@
 -begin
-  == render_diff_stats(@stats)
-  == render partial: 'pull_diff', collection: @pull.diff
+  - diff = @pull.diff
+  == render_diff_stats(@stats, diff)
+  == render partial: 'pull_diff', collection: diff
 - rescue => ex
   -if ex.try(:message) == 'Grit::Git::GitTimeout'
     p= t 'layout.git.repositories.commit_diff_too_big'

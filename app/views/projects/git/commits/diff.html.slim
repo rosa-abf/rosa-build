@@ -21,8 +21,9 @@
         deletions: t("layout.projects.commit_deletions_count", count: total_deletions))
 
     -begin
-      == render_diff_stats @stats
-      - diffs = Grit::Commit.diff(@project.repo, @common_ancestor.id, @commit.id)
+      - diffs = @project.repo.diff @common_ancestor.id, @commit.id
+      == render_diff_stats @stats, diffs
+      -# diffs = Grit::Commit.diff(@project.repo, @common_ancestor.id, @commit.id)
       == render partial: 'projects/git/commits/diff', collection: diffs, locals: { parent_commit: @common_ancestor }
 
     - rescue Grit::Git::GitTimeout

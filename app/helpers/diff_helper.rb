@@ -2,7 +2,7 @@ module DiffHelper
   MAX_FILES_WITHOUT_COLLAPSE = 25
   MAX_LINES_WITHOUT_COLLAPSE = 50
 
-  def render_diff_stats(stats)
+  def render_diff_stats(stats, diff)
     res = ["<table class='table table-responsive boffset0'>"]
     stats.each_with_index do |stat, ind|
       res << "<tr>"
