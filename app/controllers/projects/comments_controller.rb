@@ -1,26 +1,20 @@
 class Projects::CommentsController < Projects::BaseController
   before_action :authenticate_user!
-  load_and_authorize_resource :project
   before_action :find_commentable
   before_action :find_or_build_comment
-  load_and_authorize_resource new: :new_line
 
   include CommentsHelper
 
   def create
-    respond_to do |format|
-      if !@comment.set_additional_data params
-        format.json {
-                      render json: {
-                                     error:   I18n.t("flash.comment.save_error"),
-                                     message: @comment.errors.full_messages
-                                   }
-                    }
-      elsif @comment.save
-        format.json {}
-      else
-        format.json { render json: { error: I18n.t("flash.comment.save_error") }, status: 422 }
-      end
+    if !@comment.set_additional_data params
+      render json: {
+        error:   I18n.t("flash.comment.save_error"),
+        message: @comment.errors.full_messages
+      }
+    elsif @comment.save
+      render :create
+    else
+      render json: { error: I18n.t("flash.comment.save_error") }, status: 422
     end
   end
 
@@ -51,5 +45,6 @@ class Projects::CommentsController < Projects::BaseController
   def find_or_build_comment
     @comment = params[:id].present? && Comment.where(automatic: false).find(params[:id]) ||
                current_user.comments.build(params[:comment]) {|c| c.commentable = @commentable; c.project = @project}
+    authorize @comment
   end
 end

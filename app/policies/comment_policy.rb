@@ -6,7 +6,8 @@ class CommentPolicy < ApplicationPolicy
   alias_method :new_line?, :create?
 
   def update?
-    record.user_id == user.id || local_admin?(record.project)
+    is_admin? || record.user_id == user.id || local_admin?(record.project)
   end
+  alias_method :destroy?, :update?
 
 end
