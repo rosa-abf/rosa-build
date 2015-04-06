@@ -3,7 +3,6 @@ class Projects::ProjectsController < Projects::BaseController
   include ProjectsHelper
 
   before_action :authenticate_user!
-  # load_and_authorize_resource id_param: :name_with_owner # to force member actions load
   before_action :who_owns, only: [:new, :create, :mass_import, :run_mass_import]
 
   def index
@@ -131,6 +130,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def alias
+    authorize @project
     fork(true)
   end
 
