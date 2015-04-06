@@ -6,13 +6,14 @@ class IssuePolicy < ApplicationPolicy
   end
 
   def show?
+    return false unless record.project.has_issues?
     ProjectPolicy.new(user, record.project).show?
   end
   alias_method :create?, :show?
   alias_method :read?,   :show?
 
   def update?
-    record.user_id == user.id || local_admin?(record.project)
+    is_admin? || record.user_id == user.id || local_admin?(record.project)
   end
 
 end
