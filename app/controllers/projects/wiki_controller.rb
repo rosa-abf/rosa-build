@@ -6,7 +6,6 @@ class Projects::WikiController < Projects::BaseController
 
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:show, :index, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages] if APP_CONFIG['anonymous_access']
-  load_resource :project
 
   before_action :authorize_read_actions,  only: [:index, :show, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages]
   before_action :authorize_write_actions, only: [:edit, :update, :new, :create, :destroy, :revert, :revert_wiki, :preview]
@@ -286,4 +285,3 @@ class Projects::WikiController < Projects::BaseController
       authorize @project, :write?
     end
 end
-
