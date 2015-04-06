@@ -4,6 +4,7 @@ class Users::ProfileController < Users::BaseController
   skip_before_action :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
 
   def show
+    authorize @user
     respond_to do |format|
       format.html do
         @groups = @user.groups.order(:uname)
