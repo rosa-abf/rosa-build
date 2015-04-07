@@ -21,12 +21,15 @@
     .clearfix
 
   .diff_data.collapse id= diff_counter_content class= is_file_open
-    - if blob.render_as == :image
+    - if blob.render_as == :image && diff.diff.present?
       - old_blob = file_blob_in_diff(@project.repo, parent_commit.id, diff)
-      == render('show_image', diff: diff, blob: blob, old_blob: old_blob)
+      == render 'show_image', diff: diff, blob: blob, old_blob: old_blob
 
     - if diff.a_mode != diff.b_mode && diff.diff.blank?
       == render 'file_change_mode', blob: blob, diff: diff
+
+    - elsif diff.diff.blank? && diff.renamed_file
+      == render 'file_removed_not_changed', blob: blob
 
     - elsif !blob.binary?
       - if (@project.repo.tree(commit_id) / diff.b_path).nil?

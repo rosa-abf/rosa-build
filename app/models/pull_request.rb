@@ -163,9 +163,8 @@ class PullRequest < ActiveRecord::Base
     @diff_stats ||= repo.diff_stats(to_commit.id, from_commit.id)
   end
 
-  # FIXME maybe move to warpc/grit?
   def diff
-    @diff ||= Grit::Commit.diff(repo, to_commit.id, from_commit.id)
+    @diff ||= repo.diff(to_commit.id, from_commit.id)
   end
 
   def set_user_and_time user

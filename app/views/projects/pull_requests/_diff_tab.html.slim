@@ -1,6 +1,7 @@
 -begin
   - diff = @pull.diff
-  == render_diff_stats(@stats, diff)
+  == render_diff_stats(stats: @stats, diff: diff, repo: @pull.repo,
+                       commit: @pull.from_commit, common_ancestor: @pull.to_commit)
   == render partial: 'pull_diff', collection: diff
 - rescue => ex
   -if ex.try(:message) == 'Grit::Git::GitTimeout'

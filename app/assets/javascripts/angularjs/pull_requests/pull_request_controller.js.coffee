@@ -108,9 +108,8 @@ PullRequestController = (dataservice, $http, ApiPullRequest, ApiProject, DateTim
     promise = ApiPullRequest.get_diff(vm.pull_params)
     promise.then (response) ->
       diff.html(null)
-      #html = compileHTML.run($scope, response.data)
-      #diff.html(html)
       $rootScope.$broadcast('compile_html', { element: diff, html: response.data })
+      $('[data-toggle="tooltip"]').tooltip()
       vm.processing = false
       vm.is_diff_updated = true
     false

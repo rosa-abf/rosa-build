@@ -110,9 +110,9 @@ module CommitHelper
 
   def get_filename_in_diff(diff, filename)
     if diff.renamed_file
-      "#{diff.a_path.rtruncate 60} => #{diff.b_path.rtruncate 60}"
+      "#{diff.a_path.rtruncate 50} => #{diff.b_path.rtruncate 50}"
     else
-      filename.rtruncate(120)
+      filename.rtruncate(100)
     end
   end
 
