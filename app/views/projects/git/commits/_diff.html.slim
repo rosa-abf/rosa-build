@@ -1,10 +1,6 @@
-- commit_id = diff.deleted_file ? parent_commit.try(:id) : @commit.id
+- commit_id = get_commit_id_for_file(diff, commit)
 - diff_counter_content = "diff-#{diff_counter}_content"
-- if diff.renamed_file
-  - blob = @project.repo.tree(commit_id) / diff.b_path
-- else
-  - blob = @project.repo.tree(commit_id) / diff.a_path
-
+- blob = file_blob_in_diff(@project.repo, commit_id, diff)
 - is_file_open = 'in' if is_file_open_in_diff(blob, diff)
 
 .file.offset10
@@ -16,25 +12,19 @@
               aria-expanded = 'true'
               aria-controls = diff_counter_content ]
       span.fa class= (is_file_open ? 'fa-chevron-down' : 'fa-chevron-up')
-      =< h(diff.a_path.rtruncate 120)
+      =< diff_file_icon(diff).html_safe
+      =< get_filename_in_diff(diff, diff.a_path)
     - if diff.b_path.present?
       button.btn.btn-link.pull-right
         = link_to "view file @ #{shortest_hash_id(commit_id)}", blob_path(@project, commit_id, diff.b_path)
     .clearfix
 
-  - if diff.diff.present?
-    .diff_data.collapse[ id = diff_counter_content class = is_file_open ]
+  .diff_data.collapse id= diff_counter_content class= is_file_open
+    == render('show_image', diff: diff, blob: blob) if blob.render_as == :image
+    - if diff.a_mode != diff.b_mode && diff.diff.blank?
+      == render 'file_change_mode', blob: blob, diff: diff
 
-      - if blob.render_as == :image
-        table.table.diff.inline.table-bordered[ cellspacing = 0 cellpadding = 0 ]
-          tr
-            td.diff-image
-              span.diff-image
-                img[ src   = "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"
-                     style = 'max-width: 600px;' ]
-      - elsif !blob.binary?
-        - if (@project.repo.tree(commit_id) / diff.b_path).nil?
-          = "a_path=#{diff.a_path}; b_path=#{diff.b_path}"
-        == render_diff(diff, diff_counter: diff_counter, comments: @comments)
-  - if diff.a_mode != diff.b_mode && diff.diff.blank?
-    == render 'file_change_mode', blob: blob, diff: diff, diff_counter_content: diff_counter_content
+    - elsif !blob.binary?
+      - if (@project.repo.tree(commit_id) / diff.b_path).nil?
+        = "a_path=#{diff.a_path}; b_path=#{diff.b_path}"
+      == render_diff(diff, diff_counter: diff_counter, comments: @comments)

@@ -94,6 +94,14 @@ en:
       public: Public
       private: Private
 
+      diff:
+        binary: Binary
+        new_file: file added
+        deleted_file: file removed
+        renamed_file: file renamed
+        changed_file: file changed
+        without_changes: without changes
+
   flash:
     project:
       mass_import_added_to_queue: Mass import added to queue
