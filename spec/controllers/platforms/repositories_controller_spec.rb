@@ -267,7 +267,7 @@ describe Platforms::RepositoriesController, type: :controller do
 
     it 'should not be able to perform projects_list action', anonymous_access: false do
       get :projects_list, id: @repository, platform_id: @platform, format: :json
-      response.response_code.should == 401
+      expect(response.response_code).to eq 401
     end
 
   end

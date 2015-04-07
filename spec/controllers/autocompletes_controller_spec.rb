@@ -11,12 +11,12 @@ describe AutocompletesController, type: :controller do
 
     it 'should be able to perform autocomplete_user_or_group action' do
       get :autocomplete_user_or_group
-      response.should be_success
+      expect(response).to be_success
     end
 
     it 'should be able to perform autocomplete_user_uname action' do
       get :autocomplete_user_uname
-      response.should be_success
+      expect(response).to be_success
     end
 
     context 'autocomplete_extra_build_list' do
@@ -26,13 +26,13 @@ describe AutocompletesController, type: :controller do
 
       it 'no data when build_list without container' do
         get :autocomplete_extra_build_list, params
-        response.body.should == '[]'
+        expect(response.body).to eq '[]'
       end
 
       it 'shows data when build_list with container' do
         build_list.update_column(:container_status, BuildList::BUILD_PUBLISHED)
         get :autocomplete_extra_build_list, params
-        response.body.should_not == '[]'
+        expect(response.body).to_not eq '[]'
       end
     end
 
@@ -47,13 +47,13 @@ describe AutocompletesController, type: :controller do
 
       it 'no data when repository of main platform' do
         get :autocomplete_extra_repositories, params
-        response.body.should == '[]'
+        expect(response.body).to eq '[]'
       end
 
       it 'shows data when repository of personal platform' do
         Platform.update_all(platform_type: 'personal')
         get :autocomplete_extra_repositories, params
-        response.body.should_not == '[]'
+        expect(response.body).to_not eq '[]'
       end
     end
 
@@ -73,7 +73,7 @@ describe AutocompletesController, type: :controller do
     ].each do |action|
       it "should not be able to perform #{action} action" do
         get action
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 

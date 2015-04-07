@@ -114,7 +114,7 @@ shared_examples_for 'api user with admin rights' do
   #[:update, :destroy].each do |action|
   #  it "ensures that return correct answer for wrong #{action} action" do
   #    put action, id: nil, format: :json
-  #    response.status.should == 404
+  #    expect(response.status).to eq 404
   #  end
   #end
 end

@@ -30,7 +30,7 @@ describe Projects::Git::TreesController, type: :controller do
 
     it "should not be able to perform archive action without anonymous acccess", anonymous_access: false do
       get :archive, @params.merge(format: 'tar.gz')
-      response.code.should == '401'
+      expect(response.code).to eq '401'
     end
 
     it 'should not be able to perform destroy action' do

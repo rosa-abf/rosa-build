@@ -132,7 +132,7 @@ class BuildList < ActiveRecord::Base
 
   scope :recent, -> { order(updated_at: :desc) }
   scope :for_extra_build_lists, ->(ids, save_to_platform) {
-    s = s.where(id: ids)
+    s = where(id: ids, container_status: BuildList::BUILD_PUBLISHED)
     s = s.where(save_to_platform_id: save_to_platform.id) if save_to_platform && save_to_platform.main?
     s
   }

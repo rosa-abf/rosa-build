@@ -37,7 +37,7 @@ class AutocompletesController < ApplicationController
 
   def autocomplete_extra_repositories
     # Only personal and build for platform repositories can be attached to the build
-    platforms = PlatformPolicy::Scope.new(current_user, Platform).related.
+    platforms = PlatformPolicy::Scope.new(current_user, Platform).show.
       includes(:repositories).search(params[:term]).search_order.limit(5).
       where("platforms.platform_type = 'personal' OR platforms.id = ?", params[:build_for_platform_id])
     platforms.each do |platform|

@@ -2,6 +2,7 @@ class SearchController < ApplicationController
   include PaginateHelper
 
   before_action :authenticate_user! unless APP_CONFIG['anonymous_access']
+  skip_after_action :verify_authorized
 
   def index
     @type       = Search::TYPES.find{ |t| t == params[:type] } || Search::TYPES.first
