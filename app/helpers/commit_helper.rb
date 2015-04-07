@@ -2,20 +2,25 @@ module CommitHelper
   MAX_FILES_WITHOUT_COLLAPSE = 25
 
   def render_commit_stats(options = {})
-    stats  = options[:stats]
-    diff   = options[:diff]
-    repo   = options[:repo]
-    commit = options[:commit]
+    stats         = options[:stats]
+    diff          = options[:diff]
+    repo          = options[:repo]
+    commit        = options[:commit]
+    parent_commit = commit.parents.try(:first)
 
     res = ["<ul class='list-group boffset0'>"]
     ind=0
     stats.files.each do |filename, adds, deletes, total|
       file_name = get_filename_in_diff(diff[ind], filename)
-
+      file_status = t "layout.projects.diff.#{get_file_status_in_diff(diff[ind])}"
       res << "<li class='list-group-item'>"
         res << "<div class='row'>"
-          res << "<div class='col-sm-8'><a href='#diff-#{ind}'>#{diff_file_icon(diff[ind])} #{h(file_name)}</a></div>"
-          res << render_file_changes(diff: diff[ind], adds: adds, deletes: deletes, total: total, repo: repo, commit: commit)
+          res << "<div class='col-sm-8'>"
+            res << "<a href='#diff-#{ind}' data-toggle='tooltip' data-placement='top' title='#{file_status}'>"
+              res << "#{diff_file_icon(diff[ind])} #{h(file_name)}"
+            res << "</a></div>"
+          res << render_file_changes(diff: diff[ind], adds: adds, deletes: deletes, total: total,
+                                     repo: repo, commit: commit, parent_commit: parent_commit, file_status: file_status)
         res << "</div"
       res << "</li>"
       ind +=1
@@ -87,8 +92,8 @@ module CommitHelper
     diff.renamed_file ? (tree / diff.b_path) : (tree / (diff.a_path.presence || diff.b_path))
   end
 
-  def get_commit_id_for_file(diff, commit)
-    diff.deleted_file ? commit.parents.try(:first).try(:id) : commit.id
+  def get_commit_id_for_file(diff, commit, parent_commit)
+    diff.deleted_file ? parent_commit.id : commit.id
   end
 
   def get_file_status_in_diff(diff)
@@ -118,15 +123,15 @@ module CommitHelper
   end
 
   def render_file_changes(options = {})
-    diff      = options[:diff]
-    adds      = options[:adds]
-    deletes   = options[:deletes]
-    total     = options[:total]
-    repo      = options[:repo]
-    commit_id = get_commit_id_for_file(diff, options[:commit])
-    blob      = file_blob_in_diff(repo, commit_id, diff)
+    diff        = options[:diff]
+    adds        = options[:adds]
+    deletes     = options[:deletes]
+    total       = options[:total]
+    repo        = options[:repo]
+    file_status = options[:file_status]
+    commit_id   = get_commit_id_for_file(diff, options[:commit], options[:parent_commit])
+    blob        = file_blob_in_diff(repo, commit_id, diff)
 
-    file_status = t "layout.projects.diff.#{get_file_status_in_diff(diff)}"
     res = ''
     res << "<div class='col-sm-3'>"
       res << "<div class='pull-right'>"

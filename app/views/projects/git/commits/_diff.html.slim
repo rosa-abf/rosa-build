@@ -1,4 +1,5 @@
-- commit_id = get_commit_id_for_file(diff, commit)
+- parent_commit = defined?(common_ancestor) ? common_ancestor : commit.parents.try(:first)
+- commit_id = get_commit_id_for_file diff, commit, parent_commit
 - diff_counter_content = "diff-#{diff_counter}_content"
 - blob = file_blob_in_diff(@project.repo, commit_id, diff)
 - is_file_open = 'in' if is_file_open_in_diff(blob, diff)
@@ -20,7 +21,10 @@
     .clearfix
 
   .diff_data.collapse id= diff_counter_content class= is_file_open
-    == render('show_image', diff: diff, blob: blob) if blob.render_as == :image
+    - if blob.render_as == :image
+      - old_blob = file_blob_in_diff(@project.repo, parent_commit.id, diff)
+      == render('show_image', diff: diff, blob: blob, old_blob: old_blob)
+
     - if diff.a_mode != diff.b_mode && diff.diff.blank?
       == render 'file_change_mode', blob: blob, diff: diff
 

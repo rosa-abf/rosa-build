@@ -1,10 +1,9 @@
-- #table.table.table-responsive.diff.inline.table-borderless cellspacing= 0 cellpadding= 0
 .row
   - if get_file_status_in_diff(diff) == :changed_file
     .col-md-6.col-xs-12
       p.text-center.text-danger= t 'layout.projects.diff.deleted_file'
       img[ class= 'img-responsive center-block'
-           src=   "data:#{blob.mime_type};base64,#{Base64.encode64(diff.a_blob.data)}"
+           src=   "data:#{old_blob.mime_type};base64,#{Base64.encode64(old_blob.data)}"
            style= 'border: 1px solid red;' ]
 
     .col-md-6.col-xs-12

@@ -12,19 +12,13 @@
   h3= title
 
   #repo-wrapper
-    .leftside
-      -total_additions = @stats.inject(0) {|sum, n| sum + n.additions}
-      -total_deletions = @stats.inject(0) {|sum, n| sum + n.deletions}
-      h5= t("layout.projects.diff_show_header",
-        files:     t("layout.projects.commit_files_count",     count: @stats.count),
-        additions: t("layout.projects.commit_additions_count", count: total_additions),
-        deletions: t("layout.projects.commit_deletions_count", count: total_deletions))
-
     -begin
       - diffs = @project.repo.diff @common_ancestor.id, @commit.id
-      == render_diff_stats @stats, diffs
-      -# diffs = Grit::Commit.diff(@project.repo, @common_ancestor.id, @commit.id)
-      == render partial: 'projects/git/commits/diff', collection: diffs, locals: { parent_commit: @common_ancestor }
+      == render_diff_stats(stats: @stats, diff: diffs, repo: @project.repo,
+                           commit: @commit, common_ancestor: @common_ancestor)
+
+      == render partial: 'projects/git/commits/diff', collection: diffs,
+         locals: { commit: @commit, common_ancestor: @common_ancestor}
 
     - rescue Grit::Git::GitTimeout
       p= t 'layout.git.repositories.commit_diff_too_big'
