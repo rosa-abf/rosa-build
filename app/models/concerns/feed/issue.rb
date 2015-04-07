@@ -59,7 +59,7 @@ module Feed::Issue
       )
     end
     # dont remove outdated issues link
-    ::Comment.create_link_on_issues_from_item(self) if previous_changes['title'].present? || previous_changes['body'].present?
+    ::Comment.create_link_on_issues_from_item(self) if title_changed? || body_changed?
   end
 
   def send_hooks(action = :create)

@@ -724,17 +724,17 @@ class BuildList < ActiveRecord::Base
     save
   end
 
-  def current_ability
-    @current_ability ||= Ability.new(user)
-  end
+  # def current_ability
+  #   @current_ability ||= Ability.new(user)
+  # end
 
   def prepare_extra_repositories
     if save_to_platform && save_to_platform.main?
       self.extra_repositories = nil
     else
-      self.extra_repositories = Repository.joins(:platform).
+      self.extra_repositories = PlatformPolicy::Scope.new(user, Repository.joins(:platform)).show.
         where(id: extra_repositories, platforms: {platform_type: 'personal'}).
-        accessible_by(current_ability, :read).pluck('repositories.id')
+        pluck('repositories.id')
     end
   end
 
