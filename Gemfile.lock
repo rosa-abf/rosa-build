@@ -41,8 +41,8 @@ GIT
 
 GIT
   remote: git://github.com/rosa-abf/grit.git
-  revision: ba8c5b9ebe8804f748551e16af34f29259cf4c08
-  tag: 2.6.18
+  revision: b733f0ceefb44b18a9dec8f509ba5493dab59e4e
+  tag: 2.6.17
   specs:
     grit (2.5.0)
       diff-lcs (~> 1.1)
