@@ -1,8 +1,8 @@
 class Api::V1::AdvisoriesController < Api::V1::BaseController
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
-  before_action :load_advisory
-  before_action :load_build_list, only: [:create, :update]
+  skip_before_action :authenticate_user!, only: %i(index show) if APP_CONFIG['anonymous_access']
+  before_action :load_advisory,           only: %i(show update)
+  before_action :load_build_list,         only: %i(create update)
 
   def index
     authorize :advisory
@@ -14,6 +14,7 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   end
 
   def create
+    authorize :advisory
     if @build_list.can_attach_to_advisory? &&
         @build_list.associate_and_create_advisory(params[:advisory]) &&
         @build_list.save

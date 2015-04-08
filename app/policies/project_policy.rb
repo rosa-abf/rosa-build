@@ -21,12 +21,13 @@ class ProjectPolicy < ApplicationPolicy
   alias_method :refs_list?,                 :show?
 
   def create?
-    return true if is_admin?
     return false if user.guest?
+    return true  if is_admin?
     owner_policy.write?
   end
 
   def update?
+    return false if user.guest?
     is_admin? || owner? || local_admin?
   end
   alias_method :alias?,                     :update?
@@ -41,10 +42,12 @@ class ProjectPolicy < ApplicationPolicy
   alias_method :schedule?,                  :update?
 
   def destroy?
+    return false if user.guest?
     is_admin? || owner? || record.owner.is_a?(Group) && record.owner.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin')
   end
 
   def mass_import?
+    return false if user.guest?
     is_admin? || user.platforms.main.find{ |p| local_admin?(p) }.present?
   end
 
@@ -57,6 +60,7 @@ class ProjectPolicy < ApplicationPolicy
 
   # for grack
   def write?
+    return false if user.guest?
     is_admin? || owner? || local_writer?
   end
 
