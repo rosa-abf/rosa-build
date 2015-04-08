@@ -1,6 +1,6 @@
 - begin
   - diffs = @commit.show
-  - stats = Grit::CommitStats.find_all(@project.repo, @commit.sha, max_count: 1, skip: 0, M: true)[0][-1]
+  - stats = Grit::CommitStats.find_all(@project.repo, @commit.sha, max_count: 1, skip: 0)[0][-1]
   = render_commit_stats(stats: stats, diff: @commit.show, repo: @project.repo, commit: @commit)
 
   .pull-right
