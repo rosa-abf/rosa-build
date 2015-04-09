@@ -32,6 +32,4 @@
       == render 'file_removed_not_changed', blob: blob
 
     - elsif !blob.binary?
-      - if (@project.repo.tree(commit_id) / diff.b_path).nil?
-        = "a_path=#{diff.a_path}; b_path=#{diff.b_path}"
       == render_diff(diff, diff_counter: diff_counter, comments: @comments)

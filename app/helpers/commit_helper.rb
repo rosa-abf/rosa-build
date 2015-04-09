@@ -89,7 +89,8 @@ module CommitHelper
 
   def file_blob_in_diff(repo, commit_id, diff)
     tree = repo.tree(commit_id)
-    diff.renamed_file ? (tree / diff.b_path) : (tree / (diff.a_path.presence || diff.b_path))
+    blob = diff.renamed_file ? (tree / diff.b_path) : (tree / (diff.a_path.presence || diff.b_path))
+    blob || diff.a_blob || diff.b_blob
   end
 
   def get_commit_id_for_file(diff, commit, parent_commit)
