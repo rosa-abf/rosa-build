@@ -88,8 +88,9 @@ module CommitHelper
   end
 
   def file_blob_in_diff(repo, commit_id, diff)
+    return if repo.nil? || commit_id.nil? || diff.nil?
     tree = repo.tree(commit_id)
-    blob = diff.renamed_file ? (tree / diff.b_path) : (tree / (diff.a_path.presence || diff.b_path))
+    blob = diff.renamed_file ? (tree / diff.b_path) : (tree / (diff.a_path || diff.b_path))
     blob || diff.a_blob || diff.b_blob
   end
 

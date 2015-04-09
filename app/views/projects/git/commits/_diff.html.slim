@@ -22,7 +22,7 @@
 
   .diff_data.collapse id= diff_counter_content class= is_file_open
     - if blob.render_as == :image && diff.diff.present?
-      - old_blob = file_blob_in_diff(@project.repo, parent_commit.id, diff)
+      - old_blob = file_blob_in_diff(@project.repo, parent_commit.try(:id), diff)
       == render 'show_image', diff: diff, blob: blob, old_blob: old_blob
 
     - if diff.a_mode != diff.b_mode && diff.diff.blank?
