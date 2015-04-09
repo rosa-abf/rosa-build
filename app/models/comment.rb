@@ -65,7 +65,7 @@ class Comment < ActiveRecord::Base
     end
     return data[:actual] = true if commentable_type == 'Grit::Commit'
     filepath, line_number = data[:path], data[:line]
-    diff_path = (diff || commentable.diffs ).select {|d| d.a_path == data[:path]}
+    diff_path = (diff || commentable.show ).select {|d| d.a_path == data[:path]}
     comment_line = data[:line].to_i
     # NB! also dont create a comment to the diff header
     return data[:actual] = false if diff_path.blank? || comment_line == 0
