@@ -12,14 +12,14 @@ class Projects::CommentsController < Projects::BaseController
       if !@comment.set_additional_data params
         format.json {
                       render json: {
-                                     error:   I18n.t("flash.comment.save_error"),
-                                     message: @comment.errors.full_messages
+                                     message: I18n.t("flash.comment.save_error"),
+                                     error:   @comment.errors.full_messages
                                    }
                     }
       elsif @comment.save
         format.json {}
       else
-        format.json { render json: { error: I18n.t("flash.comment.save_error") }, status: 422 }
+        format.json { render json: { message: I18n.t("flash.comment.save_error") }, status: 422 }
       end
     end
   end
@@ -28,17 +28,24 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def update
-    status, message = if @comment.update_attributes(params[:comment])
-      [200, view_context.markdown(@comment.body)]
-    else
-      [422, 'error']
+    respond_to do |format|
+      if @comment.update_attributes(params[:comment])
+        format.json { render json: {message:t('flash.comment.updated'), body: view_context.markdown(@comment.body)} }
+      else
+        format.json { render json: {message:t('flash.comment.error_in_updating')}, status: 422 }
+      end
     end
-    render json: {body: message}, status: status
   end
 
   def destroy
-    @comment.destroy
-    render json: nil
+    respond_to do |format|
+      if @comment.present? && @comment.destroy
+        format.json { render json: {message: I18n.t('flash.comment.destroyed')} }
+      else
+        format.json {
+          render json: {message: t('flash.comment.error_in_deleting')}, status: 422 }
+      end
+    end
   end
 
   protected
