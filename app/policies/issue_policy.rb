@@ -13,6 +13,7 @@ class IssuePolicy < ApplicationPolicy
   alias_method :read?,   :show?
 
   def update?
+    return false if user.guest?
     is_admin? || record.user_id == user.id || local_admin?(record.project)
   end
 
