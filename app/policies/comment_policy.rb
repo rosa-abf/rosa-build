@@ -1,7 +1,7 @@
 class CommentPolicy < ApplicationPolicy
 
   def create?
-    ProjectPolicy.new(user, record.project).show?
+    !user.guest? && ProjectPolicy.new(user, record.project).show?
   end
   alias_method :new_line?, :create?
 
