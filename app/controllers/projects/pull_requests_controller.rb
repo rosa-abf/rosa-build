@@ -4,7 +4,6 @@ class Projects::PullRequestsController < Projects::BaseController
 
   before_action :load_issue,         except: %i(index autocomplete_to_project new create)
   before_action :load_pull,          except: %i(index autocomplete_to_project new create)
-  before_action :find_collaborators, only:   %i(new create show)
 
   def new
     to_project = find_destination_project(false)
