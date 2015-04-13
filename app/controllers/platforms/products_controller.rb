@@ -4,16 +4,16 @@ class Platforms::ProductsController < Platforms::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
 
-  before_action :load_product, except: [:create, :autocomplete_project]
+  before_action :load_product, except: %i(index new create autocomplete_project)
 
   def index
+    authorize @platform.products.new
     @products = @platform.products.paginate(page: params[:page])
   end
 
   def new
-    @product = @platform.products.new
+    authorize @product = @platform.products.new
   end
-
 
   def edit
   end
