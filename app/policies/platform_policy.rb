@@ -7,6 +7,7 @@ class PlatformPolicy < ApplicationPolicy
   def allowed?
     true
   end
+  alias_method :platforms_for_build?, :allowed?
 
   def show?
     return true if is_admin?
@@ -24,10 +25,6 @@ class PlatformPolicy < ApplicationPolicy
     return true unless record.hidden?
     return true if record.owner == user
     owner? || local_reader?
-  end
-
-  def platforms_for_build?
-    true
   end
 
   def create?
