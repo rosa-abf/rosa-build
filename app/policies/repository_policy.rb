@@ -1,7 +1,7 @@
 class RepositoryPolicy < ApplicationPolicy
 
   def show?
-    PlatformPolicy.new(user, record.platform).show?
+    is_admin? || PlatformPolicy.new(user, record.platform).show?
   end
   alias_method :projects?,      :show?
   alias_method :projects_list?, :show?
@@ -40,11 +40,6 @@ class RepositoryPolicy < ApplicationPolicy
     is_admin? || local_admin?(record.platform) || repository_user_ids.include?(user.id)
   end
   alias_method :remove_project?, :add_project?
-
-  def destroy?
-    return false if record.platform.personal? && record.name == 'main'
-    is_admin? || owner?(record.platform) || local_admin?(record.platform)
-  end
 
   def settings?
     is_admin? || owner?(record.platform) || local_admin?(record.platform)
