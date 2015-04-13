@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 def set_data_for_pull
-  @ability = Ability.new(@user)
-
   @project = FactoryGirl.create(:project_with_commit, owner: @user)
 
   @clone_path = File.join(APP_CONFIG['root_path'], 'repo_clone', @project.id.to_s)
@@ -37,86 +35,94 @@ describe PullRequest do
       @pull.check
       @project.update_attributes(name: "#{@project.name}-new")
       @pull.reload
-      Dir.exists?(@pull.path).should be_truthy
+      expect(Dir.exists? @pull.path).to be_truthy
     end
 
     it 'master should merge with non_conflicts branch' do
       @pull.check
-      @pull.status.should == 'ready'
+      expect(@pull.status).to  eq('ready')
     end
 
     it 'master should not merge with conflicts branch' do
       @pull.from_ref = 'conflicts'
       @pull.check
-      @pull.status.should == 'blocked'
+      expect(@pull.status).to eq('blocked')
     end
 
     it 'should already merged when already up-to-date branches' do
       @pull.from_ref = 'master'
       @pull.check
-      @pull.status.should == 'merged'
+      expect(@pull.status).to eq('merged')
     end
 
     context 'for other head project' do
       it 'master should merge with non_conflicts branch' do
         @other_pull.check
-        @other_pull.status.should == 'ready'
+        expect(@other_pull.status).to eq('ready')
       end
 
       it 'master should not merge with conflicts branch' do
         @other_pull.from_ref = 'conflicts'
         @other_pull.check
-        @other_pull.status.should == 'blocked'
+        expect(@other_pull.status).to eq('blocked')
       end
 
       it 'should already merged when already up-to-date branches' do
         @other_pull.from_ref = 'master'
         @other_pull.check
-        @other_pull.status.should == 'merged'
+        expect(@other_pull.status).to eq('merged')
       end
     end
 
     it "should not create same pull" do
-      @same_pull = @project.pull_requests.new(issue_attributes: {title: 'same', body: 'testing'})
-      @same_pull.issue.user, @same_pull.issue.project = @user, @same_pull.to_project
-      @same_pull.to_ref = 'master'
-      @same_pull.from_project, @same_pull.from_ref = @project, 'non_conflicts'
-      @same_pull.save
-      @project.pull_requests.joins(:issue).where(issues: {title: @same_pull.title}).count.should == 0
+      expect {
+        @same_pull = @project.pull_requests.new(issue_attributes: {title: 'same', body: 'testing'})
+        @same_pull.issue.user, @same_pull.issue.project = @user, @same_pull.to_project
+        @same_pull.to_ref = 'master'
+        @same_pull.from_project, @same_pull.from_ref = @project, 'non_conflicts'
+        @same_pull.save
+      }.to change { PullRequest.count }.by(0)
+      #expect(@project.pull_requests.joins(:issue).where(issues: {title: @same_pull.title}).count).to == 0
     end
 
     it "should not create pull with wrong base ref" do
-      @wrong_pull = @project.pull_requests.new(issue_attributes: {title: 'wrong base', body: 'testing'})
-      @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.to_project
-      @wrong_pull.to_ref = 'wrong'
-      @wrong_pull.from_project, @wrong_pull.from_ref = @project, 'non_conflicts'
-      @wrong_pull.save
-      @project.pull_requests.joins(:issue).where(issues: {title: @wrong_pull.title}).count.should == 0
+      expect {
+        @wrong_pull = @project.pull_requests.new(issue_attributes: {title: 'wrong base', body: 'testing'})
+        @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.to_project
+        @wrong_pull.to_ref = 'wrong'
+        @wrong_pull.from_project, @wrong_pull.from_ref = @project, 'non_conflicts'
+        @wrong_pull.save
+      }.to change { PullRequest.count }.by(0)
     end
 
     it "should not create pull with wrong head ref" do
-      @wrong_pull = @project.pull_requests.new(issue_attributes: {title: 'wrong head', body: 'testing'})
-      @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.to_project
-      @wrong_pull.to_ref = 'master'
-      @wrong_pull.from_project, @wrong_pull.from_ref = @project, 'wrong'
-      @wrong_pull.save
-      @project.pull_requests.joins(:issue).where(issues: {title: @wrong_pull.title}).count.should == 0
+      expect {
+        @wrong_pull = @project.pull_requests.new(issue_attributes: {title: 'wrong head', body: 'testing'})
+        @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.to_project
+        @wrong_pull.to_ref = 'master'
+        @wrong_pull.from_project, @wrong_pull.from_ref = @project, 'wrong'
+        @wrong_pull.save
+      }.to change { PullRequest.count }.by(0)
     end
 
     it "should create pull with tag" do
-      system("cd #{@project.path} && git tag 4.7.5.3 $(git rev-parse #{@pull.from_ref})") # TODO REDO through grit
-      @pull = @project.pull_requests.new(issue_attributes: {title: 'tag', body: 'testing'})
-      @pull.issue.user, @pull.issue.project = @user, @pull.to_project
-      @pull.to_ref = 'master'
-      @pull.from_project, @pull.from_ref = @project, '4.7.5.3'
-      @pull.save
-      @project.pull_requests.joins(:issue).where(issues: {title: @pull.title}).count.should == 1
+      expect {
+        system("cd #{@project.path} && git tag 4.7.5.3 $(git rev-parse #{@pull.from_ref})") # TODO REDO through grit
+        @pull = @project.pull_requests.new(issue_attributes: {title: 'tag', body: 'testing'})
+        @pull.issue.user, @pull.issue.project = @user, @pull.to_project
+        @pull.to_ref = 'master'
+        @pull.from_project, @pull.from_ref = @project, '4.7.5.3'
+        @pull.save
+      }.to change { @project.pull_requests.count }.by(1)
     end
 
     it "should close pull when deleting from branch" do
-      system("cd #{@project.path} && git branch -D #{@pull.from_branch}")
-      @pull.check
-      @project.pull_requests.joins(:issue).where(issues: {title: @pull.title, status: 'closed'}).count.should == 1
+      expect {
+        system("cd #{@project.path} && git branch -D #{@pull.from_branch}")
+        @pull.check
+      }.to change {
+        @project.pull_requests.joins(:issue).where(issues: {title: @pull.title, status: 'closed'}).count
+      }.by(1)
     end
   end
 
