@@ -30,16 +30,16 @@ class ProjectPolicy < ApplicationPolicy
     return false if user.guest?
     is_admin? || owner? || local_admin?
   end
-  alias_method :alias?,                     :update?
-  alias_method :sections?,                  :update?
-  alias_method :manage_collaborators?,      :update?
-  alias_method :autocomplete_maintainers?,  :update?
   alias_method :add_member?,                :update?
+  alias_method :alias?,                     :update?
+  alias_method :autocomplete_maintainers?,  :update?
+  alias_method :manage_collaborators?,      :update?
+  alias_method :members?,                   :update?
   alias_method :remove_member?,             :update?
   alias_method :remove_members?,            :update?
-  alias_method :update_member?,             :update?
-  alias_method :members?,                   :update?
   alias_method :schedule?,                  :update?
+  alias_method :sections?,                  :update?
+  alias_method :update_member?,             :update?
 
   def destroy?
     return false if user.guest?
