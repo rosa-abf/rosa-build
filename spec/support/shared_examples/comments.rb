@@ -45,25 +45,25 @@ shared_examples_for 'user without update stranger comment ability' do
 end
 shared_examples_for 'user with destroy comment ability' do
   it 'should be able to perform destroy action' do
-    delete :destroy, {id: @comment.id}.merge(@path)
+    delete :destroy, {id: @comment.id, format: :json}.merge(@path)
     expect(response).to be_success #redirect_to(@return_path)
   end
 
   it 'should delete comment from database' do
     expect do
-      delete :destroy, {id: @comment.id}.merge(@path)
+      delete :destroy, {id: @comment.id, format: :json}.merge(@path)
     end.to change(Comment, :count).by(-1)
   end
 end
 shared_examples_for 'user without destroy comment ability' do
   it 'should not be able to perform destroy action' do
-    delete :destroy, {id: @comment.id}.merge(@path)
+    delete :destroy, {id: @comment.id, format: :json}.merge(@path)
     expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not delete comment from database' do
     expect do
-      delete :destroy, {id: @comment.id}.merge(@path)
+      delete :destroy, {id: @comment.id, format: :json}.merge(@path)
     end.to_not change(Issue, :count)
   end
 end
