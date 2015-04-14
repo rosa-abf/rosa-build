@@ -19,7 +19,8 @@ class ApplicationController < ActionController::Base
                 only: [:create, :destroy, :open_id, :cancel, :publish, :change_visibility] # :update
   before_action :banned?
   after_action -> { EventLog.current_controller = nil }
-  after_action :verify_authorized, unless: :devise_controller?
+  after_action      :verify_authorized, unless: :devise_controller?
+  skip_after_action :verify_authorized, only: %i(render_500 render_404)
 
   helper_method :get_owner
 
