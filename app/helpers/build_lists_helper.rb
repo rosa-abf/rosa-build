@@ -294,8 +294,9 @@ module BuildListsHelper
   end
 
   def default_extra_repos(project)
-    project.repositories.joins(:platform).accessible_by(current_ability, :read)
-           .where(platforms: { platform_type: 'personal' }).map do |extra|
+    scope = project.repositories.joins(:platform).where(platforms: { platform_type: 'personal' })
+    scope = PlatformPolicy::Scope.new(current_user, scope).show
+    scope.map do |extra|
       {
         id:              extra.id,
         platform_id:     extra.platform.id,

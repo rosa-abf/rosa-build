@@ -724,10 +724,6 @@ class BuildList < ActiveRecord::Base
     save
   end
 
-  # def current_ability
-  #   @current_ability ||= Ability.new(user)
-  # end
-
   def prepare_extra_repositories
     if save_to_platform && save_to_platform.main?
       self.extra_repositories = nil
