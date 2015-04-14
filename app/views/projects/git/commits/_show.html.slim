@@ -1,6 +1,7 @@
 - begin
-  - stats = @commit.stats
-  = render_commit_stats(stats)
+  - diffs = @commit.show
+  - stats = Grit::CommitStats.find_all(@project.repo, @commit.sha, max_count: 1, skip: 0)[0][-1]
+  = render_commit_stats(stats: stats, diff: @commit.show, repo: @project.repo, commit: @commit)
 
   .pull-right
     => link_to 'raw diff', commit_path(@project, @commit.id, :diff)
@@ -8,6 +9,6 @@
     =< link_to 'patch', commit_path(@project, @commit.id, :patch)
   .clearfix
 
-  == render partial: 'diff', collection: @commit.diffs, locals: { parent_commit: @commit.parents.try(:first) }
+  == render partial: 'diff', collection: diffs, locals: { commit: @commit }
 - rescue Grit::Git::GitTimeout
   h3.text-danger= t('layout.git.repositories.commit_diff_too_big')

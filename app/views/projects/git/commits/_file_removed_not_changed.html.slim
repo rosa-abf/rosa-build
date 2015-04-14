@@ -1,0 +1,9 @@
+.table-responsive.overflow-auto
+  table.table.diff.inline.table-borderless cellspacing= 0 cellpadding= 0
+    tr.header
+      td.line_numbers[] ...
+      td.line_numbers[] ...
+      td.header
+        strong.text-primary
+          - binary = t('layout.projects.diff.binary') if blob.binary?
+          = "#{binary} #{ t 'layout.projects.diff.renamed_file'} #{t 'layout.projects.diff.without_changes'}"

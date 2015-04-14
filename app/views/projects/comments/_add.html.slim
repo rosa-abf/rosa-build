@@ -13,7 +13,7 @@ h3
                ang_model: 'new_body'
       hr
       button.btn.btn-primary[ ng-disabled = 'commentsCtrl.isDisabledNewCommentButton()'
-                              ng-click    = 'commentsCtrl.add()' ]
+                              ng-click    = 'commentsCtrl.add($event)' ]
         = t('layout.create')
     .panel-footer
       => t('layout.comments.notifications_are')

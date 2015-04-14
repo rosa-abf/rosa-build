@@ -63,8 +63,7 @@ module Grit
     end
 
     def diff(a, b, *paths)
-      diff = self.git.native('diff', {M: true}, "#{a}...#{b}", '--', *paths)
-
+      diff = self.git.native('diff', {}, "#{a}...#{b}", '--', *paths)
       if diff =~ /diff --git a/
         diff = diff.sub(/.*?(diff --git a)/m, '\1')
       else

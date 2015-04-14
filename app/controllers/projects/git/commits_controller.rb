@@ -14,7 +14,7 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
 
     respond_to do |format|
       format.html
-      format.diff  { render text: (@commit.diffs.map(&:diff).join("\n") rescue ''), content_type: "text/plain" }
+      format.diff  { render text: (@commit.show.map(&:diff).join("\n") rescue ''), content_type: "text/plain" }
       format.patch { render text: (@commit.to_patch rescue ''), content_type: "text/plain" }
     end
   end

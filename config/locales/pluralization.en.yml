@@ -11,12 +11,6 @@ en:
         one:   "%{count} deletion"
         other: "%{count} deletions"
 
-      inline_additions_count:
-        one:   "%{count} addition"
-        other: "%{count} additions"
-      inline_deletions_count:
-        one:   "%{count} deletion"
-        other: "%{count} deletions"
       inline_changes_count:
         one:   "%{count} change"
         other: "%{count} changes"
