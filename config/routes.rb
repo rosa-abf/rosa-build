@@ -324,7 +324,8 @@ Rosa::Application.routes.draw do
         end
         resources :issues, except: [:destroy, :edit] do
           resources :comments, only: [:edit, :create, :update, :destroy]
-          resources :subscribes, only: [:create, :destroy]
+          post '/subscribe'     => "subscribes#create", as: :subscribe
+          delete '/unsubscribe' => "subscribes#destroy", as: :unsubscribe
           collection do
             post :create_label
             get :search_collaborators

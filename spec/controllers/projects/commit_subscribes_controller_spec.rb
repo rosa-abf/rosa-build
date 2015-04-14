@@ -1,9 +1,16 @@
 require 'spec_helper'
 
+def subscribe_to_commit
+  Subscribe.subscribe_to_commit(project_id:         @project.id,
+                                subscribeable_id:   @commit.id.hex,
+                                subscribeable_type: @commit.class.name,
+                                user_id:            @user.id)
+end
+
 shared_examples_for 'can subscribe' do
   it 'should be able to perform create action' do
     post :create, @create_params
-    expect(response).to redirect_to(project_issue_path(@project, @issue))
+    expect(response).to redirect_to(commit_path(@project, @commit))
   end
 
   it 'should create subscribe object into db' do
@@ -14,7 +21,7 @@ end
 shared_examples_for 'can not subscribe' do
   it 'should not be able to perform create action' do
     post :create, @create_params
-    expect(response).to redirect_to(forbidden_path)
+    expect(response).to redirect_to(commit_path(@project, @commit))
   end
 
   it 'should not create subscribe object into db' do
@@ -25,12 +32,12 @@ end
 shared_examples_for 'can unsubscribe' do
   it 'should be able to perform destroy action' do
     delete :destroy, @destroy_params
-
-    expect(response).to redirect_to([@project, @issue])
+    expect(response).to redirect_to(commit_path(@project, @commit))
   end
 
   it 'should reduce subscribes count' do
-    expect { delete :destroy, @destroy_params }.to change(Subscribe, :count).by(-1)
+    delete :destroy, @destroy_params
+    expect(Subscribe.subscribed_to_commit?(@project, @user, @commit)).to be_falsy
   end
 end
 
@@ -38,7 +45,7 @@ shared_examples_for 'can not unsubscribe' do
   it 'should not be able to perform destroy action' do
     delete :destroy, @destroy_params
 
-    expect(response).to redirect_to(forbidden_path)
+    expect(response).to redirect_to(commit_path(@project, @commit))
   end
 
   it 'should not reduce subscribes count' do
@@ -46,35 +53,27 @@ shared_examples_for 'can not unsubscribe' do
   end
 end
 
-describe Projects::SubscribesController, type: :controller do
+describe Projects::CommitSubscribesController, type: :controller do
   before(:each) do
     stub_symlink_methods
 
-    @project = FactoryGirl.create(:project)
-    @issue = FactoryGirl.create(:issue, project_id: @project.id)
+    @project = FactoryGirl.create(:project_with_commit)
+    @commit = @project.repo.commits.first
 
-    @create_params =  { issue_id: @issue.serial_id, name_with_owner: @project.name_with_owner }
-    @destroy_params = { issue_id: @issue.serial_id, name_with_owner: @project.name_with_owner }
+    @create_params =  { commit_id: @commit.sha, name_with_owner: @project.name_with_owner }
+    @destroy_params = { commit_id: @commit.sha, name_with_owner: @project.name_with_owner }
 
     allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
-
-    @request.env['HTTP_REFERER'] = project_issue_path(@project, @issue)
   end
 
   context 'for global admin user' do
     before(:each) do
       @user = FactoryGirl.create(:admin)
       set_session_for(@user)
-      create_relation(@project, @user, 'admin')
     end
 
     context 'subscribed' do
-      before(:each) do
-        ss = @issue.subscribes.build
-        ss.user = @user
-        ss.save!
-      end
-
+      before(:each) { subscribe_to_commit }
       it_should_behave_like 'can unsubscribe'
       it_should_behave_like 'can not subscribe'
     end
@@ -88,15 +87,10 @@ describe Projects::SubscribesController, type: :controller do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @destroy_params = @destroy_params.merge({id: @user.id})
     end
 
     context 'subscribed' do
-      before(:each) do
-        ss = @issue.subscribes.build
-        ss.user = @user
-        ss.save!
-      end
+      before(:each) { subscribe_to_commit }
 
       it_should_behave_like 'can unsubscribe'
       it_should_behave_like 'can not subscribe'
@@ -104,6 +98,20 @@ describe Projects::SubscribesController, type: :controller do
 
     context 'not subscribed' do
       it_should_behave_like 'can subscribe'
+    end
+  end
+
+  context 'for guest' do
+    before(:each) { set_session_for(User.new) }
+
+    it 'should not be able to perform create action' do
+      post :create, @create_params
+      expect(response).to redirect_to(new_user_session_path)
+    end
+
+    it 'should not be able to perform destroy action' do
+      delete :destroy, @destroy_params
+      expect(response).to redirect_to(new_user_session_path)
     end
   end
 end
