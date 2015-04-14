@@ -9,8 +9,8 @@ class Projects::PullRequestsController < Projects::BaseController
     to_project = find_destination_project(false)
     authorize to_project, :show?
 
-    @pull = to_project.pull_requests.new
-    @pull.issue = to_project.issues.new
+    @pull  = to_project.pull_requests.new
+    @issue = @pull.issue = to_project.issues.new
     set_attrs
 
     authorize @pull
@@ -34,7 +34,8 @@ class Projects::PullRequestsController < Projects::BaseController
     to_project = find_destination_project
     authorize to_project, :show?
 
-    @pull = to_project.pull_requests.new pull_params
+    @pull  = to_project.pull_requests.new pull_params
+    @issue = @pull.issue
     @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if policy(to_project).write?
     @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
     @pull.from_project_owner_uname  = @pull.from_project.owner.uname
