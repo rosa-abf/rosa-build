@@ -23,7 +23,7 @@ class ProjectPolicy < ApplicationPolicy
   def create?
     return false if user.guest?
     return true  if is_admin?
-    owner_policy.write?
+    record.is_a?(Symbol) || owner_policy.write?
   end
 
   def update?
