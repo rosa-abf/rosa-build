@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
   before_action :authenticate_user!, only: [:activity, :issues, :pull_requests]
-  after_action :verify_authorized, :except => [:root, :activity, :issues, :pull_requests]
+  skip_after_action :verify_authorized
 
   def root
     respond_to do |format|
