@@ -253,7 +253,7 @@ Rosa::Application.routes.draw do
         put :reset_auth_token
       end
     end
-    resources :register_requests, only: [:new, :create], format: /ru|en/ #view support only two languages
+    #resources :register_requests, only: [:new, :create], format: /ru|en/ #view support only two languages
 
     get '/allowed'  => 'users#allowed'
     get '/check'    => 'users#check'
