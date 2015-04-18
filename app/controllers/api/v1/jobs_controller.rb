@@ -5,6 +5,7 @@ class Api::V1::JobsController < Api::V1::BaseController
   QUEUE_CLASSES = %w(AbfWorker::RpmWorkerObserver)
 
   before_action :authenticate_user!
+  skip_after_action :verify_authorized
 
   def shift
     @build_list = BuildList.next_build(arch_ids, platform_ids) if current_user.system?
