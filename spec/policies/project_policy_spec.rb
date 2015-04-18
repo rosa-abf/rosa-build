@@ -16,7 +16,7 @@ RSpec.describe ProjectPolicy, type: :policy do
     end
   end
 
-  %i(show? read? fork? archive? get_id? refs_list?).each do |perm|
+  %i(show? read? archive? get_id? refs_list?).each do |perm|
     permissions perm do
       it "grants access to anonymous user" do
         expect(subject).to permit(User.new, project)
@@ -49,6 +49,41 @@ RSpec.describe ProjectPolicy, type: :policy do
         it "grants access for to global admin" do
           expect(subject).to permit(FactoryGirl.build(:admin), project)
         end
+      end
+    end
+  end
+
+  permissions :fork? do
+    it "denies access to anonymous user" do
+      expect(subject).to_not permit(User.new, project)
+    end
+
+    it "grants access to user" do
+      expect(subject).to permit(user, project)
+    end
+
+    context 'hidden project' do
+      before do
+        project.visibility = 'hidden'
+      end
+
+      it "grants access for owner of project" do
+        expect(subject).to permit(project.owner, project)
+      end
+
+      it "grants access for member of project owner group" do
+        project = FactoryGirl.build(:group_project)
+        allow_any_instance_of(ProjectPolicy).to receive(:user_group_ids).and_return([project.owner_id])
+        expect(subject).to permit(user, project)
+      end
+
+      it "grants access for reader of project" do
+        allow_any_instance_of(ProjectPolicy).to receive(:local_reader?).and_return(true)
+        expect(subject).to permit(user, project)
+      end
+
+      it "grants access for to global admin" do
+        expect(subject).to permit(FactoryGirl.create(:admin), project)
       end
     end
   end

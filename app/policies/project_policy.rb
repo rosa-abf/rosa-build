@@ -15,10 +15,13 @@ class ProjectPolicy < ApplicationPolicy
     local_reader?
   end
   alias_method :read?,                      :show?
-  alias_method :fork?,                      :show?
   alias_method :archive?,                   :show?
   alias_method :get_id?,                    :show?
   alias_method :refs_list?,                 :show?
+
+  def fork?
+    !user.guest? && show?
+  end
 
   def create?
     return false if user.guest?
