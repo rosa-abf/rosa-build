@@ -1,5 +1,6 @@
 class Users::UsersController < Users::BaseController
   skip_before_action :authenticate_user!, only: [:allowed, :check, :discover]
+  skip_after_action :verify_authorized
   before_action :find_user_by_key, only: [:allowed, :discover]
 
   def allowed
