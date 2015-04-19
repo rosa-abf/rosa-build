@@ -6,7 +6,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   before_action :redirect_to_full_path_if_short_url, only: [:show, :update]
 
   before_action :load_product,            except: :index
-  before_action :load_product_build_list, except: [:index, :create]
+  before_action :load_product_build_list, except: [:index, :new, :create]
 
   def new
     @product_build_list                 = @product.product_build_lists.new
