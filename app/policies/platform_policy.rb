@@ -72,6 +72,20 @@ class PlatformPolicy < ApplicationPolicy
           platforms.owner_type = 'User'  AND platforms.owner_id = :user_id
         ) OR (
           platforms.owner_type = 'Group' AND platforms.owner_id IN (:user_group_ids)
+        ) OR (
+          platforms.id = ANY (
+            ARRAY (
+              SELECT target_id
+              FROM relations
+              INNER JOIN platforms ON platforms.id = relations.target_id
+              WHERE relations.target_type = 'Platform' AND
+              (
+                platforms.owner_type = 'User' AND platforms.owner_id != :user_id
+              ) AND (
+                relations.actor_type = 'User' AND relations.actor_id = :user_id
+              )
+            )
+          )
         )
       SQL
     end
@@ -86,6 +100,20 @@ class PlatformPolicy < ApplicationPolicy
           platforms.owner_type = 'User'  AND platforms.owner_id = :user_id
         ) OR (
           platforms.owner_type = 'Group' AND platforms.owner_id IN (:user_group_ids)
+        ) OR (
+          platforms.id = ANY (
+            ARRAY (
+              SELECT target_id
+              FROM relations
+              INNER JOIN platforms ON platforms.id = relations.target_id
+              WHERE relations.target_type = 'Platform' AND
+              (
+                platforms.owner_type = 'User' AND platforms.owner_id != :user_id
+              ) AND (
+                relations.actor_type = 'User' AND relations.actor_id = :user_id
+              )
+            )
+          )
         )
       SQL
     end
