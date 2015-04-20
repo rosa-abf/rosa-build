@@ -34,27 +34,10 @@ module ProductBuildLists::AbfWorkerable
   end
 
   def abf_worker_args
-    file_name = "#{project.name}-#{commit_hash}"
-    opts      = default_url_options
-    opts.merge!({user: user.authentication_token, password: ''}) if user.present?
-    srcpath = url_helpers.archive_url(
-      project.name_with_owner,
-      file_name,
-      'tar.gz',
-      opts
-    )
-
-    cmd_params = "BUILD_ID=#{id} "
-    if product.platform.hidden?
-      token = product.platform.tokens.by_active.where(description: CACHED_CHROOT_TOKEN_DESCRIPTION).first
-      cmd_params << "TOKEN=#{token.authentication_token} " if token
-    end
-    cmd_params << params.to_s
-
     {
-      id: id,
-      srcpath:      srcpath,
-      params:       cmd_params,
+      id:           id,
+      srcpath:      abf_worker_srcpath,
+      params:       abf_worker_params,
       time_living:  time_living,
       main_script:  main_script,
       platform: {
@@ -64,6 +47,38 @@ module ProductBuildLists::AbfWorkerable
       },
       user: {uname: user.try(:uname), email: user.try(:email)}
     }
+  end
+
+  # Private: Get URL to project archive.
+  #
+  # Returns the String.
+  def abf_worker_srcpath
+    file_name = "#{project.name}-#{commit_hash}"
+    opts      = default_url_options
+    opts.merge!({user: user.authentication_token, password: ''}) if user.present?
+    url_helpers.archive_url(
+      project.name_with_owner,
+      file_name,
+      'tar.gz',
+      opts
+    )
+  end
+
+  # Private: Get params for ABF worker task.
+  #
+  # Returns the String with space separated params.
+  def abf_worker_params
+    p = {
+      'BUILD_ID'        => id,
+      'PROJECT'         => project.name_with_owner,
+      'PROJECT_VERSION' => project_version,
+      'COMMIT_HASH'     => commit_hash,
+    }
+    if product.platform.hidden?
+      token = product.platform.tokens.by_active.where(description: CACHED_CHROOT_TOKEN_DESCRIPTION).first
+      p.merge!('TOKEN' => token.authentication_token) if token
+    end
+    p.map{ |k, v| "#{k}=#{v}" } * ' ' + ' ' + params.to_s
   end
 
 end
