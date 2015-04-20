@@ -1,16 +1,18 @@
 class Users::UsersController < Users::BaseController
   skip_before_action :authenticate_user!, only: [:allowed, :check, :discover]
+  skip_after_action :verify_authorized
   before_action :find_user_by_key, only: [:allowed, :discover]
 
   def allowed
     project = Project.find_by_owner_and_name! params[:project]
-    action = case params[:action_type]
-                  when 'git-upload-pack'
-                    then :read
-                  when 'git-receive-pack'
-                    then :write
-                  end
-    render inline: (!@user.access_locked? && Ability.new(@user).can?(action, project)).to_s
+    pp      = ProjectPolicy.new(@user, project)
+    can     = case params[:action_type]
+              when 'git-upload-pack'
+                pp.read?
+              when 'git-receive-pack'
+                pp.write?
+              end
+    render inline: (!@user.access_locked? && can).to_s
   end
 
   def check

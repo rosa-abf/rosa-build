@@ -21,56 +21,61 @@ shared_examples_for "api projects user without reader rights for hidden project"
 end
 
 shared_examples_for "api projects user without show rights" do
-  it "should show access violation instead of project data" do
+  it "to show access violation instead of project data" do
     get :show, id: @project.id, format: :json
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
-  it "should show access violation instead of project refs_list" do
+  it "to show access violation instead of project refs_list" do
     get :refs_list, id: @project.id, format: :json
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
-  it "should access violation instead of project data by get_id" do
+  it "to access violation instead of project data by get_id" do
     get :get_id, name: @project.name, owner: @project.owner_uname, format: :json
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
-  it "should show access violation instead of project members data" do
+  it "to show access violation instead of project members data" do
     get :members, id: @project.id, format: :json
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
 end
 
 shared_examples_for 'api projects user without fork rights' do
-  it 'should not be able to perform fork action' do
+  it 'to not be able to perform fork action' do
     post :fork, id: @project.id, format: :json
-    response.should_not be_success
+    expect(response).to_not be_success
   end
   it 'ensures that project has not been forked' do
-    lambda { post :fork, id: @project.id, format: :json }.should_not change{ Project.count }
+    expect do
+      post :fork, id: @project.id, format: :json
+    end.to_not change(Project, :count)
   end
 end
 
 shared_examples_for 'api projects user with fork rights' do
-  it 'should be able to perform fork action' do
+  it 'to be able to perform fork action' do
     post :fork, id: @project.id, format: :json
-    response.should be_success
+    expect(response).to be_success
   end
   it 'ensures that project has been forked' do
-    lambda { post :fork, id: @project.id, format: :json }.should change{ Project.count }.by(1)
+    expect do
+      post :fork, id: @project.id, format: :json
+    end.to change(Project, :count).by(1)
   end
 
-  it 'should be able to perform fork action with different name' do
+  it 'to be able to perform fork action with different name' do
     post :fork, id: @project.id, fork_name: (@project.name + '_forked'), format: :json
-    response.should be_success
+    expect(response).to be_success
   end
 
   it 'ensures that project has been forked' do
     new_name = @project.name + '_forked'
-    lambda { post :fork, id: @project.id, fork_name: new_name, format: :json }.should
-      change{ Project.where(name: new_name).count }.by(1)
+    expect do
+      post :fork, id: @project.id, fork_name: new_name, format: :json
+    end.to change{ Project.where(name: new_name).count }.by(1)
   end
 end
 
@@ -85,44 +90,44 @@ shared_examples_for 'api projects user without fork rights for hidden project' d
 end
 
 shared_examples_for "api projects user with show rights" do
-  it "should show project data" do
+  it "to show project data" do
     get :show, id: @project.id, format: :json
-    render_template(:show)
+    expect(response).to render_template(:show)
   end
 
-  it "should show refs_list of project" do
+  it "to show refs_list of project" do
     get :refs_list, id: @project.id, format: :json
-    render_template(:refs_list)
+    expect(response).to render_template(:refs_list)
   end
 
   context 'project find by get_id' do
-    it "should find project by name and owner name" do
+    it "to find project by name and owner name" do
       @project.reload
       get :get_id, name: @project.name, owner: @project.owner_uname, format: :json
-      assigns[:project].id.should == @project.id
+      expect(assigns[:project].id).to eq @project.id
     end
 
-    it "should not find project by non existing name and owner name" do
+    it "to not find project by non existing name and owner name" do
       get :get_id, name: 'NONE_EXISTING_NAME', owner: @project.owner_uname, format: :json
-      assigns[:project].should be_blank
+      expect(assigns :project).to be_blank
     end
 
-    it "should render 404 for non existing name and owner name" do
+    it "to render 404 for non existing name and owner name" do
       get :get_id, name: 'NONE_EXISTING_NAME', owner: @project.owner_uname, format: :json
-      response.body.should == {status: 404, message: I18n.t("flash.404_message")}.to_json
+      expect(response.body).to eq({status: 404, message: I18n.t("flash.404_message")}.to_json)
     end
   end
 end
 
 shared_examples_for 'api projects user with admin rights' do
 
-  it "should be able to perform members action" do
+  it "to be able to perform members action" do
     get :members, id: @project.id, format: :json
-    response.should be_success
+    expect(response).to be_success
   end
-  it 'should not set a wrong maintainer_id' do
+  it 'to not set a wrong maintainer_id' do
     put :update, project: { maintainer_id: -1 }, id: @project.id, format: :json
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
   context 'api project user with update rights' do
@@ -130,12 +135,11 @@ shared_examples_for 'api projects user with admin rights' do
       put :update, project: { description: 'new description' }, id: @project.id, format: :json
     end
 
-    it 'should be able to perform update action' do
-      response.should be_success
+    it 'to be able to perform update action' do
+      expect(response).to be_success
     end
     it 'ensures that description has been updated' do
-      @project.reload
-      @project.description.should == 'new description'
+      expect(@project.reload.description).to eq 'new description'
     end
   end
 
@@ -145,11 +149,11 @@ shared_examples_for 'api projects user with admin rights' do
       put :add_member, member_id: member.id, type: 'User', role: 'admin', id: @project.id, format: :json
     end
 
-    it 'should be able to perform add_member action' do
-      response.should be_success
+    it 'to be able to perform add_member action' do
+      expect(response).to be_success
     end
     it 'ensures that new member has been added to project' do
-      @project.members.should include(member)
+      expect(@project.members).to include(member)
     end
   end
 
@@ -160,11 +164,11 @@ shared_examples_for 'api projects user with admin rights' do
       delete :remove_member, member_id: member.id, type: 'User', id: @project.id, format: :json
     end
 
-    it 'should be able to perform remove_member action' do
-      response.should be_success
+    it 'to be able to perform remove_member action' do
+      expect(response).to be_success
     end
     it 'ensures that member has been removed from project' do
-      @project.members.should_not include(member)
+      expect(@project.members).to_not include(member)
     end
   end
 
@@ -175,21 +179,21 @@ shared_examples_for 'api projects user with admin rights' do
       put :update_member, member_id: member.id, type: 'User', role: 'reader', id: @project.id, format: :json
     end
 
-    it 'should be able to perform update_member action' do
-      response.should be_success
+    it 'to be able to perform update_member action' do
+      expect(response).to be_success
     end
     it 'ensures that member role has been updated in project' do
-      @project.relations.by_actor(member).first.
-        role.should == 'reader'
+      role = @project.relations.by_actor(member).first.role
+      expect(role).to eq 'reader'
     end
   end
 end
 
 shared_examples_for 'api projects user without admin rights' do
 
-  it "should not be able to perform members action" do
+  it "to not be able to perform members action" do
     get :members, id: @project.id, format: :json
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
   context 'api project user without update_member rights' do
@@ -199,12 +203,12 @@ shared_examples_for 'api projects user without admin rights' do
       put :update_member, member_id: member.id, type: 'User', role: 'reader', id: @project.id, format: :json
     end
 
-    it 'should not be able to perform update_member action' do
-      response.should_not be_success
+    it 'to not be able to perform update_member action' do
+      expect(response).to_not be_success
     end
     it 'ensures that member role has not been updated in project' do
-      @project.relations.by_actor(member).first.
-        role.should_not == 'reader'
+      role = @project.relations.by_actor(member).first.role
+      expect(role).to_not eq 'reader'
     end
   end
 
@@ -213,12 +217,11 @@ shared_examples_for 'api projects user without admin rights' do
       put :update, project: {description: 'new description'}, id: @project.id, format: :json
     end
 
-    it 'should not be able to perform update action' do
-      response.should_not be_success
+    it 'to not be able to perform update action' do
+      expect(response).to_not be_success
     end
     it 'ensures that project has not been updated' do
-      @project.reload
-      @project.description.should_not == 'new description'
+      expect(@project.reload.description).to_not eq 'new description'
     end
   end
 
@@ -228,11 +231,11 @@ shared_examples_for 'api projects user without admin rights' do
       put :add_member, member_id: member.id, type: 'User', role: 'admin', id: @project.id, format: :json
     end
 
-    it 'should not be able to perform add_member action' do
-      response.should_not be_success
+    it 'to not be able to perform add_member action' do
+      expect(response).to_not be_success
     end
     it 'ensures that new member has not been added to project' do
-      @project.members.should_not include(member)
+      expect(@project.members).to_not include(member)
     end
   end
 
@@ -243,35 +246,39 @@ shared_examples_for 'api projects user without admin rights' do
       delete :remove_member, member_id: member.id, type: 'User', id: @project.id, format: :json
     end
 
-    it 'should be able to perform update action' do
-      response.should_not be_success
+    it 'to be able to perform update action' do
+      expect(response).to_not be_success
     end
     it 'ensures that member has not been removed from project' do
-      @project.members.should include(member)
+      expect(@project.members).to include(member)
     end
   end
 end
 
 shared_examples_for 'api projects user with owner rights' do
   context 'api project user with destroy rights' do
-    it 'should be able to perform destroy action' do
+    it 'to be able to perform destroy action' do
       delete :destroy, id: @project.id, format: :json
-      response.should be_success
+      expect(response).to be_success
     end
     it 'ensures that project has been destroyed' do
-      lambda { delete :destroy, id: @project.id, format: :json }.should change{ Project.count }.by(-1)
+      expect do
+        delete :destroy, id: @project.id, format: :json
+      end.to change(Project, :count).by(-1)
     end
   end
 end
 
 shared_examples_for 'api projects user without owner rights' do
   context 'api project user with destroy rights' do
-    it 'should not be able to perform destroy action' do
+    it 'to not be able to perform destroy action' do
       delete :destroy, id: @project.id, format: :json
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that project has not been destroyed' do
-      lambda { delete :destroy, id: @project.id, format: :json }.should_not change{ Project.count }
+      expect do
+        delete :destroy, id: @project.id, format: :json
+      end.to_not change(Project, :count)
     end
   end
 end
@@ -289,9 +296,9 @@ describe Api::V1::ProjectsController, type: :controller do
   context 'for guest' do
 
     [:index, :members].each do |action|
-      it "should not be able to perform #{action} action" do
+      it "to not be able to perform #{action} action" do
         get action, id: @project.id, format: :json
-        response.should_not be_success
+        expect(response).to_not be_success
       end
     end
 
@@ -313,31 +320,37 @@ describe Api::V1::ProjectsController, type: :controller do
       http_login(@user)
     end
 
-    it 'should be able to perform index action' do
+    it 'to be able to perform index action' do
       get :index, format: :json
-      response.should be_success
+      expect(response).to be_success
     end
 
     context 'api project user with create rights' do
       let(:params) { {project: {name: 'test_name', owner_id: @user.id, owner_type: 'User', visibility: 'open'}, format: :json} }
-      it 'should be able to perform create action' do
+      it 'to be able to perform create action' do
         post :create, params, format: :json
-        response.should be_success
+        expect(response).to be_success
       end
       it 'ensures that project has been created' do
-        lambda { post :create, params }.should change{ Project.count }.by(1)
+        expect do
+          post :create, params
+        end.to change(Project, :count).by(1)
       end
 
-      it 'writer group should be able to create project for their group' do
+      it 'writer group to be able to create project for their group' do
         group = FactoryGirl.create(:group)
         create_actor_relation(group, @user, 'writer')
-        lambda { post :create, params.deep_merge({project: {owner_type: 'Group', owner_id: group.id}})}.should change{ Project.count }.by(1)
+        expect do
+          post :create, params.deep_merge({project: {owner_type: 'Group', owner_id: group.id}})
+        end.to change(Project, :count).by(1)
       end
 
-      it 'reader group should not be able to create project for their group' do
+      it 'reader group to not be able to create project for their group' do
         group = FactoryGirl.create(:group)
         create_actor_relation(group, @user, 'reader')
-        lambda { post :create, params.deep_merge({project: {owner_type: 'Group', owner_id: group.id}})}.should change{ Project.count }.by(0)
+        expect do
+          post :create, params.deep_merge({project: {owner_type: 'Group', owner_id: group.id}})
+        end.to_not change(Project, :count)
       end
     end
 
@@ -349,34 +362,40 @@ describe Api::V1::ProjectsController, type: :controller do
     it_should_behave_like 'api projects user without owner rights'
 
     context 'group writer' do
-      it 'should be able to fork project to their group' do
+      it 'to be able to fork project to their group' do
         group = FactoryGirl.create(:group)
         create_actor_relation(group, @user, 'writer')
-        lambda {post :fork, id: @project.id, group_id: group.id}.should change{ Project.count }.by(1)
+        expect do
+          post :fork, id: @project.id, group_id: group.id, format: :json
+        end.to change(Project, :count).by(1)
       end
 
-      it 'should be able to fork project with different name to their group' do
+      it 'to be able to fork project with different name to their group' do
         group = FactoryGirl.create(:group)
         create_actor_relation(group, @user, 'writer')
         new_name = @project.name + '_forked'
-        lambda { post :fork, id: @project.id, group_id: group.id, fork_name: new_name }.should
-          change { Project.where(name: new_name).count }.by(1)
+        expect do
+          post :fork, id: @project.id, group_id: group.id, fork_name: new_name, format: :json
+        end.to change { Project.where(name: new_name).count }.by(1)
       end
     end
 
     context 'group reader' do
-      it 'should not be able to fork project to their group' do
+      it 'to not be able to fork project to their group' do
         group = FactoryGirl.create(:group)
         create_actor_relation(group, @user, 'reader')
-        lambda {post :fork, id: @project.id, group_id: group.id, format: :json}.should change{ Project.count }.by(0)
+        expect do
+          post :fork, id: @project.id, group_id: group.id, format: :json
+        end.to_not change(Project, :count)
       end
 
-      it 'should not be able to fork project with different name to their group' do
+      it 'to not be able to fork project with different name to their group' do
         group = FactoryGirl.create(:group)
         new_name = @project.name + '_forked'
         create_actor_relation(group, @user, 'reader')
-        lambda { post :fork, id: @project.id, group_id: group.id, fork_name: new_name }.should
-          change{ Project.where(name: new_name.count) }.by(0)
+        expect do
+          post :fork, id: @project.id, group_id: group.id, fork_name: new_name, format: :json
+        end.to_not change{ Project.where(name: new_name).count }
       end
     end
   end

@@ -1,4 +1,5 @@
 class SitemapController < ApplicationController
+  skip_after_action :verify_authorized
 
   def show
     redirect_to "/sitemaps/#{request.host_with_port.gsub(/www./, '')}/sitemap.xml.gz"

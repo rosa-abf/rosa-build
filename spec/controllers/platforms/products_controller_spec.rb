@@ -3,20 +3,23 @@ require 'spec_helper'
 shared_examples_for 'admin user' do
 
   it 'should be able to create product' do
-    lambda { post :create, @create_params }.should change{ Product.count }.by(1)
-    response.should redirect_to(platform_product_path( Product.last.platform, Product.last ))
+    expect do
+      post :create, @create_params
+    end.to change(Product, :count).by(1)
+    expect(response).to redirect_to(platform_product_path( Product.last.platform, Product.last ))
   end
 
   it 'should be able to update product' do
     put :update, {id: @product.id}.merge(@update_params)
-    response.should redirect_to platform_product_path(@platform, @product)
-    @product.reload
-    @product.name.should eql('pro2')
+    expect(response).to redirect_to platform_product_path(@platform, @product)
+    expect(@product.reload.name).to eq 'pro2'
   end
 
   it 'should be able to destroy product' do
-    lambda { delete :destroy, id: @product.id, platform_id: @platform }.should change{ Product.count }.by(-1)
-    response.should redirect_to(platform_products_path(@platform))
+    expect do
+      delete :destroy, id: @product.id, platform_id: @platform
+    end.to change(Product, :count).by(-1)
+    expect(response).to redirect_to(platform_products_path(@platform))
   end
 
 end
@@ -46,29 +49,29 @@ describe Platforms::ProductsController, type: :controller do
     [:create].each do |action|
       it "should not be able to perform #{ action } action" do
         get action, platform_id: @platform.id
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
     [:new, :edit, :update, :destroy].each do |action|
       it "should not be able to perform #{ action } action" do
         get action, id: @product.id, platform_id: @platform.id
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
     [:show, :index].each do |action|
       it "should not be able to perform #{ action } action", anonymous_access: false do
         get action, id: @product.id, platform_id: @platform.id
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
     [:show, :index].each do |action|
       it "should be able to perform #{ action } action", anonymous_access: true do
         get action, id: @product.id, platform_id: @platform.id
-        response.should render_template(action)
-        response.should be_success
+        expect(response).to render_template(action)
+        expect(response).to be_success
       end
     end
   end
@@ -102,18 +105,22 @@ describe Platforms::ProductsController, type: :controller do
   context 'for no relation user' do
 
     it 'should not be able to create product' do
-      lambda { post :create, @create_params }.should change{ Product.count }.by(0)
-      response.should redirect_to(forbidden_path)
+      expect do
+        post :create, @create_params
+      end.to_not change(Product, :count)
+      expect(response).to redirect_to(forbidden_path)
     end
 
     it 'should not be able to perform update action' do
       put :update, {id: @product.id}.merge(@update_params)
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
 
     it 'should not be able to destroy product' do
-      lambda { delete :destroy, id: @product.id, platform_id: @platform }.should change{ Product.count }.by(0)
-      response.should redirect_to(forbidden_path)
+      expect do
+        delete :destroy, id: @product.id, platform_id: @platform
+      end.to_not change(Product, :count)
+      expect(response).to redirect_to(forbidden_path)
     end
 
   end

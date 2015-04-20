@@ -14,12 +14,12 @@ ul.nav.nav-pills.nav-stacked
           = "{{'#{kind}.filter.#{kind_filter}' | i18n}}"
 
 - if params[:kind] == 'issues'
-  - if can? :new, @project.issues.new
+  - if policy(@project.issues.new).new?
     hr
     = link_to t('layout.issues.new'), new_project_issue_path(@project), class: 'btn btn-primary'
   hr
 
   = render 'filter_labels', project: @project
 
-  - if can? :write, @project
+  - if policy(@project).write?
     = render 'manage_labels', project: @project

@@ -9,7 +9,7 @@ table.table.table-striped
         td
           = link_to product.name, platform_product_path(@platform, product)
         td
-          - if can? :destroy, product
+          - if policy(product).destroy?
             a[href          = platform_product_path(@platform, product)
               data-method   = 'delete'
               data-confirm  = t('layout.products.confirm_delete') ]

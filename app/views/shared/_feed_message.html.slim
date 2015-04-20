@@ -1,4 +1,4 @@
--if !presenter.is_reference_to_issue || can?(:show, presenter.reference_project)
+-if !presenter.is_reference_to_issue || policy(presenter.reference_project).show?
   .panel.panel-default[ id = (presenter.comment_id? ? presenter.comment_anchor : '') ]
     .panel-body
       .pull-left.roffset5

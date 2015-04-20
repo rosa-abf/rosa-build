@@ -15,14 +15,14 @@ end
 shared_examples_for 'api repository user without packages rights' do
   it 'should not be able to perform packages action' do
     get :packages, id: @repository.id, format: :csv
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 end
 
 shared_examples_for 'api repository user with packages rights' do
   it 'should be able to perform packages action' do
     get :packages, id: @repository.id, format: :csv
-    response.should be_success
+    expect(response).to be_success
   end
 end
 
@@ -37,25 +37,25 @@ end
 shared_examples_for "api repository user with show rights" do
   it 'should be able to perform show action' do
     get :show, id: @repository.id, format: :json
-    response.should render_template(:show)
+    expect(response).to render_template(:show)
   end
   it 'should be able to perform projects action' do
     get :projects, id: @repository.id, format: :json
-    response.should render_template(:projects)
+    expect(response).to render_template(:projects)
   end
 end
 
 shared_examples_for "api repository user without show rights" do
   it 'should not be able to perform show action' do
     get :show, id: @repository.id, format: :json
-    response.body.should == {"message" => "Access violation to this page!"}.to_json
+    expect(response.body).to eq({"message" => "Access violation to this page!"}.to_json)
   end
 end
 
 shared_examples_for "api repository user without key_pair rights" do
   it 'should not be able to perform key_pair action' do
     get :key_pair, id: @repository.id, format: :json
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 end
 
@@ -67,11 +67,10 @@ shared_examples_for 'api repository user with writer rights' do
     end
 
     it 'should be able to perform update action' do
-      response.should be_success
+      expect(response).to be_success
     end
     it 'ensures that repository has been updated' do
-      @repository.reload
-      @repository.description.should == 'new description'
+      expect(@repository.reload.description).to eq 'new description'
     end
   end
 
@@ -79,7 +78,7 @@ shared_examples_for 'api repository user with writer rights' do
     [:add_repo_lock_file, :remove_repo_lock_file].each do |action|
       it "should be able to perform #{action} action" do
         put action, id: @repository.id, format: :json
-        response.should be_success
+        expect(response).to be_success
       end
     end
   end
@@ -91,10 +90,10 @@ shared_examples_for 'api repository user with writer rights' do
     end
 
     it 'should be able to perform add_member action' do
-      response.should be_success
+      expect(response).to be_success
     end
     it 'ensures that new member has been added to repository' do
-      @repository.members.should include(member)
+      expect(@repository.members).to include(member)
     end
   end
 
@@ -106,39 +105,48 @@ shared_examples_for 'api repository user with writer rights' do
     end
 
     it 'should be able to perform remove_member action' do
-      response.should be_success
+      expect(response).to be_success
     end
     it 'ensures that member has been removed from repository' do
-      @repository.members.should_not include(member)
+      expect(@repository.members).to_not include(member)
     end
   end
 
   context 'api repository user with destroy rights' do
     it 'should be able to perform destroy action for main platform' do
       delete :destroy, id: @repository.id, format: :json
-      response.should be_success
+      expect(response).to be_success
     end
     it 'ensures that repository of main platform has been destroyed' do
-      lambda { delete :destroy, id: @repository.id, format: :json }.should change{ Repository.count }.by(-1)
+      expect do
+        delete :destroy, id: @repository.id, format: :json
+      end.to change(Repository, :count).by(-1)
     end
 
     context 'repository with name "main" of personal platform' do
       # hook for "ActiveRecord::ActiveRecordError: name is marked as readonly"
-      before { Repository.where(id: @personal_repository.id).update_all("name = 'main'") }
+      before do
+        Repository.where(id: @personal_repository).update_all(name: 'main')
+      end
+
       it 'should not be able to perform destroy action' do
         delete :destroy, id: @personal_repository.id, format: :json
-        response.should_not be_success
+        expect(response).to_not be_success
       end
       it 'ensures that repository has not been destroyed' do
-        lambda { delete :destroy, id: @personal_repository.id, format: :json }.should_not change{ Repository.count }
+        expect do
+          delete :destroy, id: @personal_repository.id, format: :json
+        end.to_not change(Repository, :count)
       end
     end
     it 'should be able to perform destroy action for repository with name not "main" of personal platform' do
       delete :destroy, id: @personal_repository.id, format: :json
-      response.should be_success
+      expect(response).to be_success
     end
     it 'ensures that repository with name not "main" of personal platform has been destroyed' do
-      lambda { delete :destroy, id: @personal_repository.id, format: :json }.should change{ Repository.count }.by(-1)
+      expect do
+        delete :destroy, id: @personal_repository.id, format: :json
+      end.to change(Repository, :count).by(-1)
     end
   end
 
@@ -148,10 +156,10 @@ shared_examples_for 'api repository user with writer rights' do
       put :signatures, id: @repository.id, repository: {public: kp.public, secret: kp.secret}, format: :json
     end
     it 'should be able to perform signatures action' do
-      response.should be_success
+      expect(response).to be_success
     end
     it 'ensures that signatures has been updated' do
-      @repository.key_pair.should_not be_nil
+      expect(@repository.key_pair).to_not be_nil
     end
   end
 
@@ -162,10 +170,10 @@ shared_examples_for 'api repository user with project manage rights' do
   context 'api repository user with add_project rights' do
     before { put :add_project, id: @repository.id, project_id: @project.id, format: :json }
     it 'should be able to perform add_project action' do
-      response.should be_success
+      expect(response).to be_success
     end
     it 'ensures that project has been added to repository' do
-      @repository.projects.should include(@project)
+      expect(@repository.projects).to include(@project)
     end
   end
 
@@ -175,11 +183,10 @@ shared_examples_for 'api repository user with project manage rights' do
       delete :remove_project, id: @repository.id, project_id: @project.id, format: :json
     end
     it 'should be able to perform remove_project action' do
-      response.should be_success
+      expect(response).to be_success
     end
     it 'ensures that project has been removed from repository' do
-      @repository.reload
-      @repository.projects.should_not include(@project)
+      expect(@repository.reload.projects).to_not include(@project)
     end
   end
 
@@ -193,11 +200,10 @@ shared_examples_for 'api repository user without writer rights' do
     end
 
     it 'should not be able to perform update action' do
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that repository has not been updated' do
-      @repository.reload
-      @repository.description.should_not == 'new description'
+      expect(@repository.reload.description).to_not eq 'new description'
     end
   end
 
@@ -205,7 +211,7 @@ shared_examples_for 'api repository user without writer rights' do
     [:add_repo_lock_file, :remove_repo_lock_file].each do |action|
       it "should not be able to perform #{action} action" do
         put action, id: @repository.id, format: :json
-        response.should_not be_success
+        expect(response).to_not be_success
       end
     end
   end
@@ -217,10 +223,10 @@ shared_examples_for 'api repository user without writer rights' do
     end
 
     it 'should not be able to perform add_member action' do
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that new member has not been added to repository' do
-      @repository.members.should_not include(member)
+      expect(@repository.members).to_not include(member)
     end
   end
 
@@ -232,27 +238,31 @@ shared_examples_for 'api repository user without writer rights' do
     end
 
     it 'should be able to perform update action' do
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that member has not been removed from repository' do
-      @repository.members.should include(member)
+      expect(@repository.members).to include(member)
     end
   end
 
   context 'api repository user without destroy rights' do
     it 'should not be able to perform destroy action for repository of main platform' do
       delete :destroy, id: @repository.id, format: :json
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that repository of main platform has not been destroyed' do
-      lambda { delete :destroy, id: @repository.id, format: :json }.should_not change{ Repository.count }
+      expect do
+        delete :destroy, id: @repository.id, format: :json
+      end.to_not change(Repository, :count)
     end
     it 'should not be able to perform destroy action for repository of personal platform' do
       delete :destroy, id: @personal_repository.id, format: :json
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that repository of personal platform has not been destroyed' do
-      lambda { delete :destroy, id: @personal_repository.id, format: :json }.should_not change{ Repository.count }
+      expect do
+        delete :destroy, id: @personal_repository.id, format: :json
+      end.to_not change(Repository, :count)
     end
   end
 
@@ -262,10 +272,10 @@ shared_examples_for 'api repository user without writer rights' do
       put :signatures, id: @repository.id, repository: {public: kp.public, secret: kp.secret}, format: :json
     end
     it 'should not be able to perform signatures action' do
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that signatures has not been updated' do
-      @repository.key_pair.should be_nil
+      expect(@repository.key_pair).to be_nil
     end
   end
 
@@ -275,10 +285,10 @@ shared_examples_for 'api repository user without project manage rights' do
   context 'api repository user without add_project rights' do
     before { put :add_project, id: @repository.id, project_id: @project.id, format: :json }
     it 'should not be able to perform add_project action' do
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that project has not been added to repository' do
-      @repository.projects.should_not include(@project)
+      expect(@repository.projects).to_not include(@project)
     end
   end
 
@@ -288,11 +298,10 @@ shared_examples_for 'api repository user without project manage rights' do
       delete :remove_project, id: @repository.id, project_id: @project.id, format: :json
     end
     it 'should not be able to perform remove_project action' do
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that project has not been removed from repository' do
-      @repository.reload
-      @repository.projects.should include(@project)
+      expect(@repository.reload.projects).to include(@project)
     end
   end
 end
@@ -312,7 +321,7 @@ describe Api::V1::RepositoriesController, type: :controller do
   context 'for guest' do
     it "should not be able to perform show action", :anonymous_access  => false do
       get :show, id: @repository.id, format: :json
-      response.status.should == 401
+      expect(response.status).to eq 401
     end
 
     if APP_CONFIG['anonymous_access']
@@ -326,7 +335,7 @@ describe Api::V1::RepositoriesController, type: :controller do
 
     it 'should not be able to perform projects action', anonymous_access: false do
       get :projects, id: @repository.id, format: :json
-      response.should_not be_success
+      expect(response).to_not be_success
     end
   end
 
@@ -400,13 +409,13 @@ describe Api::V1::RepositoriesController, type: :controller do
 
     it 'should be able to perform key_pair action when repository has not keys' do
       get :key_pair, id: @repository.id, format: :json
-      response.should be_success
+      expect(response).to be_success
     end
 
     it 'should be able to perform key_pair action when repository has keys' do
       FactoryGirl.create(:key_pair, repository: @repository)
       get :key_pair, id: @repository.id, format: :json
-      response.should be_success
+      expect(response).to be_success
     end
 
   end

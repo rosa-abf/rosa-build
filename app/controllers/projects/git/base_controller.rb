@@ -5,7 +5,6 @@ class Projects::Git::BaseController < Projects::BaseController
     before_action :authenticate_user,       only: %i(show index blame raw archive diff tags branches)
   end
 
-  load_and_authorize_resource :project
   before_action :set_treeish_and_path
   before_action :set_branch_and_tree
 

@@ -253,7 +253,7 @@ Rosa::Application.routes.draw do
         put :reset_auth_token
       end
     end
-    resources :register_requests, only: [:new, :create], format: /ru|en/ #view support only two languages
+    #resources :register_requests, only: [:new, :create], format: /ru|en/ #view support only two languages
 
     get '/allowed'  => 'users#allowed'
     get '/check'    => 'users#check'
@@ -324,7 +324,8 @@ Rosa::Application.routes.draw do
         end
         resources :issues, except: [:destroy, :edit] do
           resources :comments, only: [:edit, :create, :update, :destroy]
-          resources :subscribes, only: [:create, :destroy]
+          post '/subscribe'     => "subscribes#create", as: :subscribe
+          delete '/unsubscribe' => "subscribes#destroy", as: :unsubscribe
           collection do
             post :create_label
             get :search_collaborators

@@ -4,6 +4,7 @@ class Groups::BaseController < ApplicationController
 
   protected
 
+  # Private: before_action hook which loads Group.
   def find_group
     if group_id = params[:uname] || params[:group_id] || params[:id]
       @group = Group.find_by_insensitive_uname! group_id

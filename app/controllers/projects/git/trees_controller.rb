@@ -5,8 +5,8 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   before_action      :redirect_to_project,      only: :show
   before_action      :resolve_treeish,          only: [:branch, :destroy]
 
-  skip_authorize_resource :project,                   only: [:destroy, :restore_branch, :create]
-  before_action -> { authorize!(:write, @project) },  only: [:destroy, :restore_branch, :create]
+  # skip_authorize_resource :project,                 only: [:destroy, :restore_branch, :create]
+  before_action -> { authorize(@project, :show?)  },  only: [:show, :archive, :tags, :branches]
 
   def show
     unless request.xhr?
@@ -54,16 +54,19 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def restore_branch
+    authorize @project, :write?
     status = @project.create_branch(@treeish, params[:sha], current_user) ? 200 : 422
     render nothing: true, status: status
   end
 
   def create
+    authorize @project, :write?
     status = @project.create_branch(params[:new_ref], params[:from_ref], current_user) ? 200 : 422
     render nothing: true, status: status
   end
 
   def destroy
+    authorize @project, :write?
     status = @branch && @project.delete_branch(@branch, current_user) ? 200 : 422
     render nothing: true, status: status
   end

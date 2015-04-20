@@ -9,7 +9,7 @@
 = render 'submenu' if params[:platform_id]
 
 .container.col-md-offset-2.col-md-8
-  - if can? :create, @platform.repositories.build
+  - if policy(@platform.repositories.build).create?
     .row
       a.btn.btn-primary href=new_platform_repository_path(@platform)
         = t("layout.repositories.new")

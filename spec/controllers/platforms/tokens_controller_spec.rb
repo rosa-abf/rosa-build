@@ -8,22 +8,24 @@ shared_examples_for 'token of platform for owner' do
   [:index, :new].each do |action|
     it "should be able to perform #{action} action" do
       get action, platform_id: @platform
-      response.should render_template(action)
+      expect(response).to render_template(action)
     end
   end
 
   it 'should not be able to perform show action' do
     get :show, platform_id: @platform, id: @platform_token
-    response.should render_template(:show)
+    expect(response).to render_template(:show)
   end
 
   it 'should be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(platform_tokens_path(@platform))
+    expect(response).to redirect_to(platform_tokens_path(@platform))
   end
 
   it 'should create key pair into db on create action' do
-    lambda { post :create, @create_params }.should change{Token.count}.by(1)
+    expect do
+      post :create, @create_params
+    end.to change(Token, :count).by(1)
   end
 end
 
@@ -31,22 +33,24 @@ shared_examples_for 'token of platform for simple user or guest' do
   [:index, :new].each do |action|
     it "should not be able to perform #{ action } action" do
       get action, platform_id: @platform
-      response.should redirect_to(redirected_url)
+      expect(response).to redirect_to(redirected_url)
     end
   end
 
   it 'should not be able to perform show action' do
     get :show, platform_id: @platform, id: @platform_token
-    response.should redirect_to(redirected_url)
+    expect(response).to redirect_to(redirected_url)
   end
 
   it 'should not be able to perform show action' do
     post :create, @create_params
-    response.should redirect_to(redirected_url)
+    expect(response).to redirect_to(redirected_url)
   end
 
   it 'should not change objects count on create success' do
-    lambda { post :create, @create_params }.should change{ Token.count }.by(0)
+    expect do
+      post :create, @create_params
+    end.to_not change(Token, :count)
   end
 end
 

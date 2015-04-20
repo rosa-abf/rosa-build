@@ -1,4 +1,4 @@
-- if can?(:merge, @pull)
+- if policy(@pull).merge?
   button.btn.btn-primary[ href = '' ng-click = 'pullCtrl.merge()' ng-show = "pullCtrl.pull.status == 'ready'" ]
     = t 'projects.pull_requests.ready'
 
@@ -28,7 +28,7 @@ h5 ng-show = '!pullCtrl.pull.mergeable'
       span am-time-ago='pullCtrl.pull.closed_at'
       | )
 
-- if !@pull.cross_pull? && can?(:write, @project)
+- if !@pull.cross_pull? && policy(@project).write?
   div[ ng-init = "pullCtrl.getBranch('#{@pull.from_ref}')"
        ng-show = "pullCtrl.pull.status == 'closed' || pullCtrl.pull.status == 'merged'" ]
     button.btn.btn-primary[ href     = ''
@@ -41,7 +41,7 @@ h5 ng-show = '!pullCtrl.pull.mergeable'
       = t 'layout.projects.restore_branch'
   .clearfix
 
--if can? :update, @pull
+- if policy(@pull).update?
   button.btn.btn-primary.pull-right[ href     = ''
       ng-click = 'pullCtrl.reopen()'
       ng-show  = "pullCtrl.pull.status == 'closed'" ]

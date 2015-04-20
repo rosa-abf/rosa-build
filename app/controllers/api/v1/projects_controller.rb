@@ -3,30 +3,23 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:get_id, :show, :refs_list] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :project
+  before_action :load_project, except: [:index, :create, :get_id]
 
   def index
-    @projects = Project.accessible_by(current_ability, :membered)
-                       .paginate(paginate_params)
-    respond_to :json
+    authorize :project
+    @projects = ProjectPolicy::Scope.new(current_user, Project).
+      membered.paginate(paginate_params)
   end
 
   def get_id
-    if @project = Project.find_by_owner_and_name(params[:owner], params[:name])
-      authorize! :show, @project
-    else
-      raise ActiveRecord::RecordNotFound
-    end
-    respond_to :json
+    authorize @project = Project.find_by_owner_and_name!(params[:owner], params[:name])
   end
 
   def show
-    respond_to :json
   end
 
   def refs_list
     @refs = @project.repo.branches + @project.repo.tags.select{ |t| t.commit }
-    respond_to :json
   end
 
   def update
@@ -38,21 +31,20 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def create
-    p_params = params[:project] || {}
-    owner_type = p_params[:owner_type]
-    if owner_type.present? && %w(User Group).include?(owner_type)
-      @project.owner = owner_type.constantize.
-        where(id: p_params[:owner_id]).first
+    @project   = Project.new(params[:project])
+    p_params   = params[:project] || {}
+    owner_type = %w(User Group).find{ |t| t == p_params[:owner_type] }
+    if owner_type.present?
+      @project.owner = owner_type.constantize.find_by(id: p_params[:owner_id])
     else
       @project.owner = nil
     end
-    authorize! :write, @project.owner if @project.owner != current_user
+    authorize @project
     create_subject @project
   end
 
   def members
     @members = @project.collaborators.order('uname').paginate(paginate_params)
-    respond_to :json
   end
 
   def add_member
@@ -69,7 +61,9 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
   def fork(is_alias = false)
     owner = (Group.find params[:group_id] if params[:group_id].present?) || current_user
-    authorize! :write, owner if owner.class == Group
+    authorize @project, :show?
+    authorize owner, :write? if owner.is_a?(Group)
+
     if forked = @project.fork(owner, new_name: params[:fork_name], is_alias: is_alias) and forked.valid?
       render_json_response forked, 'Project has been forked successfully'
     else
@@ -78,6 +72,14 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def alias
+    authorize @project
     fork(true)
+  end
+
+  private
+
+  # Private: before_action hook which loads Project.
+  def load_project
+    authorize @project = Project.find(params[:id])
   end
 end

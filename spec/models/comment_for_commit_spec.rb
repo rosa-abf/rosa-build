@@ -1,5 +1,4 @@
 require 'spec_helper'
-require "cancan/matchers"
 
 def create_comment user
   FactoryGirl.create(:comment, user: user, commentable: @commit, project: @project)
@@ -10,8 +9,6 @@ def create_comment_in_commit commit, project, body
 end
 
 def set_comments_data_for_commit
-  @ability = Ability.new(@user)
-
   @project = FactoryGirl.create(:project_with_commit, owner: @user)
   @commit = @project.repo.commits.first
 
@@ -39,20 +36,6 @@ end
 
 describe Comment do
   before { stub_symlink_methods }
-  context 'for global admin user' do
-    before(:each) do
-      @user = FactoryGirl.create(:admin)
-      @stranger = FactoryGirl.create(:user)
-
-      set_comments_data_for_commit
-    end
-
-    it_should_behave_like 'user with create comment ability (for model)'
-    it_should_behave_like 'user with update own comment ability (for model)'
-    it_should_behave_like 'user with update stranger comment ability (for model)'
-    it_should_behave_like 'user with destroy comment ability (for model)'
-    it_should_behave_like 'user with destroy stranger comment ability (for model)'
-  end
 
   context 'for project admin user' do
     before do
@@ -61,15 +44,8 @@ describe Comment do
 
       set_comments_data_for_commit
       @admin = FactoryGirl.create(:user)
-      @ability = Ability.new(@admin)
       create_relation(@project, @admin, 'admin')
     end
-
-    it_should_behave_like 'user with create comment ability (for model)'
-    it_should_behave_like 'user with update own comment ability (for model)'
-    it_should_behave_like 'user with update stranger comment ability (for model)'
-    it_should_behave_like 'user with destroy comment ability (for model)'
-    it_should_behave_like 'user with destroy stranger comment ability (for model)'
 
     it 'should send an e-mail by default settings' do
       should_send_email(commentor: @stranger, receiver: @user)
@@ -129,12 +105,6 @@ describe Comment do
       @project.owner = @user
       @project.save
     end
-
-    it_should_behave_like 'user with create comment ability (for model)'
-    it_should_behave_like 'user with update own comment ability (for model)'
-    it_should_behave_like 'user with update stranger comment ability (for model)'
-    it_should_behave_like 'user with destroy comment ability (for model)'
-    it_should_behave_like 'user with destroy stranger comment ability (for model)'
 
     context 'for default enabled settings' do
       it 'should send an e-mail by default settings' do
@@ -202,15 +172,8 @@ describe Comment do
       @stranger = FactoryGirl.create(:user)
       set_comments_data_for_commit
       @comment = create_comment(@simple)
-      @ability = Ability.new(@simple)
       Subscribe.unsubscribe_from_commit @subscribe_params.merge(user_id: [@stranger.id, @project.owner.id])
     end
-
-    it_should_behave_like 'user with create comment ability (for model)'
-    it_should_behave_like 'user with update own comment ability (for model)'
-    it_should_behave_like 'user without update stranger comment ability (for model)'
-    it_should_behave_like 'user with destroy comment ability (for model)'
-    it_should_behave_like 'user without destroy stranger comment ability (for model)'
 
     context 'for default enabled settings' do
       it 'should send an e-mail' do
@@ -278,47 +241,59 @@ describe Comment do
 
       it 'should create automatic comment' do
         create_comment_in_commit(@commit, @project, "test link to ##{@issue.serial_id}; [##{@second_issue.serial_id}]")
-        Comment.where(automatic: true, commentable_type: 'Issue',
-                      commentable_id: @second_issue.id,
-                      created_from_commit_hash: @commit.id.hex).count.should == 1
+        expect(
+          Comment.where(automatic: true, commentable_type: 'Issue',
+                        commentable_id: @second_issue.id,
+                        created_from_commit_hash: @commit.id.hex).count
+        ).to eq(1)
       end
 
       it 'should create automatic comment in the another project issue' do
         body = "[#{@another_project.name_with_owner}##{@issue_in_another_project.serial_id}]"
         create_comment_in_commit(@commit, @project, body)
-        Comment.where(automatic: true, commentable_type: 'Issue',
-                      commentable_id: @issue_in_another_project.id,
-                      created_from_commit_hash: @commit.id.hex).count.should == 1
+        expect(
+          Comment.where(automatic: true, commentable_type: 'Issue',
+                        commentable_id: @issue_in_another_project.id,
+                        created_from_commit_hash: @commit.id.hex).count
+        ).to eq(1)
       end
 
       it 'should create automatic comment in the same name project issue' do
         body = "[#{@same_name_project.owner.uname}##{@issue_in_same_name_project.serial_id}]"
         create_comment_in_commit(@commit, @project, body)
-        Comment.where(automatic: true, commentable_type: 'Issue',
-                      commentable_id: @issue_in_same_name_project.id,
-                      created_from_commit_hash: @commit.id.hex).count.should == 1
+        expect(
+          Comment.where(automatic: true, commentable_type: 'Issue',
+                        commentable_id: @issue_in_same_name_project.id,
+                        created_from_commit_hash: @commit.id.hex).count
+        ).to eq(1)
       end
 
       it 'should not create duplicate automatic comment' do
         create_comment_in_commit(@commit, @project, "test link to [##{@second_issue.serial_id}]")
         create_comment_in_commit(@commit, @project, "test duplicate link to [##{@second_issue.serial_id}]")
-        Comment.where(automatic: true, commentable_type: 'Issue',
+        expect(
+          Comment.where(automatic: true, commentable_type: 'Issue',
                       commentable_id: @second_issue.id,
-                      created_from_commit_hash: @commit.id.hex).count.should == 1
+                      created_from_commit_hash: @commit.id.hex).count
+        ).to eq(1)
       end
 
       it 'should not create duplicate automatic comment from one' do
         create_comment_in_commit(@commit, @project, "test link to [##{@second_issue.serial_id}]; ##{@second_issue.serial_id}")
-        Comment.where(automatic: true, commentable_type: 'Issue',
-                      commentable_id: @second_issue.id,
-                      created_from_commit_hash: @commit.id.hex).count.should == 1
+        expect(
+          Comment.where(automatic: true, commentable_type: 'Issue',
+                        commentable_id: @second_issue.id,
+                        created_from_commit_hash: @commit.id.hex).count
+        ).to eq(1)
       end
       it 'should create two automatic comment' do
         body = "test ##{@second_issue.serial_id}" +
                " && [#{@another_project.name_with_owner}##{@issue_in_another_project.serial_id}]"
         create_comment_in_commit(@commit, @project, body)
-        Comment.where(automatic: true,
-                      created_from_commit_hash: @commit.id.hex).count.should == 2
+        expect(
+          Comment.where(automatic: true,
+                        created_from_commit_hash: @commit.id.hex).count
+        ).to eq(2)
       end
     end
   end

@@ -18,7 +18,7 @@
             strong[] {{branch.ref}}
         td
           ul.list-inline.pull-right.boffset_auto
-            - if can?(:write, @project)
+            - if policy(@project).write?
               li ng-hide = 'branch.ref == current_ref || branch.ui_container'
                 a href = '' ng-confirm-click = t('layout.confirm') confirmed-click = 'destroy(branch)'
                   = t('layout.projects.delete_branch')

@@ -3,22 +3,22 @@ require 'spec_helper'
 shared_examples_for 'can subscribe' do
   it 'should be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(project_issue_path(@project, @issue))
+    expect(response).to redirect_to(project_issue_path(@project, @issue))
   end
 
   it 'should create subscribe object into db' do
-    lambda{ post :create, @create_params }.should change{ Subscribe.count }.by(1)
+    expect { post :create, @create_params }.to change(Subscribe, :count).by(1)
   end
 end
 
 shared_examples_for 'can not subscribe' do
   it 'should not be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not create subscribe object into db' do
-    lambda{ post :create, @create_params }.should change{ Subscribe.count }.by(0)
+    expect { post :create, @create_params }.to_not change(Subscribe, :count)
   end
 end
 
@@ -26,11 +26,11 @@ shared_examples_for 'can unsubscribe' do
   it 'should be able to perform destroy action' do
     delete :destroy, @destroy_params
 
-    response.should redirect_to([@project, @issue])
+    expect(response).to redirect_to([@project, @issue])
   end
 
   it 'should reduce subscribes count' do
-    lambda{ delete :destroy, @destroy_params }.should change{ Subscribe.count }.by(-1)
+    expect { delete :destroy, @destroy_params }.to change(Subscribe, :count).by(-1)
   end
 end
 
@@ -38,11 +38,11 @@ shared_examples_for 'can not unsubscribe' do
   it 'should not be able to perform destroy action' do
     delete :destroy, @destroy_params
 
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not reduce subscribes count' do
-    lambda{ delete :destroy, @destroy_params }.should change{ Subscribe.count }.by(0)
+    expect { delete :destroy, @destroy_params }.to_not change(Subscribe, :count)
   end
 end
 
@@ -66,7 +66,6 @@ describe Projects::SubscribesController, type: :controller do
       @user = FactoryGirl.create(:admin)
       set_session_for(@user)
       create_relation(@project, @user, 'admin')
-      @destroy_params = @destroy_params.merge({id: @user.id})
     end
 
     context 'subscribed' do
@@ -107,5 +106,4 @@ describe Projects::SubscribesController, type: :controller do
       it_should_behave_like 'can subscribe'
     end
   end
-
 end

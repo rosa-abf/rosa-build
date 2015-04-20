@@ -131,9 +131,8 @@ class BuildList < ActiveRecord::Base
   HUMAN_STATUSES.freeze
 
   scope :recent, -> { order(updated_at: :desc) }
-  scope :for_extra_build_lists, ->(ids, current_ability, save_to_platform) {
-    s = all
-    s = s.where(id: ids).published_container.accessible_by(current_ability, :read)
+  scope :for_extra_build_lists, ->(ids, save_to_platform) {
+    s = where(id: ids, container_status: BuildList::BUILD_PUBLISHED)
     s = s.where(save_to_platform_id: save_to_platform.id) if save_to_platform && save_to_platform.main?
     s
   }
@@ -725,17 +724,13 @@ class BuildList < ActiveRecord::Base
     save
   end
 
-  def current_ability
-    @current_ability ||= Ability.new(user)
-  end
-
   def prepare_extra_repositories
     if save_to_platform && save_to_platform.main?
       self.extra_repositories = nil
     else
-      self.extra_repositories = Repository.joins(:platform).
+      self.extra_repositories = PlatformPolicy::Scope.new(user, Repository.joins(:platform)).show.
         where(id: extra_repositories, platforms: {platform_type: 'personal'}).
-        accessible_by(current_ability, :read).pluck('repositories.id')
+        pluck('repositories.id')
     end
   end
 
@@ -745,7 +740,8 @@ class BuildList < ActiveRecord::Base
       extra_build_lists.flatten!
     end
     return if extra_build_lists.blank?
-    bls = BuildList.for_extra_build_lists(extra_build_lists, current_ability, save_to_platform)
+    bls = BuildListPolicy::Scope.new(user, BuildList).read.
+      for_extra_build_lists(extra_build_lists, save_to_platform)
     if save_to_platform
       if save_to_platform.distrib_type == 'rhel'
         bls = bls.where('

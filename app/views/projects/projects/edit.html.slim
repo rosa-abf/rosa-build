@@ -18,6 +18,7 @@
     hr.col-sm-12
     .col-sm-9.col-sm-offset-3
       => t("layout.projects.delete_warning")
-      = link_to t("layout.delete"), project_path(@project), method: :delete,
-        data: { confirm: t("layout.projects.confirm_delete") },
-        class: 'btn btn-danger' if can? :destroy, @project
+      - if policy(@project).destroy?
+        = link_to t("layout.delete"), project_path(@project), method: :delete,
+          data: { confirm: t("layout.projects.confirm_delete") },
+          class: 'btn btn-danger'

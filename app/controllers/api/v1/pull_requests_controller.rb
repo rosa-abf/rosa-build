@@ -1,13 +1,13 @@
 class Api::V1::PullRequestsController < Api::V1::BaseController
-  respond_to :json
+  include Api::V1::Issueable
 
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: [:show, :index, :group_index, :commits, :files] if APP_CONFIG['anonymous_access']
+  skip_before_action :authenticate_user!, only: %i(show index group_index commits files) if APP_CONFIG['anonymous_access']
 
-  load_resource :group, only: :group_index, find_by: :id, parent: false
-  load_resource :project
-  load_resource :issue, through: :project, find_by: :serial_id, parent: false, only: [:show, :index, :commits, :files, :merge, :update]
-  load_and_authorize_resource instance_name: :pull, through: :issue, singleton: true, only: [:show, :index, :commits, :files, :merge, :update]
+  before_action :load_group,   only:   %i(group_index)
+  before_action :load_project, except: %i(all_index user_index)
+  before_action :load_issue,   only:   %i(show index commits files merge update)
+  before_action :load_pull,    only:   %i(show index commits files merge update)
 
   def index
     @pulls = @project.pull_requests
@@ -16,13 +16,15 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   end
 
   def all_index
-    project_ids = get_all_project_ids Project.accessible_by(current_ability, :membered).pluck(:id)
+    authorize :pull_request, :index?
+    project_ids = get_all_project_ids membered_projects.pluck(:id)
     @pulls = PullRequest.where('pull_requests.to_project_id IN (?)', project_ids)
     @pulls_url = api_v1_pull_requests_path format: :json
     render_pulls_list
   end
 
   def user_index
+    authorize :pull_request, :index?
     project_ids = get_all_project_ids current_user.projects.pluck(:id)
     @pulls = PullRequest.where('pull_requests.to_project_id IN (?)', project_ids)
     @pulls_url = pull_requests_api_v1_user_path format: :json
@@ -31,31 +33,31 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
   def group_index
     project_ids = @group.projects.pluck(:id)
-    project_ids = Project.accessible_by(current_ability, :membered).where(id: project_ids).pluck(:id)
+    project_ids = membered_projects.where(id: project_ids).pluck(:id)
     @pulls = PullRequest.where(to_project_id: project_ids)
     @pulls_url = pull_requests_api_v1_group_path
     render_pulls_list
   end
 
   def show
-    redirect_to api_v1_project_issue_path(@project.id, @issue.serial_id) if @pull.nil?
-    respond_to :json
+    redirect_to api_v1_project_issue_path(@project.id, @issue.serial_id) and return if @pull.nil?
   end
 
   def create
-    from_project = Project.find(pull_params[:from_project_id]) if pull_params[:from_project_id].present?
+    from_project   = Project.find_by(id: pull_params[:from_project_id])
     from_project ||= @project
-    authorize! :read, from_project
+    authorize from_project, :show?
 
-    @pull = @project.pull_requests.new
+    @pull = @project.pull_requests.build
     @pull.build_issue title: pull_params[:title], body: pull_params[:body]
     @pull.from_project            = from_project
     @pull.to_ref, @pull.from_ref  = pull_params[:to_ref], pull_params[:from_ref]
-    @pull.issue.assignee_id       = pull_params[:assignee_id] if can?(:write, @project)
+    @pull.issue.assignee_id       = pull_params[:assignee_id] if policy(@project).write?
     @pull.issue.user, @pull.issue.project = current_user, @project
     @pull.issue.new_pull_request  = true
     render_validation_error(@pull, "#{@pull.class.name} has not been created") && return unless @pull.valid?
 
+    authorize @pull
     @pull.save # set pull id
     @pull.reload
     @pull.check(false) # don't make event transaction
@@ -71,13 +73,13 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
   def update
     @pull = @project.pull_requests.includes(:issue).where(issues: {serial_id: params[:id]}).first
-    authorize! :update, @pull
+    authorize @pull
 
     if pull_params.present?
       attrs = pull_params.slice(:title, :body)
-      attrs.merge!(assignee_id: pull_params[:assignee_id]) if can?(:write, @project)
+      attrs.merge!(assignee_id: pull_params[:assignee_id]) if policy(@project).write?
 
-      if (action = pull_params[:status]) && %w(close reopen).include?(pull_params[:status])
+      if action = %w(close reopen).find{ |s| s == pull_params[:status] }
         if @pull.send("can_#{action}?")
           @pull.set_user_and_time current_user
           need_check = true if action == 'reopen' && @pull.valid?
@@ -96,16 +98,17 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   end
 
   def commits
+    authorize @pull
     @commits = @pull.repo.commits_between(@pull.to_commit, @pull.from_commit).paginate(paginate_params)
-    respond_to :json
   end
 
   def files
+    authorize @pull
     @stats = @pull.diff_stats.zip(@pull.diff).paginate(paginate_params)
-    respond_to :json
   end
 
   def merge
+    authorize @pull
     class_name = @pull.class.name
     if @pull.merge!(current_user)
       render_json_response @pull, "#{class_name} has been merged successfully"
@@ -115,6 +118,12 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   end
 
   private
+
+  # Private: before_action hook which loads PullRequest.
+  def load_pull
+    @pull = @issue.pull_request
+    authorize @pull, :show? if @pull
+  end
 
   def render_pulls_list
     @pulls = @pulls.includes(issue: [:user, :assignee])
@@ -154,21 +163,8 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     @pulls = @pulls.where('issues.created_at >= to_timestamp(?)', params[:since]) if params[:since] =~ /\A\d+\z/
     @pulls = @pulls.paginate(paginate_params)
 
-    respond_to do |format|
-      format.json { render :index }
-    end
+    render :index
   end
-
-  def get_all_project_ids default_project_ids
-    project_ids = []
-    if ['created', 'all'].include? params[:filter]
-      # add own pulls
-      project_ids = Project.accessible_by(current_ability, :show).joins(:issues).
-                            where(issues: {user_id: current_user.id}).pluck('projects.id')
-    end
-    project_ids |= default_project_ids
-  end
-
 
   def pull_params
     @pull_params ||= params[:pull_request] || {}

@@ -5,8 +5,8 @@ describe SitemapController, type: :controller do
 
     it 'is successful' do
       get :robots
-      response.should be_success
-      response.should render_template('sitemap/robots')
+      expect(response).to be_success
+      expect(response).to render_template('sitemap/robots')
     end
 
     context 'validate robots.txt' do
@@ -14,12 +14,12 @@ describe SitemapController, type: :controller do
 
       it 'ensures that Host is correct' do
         get :robots
-        response.body.should match(/^Host: http:\/\/test.host$/)
+        expect(response.body).to match(/^Host: http:\/\/test.host$/)
       end
 
       it 'ensures that Sitemap is correct' do
         get :robots
-        response.body.should match(/^Sitemap: http:\/\/test.host\/sitemap.xml.gz$/)
+        expect(response.body).to match(/^Sitemap: http:\/\/test.host\/sitemap.xml.gz$/)
       end
     end
   end
@@ -28,7 +28,7 @@ describe SitemapController, type: :controller do
 
     it 'is successful' do
       get :show
-      response.should redirect_to("/sitemaps/test.host/sitemap.xml.gz")
+      expect(response).to redirect_to("/sitemaps/test.host/sitemap.xml.gz")
     end
 
   end

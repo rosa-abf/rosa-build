@@ -8,7 +8,7 @@
     hr
   .row
 
-    - if can? :regenerate_metadata, @platform
+    - if policy(@platform).regenerate_metadata?
       h4= t('layout.platforms.metadata')
 
       table.table
@@ -43,7 +43,7 @@
                 class:  'btn btn-xs btn-warning'
 
 
-    - if can? :destroy, @platform
+    - if policy(@platform).destroy?
       hr
       p
         = t("layout.platforms.delete_warning")
@@ -53,7 +53,7 @@
         data:   { confirm: t("layout.platforms.confirm_delete") },
         class:  'btn btn-danger'
 
-    - if can? :clear, @platform
+    - if policy(@platform).clear?
       p
         = t("layout.repositories.clear_warning")
       = link_to t("layout.repositories.clear"),

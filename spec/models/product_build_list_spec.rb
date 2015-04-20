@@ -35,14 +35,4 @@ describe ProductBuildList do
     it { is_expected.to allow_mass_assignment_of(:status) }
     it { is_expected.to allow_mass_assignment_of(:base_url) }
   end
-
-  # see app/ability.rb
-  # can :read, ProductBuildList#, product: {platform: {visibility: 'open'}} # double nested hash don't work
-  it 'should generate correct sql to get product build lists' do
-    FactoryGirl.create(:arch, name: 'x86_64')
-    FactoryGirl.create(:product_build_list)
-    user = FactoryGirl.create(:user)
-    ability = Ability.new user
-    expect(ProductBuildList.accessible_by(ability).count).to eq 1
-  end
 end
