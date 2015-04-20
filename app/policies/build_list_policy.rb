@@ -89,7 +89,7 @@ class BuildListPolicy < ApplicationPolicy
     end
     alias_method :everything, :read
 
-    def owned
+    def related
       scope.joins(:project).where <<-SQL, { user_id: policy.user.id, user_group_ids: policy.user_group_ids }
         (
           build_lists.user_id = :user_id
@@ -115,6 +115,10 @@ class BuildListPolicy < ApplicationPolicy
           )
         )
       SQL
+    end
+
+    def owned
+      scope.joins(:project).where(user_id: policy.user)
     end
 
     def policy

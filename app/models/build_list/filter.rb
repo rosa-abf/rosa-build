@@ -18,6 +18,8 @@ class BuildList::Filter
         case @options[:ownership]
         when 'owned'
           BuildListPolicy::Scope.new(@user, build_lists).owned
+        when 'related'
+          BuildListPolicy::Scope.new(@user, build_lists).related
         else
           BuildListPolicy::Scope.new(@user, build_lists).everything
         end
