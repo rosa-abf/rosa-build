@@ -11,7 +11,7 @@
   .row
     .col-md-3.col-sm-4.offset10
       == render 'status_sidebar'
-      - if can?(:write, @project)
+      - if policy(@project).write?
         = simple_form_for @issue, url: project_issue_path(@project, @issue) do |f|
           == render 'select_labels'
           == render 'manage_labels'

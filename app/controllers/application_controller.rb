@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::Base
+  include StrongParams
+  include Pundit
+
   AIRBRAKE_IGNORE = [
     ActionController::InvalidAuthenticityToken,
     AbstractController::ActionNotFound
@@ -14,7 +17,10 @@ class ApplicationController < ActionController::Base
   before_action :set_locale
   before_action -> { EventLog.current_controller = self },
                 only: [:create, :destroy, :open_id, :cancel, :publish, :change_visibility] # :update
+  before_action :banned?
   after_action -> { EventLog.current_controller = nil }
+  after_action      :verify_authorized, unless: :devise_controller?
+  skip_after_action :verify_authorized, only: %i(render_500 render_404)
 
   helper_method :get_owner
 
@@ -27,7 +33,7 @@ class ApplicationController < ActionController::Base
                 AbstractController::ActionNotFound, with: :render_404
   end
 
-  rescue_from CanCan::AccessDenied do |exception|
+  rescue_from Pundit::NotAuthorizedError do |exception|
     redirect_to forbidden_url, alert: t("flash.exception_message")
   end
 
@@ -39,6 +45,15 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  # Disables access to site for banned users
+  def banned?
+    if user_signed_in? && current_user.access_locked?
+      sign_out current_user
+      flash[:error] = I18n.t('devise.failure.locked')
+      redirect_to root_path
+    end
+  end
 
   # For this example, we are simply using token authentication
   # via parameters. However, anyone could use Rails's token
@@ -75,6 +90,8 @@ class ApplicationController < ActionController::Base
     if Rails.env.production? && !AIRBRAKE_IGNORE.include?(e.class)
       notify_airbrake(e)
     end
+    Rails.logger.error e.message
+    Rails.logger.error e.backtrace.inspect
     render_error 500
   end
 

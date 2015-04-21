@@ -1,5 +1,6 @@
 class HomeController < ApplicationController
   before_action :authenticate_user!, only: [:activity, :issues, :pull_requests]
+  skip_after_action :verify_authorized
 
   def root
     respond_to do |format|
@@ -23,7 +24,7 @@ class HomeController < ApplicationController
   def issues
     @created_issues  = current_user.issues
     @assigned_issues = Issue.where(assignee_id: current_user.id)
-    pr_ids = Project.accessible_by(current_ability, :membered).uniq.pluck(:id)
+    pr_ids = ProjectPolicy::Scope.new(current_user, Project).membered.uniq.pluck(:id)
     @all_issues = Issue.where(project_id: pr_ids)
     @created_issues, @assigned_issues, @all_issues =
       if action_name == 'issues'

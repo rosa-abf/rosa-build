@@ -69,3 +69,17 @@ ru:
         status:             Выберите статус
         product_name:       Введите название продукта здесь.
         product_id:         Введите Id сборочного листа продукта здесь.
+        params:             "ARCH=x86_64"
+    hints:
+      product_build_list:
+        params_html: >
+          Введите выше параметры, с которыми будет запускаться <i>Основной скрипт</i>.
+          <br/>
+          По умолчанию передаются следующие параметры:
+          <ul class='help-block'>
+            <li><i>BUILD_ID</i> - ID сборки.</li>
+            <li><i>PROJECT</i> - Название проекта (например abf/rosa-build).</li>
+            <li><i>PROJECT_VERSION</i> - Версия проекта.</li>
+            <li><i>COMMIT_HASH</i> - Хэш коммита.</li>
+            <li><i>TOKEN</i> - Токен для доступа к закрытой платформе.</li>
+          </ul>

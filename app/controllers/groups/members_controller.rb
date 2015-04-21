@@ -1,12 +1,12 @@
 class Groups::MembersController < Groups::BaseController
-  before_action -> { authorize! :manage_members, @group }
+  before_action -> { authorize @group, :manage_members?  }
 
   def index
     @members = @group.members.order(:uname) - [@group.owner]
   end
 
   def update
-    raise CanCan::AccessDenied if @group.owner_id.to_s == params[:member_id]
+    raise Pundit::NotAuthorizedError if @group.owner_id.to_s == params[:member_id]
 
     relation   = @group.actors.where(actor_id: params[:member_id], actor_type: 'User').first
     relation ||= @group.actors.build(actor_id: params[:member_id], actor_type: 'User')
@@ -25,7 +25,7 @@ class Groups::MembersController < Groups::BaseController
   end
 
   def add
-    @user = User.where(id: params[:member_id]).first
+    @user = User.find_by(id: params[:member_id])
     if !@user
       flash[:error] = t("flash.collaborators.wrong_user", uname: params[:user_uname])
     elsif @group.add_member(@user, params[:role])

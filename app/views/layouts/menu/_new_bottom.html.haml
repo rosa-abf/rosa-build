@@ -13,7 +13,7 @@
     %li= link_to t('bottom_menu.support'), contact_url
     %li ·
     %li= link_to t('bottom_menu.developer_api'), t('bottom_menu.developer_api_url')
-    -if pr = Project.find_by_owner_and_name('abf/abf-ideas')
+    - if pr = Project.find_by_owner_and_name('abf/abf-ideas')
       %li ·
       %li= link_to t('bottom_menu.abf_ideas'), project_issues_url(pr)
     %li ·

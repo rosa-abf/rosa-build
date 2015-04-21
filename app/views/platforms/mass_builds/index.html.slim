@@ -2,7 +2,7 @@
 
 .col-xs-12.col-md-10.col-md-offset-1
   .row
-    - if can? :create, @platform.mass_builds.build
+    - if policy(@platform.mass_builds.build).create?
       a.btn.btn-primary href=new_platform_mass_build_path(@platform)
         =  t('layout.mass_builds.new')
       hr

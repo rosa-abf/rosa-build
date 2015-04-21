@@ -1,7 +1,5 @@
 class Projects::CommitSubscribesController < Projects::BaseController
   before_action :authenticate_user!
-  load_and_authorize_resource :project
-
   before_action :find_commit
 
   def create

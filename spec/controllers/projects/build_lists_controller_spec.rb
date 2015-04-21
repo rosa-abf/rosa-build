@@ -5,24 +5,24 @@ describe Projects::BuildListsController, type: :controller do
   shared_examples_for 'show build list' do
     it 'should be able to perform show action' do
       get :show, @show_params
-      response.should be_success
+      expect(response).to be_success
     end
 
     it 'should be able to perform index action in project scope' do
       get :index, name_with_owner: @project.name_with_owner
-      response.should be_success
+      expect(response).to be_success
     end
   end
 
   shared_examples_for 'not show build list' do
     it 'should not be able to perform show action' do
       get :show, @show_params
-      response.should redirect_to(forbidden_url)
+      expect(response).to redirect_to(forbidden_url)
     end
 
     it 'should not be able to perform index action in project scope' do
       get :index, name_with_owner: @project.name_with_owner
-      response.should redirect_to(forbidden_url)
+      expect(response).to redirect_to(forbidden_url)
     end
   end
 
@@ -33,31 +33,35 @@ describe Projects::BuildListsController, type: :controller do
 
     it 'should be able to perform new action' do
       get :new, name_with_owner: @project.name_with_owner
-      response.should render_template(:new)
+      expect(response).to render_template(:new)
     end
 
     it 'should be able to perform create action' do
       post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params)
-      response.should redirect_to project_build_lists_path(@project)
+      expect(response).to redirect_to project_build_lists_path(@project)
     end
 
     it 'should save correct commit_hash for branch based build' do
       post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "master" })
-      @project.build_lists.last.commit_hash.should == @project.repo.commits('master').first.id
+      expect(@project.build_lists.last.commit_hash).to eq @project.repo.commits('master').first.id
     end
 
     it 'should save correct commit_hash for tag based build' do
       system("cd #{@project.repo.path} && git tag 4.7.5.3") # TODO REDO through grit
       post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "4.7.5.3" })
-      @project.build_lists.last.commit_hash.should == @project.repo.commits('4.7.5.3').first.id
+      expect(@project.build_lists.last.commit_hash).to eq @project.repo.commits('4.7.5.3').first.id
     end
 
     it 'should not be able to create with wrong project version' do
-      lambda{ post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "wrong", commit_hash: nil })}.should change{ @project.build_lists.count }.by(0)
+      expect do
+        post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "wrong", commit_hash: nil })
+      end.to_not change{ @project.build_lists.count }
     end
 
     it 'should not be able to create with wrong git hash' do
-      lambda{ post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { commit_hash: 'wrong' }) }.should change{ @project.build_lists.count }.by(0)
+      expect do
+        post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { commit_hash: 'wrong' })
+      end.to_not change{ @project.build_lists.count }
     end
   end
 
@@ -68,12 +72,12 @@ describe Projects::BuildListsController, type: :controller do
 
     it 'should not be able to perform new action' do
       get :new, name_with_owner: @project.name_with_owner
-      response.should redirect_to(forbidden_url)
+      expect(response).to redirect_to(forbidden_url)
     end unless skip_new
 
     it 'should not be able to perform create action' do
       post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params)
-      response.should redirect_to(forbidden_url)
+      expect(response).to redirect_to(forbidden_url)
     end
   end
 
@@ -98,12 +102,12 @@ describe Projects::BuildListsController, type: :controller do
     context 'for guest' do
       it 'should be able to perform index action', anonymous_access: true do
         get :index
-        response.should be_success
+        expect(response).to be_success
       end
 
       it 'should not be able to perform index action', anonymous_access: false do
         get :index
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
 
     end
@@ -199,11 +203,11 @@ describe Projects::BuildListsController, type: :controller do
 
           context "if it has :success status" do
             it 'should return 302 response code' do
-              response.status.should == 302
+              expect(response.status).to eq 302
             end
 
             it "should reject publish build list" do
-              @build_list.reload.status.should == BuildList::REJECTED_PUBLISH
+              expect(@build_list.reload.status).to eq BuildList::REJECTED_PUBLISH
             end
           end
 
@@ -214,7 +218,7 @@ describe Projects::BuildListsController, type: :controller do
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::BUILD_ERROR
+              expect(@build_list.reload.status).to eq BuildList::BUILD_ERROR
             end
           end
         end
@@ -227,12 +231,12 @@ describe Projects::BuildListsController, type: :controller do
           end
 
           it "should redirect to forbidden page" do
-            response.should redirect_to(forbidden_url)
+            expect(response).to redirect_to(forbidden_url)
           end
 
           it "should not change status of build list" do
             do_reject_publish
-            @build_list.reload.status.should == BuildList::SUCCESS
+            expect(@build_list.reload.status).to eq BuildList::SUCCESS
           end
         end
 
@@ -247,12 +251,12 @@ describe Projects::BuildListsController, type: :controller do
           end
 
           it "should redirect to forbidden page" do
-            response.should redirect_to(forbidden_url)
+            expect(response).to redirect_to(forbidden_url)
           end
 
           it "should not change status of build list" do
             do_reject_publish
-            @build_list.reload.status.should == BuildList::SUCCESS
+            expect(@build_list.reload.status).to eq BuildList::SUCCESS
           end
         end
 
@@ -267,11 +271,11 @@ describe Projects::BuildListsController, type: :controller do
           end
 
           it 'should return 302 response code' do
-            response.status.should == 302
+            expect(response.status).to eq 302
           end
 
           it "should reject publish build list" do
-            @build_list.reload.status.should == BuildList::REJECTED_PUBLISH
+            expect(@build_list.reload.status).to eq BuildList::REJECTED_PUBLISH
           end
         end
       end
@@ -293,15 +297,15 @@ describe Projects::BuildListsController, type: :controller do
 
         it 'should be able to perform index action' do
           get :index
-          response.should be_success
+          expect(response).to be_success
         end
 
         it 'should show only accessible build_lists' do
-          get :index, filter: {ownership: 'everything'}
-          assigns(:build_lists).should include(@build_list1)
-          assigns(:build_lists).should_not include(@build_list2)
-          assigns(:build_lists).should include(@build_list3)
-          assigns(:build_lists).should include(@build_list4)
+          get :index, filter: {ownership: 'everything'}, format: :json
+          expect(assigns(:build_lists)).to include(@build_list1)
+          expect(assigns(:build_lists)).to_not include(@build_list2)
+          expect(assigns(:build_lists)).to include(@build_list3)
+          expect(assigns(:build_lists)).to include(@build_list4)
         end
       end
 
@@ -393,15 +397,15 @@ describe Projects::BuildListsController, type: :controller do
 
         it 'should be able to perform index action' do
           get :index
-          response.should be_success
+          expect(response).to be_success
         end
 
         it 'should show only accessible build_lists' do
-          get :index, filter: {ownership: 'everything'}
-          assigns(:build_lists).should include(@build_list1)
-          assigns(:build_lists).should_not include(@build_list2)
-          assigns(:build_lists).should include(@build_list3)
-          assigns(:build_lists).should include(@build_list4)
+          get :index, filter: {ownership: 'everything'}, format: :json
+          expect(assigns(:build_lists)).to include(@build_list1)
+          expect(assigns(:build_lists)).to_not include(@build_list2)
+          expect(assigns(:build_lists)).to include(@build_list3)
+          expect(assigns(:build_lists)).to include(@build_list4)
         end
       end
 
@@ -462,26 +466,26 @@ describe Projects::BuildListsController, type: :controller do
 
     it 'should filter by id' do
       get :index, filter: {id: @build_list1.id, project_name: 'fdsfdf', any_other_field: 'do not matter'}, format: :json
-      assigns[:build_lists].should include(@build_list1)
-      assigns[:build_lists].should_not include(@build_list2)
-      assigns[:build_lists].should_not include(@build_list3)
+      expect(assigns[:build_lists]).to include(@build_list1)
+      expect(assigns[:build_lists]).to_not include(@build_list2)
+      expect(assigns[:build_lists]).to_not include(@build_list3)
     end
 
     it 'should filter by project_name' do
       # Project.where(id: build_list2.project.id).update_all(name: 'project_name')
       get :index, filter: {project_name: @build_list2.project.name, ownership: 'everything'}, format: :json
-      assigns[:build_lists].should_not include(@build_list1)
-      assigns[:build_lists].should include(@build_list2)
-      assigns[:build_lists].should_not include(@build_list3)
+      expect(assigns[:build_lists]).to_not include(@build_list1)
+      expect(assigns[:build_lists]).to include(@build_list2)
+      expect(assigns[:build_lists]).to_not include(@build_list3)
     end
 
     it 'should filter by project_name and update_date' do
       get :index, filter: {project_name: @build_list3.project.name, ownership: 'everything',
                             "updated_at_start" => @build_list3.updated_at.strftime('%d/%m/%Y')}, format: :json
-      assigns[:build_lists].should_not include(@build_list1)
-      assigns[:build_lists].should_not include(@build_list2)
-      assigns[:build_lists].should include(@build_list3)
-      assigns[:build_lists].should_not include(@build_list4)
+      expect(assigns[:build_lists]).to_not include(@build_list1)
+      expect(assigns[:build_lists]).to_not include(@build_list2)
+      expect(assigns[:build_lists]).to include(@build_list3)
+      expect(assigns[:build_lists]).to_not include(@build_list4)
     end
   end
 

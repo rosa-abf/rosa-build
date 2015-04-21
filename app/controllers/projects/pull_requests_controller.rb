@@ -1,20 +1,19 @@
 class Projects::PullRequestsController < Projects::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :project
 
-  load_resource :issue, through: :project, find_by: :serial_id, parent: false, except: [:index, :autocomplete_to_project]
-  load_and_authorize_resource instance_name: :pull, through: :issue, singleton: true, except: [:index, :autocomplete_to_project]
-  before_action :find_collaborators, only: [:new, :create, :show]
+  before_action :load_issue,         except: %i(index autocomplete_to_project new create)
+  before_action :load_pull,          except: %i(index autocomplete_to_project new create)
 
   def new
     to_project = find_destination_project(false)
-    authorize! :read, to_project
+    authorize to_project, :show?
 
-    @pull = to_project.pull_requests.new
-    @pull.issue = to_project.issues.new
+    @pull  = to_project.pull_requests.new
+    @issue = @pull.issue = to_project.issues.new
     set_attrs
 
+    authorize @pull
     if PullRequest.check_ref(@pull, 'to', @pull.to_ref) && PullRequest.check_ref(@pull, 'from', @pull.from_ref) || @pull.uniq_merge
       flash.now[:warning] = @pull.errors.full_messages.join('. ')
     else
@@ -33,15 +32,17 @@ class Projects::PullRequestsController < Projects::BaseController
       redirect :back
     end
     to_project = find_destination_project
-    authorize! :read, to_project
+    authorize to_project, :show?
 
-    @pull = to_project.pull_requests.new pull_params
-    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if can?(:write, to_project)
+    @pull  = to_project.pull_requests.new pull_params
+    @issue = @pull.issue
+    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if policy(to_project).write?
     @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
     @pull.from_project_owner_uname  = @pull.from_project.owner.uname
     @pull.from_project_name         = @pull.from_project.name
     @pull.issue.new_pull_request    = true
 
+    authorize @pull
     if @pull.valid? # FIXME more clean/clever logics
       @pull.save # set pull id
       @pull.reload
@@ -67,11 +68,13 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def merge
+    authorize @pull
     status = @pull.merge!(current_user) ? 200 : 422
     render nothing: true, status: status
   end
 
   def update
+    authorize @pull
     status = 422
     if (action = params[:pull_request_action]) && %w(close reopen).include?(params[:pull_request_action])
       if @pull.send("can_#{action}?")
@@ -106,7 +109,7 @@ class Projects::PullRequestsController < Projects::BaseController
     term = params[:query].to_s.strip.downcase
     [ Project.where(id: @project.pull_requests.last.try(:to_project_id)),
       @project.ancestors,
-      Project.accessible_by(current_ability, :membered)
+      ProjectPolicy::Scope.new(current_user, Project).membered
     ].each do |p|
       items.concat p.by_owner_and_name(term)
     end
@@ -115,6 +118,17 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   protected
+
+  # Private: before_action hook which loads Issue.
+  def load_issue
+    @issue = @project.issues.find_by!(serial_id: params[:id])
+  end
+
+  # Private: before_action hook which loads PullRequest.
+  def load_pull
+    @pull = @issue.pull_request
+    authorize @pull, :show? if @pull
+  end
 
   def pull_params
     @pull_params ||= params[:pull_request].presence

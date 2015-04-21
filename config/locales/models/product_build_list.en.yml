@@ -69,3 +69,17 @@ en:
         status:             Select a status
         product_name:       Enter the name of product here.
         product_id:         Enter the ID of product build list here.
+        params:             "ARCH=x86_64"
+    hints:
+      product_build_list:
+        params_html: >
+          Enter above a params which will be used for running of <i>Main script</i>.
+          <br/>
+          By default passes next params:
+          <ul class='help-block'>
+            <li><i>BUILD_ID</i> - The build ID.</li>
+            <li><i>PROJECT</i> - The project name (e.g. abf/rosa-build).</li>
+            <li><i>PROJECT_VERSION</i> - The version of project.</li>
+            <li><i>COMMIT_HASH</i> - The commit hash.</li>
+            <li><i>TOKEN</i> - The token for access to hidden platform.</li>
+          </ul>

@@ -1,4 +1,4 @@
-class Search < Struct.new(:query, :ability, :paginate_params)
+class Search < Struct.new(:query, :user, :paginate_params)
   include ActiveModel::Conversion
   extend  ActiveModel::Naming
 
@@ -18,7 +18,8 @@ class Search < Struct.new(:query, :ability, :paginate_params)
       if type == 'users'
         User.opened
       else
-        type.classify.constantize.accessible_by(ability, :show)
+        klass = type.classify.constantize
+        "#{klass}Policy::Scope".constantize.new(user, klass).show
       end
     scope.search(query).
           search_order.

@@ -2,21 +2,22 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :product, only: :index
-  load_and_authorize_resource
+  before_action :load_product,            only: :index
+  before_action :load_product_build_list, except: [:index, :create]
 
   def index
-    @product_build_lists = if @product
-                             @product.product_build_lists
-                           else
-                             ProductBuildList.accessible_by current_ability, :read
-                           end
+    @product_build_lists =
+      if @product
+        @product.product_build_lists
+      else
+       PlatformPolicy::Scope.new(current_user, ProductBuildList.joins(product: :platform)).show
+      end
     @product_build_lists = @product_build_lists.joins(:product, :project, :arch)
     @product_build_lists = @product_build_lists.recent.paginate(paginate_params)
-    respond_to :json
   end
 
   def create
+    @product_build_list = ProductBuildList.new(params[:product_build_list])
     @product_build_list.project ||= @product_build_list.try(:product).try(:project)
     @product_build_list.main_script ||= @product_build_list.try(:product).try(:main_script)
     @product_build_list.params ||= @product_build_list.try(:product).try(:params)
@@ -25,7 +26,6 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
   end
 
   def show
-    respond_to :json
   end
 
   def update
@@ -43,5 +43,17 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
     else
       render_validation_error @product_build_list, t("layout.product_build_lists.cancel_fail")
     end
+  end
+
+  private
+
+  # Private: before_action hook which loads ProductBuildList.
+  def load_product_build_list
+    authorize @product_build_list = ProductBuildList.find(params[:id])
+  end
+
+  # Private: before_action hook which loads Product.
+  def load_product
+    authorize @product = Product.find(params[:product_id]), :show? if params[:product_id]
   end
 end

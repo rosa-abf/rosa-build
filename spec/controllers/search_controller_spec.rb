@@ -3,14 +3,14 @@ require 'spec_helper'
 shared_examples_for 'able search' do
   it 'should be able to search' do
     get :index
-    response.should be_success
-    response.should render_template(:index)
+    expect(response).to be_success
+    expect(response).to render_template(:index)
   end
 end
 shared_examples_for 'not able search' do
   it 'should not be able to search' do
     get :index
-    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
+    expect(response).to redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
   end
 end
 

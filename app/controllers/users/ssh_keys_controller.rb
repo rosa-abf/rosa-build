@@ -1,5 +1,6 @@
 class Users::SshKeysController < Users::BaseController
   before_action :set_current_user
+  before_action -> { authorize current_user, :update? }
 
   def index
     @ssh_key  = SshKey.new

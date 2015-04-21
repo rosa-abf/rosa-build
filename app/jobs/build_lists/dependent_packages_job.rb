@@ -6,13 +6,12 @@ module BuildLists
       build_list  = BuildList.find(build_list_id)
       return if build_list.save_to_platform.personal?
       user        = User.find(user_id)
-      ability     = Ability.new(user)
 
-      return unless ability.can?(:show, build_list)
+      return unless BuildListPolicy.new(user, build_list).show?
 
       arches = Arch.where(id: arch_ids).to_a
       Project.where(id: project_ids).to_a.each do |project|
-        next unless ability.can?(:write, project)
+        next unless ProjectPolicy.new(user, project).write?
 
         build_for_platform  = save_to_platform = build_list.build_for_platform
         save_to_repository  = save_to_platform.repositories.find{ |r| r.projects.exists?(project.id) }
@@ -48,7 +47,7 @@ module BuildLists
             use_extra_tests
           ).each { |field| bl.send("#{field}=", options[field]) }
 
-          ability.can?(:create, bl) && bl.save
+          BuildListPolicy.new(user, bl).create? && bl.save
         end
       end
     end

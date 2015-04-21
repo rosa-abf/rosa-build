@@ -13,7 +13,7 @@ tr
     a href=platform_product_path(platform, product)
       = pbl.product.name
   td.text-center
-    - if can?(:destroy, pbl) && pbl.can_destroy?
+    - if policy(pbl).destroy? && pbl.can_destroy?
       = link_to platform_product_product_build_list_path(platform, product, pbl), method: :delete, data: { confirm: t('layout.confirm') } do
         span.glyphicon.glyphicon-remove
 

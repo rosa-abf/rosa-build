@@ -75,14 +75,13 @@ class Repository < ActiveRecord::Base
   later :clone_relations, loner: true, queue: :low
 
   def add_projects(list, user)
-    current_ability = Ability.new(user)
     list.lines.each do |line|
       begin
         line.chomp!; line.strip!
         owner, name = line.split('/')
         next if owner.blank? || name.blank?
 
-        project = Project.where(owner_uname: owner, name: name).accessible_by(current_ability, :read).first
+        project = ProjectPolicy::Scope.new(user, Project).read.where(owner_uname: owner, name: name).first
         projects << project if project
       rescue RuntimeError, Exception
       end

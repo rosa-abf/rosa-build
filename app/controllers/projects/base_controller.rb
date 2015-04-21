@@ -1,5 +1,5 @@
 class Projects::BaseController < ApplicationController
-  prepend_before_action :find_project
+  prepend_before_action :authenticate_user_and_find_project
   before_action :init_statistics
 
   protected
@@ -11,8 +11,10 @@ class Projects::BaseController < ApplicationController
     @users = @users.sort_by(&:uname).first(10)
   end
 
-  def find_project
-    @project = Project.find_by_owner_and_name! params[:name_with_owner] if params[:name_with_owner].present?
+  def authenticate_user_and_find_project
+    authenticate_user
+    return if params[:name_with_owner].blank?
+    authorize @project = Project.find_by_owner_and_name!(params[:name_with_owner]), :show?
   end
 
   def init_statistics

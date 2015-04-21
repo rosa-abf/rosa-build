@@ -8,7 +8,7 @@ describe Projects::CommentsController, type: :controller do
 
     @create_params = { comment: { body: 'I am a comment!' }, name_with_owner: @project.name_with_owner,
                        commit_id: @commit.id, format: :json }
-    @update_params = { comment: { body: 'updated' }, name_with_owner: @project.name_with_owner, commit_id: @commit.id }
+    @update_params = { comment: { body: 'updated' }, name_with_owner: @project.name_with_owner, commit_id: @commit.id, format: :json }
 
     allow_any_instance_of(Project).to receive(:versions).and_return(%w(v1.0 v2.0))
 

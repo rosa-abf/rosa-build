@@ -11,6 +11,7 @@ class StatisticsController < ApplicationController
   ]
 
   def index
+    authorize :statistic
     respond_to do |format|
       format.html
       format.json do

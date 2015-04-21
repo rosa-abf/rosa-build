@@ -84,6 +84,8 @@ end
 
 # Block admin access to non-admin-users.
 ActiveAdmin::BaseController.class_eval do
+  skip_after_action :verify_authorized
+
   # include ActionController::Caching::Sweeping
   protected
   def check_admin_role

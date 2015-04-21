@@ -1,10 +1,10 @@
 - if current_user
   %input.form-control{ name: 'search', size: '30', type: 'text', 'ng-model' => 'search',
                        placeholder: t('layout.find_project'), 'ng-change' => 'getProjects()' }
-  - if can?(:create, Project)
+  - if policy(:project).create?
     %hr.offset10
       %p= link_to t('layout.projects.new'), new_project_path, class: 'btn btn-primary'
-      - if can?(:mass_import, Project)
+      - if policy(:project).mass_import?
         %p= link_to t('layout.projects.mass_import'), mass_import_projects_path, class: 'btn btn-primary'
   %hr.offset10
     %h3=t('layout.relations.filters')

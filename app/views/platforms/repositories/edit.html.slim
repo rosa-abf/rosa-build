@@ -15,7 +15,7 @@
       = render "form", f: f
     hr
 
-  - if can?(:update, @repository)
+  - if policy(@repository).update?
     .row
       h3= t('layout.repositories.extra_actions')
 

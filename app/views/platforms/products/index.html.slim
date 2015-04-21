@@ -5,7 +5,7 @@
 .container.col-md-offset-2.col-md-8
   .row
 
-    - if can? :create, @platform.products.build
+    - if policy(@platform.products.build).create?
       a.btn.btn-primary href=new_platform_product_path(@platform)
         = t('layout.products.new')
       hr

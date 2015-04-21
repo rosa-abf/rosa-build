@@ -38,6 +38,7 @@ class Collaborator
   end
 
   def initialize(args = {})
+    return false if args.blank?
     args.to_options!
     acc_options = args.select{ |(k, v)| k.in? [:actor, :project, :relation] }
     acc_options.each_pair do |name, value|

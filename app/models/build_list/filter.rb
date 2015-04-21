@@ -3,8 +3,8 @@ class BuildList::Filter
 
   attr_reader :options
 
-  def initialize(project, user, current_ability, options = {})
-    @project, @user, @current_ability = project, user, current_ability
+  def initialize(project, user, options = {})
+    @project, @user = project, user
     set_options(options)
   end
 
@@ -14,12 +14,19 @@ class BuildList::Filter
     if @options[:id]
       build_lists = build_lists.where(id: @options[:id])
     else
+      build_lists =
+        case @options[:ownership]
+        when 'owned'
+          BuildListPolicy::Scope.new(@user, build_lists).owned
+        when 'related'
+          BuildListPolicy::Scope.new(@user, build_lists).related
+        else
+          BuildListPolicy::Scope.new(@user, build_lists).everything
+        end
       build_lists = build_lists.scoped_to_new_core(@options[:new_core] == '0' ? nil : true) if @options[:new_core].present?
       if @options[:mass_build_id]
         build_lists = build_lists.by_mass_build(@options[:mass_build_id] == '-1' ? nil : @options[:mass_build_id])
       end
-      build_lists = build_lists.accessible_by(@current_ability, @options[:ownership].to_sym) if @options[:ownership]
-
       build_lists = build_lists.for_status(@options[:status])
                                .scoped_to_arch(@options[:arch_id])
                                .scoped_to_save_platform(@options[:save_to_platform_id])

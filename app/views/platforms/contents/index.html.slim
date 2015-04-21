@@ -32,7 +32,7 @@
         li.active[ ng-repeat='fold in folders' ng-show='$last && !$first' ] {{fold.name}}
     .clearfix
 
-    - can_remove = can? :remove_file, @platform
+    - can_remove = policy(@platform).remove_file?
     table.table ng-hide='processing'
       tbody
 

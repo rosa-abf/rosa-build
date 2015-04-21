@@ -31,7 +31,7 @@
             a href=tree_path(@project, treeish)
               i.fa.fa-files-o>
               = t('project_menu.code')
-          - if @project.is_package and can?(:read, @project => BuildList)
+          - if @project.is_package
             li class=('active' if contr == :build_lists)
               a href=project_build_lists_path(@project)
                 i.fa.fa-cogs>
@@ -51,7 +51,7 @@
               = link_to t('project_menu.wiki'), project_wiki_index_path(@project)
           / li
           /   = link_to t('project_menu.readme'), '#' #pending
-          - if can? :update, @project
+          - if policy(@project).update?
             li class=('active' if act.in?(%i[edit update sections]) && contr == :projects)
               a href=edit_project_path(@project)
                 i.fa.fa-cog>

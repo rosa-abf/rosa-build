@@ -14,6 +14,6 @@
     b>
       = user_link_by_user User.where(email: author_email).first
     = datetime_moment date, tag: :span
-  - unless action_name == 'preview' or cannot? :write, @project
+  - unless action_name == 'preview' || !policy(@project).update?
     a.btn.btn-danger href=project_wiki_path(@project, escaped_name) data-method='delete' data-confirm=t('layout.confirm')
       = t("wiki.delete_page")

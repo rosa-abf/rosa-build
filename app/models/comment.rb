@@ -134,7 +134,6 @@ class Comment < ActiveRecord::Base
 
   def self.create_link_on_issues_from_item item, commits = nil
     linker = item.user
-    current_ability = Ability.new(linker)
 
     case
     when item.is_a?(GitHook)
@@ -155,7 +154,7 @@ class Comment < ActiveRecord::Base
 
     elements.each do |element|
       element[1].scan(ISSUES_REGEX).each do |hash|
-        issue = Issue.find_by_hash_tag hash, current_ability, item.project
+        issue = Issue.find_by_hash_tag hash, linker, item.project
         next unless issue
         # dont create link to the same issue
         next if opts[:created_from_issue_id] == issue.id

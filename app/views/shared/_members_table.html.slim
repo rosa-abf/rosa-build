@@ -3,11 +3,11 @@
   table.table.table-striped
     thead
       tr
-        - if can? :remove_members, editable_object
+        - if policy(editable_object).remove_members?
           th
         th
           = t("layout.collaborators.members")
-        - if can? :remove_members, editable_object
+        - if policy(editable_object).remove_members?
           - if update_roles_path
             th.buttons.text-center colspan=3
               = t("layout.collaborators.roles")
@@ -18,7 +18,7 @@
         - actors ||= editable_object.actors
       - members.each do |user|
         tr
-          - if can? :remove_members, editable_object
+          - if policy(editable_object).remove_members?
             td
               = check_box_tag "members[]", user.id
           td
@@ -26,7 +26,7 @@
               = image_tag avatar_url(user), size: '30x30'
             | &nbsp;
             = link_to user.fullname, user_path(user)
-          - if can? :remove_members, editable_object
+          - if policy(editable_object).remove_members?
             - if update_roles_path
               - actor = actors.find{ |a| a.actor_id == user.id }
               - Relation::ROLES.each_with_index do |role, i|
@@ -52,10 +52,10 @@
                 span.glyphicon.glyphicon-remove
                   | &nbsp;
 
-  - if can? :remove_members, editable_object
+  - if policy(editable_object).remove_members?
     = submit_tag t('layout.delete'), class: 'btn btn-danger', data: {'disable-with' => t('layout.processing')}
 
-- if can? :add_member, editable_object
+- if policy(editable_object).add_member?
   hr
 
   = simple_form_for :user,  url:      add_member_path,

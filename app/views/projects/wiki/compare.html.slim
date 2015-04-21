@@ -17,11 +17,11 @@
             = t('wiki.wiki_history')
       .col-md-6.offset10
         = simple_form_for :project, url: revert_path(@project, @versions.first[0..6], (@versions.size == 1) ? 'prev' : @versions.last[0..6], @name) do |f|
-          - if can? :read, @project
+          - if policy(@project).read?
               a.btn.btn-primary> href=(@name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project))
                 = t('wiki.back_to_history')
 
-          - if can? :write, @project
+          - if policy(@project).write?
             = f.button :submit, t("wiki.revert_page#{action_name == 'revert' ? '' : 's'}")
 
     hr

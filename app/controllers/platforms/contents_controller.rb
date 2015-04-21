@@ -4,8 +4,6 @@ class Platforms::ContentsController < Platforms::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: :index if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :platform
-
   def index
     respond_to do |format|
       format.html
@@ -22,7 +20,7 @@ class Platforms::ContentsController < Platforms::BaseController
   end
 
   def remove_file
-    authorize!(:remove_file, @platform)
+    authorize @platform
     PlatformContent.remove_file(@platform, params[:path])
     render nothing: true
   end

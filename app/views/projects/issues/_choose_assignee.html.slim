@@ -1,6 +1,6 @@
 == render 'projects/issues/user_container'
 
--if can?(:write, @project)
+- if policy(@project).write?
   .col-md-8
     .panel.panel-info ng-show = 'issueCtrl.toggle_manage_assignee'
       .panel-heading

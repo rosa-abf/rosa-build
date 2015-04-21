@@ -4,7 +4,7 @@ shared_examples_for 'content platform user without show rights for hidden platfo
   it 'should not be able to perform index action' do
     @platform.update_column(:visibility, 'hidden')
     get :index, platform_id: @platform
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 end
 
@@ -12,31 +12,31 @@ shared_examples_for 'content platform user with show rights for hidden platform'
   it 'should be able to perform index action' do
     @platform.update_column(:visibility, 'hidden')
     get :index, platform_id: @platform
-    response.should be_success
+    expect(response).to be_success
   end
 end
 
 shared_examples_for 'content platform user with show rights' do
   it 'should be able to perform index action for main platform' do
     get :index, platform_id: @platform
-    response.should be_success
+    expect(response).to be_success
   end
 
   it 'should be able to perform index action for personal platform' do
     get :index, platform_id: @personal_platform
-    response.should be_success
+    expect(response).to be_success
   end
 end
 
 shared_examples_for 'content platform user without member rights' do
   it 'should not be able to perform remove_file action for main platform' do
     get :remove_file, platform_id: @platform, path: '/test'
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
   it 'should not be able to perform index remove_file for personal platform' do
     get :remove_file, platform_id: @personal_platform, path: '/test'
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 end
 
@@ -47,12 +47,12 @@ shared_examples_for 'content platform user with member rights' do
 
   it 'should be able to perform remove_file action for main platform' do
     get :remove_file, platform_id: @platform, path: '/test'
-    response.should be_success
+    expect(response).to be_success
   end
 
   it 'should be able to perform remove_file action for personal platform' do
     get :remove_file, platform_id: @personal_platform, path: '/test'
-    response.should be_success
+    expect(response).to be_success
   end
 end
 
@@ -70,12 +70,12 @@ describe Platforms::ContentsController, type: :controller do
 
     it 'should not be able to perform index action for main platform', anonymous_access: false do
       get :index, platform_id: @platform
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
     it 'should not be able to perform index action for personal platform', anonymous_access: false do
       get :index, platform_id: @personal_platform
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
     it_should_behave_like 'content platform user with show rights' if APP_CONFIG['anonymous_access']

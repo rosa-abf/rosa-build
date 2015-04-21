@@ -17,7 +17,7 @@ module ProjectsHelper
 
   def available_project_to_repositories(project)
     project.project_to_repositories.includes(repository: :platform).select do |p_to_r|
-      p_to_r.repository.publish_without_qa ? true : can?(:local_admin_manage, p_to_r.repository.platform)
+      p_to_r.repository.publish_without_qa ? true : policy(p_to_r.repository.platform).local_admin_manage?
     end.sort_by do |p_to_r|
       "#{p_to_r.repository.platform.name}/#{p_to_r.repository.name}"
     end.map do |p_to_r|
@@ -33,8 +33,8 @@ module ProjectsHelper
 
   def mass_import_repositories_for_group_select
     groups = {}
-    Platform.accessible_by(current_ability, :related).order(:name).each do |platform|
-      next unless can?(:local_admin_manage, platform)
+    PlatformPolicy::Scope.new(current_user, Platform).related.order(:name).each do |platform|
+      next unless policy(platform).local_admin_manage?
       groups[platform.name] = Repository.custom_sort(platform.repositories).map{ |r| [r.name, r.id] }
     end
     groups.to_a
@@ -70,7 +70,9 @@ module ProjectsHelper
   end
 
   def alone_member?(project)
-    Relation.by_target(project).by_actor(current_user).size > 0
+    Rails.cache.fetch(['ProjectsHelper#alone_member?', project, current_user]) do
+      Relation.by_target(project).by_actor(current_user).exists?
+    end
   end
 
   def participant_path(participant)

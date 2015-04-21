@@ -5,6 +5,7 @@ class Api::V1::JobsController < Api::V1::BaseController
   QUEUE_CLASSES = %w(AbfWorker::RpmWorkerObserver)
 
   before_action :authenticate_user!
+  skip_after_action :verify_authorized
 
   def shift
     @build_list = BuildList.next_build(arch_ids, platform_ids) if current_user.system?
@@ -21,8 +22,8 @@ class Api::V1::JobsController < Api::V1::BaseController
           @build_list ||= build_lists.external_nodes(:everything).first
         else
           @build_list   = build_lists.external_nodes(:owned).for_user(current_user).first
-          @build_list ||= build_lists.external_nodes(:everything).
-            accessible_by(current_ability, :related).readonly(false).first
+          @build_list ||= BuildListPolicy::Scope.new(current_user, build_lists).owned.
+            external_nodes(:everything).readonly(false).first
         end
         set_builder
       end

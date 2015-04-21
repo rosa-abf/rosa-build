@@ -2,22 +2,21 @@ class Api::V1::GroupsController < Api::V1::BaseController
 
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:show] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource
+  before_action :load_group, except: %i(index create)
 
   def index
-    # accessible_by(current_ability)
+    authorize :group
     @groups = current_user.groups.paginate(paginate_params)
-    respond_to :json
   end
 
   def show
-    respond_to :json
+    authorize @group
   end
 
   def members
+    authorize @group
     @members = @group.members.where('actor_id != ?', @group.owner_id)
                      .order('name').paginate(paginate_params)
-    respond_to :json
   end
 
   def update
@@ -46,6 +45,13 @@ class Api::V1::GroupsController < Api::V1::BaseController
   def update_member
     params[:type] = 'User'
     update_member_in_subject @group, :actors
+  end
+
+  private
+
+  # Private: before_action hook which loads Group.
+  def load_group
+    @group = Group.find params[:id]
   end
 
 end

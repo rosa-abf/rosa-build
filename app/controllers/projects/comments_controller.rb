@@ -1,9 +1,7 @@
 class Projects::CommentsController < Projects::BaseController
   before_action :authenticate_user!
-  load_and_authorize_resource :project
   before_action :find_commentable
   before_action :find_or_build_comment
-  load_and_authorize_resource new: :new_line
 
   include CommentsHelper
 
@@ -58,5 +56,6 @@ class Projects::CommentsController < Projects::BaseController
   def find_or_build_comment
     @comment = params[:id].present? && Comment.where(automatic: false).find(params[:id]) ||
                current_user.comments.build(params[:comment]) {|c| c.commentable = @commentable; c.project = @project}
+    authorize @comment
   end
 end
