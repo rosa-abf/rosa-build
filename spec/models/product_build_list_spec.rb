@@ -3,6 +3,8 @@ require 'spec_helper'
 describe ProductBuildList do
   before { stub_symlink_methods }
 
+  let(:pbl) { FactoryGirl.build(:product_build_list) }
+
   context 'ensures that validations and associations exist' do
     before do
       arch = double(:arch, id: 123, name: 'x86_64')
@@ -34,5 +36,25 @@ describe ProductBuildList do
 
     it { is_expected.to allow_mass_assignment_of(:status) }
     it { is_expected.to allow_mass_assignment_of(:base_url) }
+  end
+
+  describe '#abf_worker_srcpath' do
+    it 'returns URL to project archive' do
+      expect(pbl.send :abf_worker_srcpath).to be_present
+    end
+  end
+
+  describe '#abf_worker_params' do
+    let(:pbl) { FactoryGirl.build(:product_build_list, id: 1234, params: 'ARCH=x86') }
+
+    it 'returns String with params' do
+      expect(pbl.send :abf_worker_params).to eq "BUILD_ID=#{pbl.id} PROJECT=#{pbl.project.name_with_owner} PROJECT_VERSION=#{pbl.project_version} COMMIT_HASH=#{pbl.commit_hash} ARCH=x86"
+    end
+  end
+
+  describe '#abf_worker_args' do
+    it 'returns Hash with args' do
+      expect(pbl.send :abf_worker_args).to be_present
+    end
   end
 end
