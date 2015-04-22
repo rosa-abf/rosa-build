@@ -67,7 +67,7 @@ class ProjectPolicy < ApplicationPolicy
     is_admin? || owner? || local_writer?
   end
 
-  def possible_forks
+  def possible_forks?
     true
   end
 
