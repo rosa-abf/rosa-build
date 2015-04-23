@@ -16,9 +16,10 @@ h4.offset10= t("activerecord.attributes.build_list.preferences")
 
 .checkbox
   label
-    = f.check_box :auto_create_container,
-                  'ng-model' => 'newBuildCtrl.auto_create_container',
-                  'ng-value' => 'newBuildCtrl.auto_create_container'
+    input[type=     'checkbox'
+          ng-model= 'newBuildCtrl.auto_create_container'
+          ng-value= 'newBuildCtrl.auto_create_container'
+          name=     'build_list[auto_create_container]' ]
     = BuildList.human_attribute_name :auto_create_container
 
 - %i(include_testing_subrepository use_cached_chroot use_extra_tests save_buildroot).each do |kind|
@@ -26,7 +27,9 @@ h4.offset10= t("activerecord.attributes.build_list.preferences")
     label
       - checked = params[:build_list].try(:[], kind)
       - checked = @build_list.send(kind) if checked.nil?
-      = f.check_box kind, checked: checked
+      input[type=     'checkbox'
+            checked=  checked
+            name=     "build_list[#{kind}]" ]
       = BuildList.human_attribute_name kind
 
 - selected = params[:build_list].try(:[], :external_nodes)
