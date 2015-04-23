@@ -6,6 +6,7 @@ class IssuePolicy < ApplicationPolicy
   end
 
   def show?
+    return true if record.pull_request.present? # for redirect from a issue to a pull request
     return false unless record.project.has_issues?
     ProjectPolicy.new(user, record.project).show?
   end

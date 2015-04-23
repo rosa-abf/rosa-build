@@ -28,11 +28,7 @@ shared_context "issues controller" do
 
     @update_params = { name_with_owner: @project.name_with_owner, issue: { title: "issue2" }, format: :json }
 
-    @pull = @project.pull_requests.new issue_attributes: { title: 'test', body: 'testing' }
-    @pull.issue.user, @pull.issue.project = @project.owner, @pull.to_project
-    @pull.to_ref = 'master'
-    @pull.from_project, @pull.from_ref = @project, 'non_conflicts'
-    @pull.save
+    @pull = create_pull_request(@project)
   end
 
 end
@@ -211,17 +207,6 @@ describe Projects::IssuesController, type: :controller do
       end
     end
 
-    # it 'should not be able to perform create action on project' do
-    #   post :create, @create_params
-    #   expect(response).to redirect_to(forbidden_path)
-    # end
-
-    # it 'should not create issue object into db' do
-    #   expect
-    #     post :create, @create_params
-    #   end.to change(Issue, :count).by(0)
-    # end
-
     it 'should return 404' do
       get :show, name_with_owner: @project.name_with_owner, id: 999999
       expect(response).to render_template(file: "#{Rails.root}/public/404.html")
@@ -231,6 +216,13 @@ describe Projects::IssuesController, type: :controller do
       get :show, name_with_owner: @project.name_with_owner, id: @pull.reload.serial_id
       expect(response).to redirect_to(project_pull_request_path(@project, @pull))
     end
+
+    it 'should redirect to pull request in project with turned off issues' do
+      @project.update_attribute :has_issues, false
+      get :show, name_with_owner: @project.name_with_owner, id: @pull.reload.serial_id
+      expect(response).to redirect_to(project_pull_request_path(@project, @pull))
+    end
+
   end
 
   context 'for project writer user' do
