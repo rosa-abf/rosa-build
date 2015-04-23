@@ -17,7 +17,7 @@ require 'capistrano/ext/multistage'
 ssh_options[:forward_agent] = true
 default_run_options[:pty] = true
 
-set :rvm_ruby_string, 'ruby-2.1.1@rosa_build'
+set :rvm_ruby_string, 'ruby-2.2.2@rosa_build'
 set :application, "rosa_build"
 set(:deploy_to) { "/srv/#{application}" }
 set :user, "user"
