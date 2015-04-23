@@ -54,32 +54,49 @@ PullRequestController = (dataservice, $http, ApiPullRequest, ApiProject, DateTim
       vm.branch = branch
 
   vm.reopen = ->
+    return false if vm.processing
+    vm.processing = true
     vm.pull_resource.$update
       pull_request_action: "reopen"
     , ->
       vm.getPullRequest()
+      vm.processing = false
 
   vm.close = ->
+    return false if vm.processing
+    vm.processing = true
     vm.pull_resource.$update
       pull_request_action: "close"
     , ->
       vm.getPullRequest()
+      vm.processing = false
 
   vm.merge = ->
+    return false if vm.processing
+    vm.processing = true
     vm.pull_resource.$merge ->
       vm.getPullRequest()
+      vm.processing = false
 
   vm.deleteBranch = ->
+    return false if vm.processing
+    vm.processing = true
     vm.project_resource.$delete_branch vm.branch_params(), (-> # success
       vm.branch = null
+      vm.processing = false
     ), -> # error
       vm.getBranch()
+      vm.processing = false
 
   vm.restoreBranch = ->
+    return false if vm.processing
+    vm.processing = true
     vm.project_resource.$restore_branch vm.branch_params(), (-> # success
       vm.getBranch()
+      vm.processing = false
     ), -> # error
       vm.getBranch()
+      vm.processing = false
 
   vm.branch_params = ->
     owner: vm.pull_params.owner

@@ -1,5 +1,9 @@
+i> class= 'fa fa-spinner fa-spin fa-lg offset10 boffset10' ng-show= 'pullCtrl.processing'
 - if policy(@pull).merge?
-  button.btn.btn-primary[ href = '' ng-click = 'pullCtrl.merge()' ng-show = "pullCtrl.pull.status == 'ready'" ]
+  button.btn.btn-success[ href=        ''
+                          ng-click=    'pullCtrl.merge()'
+                          ng-show=     "pullCtrl.pull.status == 'ready'"
+                          ng-disabled= 'pullCtrl.processing' ]
     = t 'projects.pull_requests.ready'
 
 h5 ng-show = '!pullCtrl.pull.mergeable'
@@ -29,24 +33,28 @@ h5 ng-show = '!pullCtrl.pull.mergeable'
       | )
 
 - if !@pull.cross_pull? && policy(@project).write?
-  div[ ng-init = "pullCtrl.getBranch('#{@pull.from_ref}')"
-       ng-show = "pullCtrl.pull.status == 'closed' || pullCtrl.pull.status == 'merged'" ]
-    button.btn.btn-primary[ href     = ''
-        ng-click = 'pullCtrl.deleteBranch()'
-        ng-show  = "pullCtrl.branch && pullCtrl.branch.object.sha == pullCtrl.pull.from_ref.sha" ]
+  div[ ng-init= "pullCtrl.getBranch('#{@pull.from_ref}')"
+       ng-show= "pullCtrl.pull.status == 'closed' || pullCtrl.pull.status == 'merged'" ]
+    button.btn.btn-primary[ href= ''
+        ng-click=    'pullCtrl.deleteBranch()'
+        ng-show=     "pullCtrl.branch && pullCtrl.branch.object.sha == pullCtrl.pull.from_ref.sha"
+        ng-disabled= 'pullCtrl.processing' ]
       = t 'layout.projects.delete_branch'
-    button.btn.btn-primary[ href     = ''
-                            ng-click = 'pullCtrl.restoreBranch()'
-                            ng-hide  = 'pullCtrl.branch' ]
+    button.btn.btn-primary[ href=        ''
+                            ng-click=    'pullCtrl.restoreBranch()'
+                            ng-hide=     'pullCtrl.branch'
+                            ng-disabled= 'pullCtrl.processing' ]
       = t 'layout.projects.restore_branch'
   .clearfix
 
 - if policy(@pull).update?
-  button.btn.btn-primary.pull-right[ href     = ''
-      ng-click = 'pullCtrl.reopen()'
-      ng-show  = "pullCtrl.pull.status == 'closed'" ]
+  button.btn.btn-primary.pull-right[ href= ''
+      ng-click=    'pullCtrl.reopen()'
+      ng-show=     "pullCtrl.pull.status == 'closed'"
+      ng-disabled= 'pullCtrl.processing' ]
     = t '.reopen'
-  button.btn.btn-danger.pull-right[ href     = ''
-      ng-click = 'pullCtrl.close()'
-      ng-show  = "pullCtrl.pull.status == 'ready' || pullCtrl.pull.status == 'open' || pullCtrl.pull.status == 'blocked'" ]
+  button.btn.btn-danger.pull-right[ href= ''
+      ng-click=    'pullCtrl.close()'
+      ng-show=     "pullCtrl.pull.status == 'ready' || pullCtrl.pull.status == 'open' || pullCtrl.pull.status == 'blocked'"
+      ng-disabled= 'pullCtrl.processing' ]
     = t '.close'
