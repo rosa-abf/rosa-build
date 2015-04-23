@@ -5,7 +5,7 @@ module Git
   extend ActiveSupport::Concern
 
   included do
-    CONTENT_LIMIT = 200
+    CONTENT_LIMIT = 100
 
     has_attached_file :srpm
 
