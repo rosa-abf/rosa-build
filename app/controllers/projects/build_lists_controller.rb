@@ -2,7 +2,7 @@ class Projects::BuildListsController < Projects::BaseController
   include FileStoreHelper
   include BuildListsHelper
 
-  NESTED_ACTIONS = [:index, :new, :create]
+  NESTED_ACTIONS = [:index, :new, :create, :list]
 
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:show, :index, :log] if APP_CONFIG['anonymous_access']
