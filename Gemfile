@@ -36,7 +36,7 @@ gem 'diff-display'
 
 # Wiki
 gem 'gollum-lib', '~> 3.0'
-gem 'redcarpet', '~> 3.1'
+gem 'redcarpet', '~> 3.2'
 gem 'creole'
 gem 'rdiscount'
 # gem 'org-ruby'
