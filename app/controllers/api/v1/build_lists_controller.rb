@@ -33,13 +33,11 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def create
-    bl_params = params[:build_list] || {}
-    save_to_repository = Repository.where(id: bl_params[:save_to_repository_id]).first
+    save_to_repository = Repository.find_by(id: build_list_params[:save_to_repository_id])
 
-    bl_params[:save_to_platform_id] = save_to_repository.platform_id if save_to_repository
-
-    @build_list = current_user.build_lists.new(bl_params)
-    @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
+    @build_list                  = current_user.build_lists.new(build_list_params)
+    @build_list.save_to_platform = save_to_repository.platform if save_to_repository
+    @build_list.priority         = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
     create_subject @build_list
   end
@@ -78,6 +76,10 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   private
+
+  def build_list_params
+    permit_params(:build_list, *policy(BuildList).permitted_attributes)
+  end
 
   # Private: before_action hook which loads BuidList.
   def load_build_list

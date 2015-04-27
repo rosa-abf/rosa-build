@@ -2,7 +2,8 @@ class Collaborator
   include ActiveModel::Conversion
   include ActiveModel::Validations
   include ActiveModel::Serializers::JSON
-  include ActiveModel::MassAssignmentSecurity
+  # include ActiveModel::MassAssignmentSecurity
+  include ActiveModel::ForbiddenAttributesProtection
   extend  ActiveModel::Naming
 
   attr_accessor :role, :actor, :project, :relation

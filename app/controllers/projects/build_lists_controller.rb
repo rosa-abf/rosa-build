@@ -52,21 +52,20 @@ class Projects::BuildListsController < Projects::BaseController
   def create
     notices, errors = [], []
 
-    @repository = Repository.find params[:build_list][:save_to_repository_id]
-    @platform = @repository.platform
+    @repository = Repository.find build_list_params[:save_to_repository_id]
+    @platform   = @repository.platform
 
-    params[:build_list][:save_to_platform_id] = @platform.id
-
-    build_for_platforms = Repository.select(:platform_id).
-      where(id: params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
-
-    build_lists = []
+    build_lists         = []
+    build_for_platforms = Platform.joins(:repositories).where(repositories: { id: build_list_params[:include_repos] }).uniq
     Arch.where(id: params[:arches]).each do |arch|
-      Platform.main.where(id: build_for_platforms).each do |build_for_platform|
-        @build_list = @project.build_lists.build(params[:build_list])
-        @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
-        @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
-        @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
+      build_for_platforms.find_each do |build_for_platform|
+        @build_list                    = @project.build_lists.build(build_list_params)
+        @build_list.save_to_platform   = @platform
+        @build_list.build_for_platform = build_for_platform
+        @build_list.arch               = arch
+        @build_list.user               = current_user
+        @build_list.include_repos      = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
+        @build_list.priority           = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
         flash_options = { project_version: @build_list.project_version, arch: arch.name, build_for_platform: build_for_platform.name }
         authorize @build_list
@@ -110,7 +109,7 @@ class Projects::BuildListsController < Projects::BaseController
         end
       else
         # attach existing advisory
-        a = Advisory.where(advisory_id: params[:attach_advisory]).first
+        a = Advisory.find_by(advisory_id: params[:attach_advisory])
         unless (a && a.attach_build_list(@build_list))
           redirect_to :back, notice: t('layout.build_lists.publish_fail') and return
         end
@@ -206,6 +205,10 @@ class Projects::BuildListsController < Projects::BaseController
 
   protected
 
+  def build_list_params
+    permit_params(:build_list, *policy(BuildList).permitted_attributes)
+  end
+
   def advisory_params
     permit_params(%i(build_list advisory), *policy(Advisory).permitted_attributes)
   end
@@ -232,14 +235,9 @@ class Projects::BuildListsController < Projects::BaseController
     build_list = @project.build_lists.find(params[:build_list_id])
 
     params[:build_list] ||= {}
-    keys = [
-      :save_to_repository_id, :auto_publish_status, :include_repos,
-      :extra_params, :project_version, :update_type, :auto_create_container,
-      :extra_repositories, :extra_build_lists, :build_for_platform_id,
-      :use_cached_chroot, :use_extra_tests, :save_buildroot,
-      :include_testing_subrepository, :external_nodes
-    ]
-    keys.each { |key| params[:build_list][key] = build_list.send(key) }
+    policy(BuildList).permitted_attributes.each do |key|
+      params[:build_list][key] = build_list.send(key)
+    end
     params[:arches] = [build_list.arch_id]
     [:owner_filter, :status_filter].each { |t| params[t] = 'true' if %w(true undefined).exclude? params[t] }
   end

@@ -57,6 +57,34 @@ class BuildListPolicy < ApplicationPolicy
     ProjectPolicy.new(user, record.project).write?
   end
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(
+      arch_id
+      auto_create_container
+      auto_publish
+      auto_publish_status
+      build_for_platform_id
+      commit_hash
+      external_nodes
+      extra_build_lists
+      extra_params
+      extra_repositories
+      include_repos
+      include_testing_subrepository
+      project_id
+      project_version
+      save_buildroot
+      save_to_platform_id
+      save_to_repository_id
+      update_type,
+      use_cached_chroot
+      use_extra_tests
+    )
+  end
+
   class Scope < Scope
 
     def read
