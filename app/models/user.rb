@@ -56,8 +56,8 @@ class User < Avatar
   validates :role, inclusion: { in: EXTENDED_ROLES }, allow_blank: true
   validates :language, inclusion: { in: LANGUAGES }, allow_blank: true
 
-  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
-                  :site, :company, :professional_experience, :location, :sound_notifications, :hide_email, :delete_avatar
+  # attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
+  #                 :site, :company, :professional_experience, :location, :sound_notifications, :hide_email, :delete_avatar
   attr_readonly :uname
   attr_accessor :login, :delete_avatar
 

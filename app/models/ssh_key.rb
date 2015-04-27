@@ -5,7 +5,7 @@ class SshKey < ActiveRecord::Base
   SHELL_KEY_COMMAND = "sudo -i -u #{APP_CONFIG['shell_user']} ~#{APP_CONFIG['shell_user']}/gitlab-shell/bin/gitlab-keys"
 
   belongs_to :user
-  attr_accessible :key, :name
+  # attr_accessible :key, :name
 
   before_validation -> { self.key = key.strip if key.present? }
   before_validation :set_fingerprint

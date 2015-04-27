@@ -8,7 +8,7 @@ class Collaborator
   attr_accessor :role, :actor, :project, :relation
   attr_reader :id, :actor_id, :actor_type, :actor_name, :project_id
 
-  attr_accessible :role
+  # attr_accessible :role
 
   delegate :new_record?, to: :relation
 

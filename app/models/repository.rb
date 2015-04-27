@@ -36,12 +36,12 @@ class Repository < ActiveRecord::Base
 
   before_destroy  :detele_directory
 
-  attr_accessible :name,
-                  :description,
-                  :publish_without_qa,
-                  :synchronizing_publications,
-                  :publish_builds_only_from_branch,
-                  :build_for_platform_id
+  # attr_accessible :name,
+  #                 :description,
+  #                 :publish_without_qa,
+  #                 :synchronizing_publications,
+  #                 :publish_builds_only_from_branch,
+  #                 :build_for_platform_id
 
   attr_readonly :name, :platform_id
   attr_accessor :projects_list, :build_for_platform_id

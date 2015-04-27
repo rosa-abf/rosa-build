@@ -6,8 +6,6 @@ gem 'activeadmin',                      github: 'activeadmin'
 gem 'pg'
 gem 'schema_plus', '~> 1.5'
 ########
-gem 'protected_attributes'
-########
 gem 'devise'
 gem 'omniauth'
 gem 'omniauth-facebook'

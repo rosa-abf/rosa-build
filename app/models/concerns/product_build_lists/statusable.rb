@@ -41,7 +41,7 @@ module ProductBuildLists::Statusable
       presence:       true,
       inclusion:      { in: STATUSES }
 
-    attr_accessible :status
+    # attr_accessible :status
 
     before_destroy :can_destroy?
 

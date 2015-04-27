@@ -12,7 +12,7 @@ class ProjectToRepository < ActiveRecord::Base
 
   validate :one_project_in_platform_repositories, on: :create
 
-  attr_accessible :project, :project_id
+  # attr_accessible :project, :project_id
 
   AUTOSTART_OPTIONS.each do |field|
     store_accessor :autostart_options, field

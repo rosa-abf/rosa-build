@@ -18,7 +18,7 @@ class BuildScript < ActiveRecord::Base
 
   before_validation :attach_project
   attr_writer       :project_name
-  attr_accessible   :project_name, :treeish, :commit, :sha1, :status
+  # attr_accessible   :project_name, :treeish, :commit, :sha1, :status
 
   state_machine :status, initial: :active do
     event(:disable) { transition active: :blocked }

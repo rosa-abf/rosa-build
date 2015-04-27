@@ -4,7 +4,7 @@ class KeyPair < ActiveRecord::Base
   belongs_to :user
 
   attr_accessor :fingerprint
-  attr_accessible :public, :secret, :repository_id
+  # attr_accessible :public, :secret, :repository_id
   attr_encrypted :secret, key: APP_CONFIG['keys']['key_pair_secret_key']
 
   validates :repository, :user, presence: true

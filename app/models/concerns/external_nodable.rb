@@ -9,7 +9,7 @@ module ExternalNodable
               allow_blank:            true
 
 
-    attr_accessible :external_nodes
+    # attr_accessible :external_nodes
   end
 
 end

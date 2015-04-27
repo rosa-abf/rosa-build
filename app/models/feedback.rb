@@ -12,7 +12,7 @@ class Feedback
 
   attr_accessor :name, :email, :subject, :message
 
-  attr_accessible :name, :email, :subject, :message
+  # attr_accessible :name, :email, :subject, :message
 
   validates :name, :subject, :message, presence: true
   validates :email, presence: true,

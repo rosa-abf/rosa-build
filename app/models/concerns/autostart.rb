@@ -16,7 +16,7 @@ module Autostart
     validates :autostart_status, numericality: true,
       inclusion: {in: AUTOSTART_STATUSES}, allow_blank: true
 
-    attr_accessible :autostart_status
+    # attr_accessible :autostart_status
   end
 
   def human_autostart_status

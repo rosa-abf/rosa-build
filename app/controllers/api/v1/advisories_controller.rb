@@ -16,7 +16,7 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   def create
     authorize :advisory
     if @build_list.can_attach_to_advisory? &&
-        @build_list.associate_and_create_advisory(params[:advisory]) &&
+        @build_list.associate_and_create_advisory(advisory_params) &&
         @build_list.save
       render_json_response @build_list.advisory, 'Advisory has been created successfully'
     else
@@ -34,6 +34,10 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   end
 
   protected
+
+  def advisory_params
+    permit_params(:advisory, *policy(Advisory).permitted_attributes)
+  end
 
   def load_build_list
     @build_list = BuildList.find params[:build_list_id]

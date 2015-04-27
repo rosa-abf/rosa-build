@@ -88,12 +88,12 @@ class BuildList < ActiveRecord::Base
   before_validation :prepare_extra_params,        on: :create
   before_validation :prepare_auto_publish_status, on: :create
 
-  attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
-                  :arch_id, :project_id, :save_to_repository_id, :update_type,
-                  :save_to_platform_id, :project_version, :auto_create_container,
-                  :extra_repositories, :extra_build_lists, :extra_params,
-                  :include_testing_subrepository, :auto_publish_status,
-                  :use_cached_chroot, :use_extra_tests, :save_buildroot
+  # attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
+  #                 :arch_id, :project_id, :save_to_repository_id, :update_type,
+  #                 :save_to_platform_id, :project_version, :auto_create_container,
+  #                 :extra_repositories, :extra_build_lists, :extra_params,
+  #                 :include_testing_subrepository, :auto_publish_status,
+  #                 :use_cached_chroot, :use_extra_tests, :save_buildroot
 
   LIVE_TIME     = 4.week  # for unpublished
   MAX_LIVE_TIME = 3.month # for published

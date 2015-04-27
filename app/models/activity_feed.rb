@@ -9,7 +9,7 @@ class ActivityFeed < ActiveRecord::Base
   belongs_to :creator, class_name: 'User'
   serialize  :data
 
-  attr_accessible :user, :kind, :data, :project_owner, :project_name, :creator_id
+  # attr_accessible :user, :kind, :data, :project_owner, :project_name, :creator_id
 
   default_scope { order created_at: :desc }
   scope :outdated,        -> { offset(1000) }

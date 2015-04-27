@@ -45,10 +45,10 @@ class MassBuild < ActiveRecord::Base
   scope :search,      -> (q) { where("#{table_name}.description ILIKE ?", "%#{q}%") if q.present? }
 
   attr_accessor :arches, :repositories
-  attr_accessible :arches, :auto_publish_status, :projects_list, :build_for_platform_id,
-                  :extra_repositories, :extra_build_lists, :increase_release_tag,
-                  :use_cached_chroot, :use_extra_tests, :description, :extra_mass_builds,
-                  :include_testing_subrepository, :auto_create_container, :repositories
+  # attr_accessible :arches, :auto_publish_status, :projects_list, :build_for_platform_id,
+  #                 :extra_repositories, :extra_build_lists, :increase_release_tag,
+  #                 :use_cached_chroot, :use_extra_tests, :description, :extra_mass_builds,
+  #                 :include_testing_subrepository, :auto_create_container, :repositories
 
   validates :save_to_platform_id,
             :build_for_platform_id,

@@ -26,7 +26,7 @@ class Statistic < ActiveRecord::Base
   validates :email,
     presence: true
 
-  validates :project_id, 
+  validates :project_id,
     presence: true
 
   validates :project_name_with_owner,
@@ -41,13 +41,13 @@ class Statistic < ActiveRecord::Base
   validates :activity_at,
     presence: true
 
-  attr_accessible :user_id,
-                  :email,
-                  :project_id,
-                  :project_name_with_owner,
-                  :key,
-                  :counter,
-                  :activity_at
+  # attr_accessible :user_id,
+  #                 :email,
+  #                 :project_id,
+  #                 :project_name_with_owner,
+  #                 :key,
+  #                 :counter,
+  #                 :activity_at
 
   scope :for_period,            -> (start_date, end_date) {
     where(activity_at: (start_date..end_date))

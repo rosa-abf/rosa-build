@@ -16,5 +16,5 @@ class PlatformArchSetting < ActiveRecord::Base
   scope :by_arch,    ->(arch) { where(arch_id: arch) if arch.present? }
   scope :by_default, -> { where(default: true) }
 
-  attr_accessible :arch_id, :platform_id, :default
+  # attr_accessible :arch_id, :platform_id, :default
 end

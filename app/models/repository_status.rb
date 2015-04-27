@@ -31,7 +31,7 @@ class RepositoryStatus < ActiveRecord::Base
   validates :repository, :platform, presence: true
   validates :repository_id, uniqueness: { scope: :platform_id }
 
-  attr_accessible :platform_id, :repository_id
+  # attr_accessible :platform_id, :repository_id
 
   scope :platform_ready, -> { where(platforms: {status: READY}).joins(:platform) }
   scope :for_regeneration, -> { where(status: WAITING_FOR_REGENERATION) }

@@ -22,7 +22,7 @@ class Comment < ActiveRecord::Base
   after_create :subscribe_on_reply, unless: ->(c) { c.commit_comment? }
   after_create :subscribe_users
 
-  attr_accessible :body, :data
+  # attr_accessible :body, :data
 
   def commentable
     commit_comment? ? project.repo.commit(Comment.hex_to_commit_hash commentable_id) : super

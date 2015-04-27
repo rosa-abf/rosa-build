@@ -23,7 +23,7 @@ class NodeInstruction < ActiveRecord::Base
     errors.add(:status, 'Can be only single active instruction for each node') if !disabled? && NodeInstruction.duplicate(id.to_i, user_id).exists?
   }
 
-  attr_accessible :instruction, :user_id, :output, :status
+  # attr_accessible :instruction, :user_id, :output, :status
 
   state_machine :status, initial: :ready do
 
@@ -62,7 +62,7 @@ class NodeInstruction < ActiveRecord::Base
 
     build_lists = BuildList.where(builder_id: user_id, external_nodes: [nil, '']).
       for_status(BuildList::BUILD_STARTED)
-    
+
     build_lists.find_each do |bl|
       bl.update_column(:status, BuildList::BUILD_PENDING)
       bl.restart_job

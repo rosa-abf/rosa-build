@@ -105,7 +105,7 @@ class Projects::BuildListsController < Projects::BaseController
 
       if params[:attach_advisory] == 'new'
         # create new advisory
-        unless @build_list.associate_and_create_advisory(params[:build_list][:advisory])
+        unless @build_list.associate_and_create_advisory(advisory_params)
           redirect_to :back, notice: t('layout.build_lists.publish_fail') and return
         end
       else
@@ -205,6 +205,10 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   protected
+
+  def advisory_params
+    permit_params(%i(build_list advisory), *policy(Advisory).permitted_attributes)
+  end
 
   # Private: before_action hook which loads BuidList.
   def load_build_list
