@@ -206,7 +206,7 @@ class Projects::BuildListsController < Projects::BaseController
   protected
 
   def build_list_params
-    permit_params(:build_list, *policy(BuildList).permitted_attributes)
+    subject_params(BuildList)
   end
 
   def advisory_params

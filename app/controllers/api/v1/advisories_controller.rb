@@ -36,7 +36,7 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   protected
 
   def advisory_params
-    permit_params(:advisory, *policy(Advisory).permitted_attributes)
+    subject_params(Advisory)
   end
 
   def load_build_list

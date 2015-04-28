@@ -32,6 +32,13 @@ class GroupPolicy < ApplicationPolicy
     !user.guest? && ( is_admin? || owner? )
   end
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(uname description delete_avatar default_branch)
+  end
+
   class Scope < Scope
     def show
       scope

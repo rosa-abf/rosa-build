@@ -78,7 +78,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   private
 
   def build_list_params
-    permit_params(:build_list, *policy(BuildList).permitted_attributes)
+    subject_params(BuildList)
   end
 
   # Private: before_action hook which loads BuidList.
