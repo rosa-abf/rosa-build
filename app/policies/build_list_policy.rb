@@ -61,7 +61,7 @@ class BuildListPolicy < ApplicationPolicy
   #
   # Returns Array
   def permitted_attributes
-    %i(
+    pa = %i(
       arch_id
       auto_create_container
       auto_publish
@@ -69,20 +69,23 @@ class BuildListPolicy < ApplicationPolicy
       build_for_platform_id
       commit_hash
       external_nodes
-      extra_build_lists
-      extra_params
-      extra_repositories
-      include_repos
       include_testing_subrepository
       project_id
       project_version
       save_buildroot
       save_to_platform_id
       save_to_repository_id
-      update_type,
+      update_type
       use_cached_chroot
       use_extra_tests
     )
+    pa << {
+      include_repos:      [],
+      extra_build_lists:  [],
+      extra_repositories: [],
+      extra_params:       BuildList::EXTRA_PARAMS,
+    }
+    pa
   end
 
   class Scope < Scope
