@@ -10,7 +10,7 @@ module StrongParams
   end
 
 
-  def subject_params(subject_class)
-    permit_params(subject_class.name.underscore.to_sym, *policy(subject_class).permitted_attributes)
+  def subject_params(subject_class, subject = nil)
+    permit_params(subject_class.name.underscore.to_sym, *policy(subject || subject_class).permitted_attributes)
   end
 end

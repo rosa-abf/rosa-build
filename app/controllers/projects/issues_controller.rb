@@ -79,13 +79,10 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def create
-    @issue         = @project.issues.build(params[:issue])
-    @issue.user_id = current_user.id
+    @issue      = @project.issues.new
+    @issue.assign_attributes(issue_params)
+    @issue.user = current_user
 
-    unless policy(@project).write?
-      @issue.assignee_id  = nil
-      @issue.labelings    = []
-    end
     authorize @issue
     if @issue.save
       @issue.subscribe_creator(current_user.id)
@@ -108,19 +105,12 @@ class Projects::IssuesController < Projects::BaseController
 
       format.json {
         status = 200
-        unless policy(@project).write?
-          params.delete :update_labels
-          [:assignee_id, :labelings, :labelings_attributes].each do |k|
-            params[:issue].delete k
-          end if params[:issue]
-        end
-
         if params[:issue] && status = params[:issue][:status]
           @issue.set_close(current_user) if status == 'closed'
           @issue.set_open if status == 'open'
           status = @issue.save ? 200 : 500
         else
-          status = 422 unless @issue.update_attributes(params[:issue])
+          status = 422 unless @issue.update_attributes(issue_params)
         end
         render status: status
       }
@@ -168,6 +158,10 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   private
+
+  def issue_params
+    subject_params(Issue, @issue)
+  end
 
   # Private: before_action hook which loads Issue.
   def load_issue

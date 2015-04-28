@@ -85,7 +85,7 @@ class Api::V1::BaseController < ApplicationController
   def update_subject(subject)
     authorize subject, :update?
     class_name = subject.class.name
-    if subject.update_attributes(subject_params(subject.class))
+    if subject.update_attributes(subject_params(subject.class, subject))
       render_json_response subject, "#{class_name} has been updated successfully"
     else
       render_validation_error subject, "#{class_name} has not been updated"

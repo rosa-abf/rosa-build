@@ -18,4 +18,17 @@ class IssuePolicy < ApplicationPolicy
     is_admin? || record.user_id == user.id || local_admin?(record.project)
   end
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    pa = %i(title body)
+    if ProjectPolicy.new(user, record.project).write?
+      pa << :assignee_id
+      pa << { labelings_attributes: %i(name color label_id) }
+      pa << { labelings: [] }
+    end
+    pa
+  end
+
 end

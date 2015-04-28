@@ -44,20 +44,14 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def create
-    @issue      = @project.issues.new(params[:issue])
+    @issue      = @project.issues.new
+    @issue.assign_attributes subject_params(Issue, @issue)
     @issue.user = current_user
-    @issue.assignee = nil unless policy(@project).write?
     create_subject @issue
   end
 
   def update
-    unless policy(@project).write?
-      params.delete :update_labels
-      [:assignee_id, :labelings, :labelings_attributes].each do |k|
-        params[:issue].delete k
-      end if params[:issue]
-    end
-    @issue.labelings.destroy_all if params[:update_labels]
+    @issue.labelings.destroy_all if params[:update_labels] && policy(@project).write?
     if params[:issue] && status = params[:issue].delete(:status)
       @issue.set_close(current_user) if status == 'closed'
       @issue.set_open if status == 'open'
