@@ -12,6 +12,6 @@
         ul.list-group
           - commits.each_with_index do |commit|
             li.list-group-item
-              - GitPresenters::CommitAsMessagePresenter.present(commit, project: @project) do |presenter|
+              - GitPresenters::CommitAsMessagePresenter.present(commit, project: project) do |presenter|
                 == render 'shared/feed_commit', presenter: presenter, item_no: counter
                 - counter += 1

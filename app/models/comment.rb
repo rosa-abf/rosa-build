@@ -65,7 +65,7 @@ class Comment < ActiveRecord::Base
     end
     return data[:actual] = true if commentable_type == 'Grit::Commit'
     filepath, line_number = data[:path], data[:line]
-    diff_path = (diff || commentable.diffs ).select {|d| d.a_path == data[:path]}
+    diff_path = (diff || commentable.show ).select {|d| d.a_path == data[:path]}
     comment_line = data[:line].to_i
     # NB! also dont create a comment to the diff header
     return data[:actual] = false if diff_path.blank? || comment_line == 0
@@ -134,7 +134,6 @@ class Comment < ActiveRecord::Base
 
   def self.create_link_on_issues_from_item item, commits = nil
     linker = item.user
-    current_ability = Ability.new(linker)
 
     case
     when item.is_a?(GitHook)
@@ -155,7 +154,7 @@ class Comment < ActiveRecord::Base
 
     elements.each do |element|
       element[1].scan(ISSUES_REGEX).each do |hash|
-        issue = Issue.find_by_hash_tag hash, current_ability, item.project
+        issue = Issue.find_by_hash_tag hash, linker, item.project
         next unless issue
         # dont create link to the same issue
         next if opts[:created_from_issue_id] == issue.id

@@ -57,7 +57,7 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
 
     promise = Preview.get_preview(vm.project, body)
     promise.success( (response) ->
-      vm.preview_body  = response
+      vm.preview_body  = response.html
       Preview.old_text = body
     ).error( (response) ->
       vm.preview_body = 'Error :('
@@ -75,15 +75,22 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
     else
       false
 
-  vm.add = ->
+  vm.add = ($event)->
+    $event.preventDefault()
+    $event.stopPropagation()
+
     vm.processing = true
-    promise = Comment.add(vm.project, vm.commentable, vm.new_body)
-    promise.then (response) ->
-      element = compileHTML.run($scope, response.data.html)
+    Comment.add(vm.project, vm.commentable, vm.new_body)
+    .success (data) ->
+      element = compileHTML.run($scope, data.html)
       list.append(element)
 
       vm.new_body = ''
-      location.hash = "#comment" + response.data.id;
+      location.hash = "#comment" + data.id;
+      vm.processing = false
+      $.notify(data.message, 'success')
+    .error (data) ->
+      $.notify(data.message, 'error')
       vm.processing = false
 
     false
@@ -91,8 +98,8 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
   vm.remove = (id) ->
     return false unless confirmMessage.show()
     vm.processing = true
-    promise = Comment.remove(vm.project, vm.commentable, id)
-    promise.then () ->
+    Comment.remove(vm.project, vm.commentable, id)
+    .success (data)->
       parent = $('#comment'+id+',#diff-comment'+id).parents('tr.line-comments')
       if parent.find('.line-comment').length is 1
         # there is only one line comment, remove all line
@@ -100,16 +107,21 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
       else
         $('#comment'+id+',#diff-comment'+id+',#update-comment'+id).remove()
 
+      $.notify(data.message, 'success')
+      vm.processing = false
+    .error (data)->
+      $.notify(data.message, 'error')
       vm.processing = false
 
     false
 
   vm.update = (id) ->
     vm.processing = true
-    promise = Comment.update(vm.project, vm.commentable, id)
-    promise.then (response) ->
-      form = $('#comment'+id+ ' .md_and_cm.cm-s-default').html(response.data.body)
+    Comment.update(vm.project, vm.commentable, id)
+    .success (data) ->
+      form = $('#comment'+id+ ' .md_and_cm.cm-s-default').html(data.body)
 
+      $.notify(data.message, 'success')
       vm.processing = false
       form = $('.open-comment.comment-'+id)
       if form.length is 1
@@ -117,6 +129,9 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
         return true
       else
         return false
+    .error (data) ->
+      $.notify(data.message, 'error')
+      vm.processing = false
 
   vm.showInlineForm = ($event, params = {}) ->
     line_comments = findInlineComments($event, params)
@@ -170,7 +185,7 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
     vm.commentable = commentable
     vm.processing  = false
     vm.k = 10
-    if commentable.kind is 'issue'
+    if commentable.kind is 'issue' or commentable.kind is 'commit'
       list = $('#comments_list')
     else if commentable.kind is 'pull'
       list = $('#pull-activity')

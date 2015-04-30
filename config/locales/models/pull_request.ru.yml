@@ -19,10 +19,8 @@ ru:
 
       blocked: Невозможно автоматически смержить данный пул реквест.
       ready: Данный пул реквест можно смержить автоматически.
-      merged: |
-        %{user} смержил <span class="label-bootstrap label-info font14">%{to_ref}</span>
-        с <span class="label-bootstrap label-info font14">%{from_ref}</span> в %{time}
-      closed: '%{user} закрыл пул реквест в %{time}'
+      merged: смержил в
+      closed: закрыл пул реквест в
       is_big: Этот пул реквест слишком большой! Мы показываем только последние %{count} коммитов.
       open: ''
       statuses:

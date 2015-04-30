@@ -7,7 +7,9 @@ class String
       force_encoding(default_encoding)
     else # should encode
       options = {invalid: :replace, undef: :replace, replace: ''}
-      if (detected = detect_encoding) && detected[:encoding]
+      if encoding.name == 'UTF-8'
+        encode!(default_encoding, 'UTF-8', options)
+      elsif (detected = detect_encoding) && detected[:encoding]
         force_encoding(detected[:encoding]).encode!(default_encoding, detected[:encoding], options)
       end
       scrub('')

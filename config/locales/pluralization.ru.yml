@@ -14,14 +14,6 @@ ru:
         few:  "%{count} удалениями"
         many: "%{count} удалениями"
 
-      inline_additions_count:
-        one:  "%{count} добавление"
-        few:  "%{count} добавления"
-        many: "%{count} добавлений"
-      inline_deletions_count:
-        one:  "%{count} удаление"
-        few:  "%{count} удаления"
-        many: "%{count} удалений"
       inline_changes_count:
         one:  "%{count} изменение"
         few:  "%{count} изменения"

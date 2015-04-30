@@ -1,6 +1,12 @@
-- commit_id            = pull_diff.deleted_file ? @pull.to_commit.id : @pull.from_commit.id
-- diff_counter         = "diff-#{pull_diff_counter}"
+- diff = pull_diff
+- diff_counter = "diff-#{pull_diff_counter}"
+
+- parent_commit = @pull.to_commit
+- commit_id = get_commit_id_for_file diff, @pull.from_commit, parent_commit
 - diff_counter_content = "#{diff_counter}_content"
+- blob = file_blob_in_diff(@pull.repo, commit_id, diff)
+- is_file_open = 'in' if is_file_open_in_diff(blob, diff)
+
 .file.offset10
   a name = diff_counter
   .top
@@ -9,22 +15,24 @@
                 data-target   = "##{diff_counter_content}"
                 aria-expanded = 'true'
                 aria-controls = diff_counter_content ]
-      = h(pull_diff.renamed_file ? "#{pull_diff.a_path.rtruncate 60}=>#{pull_diff.b_path.rtruncate 60}" : pull_diff.b_path.rtruncate(120))
+      span.fa class= (is_file_open ? 'fa-chevron-down' : 'fa-chevron-up')
+      =< diff_file_icon(diff).html_safe
+      =< get_filename_in_diff(diff, diff.a_path)
     - if @pull.from_project.present?
       button.btn.btn-link.pull-right
         = link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@pull.from_project, commit_id, pull_diff.b_path)
     .clearfix
 
-  -if pull_diff.diff.present?
-    - blob = @pull.repo.tree(commit_id) / pull_diff.b_path
-    - is_file_open = 'in' if !blob.binary? && pull_diff.diff.split("\n").count <= DiffHelper::MAX_LINES_WITHOUT_COLLAPSE
+  .diff_data.collapse id= diff_counter_content class= is_file_open
+    - if blob.render_as == :image && diff.diff.present?
+      - old_blob = file_blob_in_diff(@project.repo, parent_commit.id, diff)
+      == render 'projects/git/commits/show_image', diff: diff, blob: blob, old_blob: old_blob
 
-    .diff_data.collapse[ id = diff_counter_content class = is_file_open ]
-      - if blob.render_as == :image
-        table.table.diff.inline.table-bordered[ cellspacing = 0 cellpadding = 0 ]
-          tr
-            td.diff-image
-              span.diff-image
-                img[ src = "data:#{blob.mime_type};base64,#{Base64.encode64(blob.data)}"
-                     style = 'max-width: 600px;' ]
+    - if diff.a_mode != diff.b_mode && diff.diff.blank?
+      == render 'file_change_mode', blob: blob, diff: diff
+
+    - elsif diff.diff.blank? && diff.renamed_file
+      == render 'projects/git/commits/file_removed_not_changed', blob: blob
+
+    - elsif !blob.binary?
       == render_diff(pull_diff, diff_counter: pull_diff_counter, comments: @comments) unless blob.binary?

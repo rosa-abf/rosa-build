@@ -47,6 +47,9 @@ en:
       saved: Comment saved
       save_error: Error while saving comment
       destroyed: Comment deleted
+      error_in_deleting: Error deleting comment
+      updated: Comment updated
+      error_in_updating: Error updating comment
 
   activerecord:
     attributes:

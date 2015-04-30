@@ -13,9 +13,9 @@ class CommentPresenter < ApplicationPresenter
       @content = @comment.body
     else
       issue = Issue.where(id: comment.created_from_issue_id).first
-      @referenced_issue = issue.pull_request || issue
-      @reference_project = issue.project
       if issue && (comment.data[:comment_id].nil? || Comment.exists?(comment.data[:comment_id]))
+        @referenced_issue = issue.pull_request || issue
+        @reference_project = issue.project
         title = if issue == opts[:commentable]
                      "#{issue.serial_id}"
                     elsif issue.project.owner == opts[:commentable].project.owner
@@ -60,12 +60,12 @@ class CommentPresenter < ApplicationPresenter
     res = [ link_to(content_tag(:i, nil, class: 'fa fa-link'),
                     link_to_comment,
                     class: klass).html_safe ]
-    if controller.can? :update, @comment
+    if controller.policy(@comment).update?
       res << link_to(content_tag(:i, nil, class: 'fa fa-edit'),
                      "#update-comment#{comment.id}",
                      'ng-click' => "commentsCtrl.toggleEditForm(#{comment_id})" ).html_safe
     end
-    if controller.can? :destroy, @comment
+    if controller.policy(@comment).destroy?
       res << link_to(content_tag(:i, nil, class: 'fa fa-close'),
                      '',
                      'ng-click' => "commentsCtrl.remove(#{comment_id})").html_safe
@@ -111,7 +111,7 @@ class CommentPresenter < ApplicationPresenter
 
   def issue_referenced_state
     if @referenced_issue.is_a? Issue
-      statuses = {'open' => 'success', 'closed' => 'important'}
+      statuses = {'open' => 'success', 'closed' => 'danger'}
       content_tag :span, t("layout.issues.status.#{@referenced_issue.status}"), class: "pull-right label label-#{statuses[@referenced_issue.status]}"
     else
       pull_status_label @referenced_issue.status, class: 'pull-right'

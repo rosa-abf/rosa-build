@@ -104,14 +104,14 @@ class Issue < ActiveRecord::Base
     recipients
   end
 
-  def self.find_by_hash_tag(hash_tag, current_ability, project)
+  def self.find_by_hash_tag(hash_tag, current_user, project)
     hash_tag =~ HASH_TAG_REGEXP
     owner_uname   = Regexp.last_match[1].presence || Regexp.last_match[2].presence || project.owner.uname
     project_name  = Regexp.last_match[1] ? Regexp.last_match[2] : project.name
     serial_id     = Regexp.last_match[3]
     project       = Project.find_by_owner_and_name(owner_uname.chomp('/'), project_name)
     return nil unless project
-    return nil unless current_ability.can? :show, project
+    return nil unless ProjectPolicy.new(current_user, project).show?
     project.issues.where(serial_id: serial_id).first
   end
 

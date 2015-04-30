@@ -3,6 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'webmock/rspec'
+require 'pundit/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
@@ -40,6 +41,7 @@ RSpec.configure do |config|
   config.before(:all) { init_test_root }
   config.after(:all)  { clear_test_root }
   config.before { stub_redis }
+  config.before(type: :policy) { stub_symlink_methods }
 end
 
 def set_session_for(user=nil)

@@ -8,7 +8,7 @@ module PullRequestHelper
   end
 
   def pull_status_label pull_status, options = {}
-    statuses = {'ready' => 'success', 'closed' => 'important', 'merged' => 'important', 'blocked' => 'warning'}
+    statuses = {'ready' => 'success', 'closed' => 'default', 'merged' => 'info', 'blocked' => 'warning'}
     options[:class] = "#{options[:class]} label label-#{statuses[pull_status]}"
     content_tag :span, t("projects.pull_requests.statuses.#{pull_status}"), options
   end

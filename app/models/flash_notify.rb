@@ -1,14 +1,12 @@
 require 'digest/md5'
 
 class FlashNotify < ActiveRecord::Base
-  # attr_accessible :title, :body
+  include FlashNotify::Finders
 
   STATUSES = %w[error success info]
 
   validates :status, inclusion: {in: STATUSES}
   validates :body_ru, :body_en, :status, presence: true
-
-  scope :published, -> { where(published: true) }
 
   attr_accessible :body_ru, :body_en, :status, :published
 

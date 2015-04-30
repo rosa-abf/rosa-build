@@ -4,7 +4,7 @@
 .col-xs-12.col-md-10.col-md-offset-1 ng-controller = 'IssueController as issueCtrl' ng-cloak = true
   = simple_form_for @issue, url: project_issues_path(@project) do |f|
     .row
-      - can_write = can?(:write, @project)
+      - can_write = policy(@project).write?
       - if can_write
         .col-md-3.col-sm-4.offset10
           == render 'select_labels'

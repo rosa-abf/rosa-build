@@ -4,7 +4,6 @@ describe BuildLists::DependentPackagesJob do
   let(:build_list)  { FactoryGirl.build(:build_list, id: 123) }
   let(:user)        { build_list.user }
   let(:project)     { build_list.project }
-  let(:ability)     { double(:ability) }
   let(:project_ids) { [build_list.project_id] }
   let(:arch_ids)    { [build_list.arch_id] }
   let(:options)     { {
@@ -18,14 +17,12 @@ describe BuildLists::DependentPackagesJob do
   before do
     stub_symlink_methods
     allow(BuildList).to receive(:find).with(123).and_return(build_list)
-    # BuildList::Package.stub_chain(:joins, :where, :reorder, :uniq, :pluck).and_return([project.id])
-    Project.stub_chain(:where, :to_a).and_return([project])
-    Arch.stub_chain(:where, :to_a).and_return([build_list.arch])
+    allow(Project).to receive_message_chain(:where, :to_a).and_return([project])
+    allow(Arch).to receive_message_chain(:where, :to_a).and_return([build_list.arch])
 
-    allow(Ability).to receive(:new).and_return(ability)
-    allow(ability).to receive(:can?).with(:show, build_list).and_return(true)
-    allow(ability).to receive(:can?).with(:write, project).and_return(true)
-    allow(ability).to receive(:can?).with(:create, anything).and_return(true)
+    allow_any_instance_of(BuildListPolicy).to receive(:show?).and_return(true)
+    allow_any_instance_of(ProjectPolicy).to   receive(:write?).and_return(true)
+    allow_any_instance_of(BuildListPolicy).to receive(:create?).and_return(true)
   end
 
   subject { BuildLists::DependentPackagesJob }
@@ -43,21 +40,21 @@ describe BuildLists::DependentPackagesJob do
   end
 
   it 'ensures that do nothing if user has no access for show of build_list' do
-    allow(ability).to receive(:can?).with(:show, build_list).and_return(false)
+    allow_any_instance_of(BuildListPolicy).to receive(:show?).and_return(false)
     expect do
       subject.perform build_list.id, user.id, project_ids, arch_ids, options
     end.to change(BuildList, :count).by(0)
   end
 
   it 'ensures that do nothing if user has no access for write of project' do
-    allow(ability).to receive(:can?).with(:write, project).and_return(false)
+    allow_any_instance_of(ProjectPolicy).to receive(:write?).and_return(false)
     expect do
       subject.perform build_list.id, user.id, project_ids, arch_ids, options
     end.to change(BuildList, :count).by(0)
   end
 
   it 'ensures that do nothing if user has no access for create of build_list' do
-    allow(ability).to receive(:can?).with(:create, anything).and_return(false)
+    allow_any_instance_of(BuildListPolicy).to receive(:create?).and_return(false)
     expect do
       subject.perform build_list.id, user.id, project_ids, arch_ids, options
     end.to change(BuildList, :count).by(0)

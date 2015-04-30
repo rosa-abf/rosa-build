@@ -1,4 +1,4 @@
-- if can?(:cancel, build_list)
+- if policy(build_list).cancel?
   = link_to t("layout.build_lists.cancel"),
     cancel_build_list_path(build_list),
     method:       :put,
@@ -31,7 +31,7 @@
   class:       'btn btn-primary roffset5 boffset5',
   'ng-show' => 'build_list.can_publish_into_testing'
 
-- if can?(:reject_publish, build_list)
+- if policy(build_list).reject_publish?
   = link_to t('layout.reject_publish'),
     reject_publish_build_list_path(build_list),
     method:       :put,
@@ -39,7 +39,7 @@
     class:        'btn btn-primary roffset5 boffset5',
     'ng-show' =>  'build_list.can_reject_publish'
 
-- if can?(:rerun_tests, build_list)
+- if policy(build_list).rerun_tests?
   = link_to t('layout.build_lists.rerun_tests'),
     rerun_tests_build_list_path(build_list),
     method:       :put,
@@ -47,7 +47,7 @@
     class:        'btn btn-primary roffset5 boffset5',
     'ng-show' =>  "build_list.status == #{BuildList::TESTS_FAILED} || build_list.status == #{BuildList::SUCCESS}"
 
-- if can?(:create_container, build_list)
+- if policy(build_list).create_container?
   = link_to t('layout.build_lists.create_container'),
     create_container_build_list_path(build_list),
     method:       :put,
@@ -55,7 +55,7 @@
     class:        'btn btn-primary roffset5 boffset5',
     'ng-show' =>  'build_list.can_create_container'
 
-- if can? :create, build_list
+- if policy(build_list).create?
   = link_to t('layout.build_lists.recreate_build_list'), new_project_build_list_path(build_list.project,
     build_list_id: build_list.id),
     class:         'btn btn-primary roffset5 boffset5'

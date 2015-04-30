@@ -1,10 +1,8 @@
 class Platforms::ContentsController < Platforms::BaseController
   include PaginateHelper
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: :index if APP_CONFIG['anonymous_access']
-
-  load_and_authorize_resource :platform
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: :index if APP_CONFIG['anonymous_access']
 
   def index
     respond_to do |format|
@@ -22,7 +20,7 @@ class Platforms::ContentsController < Platforms::BaseController
   end
 
   def remove_file
-    authorize!(:remove_file, @platform)
+    authorize @platform
     PlatformContent.remove_file(@platform, params[:path])
     render nothing: true
   end

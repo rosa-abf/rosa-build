@@ -1,8 +1,6 @@
 class Projects::CommitSubscribesController < Projects::BaseController
-  before_filter :authenticate_user!
-  load_and_authorize_resource :project
-
-  before_filter :find_commit
+  before_action :authenticate_user!
+  before_action :find_commit
 
   def create
     if Subscribe.subscribe_to_commit(@options)

@@ -1,12 +1,10 @@
 class Projects::SubscribesController < Projects::BaseController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
 
-  load_and_authorize_resource :project
-  load_and_authorize_resource :issue, through: :project, find_by: :serial_id
-  load_and_authorize_resource :subscribe, through: :issue, find_by: :user_id
+  before_action :load_issue
 
   def create
-    @subscribe = @issue.subscribes.build(user_id: current_user.id)
+    authorize @subscribe = @issue.subscribes.build(user_id: current_user.id)
     if @subscribe.save
       flash[:notice] = I18n.t("flash.subscribe.saved")
       redirect_to :back
@@ -17,9 +15,17 @@ class Projects::SubscribesController < Projects::BaseController
   end
 
   def destroy
+    authorize @subscribe = @issue.subscribes.find_by(user_id: current_user.id)
     @subscribe.destroy
 
     flash[:notice] = t("flash.subscribe.destroyed")
     redirect_to :back
+  end
+
+  private
+
+  # Private: before_action hook which loads Issue.
+  def load_issue
+    authorize @issue = @project.issues.find_by!(serial_id: params[:issue_id]), :show?
   end
 end

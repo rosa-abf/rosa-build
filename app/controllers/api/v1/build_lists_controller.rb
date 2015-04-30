@@ -1,17 +1,26 @@
 class Api::V1::BuildListsController < Api::V1::BaseController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:show, :index] if APP_CONFIG['anonymous_access']
-
-  load_and_authorize_resource :build_list, only: [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing, :rerun_tests]
+  before_action :authenticate_user!
+  before_action :load_build_list, only: %i(
+                                            cancel
+                                            create_container
+                                            publish
+                                            publish_into_testing
+                                            reject_publish
+                                            rerun_tests
+                                            show
+                                          )
+  skip_before_action :authenticate_user!, only: %i(show index) if APP_CONFIG['anonymous_access']
 
   def show
+    authorize @build_list
     respond_to :json
   end
 
   def index
+    authorize :build_list
     @project = Project.find(params[:project_id]) if params[:project_id].present?
-    authorize!(:show, @project) if @project
-    filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
+    authorize @project, :show? if @project
+    filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
     @build_lists = filter.find.includes(:build_for_platform,
                                         :save_to_repository,
                                         :save_to_platform,
@@ -36,33 +45,44 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def cancel
+    authorize @build_list
     render_json :cancel
   end
 
   def publish
+    authorize @build_list
     @build_list.publisher = current_user
     render_json :publish
   end
 
   def reject_publish
+    authorize @build_list
     @build_list.publisher = current_user
     render_json :reject_publish
   end
 
   def create_container
+    authorize @build_list
     render_json :create_container, :publish_container
   end
 
   def rerun_tests
+    authorize @build_list
     render_json :rerun_tests
   end
 
   def publish_into_testing
+    authorize @build_list
     @build_list.publisher = current_user
     render_json :publish_into_testing
   end
 
   private
+
+  # Private: before_action hook which loads BuidList.
+  def load_build_list
+    @build_list = BuildList.find params[:id]
+  end
 
   def render_json(action_name, action_method = nil)
     if @build_list.try("can_#{action_name}?") && @build_list.send(action_method || action_name)

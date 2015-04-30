@@ -27,14 +27,19 @@
 
 //= require zeroclipboard
 
+//= require notifyjs
+//= require notifyjs/styles/bootstrap/notify-bootstrap
+
 //= require lib/Chart
 //= require lib/bootstrap-typeahead
 //= require lib/custom-bootstrap-typeahead
-//= require extra/highlight
 
+//= require extra/highlight
 //= require extra/pull
 //= require extra/scroller
 //= require extra/fork
+//= require extra/diff_chevrons
+//= require extra/diff
 
 //= require_self
 

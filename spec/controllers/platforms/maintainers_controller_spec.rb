@@ -4,7 +4,7 @@ shared_examples_for 'guest user' do
 
   it "should be able to view maintainers list(index)" do
     get :index, platform_id: @platform.id
-    response.should be_success
+    expect(response).to be_success
   end
 end
 
@@ -22,12 +22,12 @@ describe Platforms::MaintainersController, type: :controller do
 
     it "should be able to view maintainers list(index)", anonymous_access: true do
       get :index, platform_id: @platform.id
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should not be able to view maintainers list(index)", anonymous_access: false do
       get :index, platform_id: @platform.id
-      response.should redirect_to(new_user_session_path)
+      expect(response).to redirect_to(new_user_session_path)
     end
   end
 

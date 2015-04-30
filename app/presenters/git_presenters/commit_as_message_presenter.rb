@@ -85,7 +85,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   def committer_link
     @committer_link ||= if committer.is_a? User
       link_to committer.uname, user_path(committer)
-    elsif committer.is_a? Grit::Actor
+    elsif committer.is_a?(Grit::Actor) && committer.email.present?
       mail_to committer.email, committer.name
     else # unknown committer
       committer

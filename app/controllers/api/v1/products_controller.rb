@@ -1,11 +1,11 @@
 class Api::V1::ProductsController < Api::V1::BaseController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource
+  before_action :load_product, except: :create
 
   def create
-    create_subject @product
+    create_subject @product = Product.new(params[:product])
   end
 
   def update
@@ -13,10 +13,17 @@ class Api::V1::ProductsController < Api::V1::BaseController
   end
 
   def show
-    respond_to :json
   end
 
   def destroy
     destroy_subject @product
   end
+
+  private
+
+  # Private: before_action hook which loads Product.
+  def load_product
+    authorize @product = Product.find(params[:id])
+  end
+
 end

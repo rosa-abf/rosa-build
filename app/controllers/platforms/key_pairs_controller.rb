@@ -1,16 +1,14 @@
 class Platforms::KeyPairsController < Platforms::BaseController
-  before_filter :authenticate_user!
-
-  load_and_authorize_resource :platform
-  load_and_authorize_resource only: [:create, :destroy]
+  before_action :authenticate_user!
 
   def index
     @key_pair = KeyPair.new
   end
 
   def create
+    @key_pair         = KeyPair.new params[:key_pair]
     @key_pair.user_id = current_user.id
-
+    authorize @key_pair
     if @key_pair.save
       flash[:notice] = t('flash.key_pairs.saved')
       redirect_to platform_key_pairs_path(@key_pair.repository.platform) and return
@@ -21,6 +19,7 @@ class Platforms::KeyPairsController < Platforms::BaseController
   end
 
   def destroy
+    authorize @key_pair = @platform.key_pairs.find(params[:id])
     if @key_pair.destroy
       flash[:notice] = t('flash.key_pairs.destroyed')
     else

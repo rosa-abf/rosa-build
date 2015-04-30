@@ -44,7 +44,7 @@ div[ role = 'navigation' ng-controller = 'ProjectRepoBlockController' ng-cloak =
             i.fa.fa-clipboard.fa-lg
 
         .navbar-text.navbar-left
-          = can?(:write, project) ? t("layout.read_write_access") : t("layout.read_access")
+          = policy(project).write? ? t("layout.read_write_access") : t("layout.read_access")
 
         .navbar-right== render 'branch_select', project: project if act != :tags
 

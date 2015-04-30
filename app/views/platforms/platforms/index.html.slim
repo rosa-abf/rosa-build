@@ -1,7 +1,9 @@
 - set_meta_tags title: t('layout.platforms.list_header')
 .row ng-controller='PlatformsCtrl'
   .col-md-6.col-md-offset-3 ng-cloak=true
-    = link_to t('layout.platforms.new'), new_platform_path, class: 'btn btn-primary' if can? :create, Platform
+    - if policy(:platform).create?
+      a.btn.btn-primary href=new_platform_path
+        = t('layout.platforms.new')
     table.table.table-hover.offset10
       thead
         tr

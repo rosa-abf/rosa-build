@@ -43,9 +43,12 @@ ru:
 
   flash:
     comment:
-      saved: Комментарий успешно сохранен
+      saved: Комментарий сохранен
       save_error: Ошибка сохранения комментария
       destroyed: Комментарий удален
+      error_in_deleting: Ошибка при удалении комментария
+      updated: Комментарий обновлен
+      error_in_updating: Ошибка при обновлении комментария
 
   activerecord:
     attributes:

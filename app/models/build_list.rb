@@ -56,21 +56,33 @@ class BuildList < ActiveRecord::Base
   validates :update_type, inclusion: { in: RELEASE_UPDATE_TYPES, message: I18n.t('flash.build_list.frozen_platform') },
             if: Proc.new { |b| b.advisory.present? }
   validate -> {
-    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.main? && save_to_platform_id != build_for_platform_id
+    if save_to_platform.try(:main?) && save_to_platform_id != build_for_platform_id
+      errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform'))
+    end
   }
   validate -> {
-    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform')) unless build_for_platform.main?
+    unless build_for_platform.try :main?
+      errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform'))
+    end
   }
   validate -> {
-    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) if save_to_repository.platform_id != save_to_platform.id
+    if save_to_repository.try(:platform_id) != save_to_platform.try(:id)
+      errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository'))
+    end
   }
   validate -> {
-    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) if build_for_platform.repositories.where(id: include_repos).count != include_repos.size
+    if build_for_platform && build_for_platform.repositories.where(id: include_repos).count != include_repos.try(:size)
+      errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos'))
+    end
   }
   validate -> {
-    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
+    unless save_to_repository && save_to_repository.projects.exists?(project_id)
+      errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project'))
+    end
   }
-  before_validation -> { self.include_repos = include_repos.uniq if include_repos.present? }, on: :create
+  before_validation -> {
+    self.include_repos = ([] << include_repos).flatten.uniq if include_repos.present?
+  }, on: :create
   before_validation :prepare_extra_repositories,  on: :create
   before_validation :prepare_extra_build_lists,   on: :create
   before_validation :prepare_extra_params,        on: :create
@@ -119,9 +131,8 @@ class BuildList < ActiveRecord::Base
   HUMAN_STATUSES.freeze
 
   scope :recent, -> { order(updated_at: :desc) }
-  scope :for_extra_build_lists, ->(ids, current_ability, save_to_platform) {
-    s = all
-    s = s.where(id: ids).published_container.accessible_by(current_ability, :read)
+  scope :for_extra_build_lists, ->(ids, save_to_platform) {
+    s = where(id: ids, container_status: BuildList::BUILD_PUBLISHED)
     s = s.where(save_to_platform_id: save_to_platform.id) if save_to_platform && save_to_platform.main?
     s
   }
@@ -154,9 +165,16 @@ class BuildList < ActiveRecord::Base
     joins(:project).where('projects.name LIKE ?', "%#{project_name}%") if project_name.present?
   }
   scope :scoped_to_new_core, ->(new_core) { where(new_core: new_core) }
-  scope :outdated, -> {
-    where("#{table_name}.created_at < ? AND #{table_name}.status NOT IN (?) OR #{table_name}.created_at < ?",
-          Time.now - LIVE_TIME, [BUILD_PUBLISHED,BUILD_PUBLISHED_INTO_TESTING], Time.now - MAX_LIVE_TIME)
+  scope :outdated, -> (now = Time.now) {
+    where(<<-SQL, now - LIVE_TIME, [BUILD_PUBLISHED,BUILD_PUBLISHED_INTO_TESTING], now - MAX_LIVE_TIME)
+      (
+        #{table_name}.created_at < ?    AND
+        #{table_name}.status NOT IN (?) AND
+        #{table_name}.mass_build_id IS NULL
+      ) OR (
+        #{table_name}.created_at < ?
+      )
+    SQL
   }
   scope :published_container, -> { where(container_status: BUILD_PUBLISHED) }
 
@@ -706,17 +724,13 @@ class BuildList < ActiveRecord::Base
     save
   end
 
-  def current_ability
-    @current_ability ||= Ability.new(user)
-  end
-
   def prepare_extra_repositories
     if save_to_platform && save_to_platform.main?
       self.extra_repositories = nil
     else
-      self.extra_repositories = Repository.joins(:platform).
+      self.extra_repositories = PlatformPolicy::Scope.new(user, Repository.joins(:platform)).show.
         where(id: extra_repositories, platforms: {platform_type: 'personal'}).
-        accessible_by(current_ability, :read).pluck('repositories.id')
+        pluck('repositories.id')
     end
   end
 
@@ -726,7 +740,8 @@ class BuildList < ActiveRecord::Base
       extra_build_lists.flatten!
     end
     return if extra_build_lists.blank?
-    bls = BuildList.for_extra_build_lists(extra_build_lists, current_ability, save_to_platform)
+    bls = BuildListPolicy::Scope.new(user, BuildList).read.
+      for_extra_build_lists(extra_build_lists, save_to_platform)
     if save_to_platform
       if save_to_platform.distrib_type == 'rhel'
         bls = bls.where('
@@ -744,7 +759,7 @@ class BuildList < ActiveRecord::Base
     if external_nodes.present?
       self.auto_publish_status = AUTO_PUBLISH_STATUS_NONE
     end
-    if auto_publish? && !save_to_repository.publish_without_qa?
+    if auto_publish? && save_to_repository && !save_to_repository.publish_without_qa?
       self.auto_publish_status = AUTO_PUBLISH_STATUS_NONE
     end
     if auto_publish? || auto_publish_into_testing?

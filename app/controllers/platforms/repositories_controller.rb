@@ -4,14 +4,15 @@ class Platforms::RepositoriesController < Platforms::BaseController
   include RepositoriesHelper
   include PaginateHelper
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :platform
-  load_and_authorize_resource :repository, through: :platform, shallow: true
-  before_filter :set_members, only: [:edit, :update]
+  before_action :load_repository, except: [:index, :create, :new]
+  before_action :set_members,     only:   [:edit, :update]
+  before_action -> { @repository = @platform.repositories.find(params[:id]) if params[:id] }
 
   def index
+    @repositories = @platform.repositories
     @repositories = Repository.custom_sort(@repositories).paginate(page: current_page)
   end
 
@@ -23,6 +24,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def update
+    authorize @repository = @platform.repositories.build(params[:repository])
     if @repository.update_attributes params[:repository].slice(:description, :synchronizing_publications, :publish_builds_only_from_branch).merge(publish_without_qa: (params[:repository][:publish_without_qa] || @repository.publish_without_qa))
       flash[:notice] = I18n.t("flash.repository.updated")
       redirect_to platform_repository_path(@platform, @repository)
@@ -34,14 +36,14 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_members
-    User.where(id: params[:members]).each do |user|
+    User.where(id: params[:members]).find_each do |user|
       @repository.remove_member(user)
     end
     redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
   def add_member
-    if member = User.where(id: params[:member_id]).first
+    if member = User.find_by(id: params[:member_id])
       if @repository.add_member(member)
         flash[:notice] = t('flash.repository.members.successfully_added', name: member.uname)
       else
@@ -52,11 +54,12 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def new
-    @repository = Repository.new
+    authorize @repository = @platform.repositories.new
     @platform_id = params[:platform_id]
   end
 
   def destroy
+    authorize @repository
     @repository.destroy
 
     flash[:notice] = t("flash.repository.destroyed")
@@ -64,7 +67,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def create
-    @repository = @platform.repositories.build(params[:repository])
+    authorize @repository = @platform.repositories.build(params[:repository])
     if @repository.save
       flash[:notice] = t('flash.repository.saved')
       redirect_to platform_repository_path(@platform, @repository)
@@ -75,6 +78,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def add_project
+    authorize @repository
     if projects_list = params.try(:[], :repository).try(:[], :projects_list)
       @repository.add_projects projects_list, current_user
       redirect_to platform_repository_path(@platform, @repository), notice: t('flash.repository.projects_will_be_added')
@@ -82,7 +86,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
     end
     if params[:project_id].present?
       @project = Project.find(params[:project_id])
-      if can?(:read, @project)
+      if policy(@project).read?
         begin
           @repository.projects << @project
           flash[:notice] = t('flash.repository.project_added')
@@ -140,12 +144,17 @@ class Platforms::RepositoriesController < Platforms::BaseController
     end
     if params[:project_id].present?
       ProjectToRepository.where(project_id: params[:project_id], repository_id: @repository.id).destroy_all
-      redirect_to platform_repository_path(@platform, @repository), notice: t('flash.repository.project_removed')
+      message = t('flash.repository.project_removed')
+      respond_to do |format|
+        format.html {redirect_to platform_repository_path(@platform, @repository), notice: message}
+        format.json {render json: { message: message }}
+      end
     end
   end
 
   def regenerate_metadata
-    if @repository.regenerate(params[:build_for_platform_id])
+    authorize @repository
+    if @repository.regenerate(params[:repository].try :[], :build_for_platform_id)
       flash[:notice] = t('flash.repository.regenerate_in_queue')
     else
       flash[:error] = t('flash.repository.regenerate_already_in_queue')
@@ -165,6 +174,11 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   protected
+
+  # Private: before_action hook which loads Repository.
+  def load_repository
+    authorize @repository = @platform.repositories.find(params[:id])
+  end
 
   def set_members
     @members = @repository.members.order('name')

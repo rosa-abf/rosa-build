@@ -1,12 +1,12 @@
 = hidden_field_tag :possible_forks_path, possible_forks_project_path(@project)
 
-- if can? :write, @project
+- if policy(@project).write?
   .pull-right.roffset5
     a.btn.btn-primary href=new_project_pull_request_path(@project, treeish: @treeish)
       i.fa.fa-upload>
       = t('projects.pull_requests.show.pull')
 
-- if can? :fork, @project
+- if policy(@project).fork?
   .pull-right#fork-and-edit.roffset5
     a.btn.btn-primary href='#' data-toggle='modal' data-target='#forkModal'
       i.fa.fa-code-fork>
@@ -26,7 +26,7 @@
         .modal-body
           = render 'forks', owner: current_user, name: @project.name
 
-- if @project.is_package && can?(:create, @project.build_lists.new)
+- if @project.is_package && policy(@project.build_lists.new).create?
   .pull-right.roffset5
     - params = { build_list: { project_version: @treeish}}
     a.btn.btn-primary href=new_project_build_list_path(@project, params)

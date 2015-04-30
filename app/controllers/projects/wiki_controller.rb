@@ -4,13 +4,12 @@ require 'cgi'
 class Projects::WikiController < Projects::BaseController
   WIKI_OPTIONS = {}
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:show, :index, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages] if APP_CONFIG['anonymous_access']
-  load_resource :project
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:show, :index, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages] if APP_CONFIG['anonymous_access']
 
-  before_filter :authorize_read_actions,  only: [:index, :show, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages]
-  before_filter :authorize_write_actions, only: [:edit, :update, :new, :create, :destroy, :revert, :revert_wiki, :preview]
-  before_filter :get_wiki
+  before_action :authorize_read_actions,  only: [:index, :show, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages]
+  before_action :authorize_write_actions, only: [:edit, :update, :new, :create, :destroy, :revert, :revert_wiki, :preview]
+  before_action :get_wiki
 
   def index
     @name = 'Home'
@@ -262,11 +261,11 @@ class Projects::WikiController < Projects::BaseController
     def show_or_create_page
       if @page
         @content = @page.formatted_data
-        @editable = can?(:write, @project)
+        @editable = policy(@project).write?
         render :show
       elsif file = @wiki.file(@name)
         render text: file.raw_data, content_type: file.mime_type
-      elsif can? :write, @project
+      elsif policy(@project).write?
         @new = true
         render :new
       else
@@ -279,11 +278,10 @@ class Projects::WikiController < Projects::BaseController
     end
 
     def authorize_read_actions
-      authorize! :show, @project
+      authorize @project, :show?
     end
 
     def authorize_write_actions
-      authorize! :write, @project
+      authorize @project, :write?
     end
 end
-

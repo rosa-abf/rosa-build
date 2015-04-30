@@ -12,8 +12,8 @@ json.build_list do
     json.updated_at_utc @build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
 
 
-    json.can_publish can?(:publish, @build_list)
-    json.can_publish_into_testing can?(:publish_into_testing, @build_list) && @build_list.can_publish_into_testing?
+    json.can_publish policy(@build_list).publish?
+    json.can_publish_into_testing policy(@build_list).publish_into_testing? && @build_list.can_publish_into_testing?
     json.can_cancel @build_list.can_cancel?
     json.can_create_container @build_list.can_create_container?
     json.can_reject_publish @build_list.can_reject_publish?

@@ -4,7 +4,7 @@ describe Project do
   before { stub_symlink_methods }
 
   context '#fork' do
-    let(:root_project)        { FactoryGirl.create(:project) }
+    let(:root_project)        { FactoryGirl.create(:project_with_commit) }
     let(:child_project)       { root_project.fork(FactoryGirl.create(:user)) }
     let(:child_child_project) { child_project.fork(FactoryGirl.create(:user)) }
     let(:alias_project)       { root_project.fork(FactoryGirl.create(:user), is_alias: true) }
@@ -40,6 +40,20 @@ describe Project do
         expect(alias_alias_project.parent).to eq(alias_project)
         expect(alias_alias_project.alias_from).to eq(root_project)
         expect{ Grit::Repo.new(alias_alias_project.path) }.to_not raise_exception
+      end
+
+      it 'ensures that aliased projects have a same default branch' do
+        new_default_branch = 'conflicts'
+        alias_project.update_attributes default_branch: new_default_branch
+        expect(alias_project.parent.default_branch).to eq(new_default_branch)
+      end
+
+      it 'ensures that forked project allowed to have another default branch' do
+        fill_project root_project
+        fill_project child_project
+        new_default_branch = 'conflicts'
+        child_project.update_attributes default_branch: new_default_branch
+        expect(child_project.parent.default_branch).to_not eq(new_default_branch)
       end
     end
 
@@ -229,7 +243,7 @@ describe Project do
       url = 'http://abf-downloads.rosalinux.ru/abf_personal/repository/test-mass-import'
       visibility = 'open'
 
-      
+
       Project.run_mass_import(url, "abf-worker-service-1-3.src.rpm\nredir-2.2.1-7.res6.src.rpm\n", visibility, owner, repository.id)
 
       Project.count.should == 2

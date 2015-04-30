@@ -28,11 +28,7 @@ shared_context "issues controller" do
 
     @update_params = { name_with_owner: @project.name_with_owner, issue: { title: "issue2" }, format: :json }
 
-    @pull = @project.pull_requests.new issue_attributes: { title: 'test', body: 'testing' }
-    @pull.issue.user, @pull.issue.project = @project.owner, @pull.to_project
-    @pull.to_ref = 'master'
-    @pull.from_project, @pull.from_ref = @project, 'non_conflicts'
-    @pull.save
+    @pull = create_pull_request(@project)
   end
 
 end
@@ -40,12 +36,12 @@ end
 shared_examples_for 'issue user with project guest rights' do
   it 'should be able to perform index action' do
     get :index, name_with_owner: @project.name_with_owner
-    response.should render_template(:index)
+    expect(response).to render_template(:index)
   end
 
   it 'should be able to perform show action' do
     get :show, name_with_owner: @project.name_with_owner, id: @issue.serial_id
-    response.should render_template(:show)
+    expect(response).to render_template(:show)
   end
 end
 
@@ -54,16 +50,18 @@ shared_examples_for 'issue user with project reader rights' do
   it 'should be able to perform index action on hidden project' do
     @project.update_attributes(visibility: 'hidden')
     get :index, name_with_owner: @project.name_with_owner
-    response.should render_template(:index)
+    expect(response).to render_template(:index)
   end
 
   it 'should be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(project_issues_path(@project))
+    expect(response).to redirect_to(project_issues_path(@project))
   end
 
   it 'should create issue object into db' do
-    lambda{ post :create, @create_params }.should change{ Issue.count }.by(1)
+    expect do
+      post :create, @create_params
+    end.to change(Issue, :count).by(1)
   end
 end
 
@@ -71,18 +69,20 @@ shared_examples_for 'issue user with project writer rights' do
   it 'should be able to perform index action on hidden project' do
     @project.update_attributes(visibility: 'hidden')
     get :index, name_with_owner: @project.name_with_owner
-    response.should render_template(:index)
+    expect(response).to render_template(:index)
   end
 
   it 'should create issue object into db' do
-    lambda{ post :create, @create_params }.should change{ Issue.count }.by(1)
+    expect do
+      post :create, @create_params
+    end.to change(Issue, :count).by(1)
   end
 
   context 'perform create action' do
     before { post :create, @create_params }
 
     it 'user should be assigned to issue' do
-      @project.issues.last.assignee_id.should_not be_nil
+      expect(@project.issues.last.assignee_id).to_not be_nil
     end
 
     it 'label should be attached to issue' do
@@ -94,47 +94,49 @@ end
 shared_examples_for 'user with issue update rights' do
   it 'should be able to perform update action' do
     put :update, {id: @issue.serial_id}.merge(@update_params)
-    response.code.should eq('200')
+    expect(response).to be_success
   end
 
   it 'should update issue title' do
     put :update, {id: @issue.serial_id}.merge(@update_params)
-    @issue.reload.title.should == 'issue2'
+    expect(@issue.reload.title).to eq 'issue2'
   end
 end
 
 shared_examples_for 'user without issue update rights' do
   it 'should not be able to perform update action' do
     put :update, {id: @issue.serial_id}.merge(@update_params)
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not update issue title' do
     put :update, {id: @issue.serial_id}.merge(@update_params)
-    @issue.reload.title.should_not == 'issue2'
+    expect(@issue.reload.title).to_not eq 'issue2'
   end
 end
 
 # shared_examples_for 'user without issue destroy rights' do
 #   it 'should not be able to perform destroy action' do
 #     delete :destroy, id: @issue.serial_id, name_with_owner: @project.name_with_owner
-#     response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
+#     expect(response).to redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
 #   end
 
 #   it 'should not reduce issues count' do
-#     lambda{ delete :destroy, id: @issue.serial_id, name_with_owner: @project.name_with_owner }.should_not change{ Issue.count }
+#     expect
+#       delete :destroy, id: @issue.serial_id, name_with_owner: @project.name_with_owner
+#     end.to change(Issue, :count).by(0)
 #   end
 # end
 
 shared_examples_for 'project with issues turned off' do
   it 'should not be able to perform index action' do
     get :index, name_with_owner: @project_with_turned_off_issues.name_with_owner
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform show action' do
     get :show, name_with_owner: @project_with_turned_off_issues.name_with_owner, id: @turned_of_issue.serial_id
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 end
 
@@ -142,7 +144,7 @@ describe Projects::IssuesController, type: :controller do
   include_context "issues controller"
 
   context 'for global admin user' do
-    before(:each) do
+    before do
       @user.role = "admin"
       @user.save
     end
@@ -156,7 +158,7 @@ describe Projects::IssuesController, type: :controller do
   end
 
   context 'for project admin user' do
-    before(:each) do
+    before do
       create_relation(@project, @user, 'admin')
     end
 
@@ -169,7 +171,7 @@ describe Projects::IssuesController, type: :controller do
   end
 
   context 'for project owner user' do
-    before(:each) do
+    before do
       @user = @project.owner
       set_session_for(@user)
     end
@@ -183,7 +185,7 @@ describe Projects::IssuesController, type: :controller do
   end
 
   context 'for project reader user' do
-    before(:each) do
+    before do
       create_relation(@project, @user, 'reader')
     end
 
@@ -197,7 +199,7 @@ describe Projects::IssuesController, type: :controller do
       before { post :create, @create_params }
 
       it 'user should not be assigned to issue' do
-        @project.issues.last.assignee_id.should be_nil
+        expect(@project.issues.last.assignee_id).to be_nil
       end
 
       it 'label should not be attached to issue' do
@@ -205,28 +207,26 @@ describe Projects::IssuesController, type: :controller do
       end
     end
 
-    # it 'should not be able to perform create action on project' do
-    #   post :create, @create_params
-    #   response.should redirect_to(forbidden_path)
-    # end
-
-    # it 'should not create issue object into db' do
-    #   lambda{ post :create, @create_params }.should change{ Issue.count }.by(0)
-    # end
-
     it 'should return 404' do
       get :show, name_with_owner: @project.name_with_owner, id: 999999
-      render_template(file: "#{Rails.root}/public/404.html")
+      expect(response).to render_template(file: "#{Rails.root}/public/404.html")
     end
 
     it 'should redirect to pull request page' do
-      get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
-      response.should redirect_to(project_pull_request_path(@project, @pull))
+      get :show, name_with_owner: @project.name_with_owner, id: @pull.reload.serial_id
+      expect(response).to redirect_to(project_pull_request_path(@project, @pull))
     end
+
+    it 'should redirect to pull request in project with turned off issues' do
+      @project.update_attribute :has_issues, false
+      get :show, name_with_owner: @project.name_with_owner, id: @pull.reload.serial_id
+      expect(response).to redirect_to(project_pull_request_path(@project, @pull))
+    end
+
   end
 
   context 'for project writer user' do
-    before(:each) do
+    before do
       create_relation(@project, @user, 'writer')
     end
 
@@ -239,7 +239,7 @@ describe Projects::IssuesController, type: :controller do
   end
 
   context 'for issue assign user' do
-    before(:each) do
+    before do
       set_session_for(@issue_user)
     end
 
@@ -250,7 +250,7 @@ describe Projects::IssuesController, type: :controller do
 
   context 'for guest' do
 
-    before(:each) do
+    before do
       set_session_for(User.new)
     end
 
@@ -261,45 +261,47 @@ describe Projects::IssuesController, type: :controller do
       it 'should not be able to perform index action on hidden project' do
         @project.update_attributes(visibility: 'hidden')
         get :index, name_with_owner: @project.name_with_owner
-        response.should redirect_to(forbidden_path)
+        expect(response).to redirect_to(forbidden_path)
       end
 
     else
       it 'should not be able to perform index action' do
         get :index, name_with_owner: @project.name_with_owner
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform show action' do
         get :show, name_with_owner: @project.name_with_owner, id: @issue.serial_id
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform index action on hidden project' do
         @project.update_attributes(visibility: 'hidden')
         get :index, name_with_owner: @project.name_with_owner
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
     it 'should not be able to perform create action' do
       post :create, @create_params
-      response.should redirect_to(new_user_session_path)
+      expect(response).to redirect_to(new_user_session_path)
     end
 
     it 'should not create issue object into db' do
-      lambda{ post :create, @create_params }.should_not change{ Issue.count }
+      expect do
+        post :create, @create_params
+      end.to change(Issue, :count).by(0)
     end
 
     #it_should_behave_like 'user without issue update rights'
     it 'should not be able to perform update action' do
       put :update, {id: @issue.serial_id}.merge(@update_params)
-      response.status.should == 401
+      expect(response.code).to eq '401'
     end
 
     it 'should not update issue title' do
       put :update, {id: @issue.serial_id}.merge(@update_params)
-      @issue.reload.title.should_not == 'issue2'
+      expect(@issue.reload.title).to_not eq 'issue2'
     end
 
     # it_should_behave_like 'user without issue destroy rights'

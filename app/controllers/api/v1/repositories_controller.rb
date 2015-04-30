@@ -1,18 +1,15 @@
 class Api::V1::RepositoriesController < Api::V1::BaseController
   respond_to :csv, only: :packages
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
-
-  load_and_authorize_resource :repository, through: :platform, shallow: true
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
+  before_action :load_repository
 
   def show
-    respond_to :json
   end
 
   def projects
     @projects = @repository.projects.recent.paginate(paginate_params)
-    respond_to :json
   end
 
   def update
@@ -32,7 +29,6 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   end
 
   def key_pair
-    respond_to :json
   end
 
   # Only one request per 15 minutes for each platform
@@ -40,7 +36,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
     key, now = [@repository.platform.id, :repository_packages], Time.zone.now
     last_request = Rails.cache.read(key)
     if last_request.present? && last_request + 15.minutes > now
-      raise CanCan::AccessDenied
+      raise Pundit::NotAuthorizedError
     else
 
       Rails.cache.write(key, now, expires_at: 15.minutes)
@@ -77,7 +73,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
 
   def add_project
     if project = Project.where(id: params[:project_id]).first
-      if can?(:read, project)
+      if policy(project).read?
         begin
           @repository.projects << project
           render_json_response @repository, "Project '#{project.id}' has been added to repository successfully"
@@ -108,6 +104,13 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
     else
       render_json_response @repository, error_message(key_pair, 'Signatures have not been updated for repository'), 422
     end
+  end
+
+  private
+
+  # Private: before_action hook which loads Repository.
+  def load_repository
+    authorize @repository = Repository.find(params[:id])
   end
 
 end

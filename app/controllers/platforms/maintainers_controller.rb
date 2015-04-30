@@ -1,7 +1,6 @@
-class Platforms::MaintainersController < ApplicationController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :platform
+class Platforms::MaintainersController < Platforms::BaseController
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index] if APP_CONFIG['anonymous_access']
 
   def index
     @maintainer   = BuildList::Package.new(params[:build_list_package])

@@ -1,10 +1,11 @@
 class Api::V1::PlatformsController < Api::V1::BaseController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: :allowed
-  skip_before_filter :authenticate_user!, only: [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource except: :allowed
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: :allowed
+  skip_before_action :authenticate_user!, only: [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
+  before_action :load_platform, except: [:index, :allowed, :platforms_for_build, :create]
 
   def allowed
+    authorize :platform
     if request.authorization.present?
       token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
     end
@@ -16,25 +17,24 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def index
-    @platforms = @platforms.accessible_by(current_ability, :related)
-                           .by_type(params[:type]).paginate(paginate_params)
-    respond_to :json
+    authorize :platform
+    @platforms = PlatformPolicy::Scope.new(current_user, Platform).show.
+      by_type(params[:type]).paginate(paginate_params)
   end
 
   def show
-    respond_to :json
   end
 
   def platforms_for_build
-    @platforms = Platform.availables_main_platforms(current_user, current_ability).paginate(paginate_params)
-    respond_to do |format|
-      format.json { render :index }
-    end
+    authorize :platform
+    @platforms = Platform.availables_main_platforms(current_user).paginate(paginate_params)
+    render :index
   end
 
   def create
     platform_params = params[:platform] || {}
     owner = User.where(id: platform_params[:owner_id]).first
+    @platform       = Platform.new platform_params
     @platform.owner = owner || get_owner
     create_subject @platform
   end
@@ -48,7 +48,6 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   def members
     @members = @platform.members.order('name').paginate(paginate_params)
-    respond_to :json
   end
 
   def add_member
@@ -77,6 +76,13 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   def destroy
     destroy_subject @platform
+  end
+
+  private
+
+  # Private: before_action hook which loads Platform.
+  def load_platform
+    authorize @platform = Platform.find(params[:id])
   end
 
 end

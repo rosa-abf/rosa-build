@@ -4,6 +4,7 @@ class Subscribe < ActiveRecord::Base
   belongs_to :project
 
   attr_accessible :status, :user_id
+  validates :user, presence: true
 
   def commit_subscribe?
     subscribeable_type == 'Grit::Commit'

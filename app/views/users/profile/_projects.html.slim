@@ -4,8 +4,11 @@
   .row
     - if current_user
       .col-md-2
-        .dropdown
-          button.btn.btn-default.dropdown-toggle type="button" id="dropdownVisibility"  aria-expanded="true"
+        .btn-group ng-cloak = true
+          button.btn.btn-default.dropdown-toggle[ type="button"
+                                                  id="dropdownVisibility"
+                                                  aria-expanded="false"
+                                                  data-toggle="dropdown" ]
             span> ng-show="visibility == 'all'"
               = t('.visibilities.all')
             span> ng-show="visibility == 'open'"
@@ -16,16 +19,16 @@
               = t('.visibilities.hidden')
             span.caret
 
-          ul.dropdown-menu role="menu" aria-labelledby="dropdownVisibility"
+          ul.dropdown-menu role="menu"
             li role="presentation"
-              a.btn-link role="menuitem" tabindex="-1" ng-click="visibility = 'all'"
+              a.btn-link.pointer role="menuitem" tabindex="-1" ng-click="visibility = 'all'"
                 = t('.visibilities.all')
             li role="presentation"
-              a.btn-link role="menuitem" tabindex="-1" ng-click="visibility = 'open'"
+              a.btn-link.pointer role="menuitem" tabindex="-1" ng-click="visibility = 'open'"
                 i.fa.fa-unlock-alt.text-success>
                 = t('.visibilities.open')
             li role="presentation"
-              a.btn-link role="menuitem" tabindex="-1" ng-click="visibility = 'hidden'"
+              a.btn-link.pointer role="menuitem" tabindex="-1" ng-click="visibility = 'hidden'"
                 i.fa.fa-lock.text-danger>
                 = t('.visibilities.hidden')
 

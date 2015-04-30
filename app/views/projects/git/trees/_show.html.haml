@@ -3,7 +3,8 @@
       'ng-init' => "init('#{@project.name_with_owner}', '#{@treeish}', '#{@path}')" }
   .files
     .pull-left= render 'whereami'
-    .pull-right= render 'fork'
+    - if policy(@project).fork?
+      .pull-right= render 'fork'
   .clearfix
   %table.table.table-hover
     %thead
@@ -30,8 +31,8 @@
           @
           %a{ 'ng-href' => '{{el.submodule.tree_url}}' } {{el.submodule.id}}
 
-        %td{ 'ng-show' => 'el.is_submodule && !el.submodule.url' }
-        %td{ 'ng-show' => 'el.is_submodule && !el.submodule.url' }
+        %td{ 'ng-show' => 'el.submodule && !el.submodule.url' }
+        %td{ 'ng-show' => 'el.submodule && !el.submodule.url' }
           {{el.submodule.name+' @ '+el.submodule.id}}
 
         %td{ 'ng-show' => '!el.submodule' }

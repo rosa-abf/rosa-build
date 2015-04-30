@@ -1,35 +1,49 @@
 module DiffHelper
-  MAX_FILES_WITHOUT_COLLAPSE = 25
+  include CommitHelper
+
   MAX_LINES_WITHOUT_COLLAPSE = 50
 
-  def render_diff_stats(stats)
-    path = @pull.try(:id) ? polymorphic_path([@project, @pull]) : ''
+  def render_diff_stats(options = {})
+    stats         = options[:stats]
+    diff          = options[:diff]
+    repo          = options[:repo]
+    commit        = options[:commit]
+    parent_commit = options[:common_ancestor]
 
-    res = ["<table class='table table-responsive boffset0'>"]
+    res = ["<ul class='list-group boffset0'>"]
     stats.each_with_index do |stat, ind|
-      res << "<tr>"
-      res << "<td>#{link_to stat.filename.rtruncate(120), "#{path}#diff-#{ind}"}</td>"
-      res << "<td class='diffstat'>"
-      res << I18n.t("layout.projects.inline_changes_count", count: stat.additions + stat.deletions).strip +
-             " (" +
-             I18n.t("layout.projects.inline_additions_count", count: stat.additions).strip +
-             ", " +
-             I18n.t("layout.projects.inline_deletions_count", count: stat.deletions).strip +
-             ")"
-      res << "</td>"
+      adds        = stat.additions
+      deletes     = stat.deletions
+      total       = adds + deletes
+      file_name   = get_filename_in_diff(diff[ind], stat.filename)
+      file_status = t "layout.projects.diff.#{get_file_status_in_diff(diff[ind])}"
+
+      res << "<li class='list-group-item'>"
+        res << "<div class='row'>"
+          res << "<div class='col-sm-8'>"
+            res << "<a href='#diff-#{ind}' data-toggle='tooltip' data-placement='top' title='#{file_status}'>"
+              res << "#{diff_file_icon(diff[ind])} #{h(file_name)}"
+            res << "</a></div>"
+          res << render_file_changes(diff: diff[ind], adds: adds, deletes: deletes, total: total,
+                                     repo: repo, commit: commit, parent_commit: parent_commit, file_status: file_status)
+        res << "</div"
+      res << "</li>"
+      ind +=1
     end
-    res << '</table>'
-    wrap_header_list(stats, res)
+    res << "</ul>"
+
+    wrap_diff_header_list(stats, res)
   end
 
-  def wrap_header_list(stats, list)
+  def wrap_diff_header_list(stats, list)
     is_stats_open = stats.count <= MAX_FILES_WITHOUT_COLLAPSE ? 'in' : ''
     res = ["<div class='panel-group' id='diff_header' role='tablist' aria-multiselectable='false'>"]
       res << "<div class='panel panel-default'>"
         res << "<div class='panel-heading' role='tab' id='heading'>"
           res << "<h4 class='panel-title'>"
             res << "<a data-toggle='collapse' data-parent='#diff_header' href='#collapseList' aria-expanded='true' aria-controls='collapseList'>"
-            res << "#{diff_header_message(stats)}</a>"
+            res << "<span class='fa fa-chevron-#{is_stats_open ? 'down' : 'up'}'></span>"
+            res << " #{diff_header_message(stats)}</a>"
           res << "</h4>"
         res << "</div>"
         res << "<div id='collapseList' class='panel-collapse collapse #{is_stats_open}' role='tabpanel' aria-labelledby='collapseList'>"

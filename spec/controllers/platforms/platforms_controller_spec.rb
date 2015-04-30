@@ -6,8 +6,8 @@ shared_examples_for 'platform user with reader rights' do
   [:members, :advisories].each do |action|
     it 'should be able to perform advisories action' do
       get action, id: @platform.id
-      response.should render_template(action)
-      response.should be_success
+      expect(response).to render_template(action)
+      expect(response).to be_success
     end
   end
 end
@@ -20,11 +20,10 @@ shared_examples_for 'platform user with owner rights' do
     end
 
     it 'should be able to perform update action' do
-      response.should redirect_to(platform_path(@platform))
+      expect(response).to redirect_to(platform_path(@platform))
     end
     it 'ensures that platform has been updated' do
-      @platform.reload
-      @platform.description.should == 'new description'
+      expect(@platform.reload.description).to eq 'new description'
     end
   end
 
@@ -35,29 +34,32 @@ shared_examples_for 'platform user with owner rights' do
     end
 
     it 'should be able to perform action' do
-      response.should redirect_to(platform_path(@platform))
+      expect(response).to redirect_to(platform_path(@platform))
     end
 
     it 'ensures that visibility of platform has been changed' do
-      @platform.reload
-      @platform.visibility.should_not == @visibility
+      expect(@platform.reload.visibility).to_not eq @visibility
     end
   end
 
   context 'platform user with destroy rights for main platforms only' do
     it 'should be able to perform destroy action for main platform' do
       delete :destroy, id: @platform.id
-      response.should redirect_to(platforms_path)
+      expect(response).to redirect_to(platforms_path)
     end
     it 'ensures that main platform has been destroyed' do
-      lambda { delete :destroy, id: @platform.id }.should change{ Platform.count }.by(-1)
+      expect do
+        delete :destroy, id: @platform.id
+      end.to change(Platform, :count).by(-1)
     end
     it 'should not be able to perform destroy action for personal platform' do
       delete :destroy, id: @personal_platform.id
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that personal platform has not been destroyed' do
-      lambda { delete :destroy, id: @personal_platform.id }.should change{ Platform.count }.by(0)
+      expect do
+        delete :destroy, id: @personal_platform.id
+      end.to_not change(Platform, :count)
     end
   end
 end
@@ -69,11 +71,10 @@ shared_examples_for 'platform user without owner rights' do
     end
 
     it 'should not be able to perform update action' do
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that platform has not been updated' do
-      @platform.reload
-      @platform.description.should_not == 'new description'
+      expect(@platform.reload.description).to_not eq 'new description'
     end
   end
 
@@ -84,29 +85,32 @@ shared_examples_for 'platform user without owner rights' do
     end
 
     it 'should not be able to perform action' do
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
     it 'ensures that visibility of platform has not been changed' do
-      @platform.reload
-      @platform.visibility.should == @visibility
+      expect(@platform.reload.visibility).to eq @visibility
     end
   end
 
   context 'platform user without destroy rights' do
     it 'should not be able to perform destroy action for main platform' do
       delete :destroy, id: @platform.id
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that main platform has not been destroyed' do
-      lambda { delete :destroy, id: @platform.id }.should_not change{ Platform.count }
+      expect do
+        delete :destroy, id: @platform.id
+      end.to_not change(Platform, :count)
     end
     it 'should not be able to perform destroy action for personal platform' do
       delete :destroy, id: @personal_platform.id
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'ensures that personal platform has not been destroyed' do
-      lambda { delete :destroy, id: @personal_platform.id }.should_not change{ Platform.count }
+      expect do
+        delete :destroy, id: @personal_platform.id
+      end.to_not change(Platform, :count)
     end
   end
 
@@ -121,10 +125,10 @@ shared_examples_for 'platform user with member rights' do
     end
 
     it 'should be able to perform add_member action' do
-      response.should redirect_to(members_platform_path(@platform))
+      expect(response).to redirect_to(members_platform_path(@platform))
     end
     it 'ensures that new member has been added to platform' do
-      @platform.members.should include(member)
+      expect(@platform.members).to include(member)
     end
   end
 
@@ -136,10 +140,10 @@ shared_examples_for 'platform user with member rights' do
     end
 
     it 'should be able to perform remove_members action' do
-      response.should redirect_to(members_platform_path(@platform))
+      expect(response).to redirect_to(members_platform_path(@platform))
     end
     it 'ensures that member has been removed from platform' do
-      @platform.members.should_not include(member)
+      expect(@platform.members).to_not include(member)
     end
   end
 
@@ -154,10 +158,10 @@ shared_examples_for 'platform user without member rights' do |guest = false|
     end
 
     it 'should not be able to perform add_member action' do
-      response.should redirect_to(guest ? new_user_session_path : forbidden_path)
+      expect(response).to redirect_to(guest ? new_user_session_path : forbidden_path)
     end
     it 'ensures that new member has not been added to platform' do
-      @platform.members.should_not include(member)
+      expect(@platform.members).to_not include(member)
     end
   end
 
@@ -169,10 +173,10 @@ shared_examples_for 'platform user without member rights' do |guest = false|
     end
 
     it 'should not be able to perform remove_members action' do
-      response.should redirect_to(guest ? new_user_session_path : forbidden_path)
+      expect(response).to redirect_to(guest ? new_user_session_path : forbidden_path)
     end
     it 'ensures that member has not been removed from platform' do
-      @platform.members.should include(member)
+      expect(@platform.members).to include(member)
     end
   end
 
@@ -182,38 +186,40 @@ shared_examples_for 'platform user without global admin rights' do
   context 'should not be able to perform clear action' do
     it 'for personal platform' do
       put :clear, id: @personal_platform.id
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'for main platform' do
       put :clear, id: @platform.id
-      response.should_not be_success
+      expect(response).to_not be_success
     end
   end
 
   context 'should not be able to perform clone action' do
     it 'for personal platform' do
       get :clone, id: @personal_platform.id
-      response.should_not be_success
+      expect(response).to_not be_success
     end
     it 'for main platform' do
       get :clone, id: @platform.id
-      response.should_not be_success
+      expect(response).to_not be_success
     end
   end
 
   it 'should not be able to perform new action' do
     get :new
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
   [:create, :make_clone].each do |action|
     context "platform user without #{action} rights" do
       it "should not be able to perform #{action} action" do
         post action, clone_or_create_params
-        response.should_not be_success
+        expect(response).to_not be_success
       end
       it "ensures that platform has not been #{action}d" do
-        lambda { post action, clone_or_create_params }.should_not change{ Platform.count }
+        expect do
+          post action, clone_or_create_params
+        end.to_not change(Platform, :count)
       end
     end
   end
@@ -235,7 +241,7 @@ shared_examples_for 'platform user without reader rights for hidden platform' do
   [:show, :members].each do |action|
     it "should not be able to perform #{ action } action" do
       get action, id: @platform.id
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
   end
 end
@@ -243,8 +249,8 @@ end
 shared_examples_for 'platform user with show rights' do
   it 'should be able to perform show action' do
     get :show, id: @platform.id
-    response.should render_template(:show)
-    assigns(:platform).should eq @platform
+    expect(response).to render_template(:show)
+    expect(assigns(:platform)).to eq @platform
   end
 end
 
@@ -263,13 +269,13 @@ describe Platforms::PlatformsController, type: :controller do
 
     it "should not be able to perform index action" do
       get :index
-      response.should redirect_to(new_user_session_path)
+      expect(response).to redirect_to(new_user_session_path)
     end
 
     [:show, :members, :advisories].each do |action|
       it "should not be able to perform #{ action } action", anonymous_access: false do
         get action, id: @platform
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
@@ -293,12 +299,12 @@ describe Platforms::PlatformsController, type: :controller do
 
     it "should be able to perform new action" do
       get :new, id: @platform
-      response.should render_template(:new)
+      expect(response).to render_template(:new)
     end
 
     it "should be able to perform clone action" do
       get :clone, id: @platform
-      response.should render_template(:clone)
+      expect(response).to render_template(:clone)
     end
 
     [:make_clone, :create].each do |action|
@@ -308,10 +314,12 @@ describe Platforms::PlatformsController, type: :controller do
         end
         it "should be able to perform #{action} action" do
           post action, clone_or_create_params
-          response.should redirect_to(platform_path(Platform.last))
+          expect(response).to redirect_to(platform_path(Platform.last))
         end
         it "ensures that platform has been #{action}d" do
-          lambda { post action, clone_or_create_params }.should change{ Platform.count }.by(1)
+          expect do
+            post action, clone_or_create_params
+          end.to change(Platform, :count).by(1)
         end
       end
     end
@@ -368,7 +376,7 @@ describe Platforms::PlatformsController, type: :controller do
 
     it "should be able to perform index action" do
       get :index
-      response.should render_template(:index)
+      expect(response).to render_template(:index)
     end
 
     it_should_behave_like 'platform user with reader rights'

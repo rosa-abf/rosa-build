@@ -6,7 +6,7 @@
   .col-md-2.col-md-offset-1
     == render 'sidebar'
   .col-md-8
-    - if can? :write, @project
+    - if policy(@project).write?
       a.btn.btn-primary href=new_project_wiki_path(@project)
         = t("wiki.new_page")
     hr

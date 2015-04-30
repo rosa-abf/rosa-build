@@ -1,11 +1,13 @@
 class Api::V1::IssuesController < Api::V1::BaseController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :group_index, :show] if APP_CONFIG['anonymous_access']
+  include Api::V1::Issueable
 
-  load_and_authorize_resource :group, only: :group_index, find_by: :id, parent: false
-  load_and_authorize_resource :project
-  skip_load_and_authorize_resource :project, only: [:all_index, :user_index, :group_index]
-  load_and_authorize_resource :issue, through: :project, find_by: :serial_id, only: [:show, :update, :create, :index]
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: %i(index group_index show) if APP_CONFIG['anonymous_access']
+
+  before_action :load_group,        only: :group_index
+  before_action :load_project
+  skip_before_action :load_project, only: %i(all_index user_index group_index)
+  before_action :load_issue,        only: %i(show update index)
 
   def index
     @issues = @project.issues
@@ -13,12 +15,14 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def all_index
-    project_ids = get_all_project_ids Project.accessible_by(current_ability, :membered).pluck(:id)
+    authorize :issue, :index?
+    project_ids = get_all_project_ids membered_projects.pluck(:id)
     @issues = Issue.where(project_id: project_ids)
     render_issues_list
   end
 
   def user_index
+    authorize :issue, :index?
     project_ids = get_all_project_ids current_user.projects.pluck(:id)
     @issues = Issue.where(project_id: project_ids)
     render_issues_list
@@ -26,7 +30,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
   def group_index
     project_ids = @group.projects.pluck(:id)
-    project_ids = Project.accessible_by(current_ability, :membered).where(id: project_ids).pluck(:id)
+    project_ids = membered_projects.where(id: project_ids).pluck(:id)
     @issues = Issue.where(project_id: project_ids)
     render_issues_list
   end
@@ -40,13 +44,14 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def create
+    @issue      = @project.issues.new(params[:issue])
     @issue.user = current_user
-    @issue.assignee = nil if cannot?(:write, @project)
+    @issue.assignee = nil unless policy(@project).write?
     create_subject @issue
   end
 
   def update
-    unless can?(:write, @project)
+    unless policy(@project).write?
       params.delete :update_labels
       [:assignee_id, :labelings, :labelings_attributes].each do |k|
         params[:issue].delete k
@@ -94,7 +99,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
     end
 
     if params[:labels].present?
-      labels = params[:labels].split(',').map {|e| e.strip}.select {|e| e.present?}
+      labels = params[:labels].split(',').map(&:strip).select(&:present?)
       @issues = @issues.where('labels.name IN (?)', labels)
     end
 
@@ -110,13 +115,4 @@ class Api::V1::IssuesController < Api::V1::BaseController
     end
   end
 
-  def get_all_project_ids default_project_ids
-    project_ids = []
-    if ['created', 'all'].include? params[:filter]
-      # add own issues
-      project_ids = Project.accessible_by(current_ability, :show).joins(:issues).
-                            where(issues: {user_id: current_user.id}).pluck('projects.id')
-    end
-    project_ids |= default_project_ids
-  end
 end

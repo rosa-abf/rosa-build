@@ -1,13 +1,12 @@
 class Projects::Git::BaseController < Projects::BaseController
-  before_filter :authenticate_user!
+  before_action :authenticate_user!
   if APP_CONFIG['anonymous_access']
-    skip_before_filter :authenticate_user!, only: %i(show index blame raw archive diff tags branches)
-    before_filter :authenticate_user,       only: %i(show index blame raw archive diff tags branches)
+    skip_before_action :authenticate_user!, only: %i(show index blame raw archive diff tags branches)
+    before_action :authenticate_user,       only: %i(show index blame raw archive diff tags branches)
   end
 
-  load_and_authorize_resource :project
-  before_filter :set_treeish_and_path
-  before_filter :set_branch_and_tree
+  before_action :set_treeish_and_path
+  before_action :set_branch_and_tree
 
   protected
 

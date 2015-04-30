@@ -95,6 +95,14 @@ ru:
       public: Публичные
       private: Приватные
 
+      diff:
+        binary: Бинарный
+        new_file: файл добавлен
+        deleted_file: файл удален
+        renamed_file: файл переименован
+        changed_file: файл изменен
+        without_changes: без изменений
+
   flash:
     project:
       mass_import_added_to_queue: Массовый импорт добавлен в очередь

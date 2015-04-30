@@ -1,6 +1,6 @@
 - if Comment.issue_comment?(commentable.class)
   - is_subscribed = commentable.subscribes.exists?(user_id: current_user.id)
-  - subscribe_path = is_subscribed ? project_issue_subscribe_path(project, commentable, current_user.id) : project_issue_subscribes_path(project, commentable)
+  - subscribe_path = is_subscribed ? project_issue_unsubscribe_path(project, commentable) : project_issue_subscribe_path(project, commentable)
 - else Comment.commit_comment?(commentable.class)
   - is_subscribed = Subscribe.subscribed_to_commit?(project, current_user, commentable)
   - subscribe_path = is_subscribed ? unsubscribe_commit_path(project, commentable) : subscribe_commit_path(project, commentable)

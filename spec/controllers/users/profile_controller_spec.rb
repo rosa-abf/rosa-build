@@ -16,11 +16,11 @@ describe Users::ProfileController, type: :controller do
   context 'for guest' do
     it 'should be able to view profile', anonymous_access: true do
       get :show, uname: @simple_user.uname
-      response.code.should eq('200')
+      expect(response).to be_success
     end
     it 'should not be able to perform show action', anonymous_access: false do
       get :show, uname: @simple_user.uname
-      response.should redirect_to(new_user_session_path)
+      expect(response).to redirect_to(new_user_session_path)
     end
   end
 
@@ -31,16 +31,16 @@ describe Users::ProfileController, type: :controller do
 
     it 'should be able to view profile' do
       get :show, uname: @other_user.uname
-      response.code.should eq('200')
+      expect(response).to be_success
     end
 
     context 'with mass assignment' do
       it 'should not be able to update role' do
-        @simple_user.should_not allow_mass_assignment_of :role
+        expect(@simple_user).to_not allow_mass_assignment_of :role
       end
 
       it 'should not be able to update other user' do
-        @simple_user.should_not allow_mass_assignment_of :id
+        expect(@simple_user).to_not allow_mass_assignment_of :id
       end
     end
   end

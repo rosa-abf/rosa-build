@@ -4,57 +4,62 @@ shared_examples_for 'projects user with reader rights' do
 
   it 'should be able to fork project' do
     post :fork, name_with_owner: @project.name_with_owner
-    response.should redirect_to(project_path(Project.last))
+    expect(response).to redirect_to(project_path(Project.last))
   end
 
   it 'should be able to fork project to their group' do
     group = FactoryGirl.create(:group)
     create_actor_relation(group, @user, 'admin')
-    lambda { post :fork, name_with_owner: @project.name_with_owner,
-             group: group.id }.should change{ Project.count }.by(1)
+    expect do
+      post :fork, name_with_owner: @project.name_with_owner, group: group.id
+    end.to change(Project, :count).by(1)
   end
 
   it 'should be able to fork project to own group' do
     group = FactoryGirl.create(:group, owner: @user)
-    lambda { post :fork, name_with_owner: @project.name_with_owner,
-             group: group.id }.should change{ Project.count }.by(1)
+    expect do
+      post :fork, name_with_owner: @project.name_with_owner, group: group.id
+    end.to change(Project, :count).by(1)
   end
 
   it 'should be able to fork project with different name' do
     post :fork, name_with_owner: @project.name_with_owner, fork_name: 'another_name'
-    response.should redirect_to(project_path(Project.where(name: 'another_name').last))
+    expect(response).to redirect_to(project_path(Project.where(name: 'another_name').last))
   end
 end
 
 shared_examples_for 'projects user with project admin rights' do
   it 'should be able to perform update action' do
     put :update, { name_with_owner: @project.name_with_owner }.merge(@update_params)
-    response.should redirect_to(project_path(@project))
+    expect(response).to redirect_to(project_path(@project))
   end
   it 'should be able to perform schedule action' do
     put :schedule, { name_with_owner: @project.name_with_owner }.merge(repository_id: @project.repositories.first.id)
-    response.should be_success
+    expect(response).to be_success
   end
 
   it 'should be able to create alias for a project' do
     post :alias, name_with_owner: @project.name_with_owner, fork_name: (@project.name + '_new')
-    response.should redirect_to(project_path(Project.last))
+    expect(response).to redirect_to(project_path(Project.last))
   end
 
   it 'should create alias for a project' do
-    lambda { post :alias, name_with_owner: @project.name_with_owner,
-                          fork_name: (@project.name + '_new') }.should change{ Project.count }.by(1)
+    expect do
+      post :alias, name_with_owner: @project.name_with_owner, fork_name: (@project.name + '_new')
+    end.to change(Project, :count).by(1)
   end
 end
 
 shared_examples_for 'user with destroy rights' do
   it 'should be able to perform destroy action' do
     delete :destroy, { name_with_owner: @project.name_with_owner }
-    response.should redirect_to(@project.owner)
+    expect(response).to redirect_to(@project.owner)
   end
 
   it 'should change objects count on destroy' do
-    lambda { delete :destroy, name_with_owner: @project.name_with_owner }.should change{ Project.count }.by(-1)
+    expect do
+      delete :destroy, name_with_owner: @project.name_with_owner
+    end.to change(Project, :count).by(-1)
   end
 end
 
@@ -62,57 +67,64 @@ shared_examples_for 'projects user without project admin rights' do
   it 'should not be able to edit project' do
     description = @project.description
     put :update, project: { description:"hack" }, name_with_owner: @project.name_with_owner
-    @project.reload.description.should == description
-    response.should redirect_to(forbidden_path)
+    expect(@project.reload.description).to eq description
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform schedule action' do
     put :schedule, { name_with_owner: @project.name_with_owner }.merge(repository_id: @project.repositories.first.id)
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not be able to edit project sections' do
     has_wiki, has_issues = @project.has_wiki, @project.has_issues
     post :sections, project: { has_wiki: !has_wiki, has_issues: !has_issues }, name_with_owner: @project.name_with_owner
-    @project.reload.has_wiki.should == has_wiki
-    @project.reload.has_issues.should == has_issues
-    response.should redirect_to(forbidden_path)
+    expect(@project.reload.has_wiki).to eq has_wiki
+    expect(@project.has_issues).to eq has_issues
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'writer group should be able to fork project to their group' do
     group = FactoryGirl.create(:group)
     create_actor_relation(group, @user, 'writer')
-    lambda { post :fork, name_with_owner: @project.name_with_owner,
-             group: group.id }.should change{ Project.count }.by(1)
+    expect do
+      post :fork, name_with_owner: @project.name_with_owner, group: group.id
+    end.to change(Project, :count).by(1)
   end
 
   it 'reader group should not be able to fork project to their group' do
     group = FactoryGirl.create(:group)
     create_actor_relation(group, @user, 'reader')
-    lambda { post :fork, name_with_owner: @project.name_with_owner,
-             group: group.id }.should change{ Project.count }.by(0)
+    expect do
+      post :fork, name_with_owner: @project.name_with_owner, group: group.id
+    end.to_not change(Project, :count)
   end
 
   it 'writer group should be able to create project to their group' do
     group = FactoryGirl.create(:group)
     create_actor_relation(group, @user, 'writer')
-    lambda {post :create, @create_params.merge(who_owns: 'group', owner_id: group.id)}.should change{ Project.count }.by(1)
+    expect do
+      post :create, @create_params.merge(who_owns: 'group', owner_id: group.id)
+    end.to change(Project, :count).by(1)
   end
 
   it 'reader group should not be able to create project to their group' do
     group = FactoryGirl.create(:group)
     create_actor_relation(group, @user, 'reader')
-    lambda {post :create, @create_params.merge(who_owns: 'group', owner_id: group.id)}.should change{ Project.count }.by(0)
+    expect do
+      post :create, @create_params.merge(who_owns: 'group', owner_id: group.id)
+    end.to_not change(Project, :count)
   end
 
   it 'should not be able to create alias for a project' do
     post :alias, name_with_owner: @project.name_with_owner
-    response.should redirect_to(forbidden_path)
+    expect(response).to redirect_to(forbidden_path)
   end
 
   it 'should not create alias for a project' do
-    lambda { post :alias, name_with_owner: @project.name_with_owner,
-                      fork_name: (@project.name + '_new') }.should change{ Project.count }.by(0)
+    expect do
+      post :alias, name_with_owner: @project.name_with_owner, fork_name: (@project.name + '_new')
+    end.to_not change(Project, :count)
   end
 end
 
@@ -140,22 +152,22 @@ describe Projects::ProjectsController, type: :controller do
 
       it 'should not be able to perform index action' do
         get :index
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform update action' do
         put :update, { name_with_owner: @project.name_with_owner }.merge(@update_params)
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform schedule action' do
         put :schedule, { name_with_owner: @project.name_with_owner }.merge(repository_id: @project.repositories.first.id)
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform create action' do
         post :create, @create_params
-        response.should redirect_to(new_user_session_path)
+        expect(response).to redirect_to(new_user_session_path)
       end
     end
 
@@ -163,18 +175,20 @@ describe Projects::ProjectsController, type: :controller do
 
       it 'should be able to perform index action' do
         get :index
-        response.should render_template(:index)
+        expect(response).to render_template(:index)
       end
 
       context 'create project for myself' do
 
         it 'should be able to perform create action' do
           post :create, @create_params
-          response.should redirect_to(project_path( Project.last ))
+          expect(response).to redirect_to(project_path( Project.last ))
         end
 
         it 'should create project in the database' do
-          lambda { post :create, @create_params }.should change{ Project.count }.by(1)
+          expect do
+            post :create, @create_params
+          end.to change(Project, :count).by(1)
         end
       end
 
@@ -183,18 +197,22 @@ describe Projects::ProjectsController, type: :controller do
         it 'should not be able to create project for alien group' do
           group = FactoryGirl.create(:group)
           post :create, @create_params.merge({who_owns: 'group', owner_id: group.id})
-          response.should redirect_to(forbidden_path)
+          expect(response).to redirect_to(forbidden_path)
         end
 
         it 'should be able to create project for their group' do
           group = FactoryGirl.create(:group)
           create_actor_relation(group, @user, 'admin')
-          lambda { post :create, @create_params.merge({who_owns: 'group', owner_id: group.id})}.should change{ Project.count }.by(1)
+          expect do
+            post :create, @create_params.merge({who_owns: 'group', owner_id: group.id})
+          end.to change(Project, :count).by(1)
         end
 
         it 'should be able to create project for own group' do
           group = FactoryGirl.create(:group, owner: @user)
-          lambda { post :create, @create_params.merge({who_owns: 'group', owner_id: group.id})}.should change{ Project.count }.by(1)
+          expect do
+            post :create, @create_params.merge({who_owns: 'group', owner_id: group.id})
+          end.to change(Project, :count).by(1)
         end
       end
 
@@ -228,7 +246,7 @@ describe Projects::ProjectsController, type: :controller do
 
       it 'should not be able to fork own project' do
         post :fork, name_with_owner: @project.name_with_owner
-        response.should redirect_to(@project)
+        expect(response).to redirect_to(@project)
       end
 
     end
@@ -257,7 +275,7 @@ describe Projects::ProjectsController, type: :controller do
       it 'should not be able to fork hidden project' do
         @project.update_attributes(visibility: 'hidden')
         post :fork, name_with_owner: @project.name_with_owner
-        response.should redirect_to(forbidden_path)
+        expect(response).to redirect_to(forbidden_path)
       end
 
       it_should_behave_like 'projects user without project admin rights'
@@ -283,7 +301,7 @@ describe Projects::ProjectsController, type: :controller do
         it_should_behave_like 'projects user without project admin rights'
 
         it 'should has reader role to group project' do
-          @user.best_role(@project).should eql('reader')
+          expect(@user.best_role(@project)).to eq 'reader'
         end
 
         context 'user should has best role' do

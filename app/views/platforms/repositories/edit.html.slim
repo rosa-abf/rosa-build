@@ -15,7 +15,7 @@
       = render "form", f: f
     hr
 
-  - if can?(:update, @repository)
+  - if policy(@repository).update?
     .row
       h3= t('layout.repositories.extra_actions')
 
@@ -39,7 +39,7 @@
           = t('layout.repositories.regenerate_metadata')
         .col-md-2
           - if @platform.personal?
-            = f.input :build_for_platform_id, collection: platform_options, label: false
+            = f.input :build_for_platform_id, collection: platform_options, label: false, include_blank: false
         .col-md-2
           = f.button :submit, t('layout.repositories.regenerate_metadata'), data: { confirm: t('layout.confirm') }, class: 'btn-warning'
 

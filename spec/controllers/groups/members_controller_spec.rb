@@ -15,20 +15,20 @@ describe Groups::MembersController, type: :controller do
   context 'for owner user' do
     it 'should add member to group' do
       post :add, @add_params
-      response.should redirect_to(group_members_path(@group))
-      Relation.by_target(@group).by_actor(@another_user).count.should eql(1)
+      expect(response).to redirect_to(group_members_path(@group))
+      expect(Relation.by_target(@group).by_actor(@another_user).count).to eq 1
     end
 
     it 'should add reader member to group' do
       post :add, @add_params
-      Relation.by_target(@group).by_actor(@another_user).first.role.should eql('reader')
-      response.should redirect_to(group_members_path(@group))
+      expect(Relation.by_target(@group).by_actor(@another_user).first.role).to eq 'reader'
+      expect(response).to redirect_to(group_members_path(@group))
     end
 
     it 'should not remove self from group' do
       post :remove, @remove_params
-      Relation.by_target(@group).by_actor(@user).first.role.should eql('admin')
-      response.should redirect_to(group_members_path(@group))
+      expect(Relation.by_target(@group).by_actor(@user).first.role).to eq 'admin'
+      expect(response).to redirect_to(group_members_path(@group))
     end
   end
 
@@ -41,27 +41,26 @@ describe Groups::MembersController, type: :controller do
 
     it 'should add member to group' do
       post :add, @add_params
-      response.should redirect_to(group_members_path(@group))
-      Relation.by_target(@group).by_actor(@another_user).count.should eql(1)
-      response.should redirect_to(group_members_path(@group))
+      expect(Relation.by_target(@group).by_actor(@another_user).count).to eq 1
+      expect(response).to redirect_to(group_members_path(@group))
     end
 
     it 'should add reader member to group' do
       post :add, @add_params
-      Relation.by_target(@group).by_actor(@another_user).first.role.should eql('reader')
-      response.should redirect_to(group_members_path(@group))
+      expect(Relation.by_target(@group).by_actor(@another_user).first.role).to eq 'reader'
+      expect(response).to redirect_to(group_members_path(@group))
     end
 
     it 'should not remove owner from group' do
       post :remove, @remove_params
-      Relation.by_target(@group).by_actor(@user).first.role.should eql('admin')
-      response.should redirect_to(group_members_path(@group))
+      expect(Relation.by_target(@group).by_actor(@user).first.role).to eq 'admin'
+      expect(response).to redirect_to(group_members_path(@group))
     end
 
     it 'should not set read role to owner group' do
       post :update, @update_params
-      Relation.by_target(@group).by_actor(@user).first.role.should eql('admin')
-      response.should redirect_to(forbidden_path)
+      expect(Relation.by_target(@group).by_actor(@user).first.role).to eq 'admin'
+      expect(response).to redirect_to(forbidden_path)
     end
   end
 
@@ -74,22 +73,22 @@ describe Groups::MembersController, type: :controller do
 
     it 'should not add member to group' do
       post :add, @add_params
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
 
     it 'should add reader member to group' do
       post :add, @add_params
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
 
     it 'should not remove owner from group' do
       post :remove, @remove_params
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
 
     it 'should not set read role to owner group' do
       post :update, @update_params
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
   end
 
@@ -100,22 +99,22 @@ describe Groups::MembersController, type: :controller do
 
     it 'should not add member to group' do
       post :add, @add_params
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
 
     it 'should add reader member to group' do
       post :add, @add_params
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
 
     it 'should not remove owner from group' do
       post :remove, @remove_params
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
 
     it 'should not set read role to owner group' do
       post :update, @update_params
-      response.should redirect_to(forbidden_path)
+      expect(response).to redirect_to(forbidden_path)
     end
   end
 end

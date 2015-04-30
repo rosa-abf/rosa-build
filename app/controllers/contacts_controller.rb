@@ -1,4 +1,5 @@
 class ContactsController < ApplicationController
+  skip_after_action :verify_authorized
 
   def new
     @form = Feedback.new(current_user)

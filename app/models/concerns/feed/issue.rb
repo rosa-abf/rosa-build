@@ -5,7 +5,7 @@ module Feed::Issue
     after_commit :new_issue_notifications,    on: :create
 
     after_commit :send_assign_notifications,  on: :create, if: ->(i) { i.assignee }
-    after_update -> { send_assign_notifications(:update) }
+    after_update :send_assign_notifications
 
     after_commit :send_hooks, on: :create
     after_update -> { send_hooks(:update) }, if: ->(i) { i.previous_changes['status'].present? }
@@ -37,8 +37,10 @@ module Feed::Issue
     ::Comment.create_link_on_issues_from_item(self)
   end
 
-  def send_assign_notifications(action = :create)
-    if(action == :create && assignee_id) || previous_changes['assignee_id'].present?
+  def send_assign_notifications
+    return if @skip_assign_notifications
+    @skip_assign_notifications = true
+    if assignee_id && assignee_id_changed?
       if assignee.notifier.issue_assign && assignee.notifier.can_notify
         UserMailer.issue_assign_notification(self, assignee).deliver
       end
@@ -57,7 +59,7 @@ module Feed::Issue
       )
     end
     # dont remove outdated issues link
-    ::Comment.create_link_on_issues_from_item(self) if previous_changes['title'].present? || previous_changes['body'].present?
+    ::Comment.create_link_on_issues_from_item(self) if title_changed? || body_changed?
   end
 
   def send_hooks(action = :create)

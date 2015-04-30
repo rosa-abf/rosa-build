@@ -90,8 +90,6 @@ class MassBuild < ActiveRecord::Base
     return unless start
     # later with resque
     arches_list     = arch_names ? Arch.where(name: arch_names.split(', ')) : Arch.all
-    current_ability = Ability.new(user)
-
     projects_list.lines.each do |name|
       next if name.blank?
       name.chomp!; name.strip!
@@ -100,7 +98,7 @@ class MassBuild < ActiveRecord::Base
         begin
           return if self.reload.stop_build
           # Ensures that user has rights to create a build_list
-          next unless current_ability.can?(:write, project)
+          next unless ProjectPolicy.new(user, project).write?
           increase_rt = increase_release_tag?
           arches_list.each do |arch|
             rep_id = (project.repository_ids & save_to_platform.repository_ids).first

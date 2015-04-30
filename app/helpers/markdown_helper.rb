@@ -153,7 +153,7 @@ module MarkdownHelper
   end
 
   def reference_issue(identifier)
-    if issue = Issue.find_by_hash_tag(identifier, current_ability, @project)
+    if issue = Issue.find_by_hash_tag(identifier, current_user, @project)
       if issue.pull_request
         title = "#{PullRequest.model_name.human}: #{issue.title}"
         url = project_pull_request_path(issue.project, issue.pull_request)

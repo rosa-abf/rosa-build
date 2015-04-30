@@ -1,19 +1,16 @@
 class Api::V1::UsersController < Api::V1::BaseController
 
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:show] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :user, only: :show
-  before_filter :set_current_user, except: :show
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:show] if APP_CONFIG['anonymous_access']
+  before_action :load_user, only: %i(show)
+  before_action :set_current_user, except: :show
 
   def show
     @user = User.opened.find params[:id] # dont show system users
-    respond_to :json
   end
 
   def show_current_user
-    respond_to do |format|
-      format.json { render :show }
-    end
+    render :show
   end
 
   def update
@@ -37,15 +34,18 @@ class Api::V1::UsersController < Api::V1::BaseController
       else
         render_json_response @user, error_message(@user.notifier, 'User notification settings have not been updated'), 422
       end
-    else
-      respond_to :json
     end
   end
 
   protected
 
   def set_current_user
-    @user = current_user
+    authorize @user = current_user
+  end
+
+  # Private: before_action hook which loads User.
+  def load_user
+    authorize @user = User.find(params[:id])
   end
 
 end

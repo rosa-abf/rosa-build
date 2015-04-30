@@ -1,15 +1,15 @@
 class Projects::IssuesController < Projects::BaseController
-  NON_RESTFUL_ACTION = [:create_label, :update_label, :destroy_label]
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
-  load_resource :project
-  load_and_authorize_resource :issue, through: :project, find_by: :serial_id, only: [:show, :edit, :update, :destroy, :new, :create, :index]
-  before_filter :load_and_authorize_label, only: NON_RESTFUL_ACTION
-  before_filter :find_collaborators, only: [:new, :create, :show, :search_collaborators]
+  before_action :authenticate_user!
+  skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
+  before_action :load_issue,               only: %i(show edit update destroy)
+  before_action :load_and_authorize_label, only: %i(create_label update_label destroy_label)
+  before_action :find_collaborators,       only: :search_collaborators
 
   layout false, only: [:update, :search_collaborators]
 
   def index
+    raise Pundit::NotAuthorizedError unless @project.has_issues?
+
     params[:kind]      = params[:kind] == 'pull_requests' ? 'pull_requests' : 'issues'
     params[:filter]    = params[:filter].in?(['created', 'assigned']) ? params[:filter] : 'all'
     params[:sort]      = params[:sort] == 'submitted' ? 'submitted' : 'updated'
@@ -22,11 +22,12 @@ class Projects::IssuesController < Projects::BaseController
     respond_to do |format|
       format.html { render 'index' }
       format.json do
-        if params[:kind] == 'pull_requests'
-          all_issues = @project.issues.joins(:pull_request)
-        else
-          all_issues = @project.issues.without_pull_requests
-        end
+        all_issues =
+          if params[:kind] == 'pull_requests'
+            @project.issues.joins(:pull_request)
+          else
+            @project.issues.without_pull_requests
+          end
 
         @all_issues        = all_issues
         if current_user
@@ -74,15 +75,18 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def new
+    authorize @issue = @project.issues.build
   end
 
   def create
+    @issue         = @project.issues.build(params[:issue])
     @issue.user_id = current_user.id
 
-    unless can?(:write, @project)
+    unless policy(@project).write?
       @issue.assignee_id  = nil
       @issue.labelings    = []
     end
+    authorize @issue
     if @issue.save
       @issue.subscribe_creator(current_user.id)
       flash[:notice] = I18n.t("flash.issue.saved")
@@ -104,7 +108,7 @@ class Projects::IssuesController < Projects::BaseController
 
       format.json {
         status = 200
-        unless can?(:write, @project)
+        unless policy(@project).write?
           params.delete :update_labels
           [:assignee_id, :labelings, :labelings_attributes].each do |k|
             params[:issue].delete k
@@ -165,8 +169,14 @@ class Projects::IssuesController < Projects::BaseController
 
   private
 
+  # Private: before_action hook which loads Issue.
+  def load_issue
+    authorize @issue = @project.issues.find_by!(serial_id: params[:id])
+  end
+
+  # Private: before_action hook which loads Label.
   def load_and_authorize_label
-    authorize! :write, @project
-    @label = Label.find(params[:label_id]) if params[:label_id]
+    authorize @project, :write?
+    @label = @project.labels.find(params[:label_id]) if params[:label_id]
   end
 end

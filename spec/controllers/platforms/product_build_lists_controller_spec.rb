@@ -6,7 +6,7 @@ shared_examples_for 'product build list admin' do
     expect {
       post :create, valid_attributes
     }.to change(ProductBuildList, :count).by(1)
-    response.should redirect_to([@product.platform, @product])
+    expect(response).to redirect_to([@product.platform, @product])
   end
 
   it "should be able to perform destroy action" do
@@ -14,41 +14,41 @@ shared_examples_for 'product build list admin' do
     expect {
       delete :destroy, valid_attributes_for_destroy
     }.to change(ProductBuildList, :count).by(-1)
-    response.should redirect_to([@pbl.product.platform, @pbl.product])
+    expect(response).to redirect_to([@pbl.product.platform, @pbl.product])
   end
 
   it 'should be able to perform index action' do
     get :index
-    response.should render_template(:index)
+    expect(response).to render_template(:index)
   end
 
   it 'should be able to perform cancel action' do
     url = platform_product_product_build_list_path(@product.platform, @product, @pbl)
     @request.env['HTTP_REFERER'] = url
     put :cancel, valid_attributes_for_show
-    response.should redirect_to(url)
+    expect(response).to redirect_to(url)
   end
 
   it 'should be able to perform show action' do
     get :show, valid_attributes_for_show
-    response.should render_template(:show)
+    expect(response).to render_template(:show)
   end
 
   it 'should be able to perform update action' do
     put :update, valid_attributes_for_show.merge(product_build_list: {time_living: 100,not_delete: true})
-    response.should be_success
+    expect(response).to be_success
   end
 
   it "ensures that only not_delete field of product build list has been updated" do
     put :update, valid_attributes_for_show.merge(product_build_list: {time_living: 100,not_delete: true})
     time_living = @pbl.time_living
-    @pbl.reload.time_living.should == time_living
-    @pbl.not_delete.should be_truthy
+    expect(@pbl.reload.time_living).to eq time_living
+    expect(@pbl.not_delete).to be_truthy
   end
 
   it 'should be able to perform log action' do
     get :log, valid_attributes_for_show
-    response.should be_success
+    expect(response).to be_success
   end
 
 end
@@ -57,8 +57,8 @@ shared_examples_for 'product build list user without admin rights' do
   it 'should not be able to perform create action' do
     expect {
       post :create, valid_attributes
-    }.to change(ProductBuildList, :count).by(0)
-    response.should_not be_success
+    }.to_not change(ProductBuildList, :count)
+    expect(response).to_not be_success
   end
 
   it 'should not be able to perform destroy action' do
@@ -66,17 +66,17 @@ shared_examples_for 'product build list user without admin rights' do
     expect {
       delete :destroy, valid_attributes_for_destroy
     }.to change(ProductBuildList, :count).by(0)
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
   it 'should not be able to perform cancel action' do
     put :cancel, valid_attributes_for_show
-    response.should_not redirect_to(platform_product_product_build_list_path(@product.platform, @product, @pbl))
+    expect(response).to_not redirect_to(platform_product_product_build_list_path(@product.platform, @product, @pbl))
   end
 
   it 'should not be able to perform update action' do
     put :update, valid_attributes_for_show
-    response.should_not be_success
+    expect(response).to_not be_success
   end
 
 end
@@ -84,17 +84,17 @@ end
 shared_examples_for 'product build list user' do
   it 'should be able to perform index action' do
     get :index
-    response.should render_template(:index)
+    expect(response).to render_template(:index)
   end
 
   it 'should be able to perform show action' do
     get :show, valid_attributes_for_show
-    response.should render_template(:show)
+    expect(response).to render_template(:show)
   end
 
   it 'should be able to perform log action' do
     get :log, valid_attributes_for_show
-    response.should be_success
+    expect(response).to be_success
   end
 end
 
@@ -131,7 +131,7 @@ describe Platforms::ProductBuildListsController, type: :controller do
         [:index, :show, :log].each do |action|
           it "should not be able to perform #{action}" do
             get action, valid_attributes_for_show
-            response.should redirect_to(new_user_session_path)
+            expect(response).to redirect_to(new_user_session_path)
           end
         end
       end

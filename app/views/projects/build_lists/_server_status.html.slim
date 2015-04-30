@@ -1,0 +1,32 @@
+ul.nav.navbar-nav.navbar-left
+  li.bg-success
+    a.no-pointer href=''
+      i.fa.fa-info-circle.fa-lg.text-primary
+      =< t 'layout.build_lists.build_server_status.rpm_workers'
+      ' :
+      => t 'layout.build_lists.build_server_status.abf'
+      span.badge.bg-primary[] {{server_status.rpm.workers}}
+      =<> t 'layout.build_lists.build_server_status.custom'
+      span.badge.bg-primary[] {{server_status.rpm.other_workers}}
+
+  li.bg-info
+    a.no-pointer href=''
+      = t('layout.build_lists.build_server_status.tasks').mb_chars.capitalize
+      ' :
+      => t 'layout.build_lists.build_server_status.custom'
+      span.badge.bg-primary[] {{server_status.rpm.default_tasks}}
+      =<> t 'layout.build_lists.build_server_status.mass_build_tasks'
+      span.badge.bg-primary[] {{server_status.rpm.low_tasks}}
+      =<> t 'layout.build_lists.build_server_status.build_tasks'
+      span.badge.bg-primary[] {{server_status.rpm.build_tasks}}
+
+  li.bg-warning
+    a.no-pointer href=''
+      = t 'layout.build_lists.build_server_status.publish_workers'
+      ' :
+      => t 'layout.build_lists.build_server_status.amount'
+      span.badge.bg-primary[] {{server_status.publish.workers}}
+      =<> t 'layout.build_lists.build_server_status.tasks'
+      span.badge.bg-primary[] {{server_status.publish.tasks}}
+      =<> t 'layout.build_lists.build_server_status.build_tasks'
+      span.badge.bg-primary[] {{server_status.publish.build_tasks}}

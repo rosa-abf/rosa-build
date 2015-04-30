@@ -1,12 +1,11 @@
 class Projects::CollaboratorsController < Projects::BaseController
   respond_to :html, :json
 
-  before_filter :authenticate_user!
-  load_resource :project
-  before_filter :authorize_collaborators
+  before_action :authenticate_user!
+  before_action :authorize_collaborators
 
-  before_filter :find_users
-  before_filter :find_groups
+  before_action :find_users
+  before_action :find_groups
 
   def index
     @collaborators = Collaborator.find_by_project(@project)
@@ -29,26 +28,36 @@ class Projects::CollaboratorsController < Projects::BaseController
     @collaborator.project = @project
     respond_to do |format|
       if @collaborator.save
-        format.json { render partial: 'collaborator', locals: {collaborator: @collaborator} }
+        format.json { render partial: 'collaborator', locals: {collaborator: @collaborator, success: true} }
       else
-        format.json { render text: 'error', status: 422 }
+        format.json { render json: {message:t('flash.collaborators.error_in_adding')}, status: 422 }
       end
     end
   end
 
   def update
-    @c = Collaborator.find(params[:id])
-    if @c.update_attributes(params[:collaborator])
-      respond_with @c
-    else
-      raise
+    cb = Collaborator.find(params[:id])
+    respond_to do |format|
+      if cb.update_attributes(params[:collaborator])
+        format.json { render json: {message:t('flash.collaborators.successfully_updated', uname: cb.actor.uname)} }
+      else
+        format.json { render json: {message:t('flash.collaborators.error_in_updating')}, status: 422 }
+      end
     end
   end
 
   def destroy
-    @cb = Collaborator.find(params[:id])
-    @cb.destroy if @cb
-    respond_with @cb
+    cb = Collaborator.find(params[:id])
+    respond_to do |format|
+      if cb.present? && cb.destroy
+        format.json { render json: {message:t('flash.collaborators.successfully_removed', uname: cb.actor.uname)} }
+      else
+        format.json {
+          render json: {message:t('flash.collaborators.error_in_removing', uname: cb.try(:actor).try(:uname))},
+                 status: 422
+        }
+      end
+    end
   end
 
   protected
@@ -64,6 +73,6 @@ class Projects::CollaboratorsController < Projects::BaseController
   end
 
   def authorize_collaborators
-    authorize! :update, @project
+    authorize @project, :update?
   end
 end

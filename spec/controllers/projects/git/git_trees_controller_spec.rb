@@ -14,38 +14,38 @@ describe Projects::Git::TreesController, type: :controller do
     [:tags, :branches].each do |action|
       it "should be able to perform #{action} action with anonymous acccess", anonymous_access: true do
         get action, @params.merge(treeish: 'master')
-        response.should be_success
+        expect(response).to be_success
       end
 
       it "should not be able to perform #{action} action without anonymous acccess", anonymous_access: false do
         get action, @params.merge(treeish: 'master')
-        response.should_not be_success
+        expect(response).to_not be_success
       end
     end
 
     it "should be able to perform archive action with anonymous acccess", anonymous_access: true do
       get :archive, @params.merge(format: 'tar.gz')
-      response.should be_success
+      expect(response).to be_success
     end
 
     it "should not be able to perform archive action without anonymous acccess", anonymous_access: false do
       get :archive, @params.merge(format: 'tar.gz')
-      response.code.should == '401'
+      expect(response.code).to eq '401'
     end
 
     it 'should not be able to perform destroy action' do
       delete :destroy, @params.merge(treeish: 'master')
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
     it 'should not be able to perform restore_branch action' do
       put :restore_branch, @params.merge(treeish: 'master')
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
     it 'should not be able to perform create action' do
       post :create, @params.merge(treeish: '', from_ref: 'master', new_ref: 'master-1')
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
   end
@@ -67,28 +67,28 @@ describe Projects::Git::TreesController, type: :controller do
 
     it 'should be able to perform archive action' do
       get :archive, @params.merge(format: 'tar.gz')
-      response.should be_success
+      expect(response).to be_success
     end
 
     it 'should not be able to perform destroy action' do
       delete :destroy, @params.merge(treeish: 'master')
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
     it 'should not be able to perform restore_branch action' do
       put :restore_branch, @params.merge(treeish: 'master')
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
     it 'should not be able to perform create action' do
       post :create, @params.merge(treeish: '', from_ref: 'master', new_ref: 'master-1')
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
     [:tags, :branches].each do |action|
       it "should be able to perform #{action} action" do
         get action, @params.merge(treeish: 'master')
-        response.should be_success
+        expect(response).to be_success
       end
     end
   end
@@ -102,22 +102,22 @@ describe Projects::Git::TreesController, type: :controller do
 
     it 'should be able to perform destroy action' do
       delete :destroy, @params.merge(treeish: 'conflicts')
-      response.should be_success
+      expect(response).to be_success
     end
 
     it 'should not be able to perform destroy action for master branch' do
       delete :destroy, @params.merge(treeish: 'master')
-      response.should_not be_success
+      expect(response).to_not be_success
     end
 
     it 'should be able to perform restore_branch action' do
       put :restore_branch, @params.merge(treeish: 'master-1', sha: 'master')
-      response.should be_success
+      expect(response).to be_success
     end
 
     it 'should be able to perform create action' do
       post :create, @params.merge(treeish: '', from_ref: 'master', new_ref: 'master-1')
-      response.should be_success
+      expect(response).to be_success
     end
   end
 

@@ -13,7 +13,7 @@
         h3
           => t('wiki.editing_page')
           strong= @page.name
-      - if can? :read, @project
+      - if policy(@project).read?
         .col-md-4.offset10
             a.btn.btn-primary> href=view_path(@project, escaped_name)
               = t('wiki.view_page')

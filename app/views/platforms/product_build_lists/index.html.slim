@@ -2,12 +2,10 @@
 - set_meta_tags og:      { title: t('.title'), description: t('tour.meta_description') }
 - set_meta_tags twitter: { title: t('.title'), description: t('tour.meta_description') }
 
-= render 'projects/build_lists/submenu'
+== render 'projects/build_lists/submenu'
 
 .container
-
-  .row.offset10
-    = render 'filter'
+  == render 'filter'
   .row
     table.table.table-striped
       thead
@@ -18,8 +16,6 @@
           th= t("layout.product_build_lists.action")
           th= t("activerecord.attributes.product_build_list.notified_at")
       tbody
-        = render partial: 'platforms/product_build_lists/product_build_list', collection: @product_build_lists
-    .both
+        == render partial: 'platforms/product_build_lists/product_build_list', collection: @product_build_lists
 
     = will_paginate @product_build_lists
-

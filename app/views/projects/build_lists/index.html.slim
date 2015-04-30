@@ -1,0 +1,87 @@
+-set_meta_tags title: t('.title')
+
+.row.offset10 ng-controller = 'BuildListsController' ng-init = 'init()' ng-cloak = true
+  = hidden_field_tag :name_with_owner, @project.try(:name_with_owner)
+  .col-lg-2.col-sm-12
+    -if @project && policy(@project.build_lists.build).create?
+
+        button.btn.btn-primary.btn-block[ id = 'filter_new_build'
+            type    = 'button'
+            onclick = "location.href='#{new_project_build_list_path(@project)}'" ]
+          i.fa.fa-plus
+          =< t('layout.build_lists.new_header')
+        .offset10
+    == render 'filter'
+  .col-lg-10.col-sm-12
+    table.table.table-condensed
+      thead
+        tr
+          th
+          th= t('activerecord.attributes.build_list.id')
+          th= t('activerecord.attributes.build_list.status')
+          th= t('activerecord.attributes.build_list.project')
+          th= t('diff')
+          th= t('activerecord.attributes.build_list.project_version')
+          th= t('activerecord.attributes.build_list.save_to_repository')
+          th= t('activerecord.attributes.build_list.arch_short')
+          th= t('activerecord.attributes.build_list.user')
+          th= t('activerecord.attributes.build_list.updated_at')
+      tbody
+        tr[ ng-repeat = 'bl in build_lists'
+            class     = '{{bl.status_color}}'
+            id        = 'build-list-{{bl.id}}'
+            ng-class  = "{'group-start': !bl.relatedHidden, 'group-end': bl.lastRelated}"
+            ng-show   = 'bl.show' ]
+          td.build-list-chevrons
+            a.expand ng-show = 'bl.hasRelated'
+              span.fa.fa-chevron-down ng-show = 'bl.relatedHidden' ng-click = 'showRelated(bl)'
+              span.fa.fa-chevron-up   ng-hide = 'bl.relatedHidden' ng-click = 'hideRelated(bl)'
+          / id
+          td.build-list-statuses
+
+            a[ ng-href = '{{bl.url}}' ] {{bl.id}}
+            div ng-show = 'bl.hasRelated'
+              div[ ng-repeat = 'related in bl.related' ng-class = '"status bg-" + related.status_color'] &nbsp;
+
+          / status
+          td
+            | {{bl.human_status | i18n}}
+            br
+            time ng-show = 'bl.duration'
+              | {{bl.duration}}
+              time ng-show = 'bl.average_build_time'
+                | /{{bl.average_build_time}}
+
+          / project
+          td.centered ng-hide = 'bl.project' colspan = 2
+            = t('layout.projects.unexisted_project')
+          td ng-show = 'bl.project'
+            a[ ng-href = '{{bl.project.url}}' ] {{bl.project.name_with_owner}}
+
+          / diff
+          td
+            a ng-href = '{{bl.version_link_url}}' ng-show = 'bl.project'
+              | {{bl.version_link_text}}
+
+          / project_version
+          td[] {{bl.version_release}}
+
+          / save_to_repository
+          td
+            a[ ng-href = '{{bl.save_to_repository_url}}' ] {{bl.save_to_repository_name}}
+
+          / arch_short
+          td[ ng-show = 'bl.arch' ] {{bl.arch.name}}
+          td[ ng-hide = 'bl.arch' ]= t('layout.arches.unexisted_arch')
+
+          / user
+          td
+            a[ ng-href = '{{bl.user.url}}' ] {{bl.user.fullname}}
+
+          / updated_at
+          td title = '{{bl.updated_at_utc}}'
+            | {{ bl.updated_at | amDateFormat:'YYYY-MM-DD HH:mm' }}
+
+    == angularjs_paginate( per_page: 'params.per_page' )
+
+== render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'

@@ -129,7 +129,7 @@ class PullRequest < ActiveRecord::Base
       system "git config user.name \"#{who.uname}\" && git config user.email \"#{who.email}\""
       res = merge
       if commit.id != repo.commits(to_ref).first.id
-        res2 = %x(export GL_ID=user-#{who.id} && git push origin HEAD)
+        res2 = %x(export GL_ID=user-#{who.id} GL_REPO_NAME=#{to_project.path} && git push origin HEAD)
         system("git reset --hard HEAD^") # for diff maybe FIXME
 
         if old_commit.id == to_project.repo.commits(to_ref).first.id
@@ -163,9 +163,8 @@ class PullRequest < ActiveRecord::Base
     @diff_stats ||= repo.diff_stats(to_commit.id, from_commit.id)
   end
 
-  # FIXME maybe move to warpc/grit?
   def diff
-    @diff ||= Grit::Commit.diff(repo, to_commit.id, from_commit.id)
+    @diff ||= repo.diff(to_commit.id, from_commit.id)
   end
 
   def set_user_and_time user

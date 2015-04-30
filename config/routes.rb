@@ -253,7 +253,7 @@ Rosa::Application.routes.draw do
         put :reset_auth_token
       end
     end
-    resources :register_requests, only: [:new, :create], format: /ru|en/ #view support only two languages
+    #resources :register_requests, only: [:new, :create], format: /ru|en/ #view support only two languages
 
     get '/allowed'  => 'users#allowed'
     get '/check'    => 'users#check'
@@ -297,7 +297,7 @@ Rosa::Application.routes.draw do
         get   :mass_import
       end
     end
-    scope ':name_with_owner', constraints: { name_with_owner: Project::OWNER_AND_NAME_REGEXP } do # project
+    scope '*name_with_owner', constraints: { name_with_owner: Project::OWNER_AND_NAME_REGEXP } do # project
       scope as: 'project' do
         resources :wiki do
           collection do
@@ -324,7 +324,8 @@ Rosa::Application.routes.draw do
         end
         resources :issues, except: [:destroy, :edit] do
           resources :comments, only: [:edit, :create, :update, :destroy]
-          resources :subscribes, only: [:create, :destroy]
+          post '/subscribe'     => "subscribes#create", as: :subscribe
+          delete '/unsubscribe' => "subscribes#destroy", as: :unsubscribe
           collection do
             post :create_label
             get :search_collaborators
@@ -369,7 +370,7 @@ Rosa::Application.routes.draw do
         constraints Rosa::Constraints::Treeish do
           # Tree
           get '/' => "git/trees#show", as: :project
-          get '/tree/:treeish' => "git/trees#show", as: :tree, format: false
+          get '/tree/*treeish' => "git/trees#show", as: :tree, format: false
           # Tags
           get '/tags' => "git/trees#tags", as: :tags
           # Branches
