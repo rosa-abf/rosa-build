@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :get_owner
 
-  unless false#Rails.env.development?
+  unless Rails.env.development?
     rescue_from Exception, with: :render_500
     rescue_from ActiveRecord::RecordNotFound,
                 # ActionController::RoutingError, # see: config/routes.rb:<last line>
