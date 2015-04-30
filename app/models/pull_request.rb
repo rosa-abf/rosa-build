@@ -36,7 +36,9 @@ class PullRequest < ActiveRecord::Base
             :status=,
             to: :issue, allow_nil: true
 
-  validates :from_project, :to_project, presence: true
+  validates :from_project, presence: true, on: :create
+  validates :to_project, presence: true
+
   validate :uniq_merge, if: ->(pull) { pull.to_project.present? }
   validates_each :from_ref, :to_ref do |record, attr, value|
     check_ref record, attr, value
