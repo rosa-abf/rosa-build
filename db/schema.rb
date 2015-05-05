@@ -11,18 +11,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150218231015) do
+ActiveRecord::Schema.define(version: 20150502145718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "hstore"
 
   create_table "activity_feeds", force: true do |t|
-    t.integer  "user_id",    null: false
+    t.integer  "user_id",       null: false
     t.string   "kind"
     t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "project_owner"
+    t.string   "project_name"
+    t.integer  "creator_id"
+    t.index ["creator_id"], :name => "index_activity_feeds_on_creator_id"
+    t.index ["project_name"], :name => "index_activity_feeds_on_project_name"
+    t.index ["project_owner"], :name => "index_activity_feeds_on_project_owner"
     t.index ["user_id", "kind"], :name => "index_activity_feeds_on_user_id_and_kind"
   end
 

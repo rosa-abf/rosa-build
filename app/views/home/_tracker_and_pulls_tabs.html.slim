@@ -1,70 +1,70 @@
 - %w(tracker pull_requests).each do |kind|
-  tab[ heading = "{{#{kind}_tab.title | i18n}}"
-       active  = "#{kind}_tab.active"
-       select  = "getContent('#{kind}')" ]
+  tab[ heading= t("activity_menu.#{kind}")
+       active=  "actCtrl.#{kind}_tab.active"
+       select=  "actCtrl.getContent('#{kind}')" ]
     .row
       .col-md-3.offset10
         ul.nav.nav-pills.nav-stacked
           - %w(all assigned created).each do |kind_filter|
-            li ng-class = "{ active: #{kind}_tab.filter.#{kind_filter} }"
-              a ng-click = "setIssuesFilter('#{kind}', '#{kind_filter}')"
-                span.badge.pull-right= "{{ #{kind}_tab.filter.#{kind_filter}_count }}"
+            li ng-class= "{ active: actCtrl.#{kind}_tab.filter.#{kind_filter} }"
+              a ng-click= "actCtrl.setIssuesFilter('#{kind}', '#{kind_filter}')"
+                span.badge.pull-right= "{{ actCtrl.#{kind}_tab.filter.#{kind_filter}_count }}"
                 = "{{'#{kind}.filter.#{kind_filter}' | i18n}}"
       .col-md-9.offset10
         tabset.boffset10
           - %w(open closed).each do |status|
-            - count_issues = "({{#{kind}_tab.filter.#{status}_count}})"
-            tab[ heading  = "#{t "layout.issues.statuses.#{status}"} #{count_issues}"
-                 active   = "#{kind}_tab.status_#{status}"
-                 ng-click = "setIssuesStatus('#{kind}', '#{status}')" ]
+            - count_issues = "({{actCtrl.#{kind}_tab.filter.#{status}_count}})"
+            tab[ heading=  "#{t "layout.issues.statuses.#{status}"} #{count_issues}"
+                 active=   "actCtrl.#{kind}_tab.status_#{status}"
+                 ng-click= "actCtrl.setIssuesStatus('#{kind}', '#{status}')" ]
 
           .pull-right.boffset10
-            button.btn.btn-default.roffset5[ type     = 'button'
-                                             ng-click = "setIssuesSort('#{kind}', 'updated')" ]
-              span.fa ng-class = "#{kind}_tab.sort.updated_class"
+            button.btn.btn-default.roffset5[ type=     'button'
+                                             ng-click= "actCtrl.setIssuesSort('#{kind}', 'updated')" ]
+              span.fa ng-class= "actCtrl.#{kind}_tab.sort.updated_class"
                 => t('layout.issues.sort.updated')
-            button.btn.btn-default[ type     = 'button'
-                                    ng-click = "setIssuesSort('#{kind}', 'submitted')" ]
-              span.fa ng-class = "#{kind}_tab.sort.submitted_class"
+            button.btn.btn-default[ type=     'button'
+                                    ng-click= "actCtrl.setIssuesSort('#{kind}', 'submitted')" ]
+              span.fa ng-class= "actCtrl.#{kind}_tab.sort.submitted_class"
                 => t('layout.issues.sort.submitted')
 
           table.table
-            tr ng-repeat = "issue in #{kind}_tab.content"
+            tr ng-repeat= "issue in actCtrl.#{kind}_tab.content"
               td
-                a ng-href = "{{issue.issue_url}}"
+                a ng-href= "{{issue.issue_url}}"
                   span.text-info
                     = '{{issue.project_name}} '
                   | {{issue.title}}
-                span.label.small.loffset5[ ng-repeat = "label in issue.labels"
-                                           ng-style  = "{background: label.color}" ]
+                span.label.small.loffset5[ ng-repeat= "label in issue.labels"
+                                           ng-style=  "{background: label.color}" ]
                   | {{label.name}}
                 .small
                   = t 'layout.issues.created_by'
-                  a>[ ng-href = "{{issue.user.path}}" ] {{issue.user.uname}}
-                  span.text-muted[ ng-show = '#{kind}_tab.sort.sort == "submitted"'
-                                   title   = "{{issue.created_at_utc}}" ]
+                  a>[ ng-href= "{{issue.user.path}}" ] {{issue.user.uname}}
+                  span.text-muted[ ng-show= 'actCtrl.#{kind}_tab.sort.sort == "submitted"'
+                                   title=   "{{issue.created_at_utc}}" ]
                     | {{issue.created_at | amDateFormat:'YYYY-MM-DD HH:mm'}} (
-                    span am-time-ago = 'issue.created_at'
+                    span am-time-ago= 'issue.created_at'
                     | )
-                  span> class = 'text-muted' ng-show = '#{kind}_tab.sort.sort == "updated"'
+                  span> class= 'text-muted' ng-show= 'actCtrl.#{kind}_tab.sort.sort == "updated"'
                     = t 'layout.issues.updated_at'
-                  span.text-muted[ ng-show = '#{kind}_tab.sort.sort == "updated"'
-                                   title   = "{{issue.updated_at_utc}}" ]
+                  span.text-muted[ ng-show= 'actCtrl.#{kind}_tab.sort.sort == "updated"'
+                                   title=   "{{issue.updated_at_utc}}" ]
                     | {{issue.updated_at | amDateFormat:'YYYY-MM-DD HH:mm'}} (
-                    span am-time-ago = 'issue.updated_at'
+                    span am-time-ago= 'issue.updated_at'
                     | )
               td
-                a ng-href = "{{issue.issue_url + '#comments'}}"
+                a ng-href= "{{issue.issue_url + '#comments'}}"
                   span.fa.fa-comments.text-primary
                     = " {{issue.comments_count}}"
               td
-                a>[ ng-href = '{{issue.assignee.link}}'
-                    title   = "#{t('layout.issues.assigned_to')} {{issue.assignee.fullname}}" ]
-                  img ng-src = '{{issue.assignee.image}}'
+                a>[ ng-href= '{{issue.assignee.link}}'
+                    title=   "#{t('layout.issues.assigned_to')} {{issue.assignee.fullname}}" ]
+                  img ng-src= '{{issue.assignee.image}}'
                 span.text-muted.roffset5
                   | {{'#' + issue.serial_id}}
 
-          = angularjs_paginate( total_items: "#{kind}_tab.pagination.total_items",
-                                page:        "#{kind}_tab.pagination.page",
+          = angularjs_paginate( total_items: "actCtrl.#{kind}_tab.pagination.total_items",
+                                page:        "actCtrl.#{kind}_tab.pagination.page",
                                 per_page:    Issue.per_page,
-                                select_page: "selectPage('#{kind}', page)" )
+                                select_page: "actCtrl.selectPage('#{kind}', page)" )

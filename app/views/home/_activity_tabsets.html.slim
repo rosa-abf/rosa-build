@@ -1,0 +1,20 @@
+tabset
+  - (collection = t 'feed_menu').each do |base, title|
+    tab heading= title active= (@filter == base) select= "actCtrl.changeActivityFilter('#{base}')"
+/ The time line
+.row.offset10
+  .col-md-12.col-sm-12
+    ul.timeline
+      / timeline time label
+      li.time-label ng-repeat-start= 'item in actCtrl.getCurActivity().feed'
+        span ng-show= "actCtrl.needShowTimeLabel($index)"
+          | {{item.date | amDateFormat:'ll'}}
+      / timeline item
+      li ng-include= "actCtrl.getTemplate(item)"
+      .hide ng-repeat-end= true
+      li
+        i.img-circle.bg-primary.fa.fa-clock-o
+hr
+btn.center-block.btn.btn-primary[ ng-show= 'actCtrl.getCurActivity().next_page_link'
+                                  ng-click= "actCtrl.load_more()" ]
+  = t('layout.activity_feed.load_messages')

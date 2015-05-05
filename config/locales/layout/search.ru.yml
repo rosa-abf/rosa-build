@@ -14,7 +14,11 @@ ru:
         platforms: Платформы
 
     project:
-      updated:                              "Обновлен:"
+      updated:      "Обновлен:"
+
+    placeholders:
+      owner_filter: Владелец проекта
+      name_filter:  Имя проекта
 
   simple_form:
     placeholders:

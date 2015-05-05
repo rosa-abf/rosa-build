@@ -144,9 +144,12 @@ Rosa::Application.routes.draw do
   get  '/tour/:id'         => 'pages#tour_inside',    as: 'tour_inside', id: /projects|sources|builds/
   #match '/invite.html'     => redirect('/register_requests/new')
 
-  get '/activity_feeds.:format' => 'home#activity', as: 'atom_activity_feeds', format: /atom/
-  get '/issues' => 'home#issues'
-  get '/pull_requests' => 'home#pull_requests'
+  get '/activity_feeds.:format' => 'home#activity',     as: 'atom_activity_feeds', format: /atom/
+  get '/own_activity'           => 'home#own_activity', as: 'own_activity'
+  get '/issues'                 => 'home#issues'
+  get '/pull_requests'          => 'home#pull_requests'
+  get '/get_owners_list'        => 'home#get_owners_list'
+  get '/get_project_names_list' => 'home#get_project_names_list'
 
   if APP_CONFIG['anonymous_access']
     authenticated do

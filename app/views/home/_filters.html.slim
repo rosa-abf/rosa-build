@@ -1,15 +1,17 @@
-hr.offset10
-  h3=t('layout.relations.filters')
-
-input.form-control[ name        = 'search'
-                    size        = 30
-                    type        = 'text'
-                    ng-model    = 'search'
-                    placeholder = t('layout.find_project')
-                    ng-change   = 'filterProjects()' ]
-
-ul.nav.nav-pills.nav-stacked
-  - options_for_filters(@projects, @groups, @owners).each do |options|
-    li{ 'ng-class' => "{active: #{options[:class_name]}_filter_#{options[:id]}_class}" }
-      a{ href: '#', 'ng-click' => "change_#{options[:class_name]}_filter(#{options[:id]})" }
-        = options[:uname]
+hr
+  h4=t('layout.relations.filters')
+.form-group
+  = text_field_tag :owner_uname, nil,
+      class:                   'form-control',
+      placeholder:             t('search.placeholders.owner_filter'),
+      'ng-model'            => 'actCtrl.current_activity_tab.owner_uname_filter_tmp',
+      'typeahead'           => 'owner.uname for owner in actCtrl.getOwnersList($viewValue)',
+      'typeahead-on-select' => 'actCtrl.selectOwnerFilter($item, $model, $label)'
+.form-group
+  = text_field_tag :project_name, nil,
+      class:                   'form-control',
+      placeholder:             t('search.placeholders.name_filter'),
+      'ng-model'            => 'actCtrl.current_activity_tab.project_name_filter_tmp',
+      'ng-value'            => 'actCtrl.current_activity_tab.project_name_filter_tmp',
+      'typeahead'           => 'project.name for project in actCtrl.getProjectNamesList($viewValue)',
+      'typeahead-on-select' => 'actCtrl.selectProjectNameFilter($item, $model, $label)'

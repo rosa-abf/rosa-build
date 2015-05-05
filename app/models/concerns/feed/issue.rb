@@ -20,17 +20,17 @@ module Feed::Issue
         UserMailer.new_issue_notification(id, recipient.id).deliver
       end
       ActivityFeed.create(
-        user: recipient,
-        kind: 'new_issue_notification',
+        user:              recipient,
+        kind:              'new_issue_notification',
+        project_owner:     project.owner_uname,
+        project_name:      project.name,
+        creator_id:        user_id,
         data: {
-          user_name:       user.name,
-          user_email:      user.email,
-          user_id:         user_id,
+          creator_name:    user.name,
+          creator_email:   user.email,
           issue_serial_id: serial_id,
           issue_title:     title,
-          project_id:      project.id,
-          project_name:    project.name,
-          project_owner:   project.owner.uname
+          project_id:      project.id
         }
       )
     end
@@ -47,14 +47,14 @@ module Feed::Issue
       ActivityFeed.create(
         user: assignee,
         kind: 'issue_assign_notification',
+        project_owner: project.owner_uname,
+        project_name:  project.name,
         data: {
           user_name:       assignee.name,
           user_email:      assignee.email,
           issue_serial_id: serial_id,
           issue_title:     title,
-          project_id:      project.id,
-          project_name:    project.name,
-          project_owner:   project.owner.uname
+          project_id:      project.id
         }
       )
     end

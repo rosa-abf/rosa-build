@@ -19,7 +19,6 @@ var _locales = {
     <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>,
 
     //
-    <%= I18n.t('activity_menu').map{ |k,v| "'activity_menu.#{k}': '#{v}'" }.join(',') %>,
     'tracker.filter.all': '<%= I18n.t('layout.issues.all') %>',
     'tracker.filter.assigned': '<%= I18n.t('layout.issues.assigned') %>',
     'tracker.filter.created': '<%= I18n.t('layout.issues.created') %>',
@@ -66,7 +65,6 @@ var _locales = {
     <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>,
 
     //
-    <%= I18n.t('activity_menu').map{ |k,v| "'activity_menu.#{k}': '#{v}'" }.join(',') %>,
     'tracker.filter.all': '<%= I18n.t('layout.issues.all') %>',
     'tracker.filter.assigned': '<%= I18n.t('layout.issues.assigned') %>',
     'tracker.filter.created': '<%= I18n.t('layout.issues.created') %>',

@@ -1,0 +1,9 @@
+tab[ heading= t('activity_menu.own_activity')
+     active=  "actCtrl.own_activity_tab.active"
+     select = "actCtrl.getContent('own_activity')" ]
+  .row
+    .col-md-3.offset10== render 'sidebar'
+    .col-md-9.offset10
+      h3
+        = t 'layout.activity_feed.own_header'
+      == render 'activity_tabsets'

@@ -6,16 +6,19 @@ class ActivityFeed < ActiveRecord::Base
   WIKI    = %w(wiki_new_commit_notification)
 
   belongs_to :user
-  serialize :data
+  belongs_to :creator, class_name: 'User'
+  serialize  :data
 
   attr_accessible :user, :kind, :data
 
   default_scope { order created_at: :desc }
-  scope :outdated, -> { offset(100) }
+  scope :outdated,        -> { offset(200) }
+  scope :by_project_name, ->(name)  { where(project_name: name)   if name.present?  }
+  scope :by_owner_uname,  ->(owner) { where(project_owner: owner) if owner.present? }
 
-  self.per_page = 10
+  self.per_page = 20
 
   def partial
-    'home/partials/' + self.kind
+    "home/partials/#{self.kind}"
   end
 end

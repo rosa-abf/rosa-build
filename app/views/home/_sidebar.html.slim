@@ -1,6 +1,7 @@
 p
   = link_to t('layout.activity_feed.new_project'), new_project_path,
     class: 'btn btn-primary btn-small', role: 'button'
+== render 'filters'
 hr
 h5= t('layout.activity_feed.my_last_projects')
 

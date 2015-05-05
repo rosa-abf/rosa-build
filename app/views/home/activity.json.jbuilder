@@ -1,5 +1,9 @@
 if @activity_feeds.next_page
-  json.next_page_link root_path(filter: @filter, page: @activity_feeds.next_page, format: :json)
+  json.next_page_link root_path(filter:              @filter,
+                                page:                @activity_feeds.next_page,
+                                owner_filter:        @owner_filter,
+                                project_name_filter: @project_name_filter,
+                                format:              :json)
 end
 
 json.feed do
@@ -14,7 +18,7 @@ json.feed do
         json.uname (user.fullname || user.email)
       end if user
 
-      project_name_with_owner = "#{item.data[:project_owner]}/#{item.data[:project_name]}"
+      project_name_with_owner = "#{item.project_owner}/#{item.project_name}"
       @project = Project.find_by_owner_and_name(item.data[:project_owner], item.data[:project_name])
 
       json.project_name_with_owner project_name_with_owner
