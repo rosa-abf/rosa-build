@@ -9,10 +9,10 @@ class ActivityFeed < ActiveRecord::Base
   belongs_to :creator, class_name: 'User'
   serialize  :data
 
-  attr_accessible :user, :kind, :data
+  attr_accessible :user, :kind, :data, :project_owner, :project_name, :creator_id
 
   default_scope { order created_at: :desc }
-  scope :outdated,        -> { offset(200) }
+  scope :outdated,        -> { offset(1000) }
   scope :by_project_name, ->(name)  { where(project_name: name)   if name.present?  }
   scope :by_owner_uname,  ->(owner) { where(project_owner: owner) if owner.present? }
 
