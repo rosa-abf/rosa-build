@@ -11,7 +11,8 @@
     .clearfix
   .timeline-body
     %p
-      {{'notification.new_comment.title' | i18n}}
+      %span{'ng-show' => 'item.issue.is_pull'} {{'notification.new_pull_comment.title' | i18n}}
+      %span{'ng-show' => '!item.issue.is_pull'} {{'notification.new_comment.title' | i18n}}
       %a{ 'ng-href' => "{{item.issue.link}}" } {{item.issue.title}}
 
     %blockquote{ 'ng-bind-html' => "item.body" }
@@ -19,4 +20,3 @@
   .timeline-footer
     %a.btn.btn-primary.btn-xs{ 'ng-href' => "{{item.issue.link + '#comment' + item.issue.read_more}}" }
       {{'read_more' | i18n}}
-    {{item.kind}}

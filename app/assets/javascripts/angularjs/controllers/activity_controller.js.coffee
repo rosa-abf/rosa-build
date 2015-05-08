@@ -4,6 +4,15 @@ ActivityController = ($scope, $http, $timeout, $q, $filter, $location, ActivityF
     return vm.tracker_tab if kind is 'tracker'
     return vm.pull_requests_tab if kind is 'pull_requests'
 
+  calculateChangeDate = (feed)->
+    prev_date = null
+    _.each(feed, (event)->
+      cur_date  = $filter('amDateFormat')(event.date, 'll')
+      event.is_date_changed = cur_date isnt prev_date
+      prev_date = cur_date
+    )
+
+
   vm = this
 
 
@@ -111,14 +120,6 @@ ActivityController = ($scope, $http, $timeout, $q, $filter, $location, ActivityF
   vm.getCurActivity = ()->
     vm.current_activity_tab[vm.current_activity_tab.filter]
 
-  vm.needShowTimeLabel = (index)->
-    feed = vm.getCurActivity().feed
-    return false unless feed
-
-    cur_date  = $filter('amDateFormat')(feed[index].date, 'll')
-    prev_date = index is 0 or $filter('amDateFormat')(feed[index-1].date, 'll')
-    return cur_date isnt prev_date
-
   vm.getTemplate = (content)->
     content.kind + '.html'
 
@@ -149,8 +150,11 @@ ActivityController = ($scope, $http, $timeout, $q, $filter, $location, ActivityF
       path = Routes.own_activity_path(options)
 
     $http.get(path).then (res)->
-      vm.getCurActivity().feed = res.data.feed
+      feed = res.data.feed
+      vm.getCurActivity().feed = feed
       vm.getCurActivity().next_page_link = res.data.next_page_link
+      calculateChangeDate(feed)
+      true
 
   vm.setIssuesFilter = (kind, issues_filter)->
     filter = getIssuesTab(kind).filter

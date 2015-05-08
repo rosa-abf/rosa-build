@@ -7,7 +7,7 @@ tabset
     ul.timeline
       / timeline time label
       li.time-label ng-repeat-start= 'item in actCtrl.getCurActivity().feed'
-        span ng-show= "actCtrl.needShowTimeLabel($index)"
+        span ng-show= "item.is_date_changed"
           | {{item.date | amDateFormat:'ll'}}
       / timeline item
       li ng-include= "actCtrl.getTemplate(item)"

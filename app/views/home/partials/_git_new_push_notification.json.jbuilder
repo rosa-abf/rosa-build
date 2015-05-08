@@ -1,6 +1,7 @@
-json.change_type item.data[:change_type]
+json.change_type  item.data[:change_type]
 json.project_link project_path(project_name_with_owner)
-json.branch_name item.data[:branch_name]
+json.branch_name  item.data[:branch_name]
+json.branch_link  ref_path(@project, item.data[:branch_name])
 
 json.last_commits do
   json.array! item.data[:last_commits] do |commit|
