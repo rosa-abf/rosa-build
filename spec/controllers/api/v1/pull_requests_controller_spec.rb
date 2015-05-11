@@ -312,7 +312,7 @@ describe Api::V1::PullRequestsController, type: :controller do
 
     it 'should not duplicate email message' do
       post :create, @create_params.deep_merge(pull_request: {assignee_id: @project_admin.id})
-      expect(ActionMailer::Base.deliveries.count).to eq 2 # send to all project members
+      expect(ActionMailer::Base.deliveries.count).to eq 3 # send to all project members
       expect(ActionMailer::Base.deliveries.map(&:to).uniq).to match_array(ActionMailer::Base.deliveries.map(&:to))
     end
   end
