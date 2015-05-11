@@ -20,9 +20,7 @@ describe Issue do
 
   context '#update_statistic' do
     it 'updates styatistics' do
-      expect do
-        FactoryGirl.create(:issue)
-      end.to change(Statistic, :count).by(1)
+      expect { FactoryGirl.create(:issue) }.to change(Statistic, :count).by(1)
     end
   end
 
@@ -34,20 +32,20 @@ describe Issue do
 
     it 'should send an e-mail' do
       create_issue(@stranger)
-      ActionMailer::Base.deliveries.count.should == 1
-      ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
+      expect(ActionMailer::Base.deliveries.count).to eq(1)
+      expect(ActionMailer::Base.deliveries.last.to).to include(@user.email)
     end
 
     it 'should not send an e-mail to creator' do
       create_issue(@user)
-      ActionMailer::Base.deliveries.count.should == 0
+      expect(ActionMailer::Base.deliveries.count).to eq(0)
     end
 
     it 'should create automatic comment from another issue' do
       create_issue(@user)
       another_issue = FactoryGirl.create(:issue, project: @project, title: "[##{@issue.serial_id}]")
-      Comment.where(automatic: true, commentable_type: 'Issue',
-                    created_from_issue_id: another_issue.id).count.should == 1
+      expect(Comment.where(automatic: true, commentable_type: 'Issue',
+                           created_from_issue_id: another_issue.id).count).to eq(1)
     end
 
     it 'should create automatic comment after updating another issue body' do
@@ -56,8 +54,8 @@ describe Issue do
       another_issue = Issue.find another_issue.id
       another_issue.update_attribute(:title, "[##{@issue.serial_id}]")
 
-      Comment.where(automatic: true, commentable_type: 'Issue',
-                    created_from_issue_id: another_issue.id).count.should == 1
+      expect(Comment.where(automatic: true, commentable_type: 'Issue',
+                    created_from_issue_id: another_issue.id).count).to eq(1)
     end
 
     it 'should send email message to new assignee' do
@@ -66,7 +64,7 @@ describe Issue do
       @issue = Issue.find @issue.id
       @issue.update_attribute :assignee_id, @user.id
 
-      ActionMailer::Base.deliveries.count.should == 1
+      expect(ActionMailer::Base.deliveries.count).to eq(1)
     end
   end
 
@@ -84,21 +82,20 @@ describe Issue do
       create_relation(@project, @group, 'admin')
 
       create_issue(@stranger)
-      ActionMailer::Base.deliveries.count.should == 3 # 1 owner + 2 group member. enough?
+      expect(ActionMailer::Base.deliveries.count).to eq(3) # 1 owner + 2 group member. enough?
     end
 
     it 'should send an e-mail to all members of the admin group except creator' do
       create_relation(@project, @group, 'admin')
 
       create_issue(@group.owner)
-      ActionMailer::Base.deliveries.count.should == 2 # 1 owner + 1 group member. enough?
+      expect(ActionMailer::Base.deliveries.count).to eq(2) # 1 owner + 1 group member. enough?
     end
 
-    it 'should not send an e-mail to members of the reader group' do
+    it 'should send emails to members of the reader group' do
       create_relation(@project, @group, 'reader')
-
       create_issue(@stranger)
-      ActionMailer::Base.deliveries.count.should == 1 # 1 project owner
+      expect(ActionMailer::Base.deliveries.count).to eq(3) # project owner + group owner + group member
     end
 
     it 'should reset issue assignee after remove him from group' do
@@ -106,7 +103,7 @@ describe Issue do
       create_issue(@group.owner)
       @issue.update_column :assignee_id, @reader.id
       @group.remove_member @reader
-      @issue.reload.assignee_id.should == nil
+      expect(@issue.reload.assignee_id).to be_nil
     end
 
     it 'should not reset issue assignee' do
@@ -115,7 +112,7 @@ describe Issue do
       create_issue(@group.owner)
       @issue.update_column :assignee_id, @reader.id
       @group.remove_member @reader
-      @issue.reload.assignee_id.should == @reader.id
+      expect(@issue.reload.assignee_id).to eq(@reader.id)
     end
 
     it 'should reset issue assignee after remove him from project' do
@@ -123,7 +120,7 @@ describe Issue do
       create_issue(@reader)
       @issue.update_column :assignee_id, @reader.id
       @project.remove_member @reader # via api
-      @issue.reload.assignee_id.should == nil
+      expect(@issue.reload.assignee_id).to be_nil
     end
 
   end
@@ -138,23 +135,22 @@ describe Issue do
     context 'for admin of the group' do
       it 'should send an e-mail' do
         create_issue(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
+        expect(ActionMailer::Base.deliveries.count).to eq(1)
+        expect(ActionMailer::Base.deliveries.last.to).to include(@user.email)
       end
 
       it 'should not send an e-mail to creator' do
         create_issue(@user)
-        ActionMailer::Base.deliveries.count.should == 0
+        expect(ActionMailer::Base.deliveries.count).to eq(0)
       end
     end
 
     context 'for reader of the group' do
-      it 'should not send an e-mail' do
+      it 'should send an email' do
         reader = FactoryGirl.create :user
         create_actor_relation(@group, reader, 'reader')
-
         create_issue(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
+        expect(ActionMailer::Base.deliveries.count).to eq(2) # group owner + group reader
       end
     end
   end
