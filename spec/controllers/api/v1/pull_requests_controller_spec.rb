@@ -294,33 +294,26 @@ describe Api::V1::PullRequestsController, type: :controller do
       ActionMailer::Base.deliveries = []
     end
 
-    it 'should send two email messages to project admins' do
+    it 'should send two email messages to all project members' do
       post :create, @create_params
-      # @project.pull_requests.last.issue.send(:new_issue_notifications)
-      # @project.pull_requests.last.issue.send(:send_assign_notifications)
-      expect(ActionMailer::Base.deliveries.count).to eq 2
+      expect(ActionMailer::Base.deliveries.count).to eq 3 # project owner + reader + admin
     end
 
     it 'should send two email messages to admins and one to assignee' do
       post :create, @create_params.deep_merge(pull_request: {assignee_id: @project_reader.id})
-      # @project.pull_requests.last.issue.send(:new_issue_notifications)
-      # @project.pull_requests.last.issue.send(:send_assign_notifications)
       expect(ActionMailer::Base.deliveries.count).to eq 3
     end
 
     it 'should send email message to new assignee' do
       http_login(@project_admin)
       put :update, @update_params.deep_merge(pull_request: {assignee_id: @project_reader.id})
-      # @project.pull_requests.last.issue.send(:send_assign_notifications)
       expect(ActionMailer::Base.deliveries.count).to eq 1
     end
 
     it 'should not duplicate email message' do
       post :create, @create_params.deep_merge(pull_request: {assignee_id: @project_admin.id})
-      # @project.pull_requests.last.issue.send(:new_issue_notifications)
-      # @project.pull_requests.last.issue.send(:send_assign_notifications)
-      expect(ActionMailer::Base.deliveries.count).to eq 2 # send only to admins
-      expect(ActionMailer::Base.deliveries.first.to).to_not eq ActionMailer::Base.deliveries.last.to
+      expect(ActionMailer::Base.deliveries.count).to eq 2 # send to all project members
+      expect(ActionMailer::Base.deliveries.map(&:to).uniq).to match_array(ActionMailer::Base.deliveries.map(&:to))
     end
   end
 
