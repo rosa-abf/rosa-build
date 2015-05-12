@@ -172,6 +172,8 @@ ru:
 
     models:
       product_build_list: Сборочный лист продукта
+
+    attributes:
       arch:
         name: Название
         created_at: Создана
@@ -187,3 +189,5 @@ ru:
   until: по
   none: Нет
   close: Закрыть
+
+  new_feature: '(новинка!)'
