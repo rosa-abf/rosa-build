@@ -85,8 +85,8 @@ class HomeController < ApplicationController
 
   def get_owners_list
     if params[:term].present?
-      users   =  User.opened.search(params[:term]).pluck(:uname).first(5)
-      groups  = Group.opened.search(params[:term]).pluck(:uname).first(5)
+      users   =  User.opened.search(params[:term]).first(5)
+      groups  = Group.opened.search(params[:term]).first(5)
       @owners = users | groups
 
     end

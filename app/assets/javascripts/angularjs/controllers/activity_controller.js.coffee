@@ -12,10 +12,20 @@ ActivityController = ($scope, $http, $timeout, $q, $filter, $location, ActivityF
       prev_date = cur_date
     )
 
+  $scope.$watch (->
+    vm.current_activity_tab.owner_uname_filter_tmp
+  ), () ->
+    vm.selectOwnerFilter({uname: null}, null, null) unless vm.current_activity_tab.owner_uname_filter_tmp
+
+  $scope.$watch (->
+    vm.current_activity_tab.project_name_filter_tmp
+  ), () ->
+    vm.selectProjectNameFilter({name: null}, null, null) unless vm.current_activity_tab.project_name_filter_tmp
+
 
   vm = this
 
-
+  vm.processing   = false
   vm.activity_tab =
     filter: 'all'
     all: {}
@@ -138,6 +148,7 @@ ActivityController = ($scope, $http, $timeout, $q, $filter, $location, ActivityF
     vm.getActivityContent()
 
   vm.getActivityContent = ()->
+    vm.processing = true
     options =
       filter:              vm.current_activity_tab.filter
       owner_filter:        vm.current_activity_tab.owner_filter
@@ -154,6 +165,7 @@ ActivityController = ($scope, $http, $timeout, $q, $filter, $location, ActivityF
       vm.getCurActivity().feed = feed
       vm.getCurActivity().next_page_link = res.data.next_page_link
       calculateChangeDate(feed)
+      vm.processing = false
       true
 
   vm.setIssuesFilter = (kind, issues_filter)->
@@ -239,7 +251,6 @@ ActivityController = ($scope, $http, $timeout, $q, $filter, $location, ActivityF
     vm.current_activity_tab.project_name_filter = item.name
     vm.getActivityContent()
     true
-
 
 angular
   .module("RosaABF")
