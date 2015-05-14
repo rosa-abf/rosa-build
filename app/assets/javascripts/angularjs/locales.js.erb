@@ -19,7 +19,6 @@ var _locales = {
     <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>,
 
     //
-    <%= I18n.t('activity_menu').map{ |k,v| "'activity_menu.#{k}': '#{v}'" }.join(',') %>,
     'tracker.filter.all': '<%= I18n.t('layout.issues.all') %>',
     'tracker.filter.assigned': '<%= I18n.t('layout.issues.assigned') %>',
     'tracker.filter.created': '<%= I18n.t('layout.issues.created') %>',
@@ -28,12 +27,14 @@ var _locales = {
     'pull_requests.filter.created': '<%= I18n.t('layout.pull_requests.created') %>',
 
     'notification.new_comment.title': 'добавил новый комментарий к задаче ',
+    'notification.new_pull_comment.title': 'добавил новый комментарий к пул реквесту ',
     'notification.new_commit_comment.title': 'добавил новый комментарий к коммиту ',
     'notification.push.delete_branch': 'удалил ветку ',
     'notification.push.create_branch': 'создал новую ветку ',
     'notification.push.update_branch': 'внес изменения в ветку ',
     'notification.in_project': ' в проекте ',
-    'notification.new_issue': 'добавил новую задачу',
+    'notification.new_issue': 'добавил новую задачу ',
+    'notification.new_pull': 'добавил новый пул реквест ',
     'notification.new_user.title': 'Здравствуйте, ',
     'notification.new_user.content': 'Спасибо за вашу регистрацию!',
     'notification.wiki.new_commit': 'обновил ',
@@ -66,7 +67,6 @@ var _locales = {
     <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>,
 
     //
-    <%= I18n.t('activity_menu').map{ |k,v| "'activity_menu.#{k}': '#{v}'" }.join(',') %>,
     'tracker.filter.all': '<%= I18n.t('layout.issues.all') %>',
     'tracker.filter.assigned': '<%= I18n.t('layout.issues.assigned') %>',
     'tracker.filter.created': '<%= I18n.t('layout.issues.created') %>',
@@ -75,12 +75,14 @@ var _locales = {
     'pull_requests.filter.created': '<%= I18n.t('layout.pull_requests.created') %>',
 
     'notification.new_comment.title': 'added a new comment in issue ',
+    'notification.new_pull_comment.title': 'added a new comment in pull request ',
     'notification.new_commit_comment.title': 'added a new comment in commit ',
     'notification.push.delete_branch': 'deleted a branch ',
     'notification.push.create_branch': 'created a new branch ',
     'notification.push.update_branch': 'pushed to branch ',
     'notification.in_project': ' in project ',
     'notification.new_issue': 'added a new issue ',
+    'notification.new_pull': 'added a new pull request ',
     'notification.new_user.title': 'Hello, ',
     'notification.new_user.content': 'Thank you for your registration!',
     'notification.wiki.new_commit': 'has been updated ',

@@ -13,6 +13,6 @@
     %p
       {{'notification.build_list' | i18n}}
       %a{ 'ng-href' => "{{item.build_list.link}}" } {{item.build_list.id}}
-      {{ item.branch_name + ('notification.in_project' | i18n)}}
+      {{'notification.in_project' | i18n}}
       %a{ 'ng-href' => "{{item.project_link}}" } {{item.project_name_with_owner}}
       {{item.build_list.status_message}}

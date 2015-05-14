@@ -2,6 +2,7 @@ ru:
   layout:
     activity_feed:
       header: Лента активности
+      own_header: Мои действия
       my_last_projects: Мои последние проекты
       all_my_projects: Все мои проекты
       all_my_builds: Все мои сборки

@@ -1,0 +1,22 @@
+hr
+  h4
+    => t('layout.relations.filters')
+    strong.text-danger= t 'new_feature'
+
+.form-group
+  = text_field_tag :owner_uname, nil,
+      class:                      'form-control',
+      placeholder:                t('search.placeholders.owner_filter'),
+      'ng-model'               => 'actCtrl.current_activity_tab.owner_uname_filter_tmp',
+      'typeahead'              => 'owner.uname for owner in actCtrl.getOwnersList($viewValue)',
+      'typeahead-on-select'    => 'actCtrl.selectOwnerFilter($item, $model, $label)',
+      'typeahead-template-url' => "get_owners.html"
+
+.form-group
+  = text_field_tag :project_name, nil,
+      class:                   'form-control',
+      placeholder:             t('search.placeholders.name_filter'),
+      'ng-model'            => 'actCtrl.current_activity_tab.project_name_filter_tmp',
+      'ng-value'            => 'actCtrl.current_activity_tab.project_name_filter_tmp',
+      'typeahead'           => 'project.name for project in actCtrl.getProjectNamesList($viewValue)',
+      'typeahead-on-select' => 'actCtrl.selectProjectNameFilter($item, $model, $label)'

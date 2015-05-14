@@ -1,4 +1,4 @@
--user= User.where(email: user_email).first || User.new(email: user_email) if defined?(user_email)
+-user= User.where(email: creator_email).first || User.new(email: creator_email) if defined?(creator_email)
 .top
   .image= link_to(image_tag(avatar_url(user, :small), alt: 'avatar'), user_path(user)) if user.persisted?
   .text

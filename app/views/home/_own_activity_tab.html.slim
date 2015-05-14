@@ -1,0 +1,12 @@
+tab[ active=  "actCtrl.own_activity_tab.active"
+     select = "actCtrl.getContent('own_activity')" ]
+  tab-heading
+    => t('activity_menu.own_activity')
+    strong.text-danger= t 'new_feature'
+  .row
+    .col-md-3.offset10== render 'sidebar'
+    .col-md-9.offset10
+      h3
+        = t 'layout.activity_feed.own_header'
+        i< class= 'fa fa-spinner fa-spin fa-lg offset10 boffset10' ng-show= 'actCtrl.processing'
+      == render 'activity_tabsets'

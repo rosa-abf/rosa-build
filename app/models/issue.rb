@@ -99,7 +99,7 @@ class Issue < ActiveRecord::Base
   end
 
   def collect_recipients
-    recipients = self.project.admins
+    recipients = self.project.all_members
     recipients = recipients | [self.assignee] if self.assignee
     recipients
   end

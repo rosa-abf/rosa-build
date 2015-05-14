@@ -12,7 +12,8 @@
   .timeline-body
     %p
       {{'notification.push.' + item.change_type + '_branch' | i18n}}
-      {{ item.branch_name + ('notification.in_project' | i18n)}}
+      %a{ 'ng-href' => "{{item.branch_link}}" } {{item.branch_name}}
+      {{'notification.in_project' | i18n}}
       %a{ 'ng-href' => "{{item.project_link}}" } {{item.project_name_with_owner}}
 
   .timeline-footer

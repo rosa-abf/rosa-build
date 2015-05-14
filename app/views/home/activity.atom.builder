@@ -4,14 +4,17 @@ atom_feed do |feed|
 
   @activity_feeds.each do |activity_feed|
     feed.entry(activity_feed, url: root_url(anchor: "feed#{activity_feed.id}")) do |entry|
-      feed_content = raw(render(inline: true, partial: activity_feed.partial, locals: activity_feed.data.merge(activity_feed: activity_feed)))
+      feed_content = raw(render(inline: true, partial: activity_feed.partial,
+                                locals: activity_feed.data.merge(activity_feed: activity_feed,
+                                                                 project_owner: activity_feed.project_owner,
+                                                                 project_name:  activity_feed.project_name)))
 
       entry.title(truncate(get_feed_title_from_content(feed_content), length: 50))
       entry.content(feed_content, type: 'html')
 
       entry.author do |author|
-        author.name(activity_feed.data[:user_name])
-        author.email(activity_feed.data[:user_email])
+        author.name(activity_feed.data[:creator_name])
+        author.email(activity_feed.data[:creator_email])
       end if activity_feed.kind != 'git_delete_branch_notification'
     end
   end

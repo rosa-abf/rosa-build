@@ -189,3 +189,5 @@ en:
   until: Until
   none: None
   close: Close
+
+  new_feature: '(new!)'

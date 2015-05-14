@@ -40,6 +40,7 @@ ru:
     activity_feed: Лента активности
     tracker: Трекер
     pull_requests: Пул реквесты
+    own_activity: Мои действия
   feed_menu:
     all: Все
     code: Код

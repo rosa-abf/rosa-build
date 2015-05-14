@@ -93,3 +93,7 @@ end
 def clean_projects_dir
   FileUtils.rm_rf "#{APP_CONFIG['git_path']}"
 end
+
+def reset_email
+  ActionMailer::Base.deliveries = []
+end

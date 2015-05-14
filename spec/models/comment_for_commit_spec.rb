@@ -30,8 +30,15 @@ def should_send_email(args={})
 end
 
 def should_not_send_email(args={})
-  expect(UserMailer).to_not receive(:new_comment_notification)
   create_comment args[:commentor]
+  expect(UserMailer).to_not receive(:new_comment_notification)
+end
+
+def should_send_emails(commentor:, receivers:)
+  reset_email
+  create_comment commentor
+  expect(ActionMailer::Base.deliveries.count).to eq(receivers.count)
+  expect(ActionMailer::Base.deliveries.map &:to).to match_array(receivers.map {|u| [u.email]})
 end
 
 describe Comment do
@@ -47,28 +54,28 @@ describe Comment do
       create_relation(@project, @admin, 'admin')
     end
 
-    it 'should send an e-mail by default settings' do
-      should_send_email(commentor: @stranger, receiver: @user)
+    it 'should send two emails by default settings' do
+      should_send_emails(commentor: @stranger, receivers: [@user, @admin])
     end
 
     context 'for disabled notify setting new_comment_commit_repo_owner' do
       it 'should send an e-mail' do
         @user.notifier.update_column :new_comment_commit_repo_owner, false
-        should_send_email(commentor: @stranger, receiver: @user)
+        should_send_emails(commentor: @stranger, receivers: [@user, @admin])
       end
     end
 
     context 'for disabled notify setting new_comment_commit_owner' do
       it 'should send an e-mail' do
         @user.notifier.update_column :new_comment_commit_owner, false
-        should_send_email(commentor: @stranger, receiver: @user)
+        should_send_emails(commentor: @stranger, receivers: [@user, @admin])
       end
     end
 
     context 'for disabled notify setting new_comment_commit_commentor' do
       it 'should send an e-mail' do
         @user.notifier.update_column :new_comment_commit_commentor, false
-        should_send_email(commentor: @stranger, receiver: @user)
+        should_send_emails(commentor: @stranger, receivers: [@user, @admin])
       end
     end
 

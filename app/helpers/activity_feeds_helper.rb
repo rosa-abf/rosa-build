@@ -11,7 +11,7 @@ module ActivityFeedsHelper
   end
 
   def get_user_from_activity_item(item)
-    email = item.data[:user_email]
+    email = item.data[:creator_email]
     User.where(email: email).first || User.new(email: email) if email.present?
   end
 

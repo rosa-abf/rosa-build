@@ -292,10 +292,9 @@ describe Projects::PullRequestsController, type: :controller do
       ActionMailer::Base.deliveries = []
     end
 
-    it 'should send two email messages to project admins' do
-      expect do
-        post :create, @create_params
-      end.to change(ActionMailer::Base.deliveries, :count).by(2)
+    it 'should send three email messages to project members' do
+      # project owner + project reader + project admin (project writer is a pull creator)
+      expect { post :create, @create_params }.to change(ActionMailer::Base.deliveries, :count).by(3)
     end
 
     it 'should send two email messages to admins and one to assignee' do
@@ -305,10 +304,9 @@ describe Projects::PullRequestsController, type: :controller do
     end
 
     it 'should not duplicate email message' do
-      expect do
+      expect {
         post :create, @create_params.deep_merge(issue: {assignee_id: @project_admin.id})
-      end.to change(ActionMailer::Base.deliveries, :count).by(2) # send only to admins
-      expect(ActionMailer::Base.deliveries.first.to).to_not eq ActionMailer::Base.deliveries.last.to
+      }.to change(ActionMailer::Base.deliveries, :count).by(3) # send all project members
     end
   end
 end
