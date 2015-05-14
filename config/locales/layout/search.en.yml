@@ -16,6 +16,10 @@ en:
     project:
       updated:                              "Updated:"
 
+    placeholders:
+      owner_filter: Project owner
+      name_filter:  Project name
+
   simple_form:
     placeholders:
       search:
