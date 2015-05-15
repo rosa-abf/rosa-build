@@ -37,7 +37,7 @@ module BuildLists
             extra_params
             external_nodes
             group_id
-          ).each { |field| bl.send("#{field}=", build_list.send(field)) }
+          ).each { |field| bl[field] = build_list[field] }
 
           %w(
             auto_publish_status
@@ -45,7 +45,7 @@ module BuildLists
             include_testing_subrepository
             use_cached_chroot
             use_extra_tests
-          ).each { |field| bl.send("#{field}=", options[field]) }
+          ).each { |field| bl[field] = options[field] == '1' }
 
           # debug
           if BuildListPolicy.new(user, bl).create?
