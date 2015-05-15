@@ -47,7 +47,16 @@ module BuildLists
             use_extra_tests
           ).each { |field| bl.send("#{field}=", options[field]) }
 
-          BuildListPolicy.new(user, bl).create? && bl.save
+          # debug
+          if BuildListPolicy.new(user, bl).create?
+            begin
+              bl.save!
+            rescue ActiveRecord::RecordInvalid => invalid
+              raise 'bl.save! ' + invalid.record.errors
+            end
+          else
+            raise 'BuildListPolicy.new(user, bl).create? is false!'
+          end
         end
       end
     end
