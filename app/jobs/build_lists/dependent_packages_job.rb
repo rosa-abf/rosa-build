@@ -52,10 +52,10 @@ module BuildLists
             begin
               bl.save!
             rescue ActiveRecord::RecordInvalid => invalid
-              raise 'bl.save! ' + invalid.record.errors.full_messages.join('; ')
+              raise 'DEBUG: ' + invalid.record.errors.full_messages.join('; ')
             end
           else
-            raise 'BuildListPolicy.new(user, bl).create? is false!'
+            raise 'DEBUG: BuildListPolicy.new(user, bl).create? is false!'
           end
         end
       end
