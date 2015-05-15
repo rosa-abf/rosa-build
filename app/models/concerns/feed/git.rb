@@ -45,6 +45,8 @@ module Feed::Git
       end
       options.merge!({creator_name: record.user.name, creator_email: record.user.email}) if record.user
 
+      options_for_mail = options.merge(project_owner: record.project.owner_uname,
+                                       project_name:  record.project.name)
       record.project.all_members.each do |recipient|
         ActivityFeed.create!(
           user:          recipient,
@@ -56,7 +58,7 @@ module Feed::Git
         )
         next if record.user && record.user.id == recipient.id
         if recipient.notifier.can_notify && recipient.notifier.update_code
-          UserMailer.send(kind, recipient, options).deliver
+          UserMailer.send(kind, recipient, options_for_mail).deliver
         end
       end
 
