@@ -37,7 +37,7 @@ module BuildLists
             extra_params
             external_nodes
             group_id
-          ).each { |field| bl[field] = build_list[field] }
+          ).each { |field| bl.send("#{field}=", build_list.send(field)) }
 
           %w(
             auto_publish_status
