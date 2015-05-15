@@ -40,7 +40,7 @@ module BuildLists
           ).each { |field| bl.send("#{field}=", build_list.send(field)) }
 
           bl.auto_publish_status = options[:auto_publish_status]
-          %w(
+          %i(
             auto_create_container
             include_testing_subrepository
             use_cached_chroot
