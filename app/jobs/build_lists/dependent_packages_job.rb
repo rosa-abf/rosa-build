@@ -30,32 +30,28 @@ module BuildLists
           bl.include_repos        = [build_for_platform.repositories.main.first.try(:id)].compact
           bl.include_repos       |= [save_to_repository.id]
           %i(
-            build_for_platform
+            build_for_platform_id
             update_type
-            save_to_platform
+            save_to_platform_id
             extra_build_lists
             extra_params
             external_nodes
             group_id
-          ).each { |field| bl.send("#{field}=", build_list.send(field)) }
+          ).each { |field| bl[field] = build_list[field] }
 
-          bl.auto_publish_status = options[:auto_publish_status]
-          %i(
+          bl.auto_publish_status = options['auto_publish_status']
+          %w(
             auto_create_container
             include_testing_subrepository
             use_cached_chroot
             use_extra_tests
-          ).each { |field| bl[field] = options[field] == '1' }
+          ).each { |field| bl[field] = options[field] }
 
           # debug
-          if BuildListPolicy.new(user, bl).create?
-            begin
-              bl.save!
-            rescue ActiveRecord::RecordInvalid => invalid
-              raise 'DEBUG: ' + invalid.record.errors.full_messages.join('; ')
-            end
-          else
-            raise 'DEBUG: BuildListPolicy.new(user, bl).create? is false!'
+          begin
+            bl.save! if BuildListPolicy.new(user, bl).create?
+          rescue ActiveRecord::RecordInvalid => invalid
+            raise 'DEBUG: ' + invalid.record.errors.full_messages.join('; ')
           end
         end
       end
