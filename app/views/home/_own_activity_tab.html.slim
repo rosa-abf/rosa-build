@@ -1,8 +1,6 @@
-tab[ active=  "actCtrl.own_activity_tab.active"
+tab[ heading= t('activity_menu.own_activity')
+     active=  "actCtrl.own_activity_tab.active"
      select = "actCtrl.getContent('own_activity')" ]
-  tab-heading
-    => t('activity_menu.own_activity')
-    strong.text-danger= t 'new_feature'
   .row
     .col-md-3.offset10== render 'sidebar'
     .col-md-9.offset10
