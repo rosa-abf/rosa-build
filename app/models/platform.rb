@@ -98,18 +98,6 @@ class Platform < ActiveRecord::Base
   after_destroy -> { remove_symlink_directory unless hidden? }
 
   accepts_nested_attributes_for :platform_arch_settings, allow_destroy: true
-  # attr_accessible :name,
-  #                 :distrib_type,
-  #                 :parent_platform_id,
-  #                 :platform_type,
-  #                 :owner,
-  #                 :visibility,
-  #                 :description,
-  #                 :released,
-  #                 :platform_arch_settings_attributes,
-  #                 :automatic_metadata_regeneration,
-  #                 :admin_id,
-  #                 :term
 
   attr_accessor :admin_id, :term
 

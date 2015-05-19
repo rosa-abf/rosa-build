@@ -24,4 +24,23 @@ class ProductBuildListPolicy < ApplicationPolicy
     is_admin? || ProductPolicy.new(user, record.product).destroy?
   end
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(
+      base_url
+      branch
+      commit_hash
+      main_script
+      not_delete
+      params
+      product_id
+      product_name
+      project_id
+      project_version
+      time_living
+    )
+  end
+
 end

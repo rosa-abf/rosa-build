@@ -28,16 +28,6 @@ class ProductBuildList < ActiveRecord::Base
   validates :main_script, :params, length: { maximum: 255 }
 
   attr_accessor :base_url, :product_name
-  # attr_accessible :base_url,
-  #                 :branch,
-  #                 :project_id,
-  #                 :main_script,
-  #                 :params,
-  #                 :project_version,
-  #                 :commit_hash,
-  #                 :product_id,
-  #                 :not_delete,
-  #                 :product_name
 
   attr_readonly :product_id
   serialize :results, Array
