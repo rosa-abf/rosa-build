@@ -71,6 +71,31 @@ class ProjectPolicy < ApplicationPolicy
     true
   end
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(
+      add_to_repository_id
+      architecture_dependent
+      autostart_status
+      autostart_status
+      default_branch
+      description
+      has_issues
+      has_wiki
+      is_package
+      maintainer_id
+      mass_import
+      name
+      publish_i686_into_x86_64
+      srpm
+      srpms_list
+      url
+      visibility
+    )
+  end
+
   class Scope < Scope
 
     def membered
