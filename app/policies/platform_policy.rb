@@ -62,6 +62,27 @@ class PlatformPolicy < ApplicationPolicy
     record.personal? && ( is_admin? || owner? )
   end
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(
+      admin_id
+      automatic_metadata_regeneration
+      default_branch
+      description
+      distrib_type
+      name
+      owner
+      parent_platform_id
+      platform_arch_settings_attributes
+      platform_type
+      released
+      term
+      visibility
+    )
+  end
+
   class Scope < Scope
 
     def related
