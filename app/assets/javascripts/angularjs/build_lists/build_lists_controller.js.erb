@@ -57,6 +57,9 @@ RosaABF.controller('BuildListsController',
   }, true);
 
   $scope.getBuildLists = function() {
+    if ( $scope.isRequest) {
+      return;
+    }
     // Disable 'Search' button
     $scope.isRequest = true;
 
@@ -115,6 +118,7 @@ RosaABF.controller('BuildListsController',
       // Enable 'Search' button
       $scope.isRequest = false;
     });;
+    $scope.first_run = false;
   }
 
   $scope.showRelated = function(build_list, disable_effect) {
@@ -144,11 +148,11 @@ RosaABF.controller('BuildListsController',
   $scope.refresh = function(force) {
     if ($('#autoreload').is(':checked') || force) {
       var params = {};
+
       _.each($("#monitoring_filter").serializeArray(), function(a){
         if (a.value) { params[a.name] = a.value; }
       });
       $location.search(params);
-      $scope.first_run = false;
       $scope.getBuildLists();
     }
     if (!force)
@@ -163,6 +167,7 @@ RosaABF.controller('BuildListsController',
 
   $scope.updateParams = function() {
     var params = $location.search();
+
     $scope.params    = {
       page:               params.page     || 1,
       per_page:           params.per_page || 25,

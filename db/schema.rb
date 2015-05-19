@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150502145718) do
+ActiveRecord::Schema.define(version: 20150519032855) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 20150502145718) do
     t.index ["mass_build_id", "status"], :name => "index_build_lists_on_mass_build_id_and_status"
     t.index ["project_id", "save_to_repository_id", "build_for_platform_id", "arch_id"], :name => "maintainer_search_index"
     t.index ["project_id"], :name => "index_build_lists_on_project_id"
+    t.index ["updated_at"], :name => "index_build_lists_on_updated_at", :order => {"updated_at" => :desc}
   end
 
   create_table "projects", force: true do |t|
