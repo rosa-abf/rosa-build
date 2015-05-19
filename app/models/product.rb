@@ -16,13 +16,6 @@ class Product < ActiveRecord::Base
 
   scope :recent, -> { order(:name) }
 
-  # attr_accessible :name,
-  #                 :description,
-  #                 :project_id,
-  #                 :main_script,
-  #                 :params,
-  #                 :platform_id,
-  #                 :project_version
   attr_readonly :platform_id
 
   def full_clone(attrs = {})

@@ -5,7 +5,7 @@ class Api::V1::ProductsController < Api::V1::BaseController
   before_action :load_product, except: :create
 
   def create
-    create_subject @product = Product.new(params[:product])
+    create_subject @product = Product.new(subject_params(Product))
   end
 
   def update
