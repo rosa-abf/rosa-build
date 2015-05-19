@@ -22,4 +22,17 @@ class PullRequestPolicy < ApplicationPolicy
     is_admin? || local_writer?(record.to_project)
   end
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(
+      body
+      from_ref
+      issue_attributes
+      title
+      to_ref
+    )
+  end
+
 end
