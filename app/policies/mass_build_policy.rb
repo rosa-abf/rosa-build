@@ -15,4 +15,27 @@ class MassBuildPolicy < ApplicationPolicy
     !record.stop_build && create?
   end
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(
+      arches
+      auto_create_container
+      auto_publish_status
+      build_for_platform_id
+      description
+      external_nodes
+      extra_build_lists
+      extra_mass_builds
+      extra_repositories
+      include_testing_subrepository
+      increase_release_tag
+      projects_list
+      repositories
+      use_cached_chroot
+      use_extra_tests
+    )
+  end
+
 end
