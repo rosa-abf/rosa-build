@@ -47,7 +47,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def create
-    pbl = @product.product_build_lists.new params[:product_build_list]
+    pbl = @product.product_build_lists.new product_build_list_params
     pbl.project = @product.project
     pbl.user = current_user
     pbl.base_url = "http://#{request.host_with_port}"
@@ -92,6 +92,10 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   protected
+
+  def product_build_list_params
+    subject_params(ProductBuildList)
+  end
 
   def redirect_to_full_path_if_short_url
     if params[:platform_id].blank? || params[:product_id].blank?
