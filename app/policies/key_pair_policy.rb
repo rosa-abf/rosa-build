@@ -10,7 +10,7 @@ class KeyPairPolicy < ApplicationPolicy
   #
   # Returns Array
   def permitted_attributes
-    %i(public secret)
+    %i(public secret repository_id)
   end
 
 end

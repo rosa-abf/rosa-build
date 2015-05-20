@@ -99,6 +99,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
     key_pair.destroy if key_pair
     key_pair = @repository.build_key_pair subject_params(Repository, KeyPair)
     key_pair.user_id = current_user.id
+    authorize key_pair, :create?
     if key_pair.save
       render_json_response @repository, 'Signatures have been updated for repository successfully'
     else
