@@ -6,4 +6,11 @@ class KeyPairPolicy < ApplicationPolicy
   end
   alias_method :destroy?, :create?
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(public secret)
+  end
+
 end
