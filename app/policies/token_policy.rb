@@ -8,4 +8,11 @@ class TokenPolicy < ApplicationPolicy
   alias_method :read?,     :show?
   alias_method :withdraw?, :show?
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(description)
+  end
+
 end

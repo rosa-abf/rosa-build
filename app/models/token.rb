@@ -12,8 +12,6 @@ class Token < ActiveRecord::Base
 
   before_validation :generate_token, on: :create
 
-  # attr_accessible :description
-
   state_machine :status, initial: :active do
     event :block do
       transition [:active, :blocked] => :blocked

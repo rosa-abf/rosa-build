@@ -27,7 +27,7 @@ class Platforms::TokensController < Platforms::BaseController
   end
 
   def create
-    @token = @platform.tokens.build params[:token]
+    @token = @platform.tokens.build token_params
     @token.creator = current_user
     authorize @token
     if @token.save
@@ -41,6 +41,10 @@ class Platforms::TokensController < Platforms::BaseController
   end
 
   protected
+
+  def token_params
+    subject_params(Token)
+  end
 
   # Private: before_action hook which loads Repository.
   def load_token
