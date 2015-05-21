@@ -24,7 +24,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def update
-    authorize @repository = @platform.repositories.build(params[:repository])
+    authorize @repository
     if @repository.update_attributes params[:repository].slice(:description, :synchronizing_publications, :publish_builds_only_from_branch).merge(publish_without_qa: (params[:repository][:publish_without_qa] || @repository.publish_without_qa))
       flash[:notice] = I18n.t("flash.repository.updated")
       redirect_to platform_repository_path(@platform, @repository)
