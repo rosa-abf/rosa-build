@@ -50,7 +50,7 @@ class Project < ActiveRecord::Base
                    length: { maximum: 100 }
   validates :maintainer, presence: true, unless: :new_record?
   validates :url, presence: true, format: { with: /\Ahttps?:\/\/[\S]+\z/ }, if: :mass_import
-  validates :add_to_repository, presence: true, if: :mass_import
+  validates :add_to_repository_id, presence: true, if: :mass_import
   validates :visibility, presence: true, inclusion: { in: VISIBILITIES }
   validate { errors.add(:base, :can_have_less_or_equal, count: MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   # throws validation error message from ProjectToRepository model into Project model
