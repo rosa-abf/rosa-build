@@ -16,8 +16,8 @@
       =< diff_file_icon(diff).html_safe
       =< get_filename_in_diff(diff, diff.a_path)
     - if diff.b_path.present?
-      button.btn.btn-link.pull-right
-        = link_to "view file @ #{shortest_hash_id(commit_id)}", blob_path(@project, commit_id, diff.b_path)
+      = link_to "view file @ #{shortest_hash_id(commit_id)}", blob_path(@project, commit_id, diff.b_path),
+        class: 'btn btn-link pull-right'
     .clearfix
 
   .diff_data.collapse id= diff_counter_content class= is_file_open
