@@ -3,7 +3,6 @@ class Subscribe < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  # attr_accessible :status, :user_id
   validates :user, presence: true
 
   def commit_subscribe?
@@ -38,7 +37,7 @@ class Subscribe < ActiveRecord::Base
     if subscribe = Subscribe.where(options).first
       subscribe.update_attributes(status: status)
     else
-      Subscribe.create(options.merge(status: status), without_protection: true)
+      Subscribe.create options.merge(status: status)
     end
   end
 

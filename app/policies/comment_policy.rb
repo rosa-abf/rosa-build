@@ -11,4 +11,11 @@ class CommentPolicy < ApplicationPolicy
   end
   alias_method :destroy?, :update?
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(body data)
+  end
+
 end
