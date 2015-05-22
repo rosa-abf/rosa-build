@@ -2,13 +2,10 @@ class Collaborator
   include ActiveModel::Conversion
   include ActiveModel::Validations
   include ActiveModel::Serializers::JSON
-  # include ActiveModel::MassAssignmentSecurity
   extend  ActiveModel::Naming
 
   attr_accessor :role, :actor, :project, :relation
   attr_reader :id, :actor_id, :actor_type, :actor_name, :project_id
-
-  # attr_accessible :role
 
   delegate :new_record?, to: :relation
 
@@ -56,7 +53,7 @@ class Collaborator
   end
 
   def update_attributes(attributes, options = {})
-    sanitize_for_mass_assignment(attributes, options[:as]).each_pair do |k, v|
+    attributes.each_pair do |k, v|
       send("#{k}=", v)
     end
     save

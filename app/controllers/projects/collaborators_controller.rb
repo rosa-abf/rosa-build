@@ -24,7 +24,7 @@ class Projects::CollaboratorsController < Projects::BaseController
   end
 
   def create
-    @collaborator = Collaborator.new(params[:collaborator])
+    @collaborator = Collaborator.new(collaborator_params)
     @collaborator.project = @project
     respond_to do |format|
       if @collaborator.save
@@ -61,6 +61,10 @@ class Projects::CollaboratorsController < Projects::BaseController
   end
 
   protected
+
+  def collaborator_params
+    subject_params(Collaborator)
+  end
 
   def find_users
     @users = @project.collaborators.order('uname')#User.all
