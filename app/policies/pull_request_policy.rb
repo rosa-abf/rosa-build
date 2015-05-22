@@ -29,10 +29,9 @@ class PullRequestPolicy < ApplicationPolicy
     %i(
       body
       from_ref
-      issue_attributes
       title
       to_ref
-    )
+    ) + [ issue_attributes: %i(title body) ]
   end
 
 end
