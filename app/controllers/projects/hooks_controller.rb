@@ -17,7 +17,7 @@ class Projects::HooksController < Projects::BaseController
   end
 
   def create
-    authorize @hook = @project.hooks.build(params[:hook])
+    authorize @hook = @project.hooks.build(hook_params)
     if @hook.save
       redirect_to project_hooks_path(@project, name: @hook.name), notice: t('flash.hook.created')
     else
@@ -28,7 +28,7 @@ class Projects::HooksController < Projects::BaseController
   end
 
   def update
-    if @hook.update_attributes(params[:hook])
+    if @hook.update_attributes(hook_params)
       redirect_to project_hooks_path(@project, name: @hook.name), notice: t('flash.hook.updated')
     else
       flash[:error] = t('flash.hook.save_error')
@@ -43,6 +43,10 @@ class Projects::HooksController < Projects::BaseController
   end
 
   private
+
+  def hook_params
+    subject_params(Hook)
+  end
 
   # Private: before_action hook which loads Hook.
   def load_hook
