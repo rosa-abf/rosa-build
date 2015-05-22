@@ -37,7 +37,7 @@ module BuildListObserver
           end
           build_count = statistic.build_count.to_i
           new_av_time = ( statistic.average_build_time * build_count + duration.to_i ) / ( build_count + 1 )
-          statistic.update_attributes({average_build_time: new_av_time, build_count: build_count + 1}, without_protection: true)
+          statistic.update_attributes(average_build_time: new_av_time, build_count: build_count + 1)
         end
       end
     end

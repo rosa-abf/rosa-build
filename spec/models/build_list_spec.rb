@@ -191,8 +191,8 @@ describe BuildList do
         auto_publish_status:  BuildList::AUTO_PUBLISH_STATUS_DEFAULT,
         project:              project
       )
-      bl.update_attributes({commit_hash: bl.project.repo.commits('master').last.id,
-        status: BuildList::BUILD_PUBLISH}, without_protection: true)
+      bl.update_attributes(commit_hash: bl.project.repo.commits('master').last.id,
+        status: BuildList::BUILD_PUBLISH)
       bl.published
       expect(subject.count).to eq 1
     end
@@ -287,7 +287,7 @@ describe BuildList do
     let(:build_list) { FactoryGirl.create(:build_list) }
 
     before do
-      build_list.update_attributes({ status: BuildList::SUCCESS }, without_protection: true)
+      build_list.update_attributes(status: BuildList::SUCCESS)
       allow(build_list).to receive(:valid_branch_for_publish?).and_return(true)
     end
 
@@ -315,7 +315,7 @@ describe BuildList do
     let(:build_list) { FactoryGirl.create(:build_list) }
 
     before do
-      build_list.update_attributes({ status: BuildList::SUCCESS }, without_protection: true)
+      build_list.update_attributes(status: BuildList::SUCCESS)
     end
 
     it 'returns true for eligible build' do
