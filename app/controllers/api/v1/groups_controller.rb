@@ -28,7 +28,8 @@ class Api::V1::GroupsController < Api::V1::BaseController
   end
 
   def create
-    @group = current_user.own_groups.new(group_params)
+    @group = current_user.own_groups.new
+    @group.assign_attributes(group_params)
     create_subject @group
   end
 
@@ -50,7 +51,7 @@ class Api::V1::GroupsController < Api::V1::BaseController
   private
 
   def group_params
-    subject_params(Group)
+    subject_params(Group, @group)
   end
 
   # Private: before_action hook which loads Group.

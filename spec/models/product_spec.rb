@@ -44,7 +44,7 @@ describe Product do
         params = {main_script: 'text.sh', project_version: product.project.default_branch}
         product.update_attributes params.merge(autostart_status: Product::ONCE_A_12_HOURS)
         FactoryGirl.create :product, params.merge(autostart_status: Product::ONCE_A_DAY)
-        FactoryGirl.create(:arch, name: 'x86_64')
+        FactoryGirl.build(:arch, name: 'x86_64').save
       end
 
       it 'should be created only one product_build_list' do
