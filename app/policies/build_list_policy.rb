@@ -41,6 +41,7 @@ class BuildListPolicy < ApplicationPolicy
       ProjectPolicy.new(user, record.project).write? : local_admin?(record.save_to_platform)
     end
   end
+  alias_method :update_type?, :publish?
 
   def create_container?
     return false unless record.new_core?
