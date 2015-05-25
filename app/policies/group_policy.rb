@@ -36,7 +36,9 @@ class GroupPolicy < ApplicationPolicy
   #
   # Returns Array
   def permitted_attributes
-    %i(uname description delete_avatar default_branch)
+    pa = %i(description delete_avatar default_branch)
+    pa << :uname if record.new_record?
+    pa
   end
 
   class Scope < Scope

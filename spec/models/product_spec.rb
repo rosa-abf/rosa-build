@@ -22,14 +22,10 @@ describe Product do
       it { should validate_uniqueness_of(:name).scoped_to(:platform_id) }
     end
 
-    it { should ensure_length_of(:main_script).is_at_most(255) }
-    it { should ensure_length_of(:params).is_at_most(255) }
+    it { should validate_length_of(:main_script).is_at_most(255) }
+    it { should validate_length_of(:params).is_at_most(255) }
 
     it { should have_readonly_attribute(:platform_id) }
-
-    it { should_not allow_mass_assignment_of(:platform) }
-    #it { should_not allow_mass_assignment_of(:platform_id) }
-    it { should_not allow_mass_assignment_of(:product_build_lists) }
   end
 
 

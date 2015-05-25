@@ -1,28 +1,14 @@
 require 'spec_helper'
 
 describe Group do
-  before(:each) do
-    stub_symlink_methods
-    @group = FactoryGirl.create(:group)
+  let(:group) { FactoryGirl.build(:group) }
+
+  before { stub_symlink_methods }
+
+  it { should_not allow_value("How do you do...\nmy_group").for(:uname) }
+
+  it 'is valid given valid attributes' do
+    expect(group).to be_valid
   end
 
-  context 'with mass assignment' do
-    before(:each) do
-      @user = FactoryGirl.create(:user)
-      @another_user = FactoryGirl.create(:user)
-    end
-
-    it 'should not be able to update uname' do
-      @group.should_not allow_mass_assignment_of uname: 'new_uname'
-    end
-
-    it 'should not be able to update owner' do
-      @group.should_not allow_mass_assignment_of owner_type: 'User', owner_id: @another_user.id
-    end
-  end
-
-  it 'uname validation' do
-    g = FactoryGirl.build(:group, uname: "How do you do...\nmy_group")
-    expect(g.valid?).to be_falsy
-  end
 end
