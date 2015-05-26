@@ -16,6 +16,7 @@ class UserPolicy < ApplicationPolicy
   # Returns Array
   def permitted_attributes
     %i(
+      avatar
       company
       current_password
       delete_avatar

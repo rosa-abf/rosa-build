@@ -8,6 +8,4 @@ class Label < ActiveRecord::Base
 
   validates :color, presence: true
   validates :color, format: { with: /\A([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, message: I18n.t('layout.issues.invalid_labels') }
-
-  # attr_accessible :name, :color
 end

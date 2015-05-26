@@ -41,8 +41,6 @@ module ProductBuildLists::Statusable
       presence:       true,
       inclusion:      { in: STATUSES }
 
-    # attr_accessible :status
-
     before_destroy :can_destroy?
 
     state_machine :status, initial: :build_pending do

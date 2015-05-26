@@ -5,6 +5,4 @@ class UserBuildsSetting < ActiveRecord::Base
 
   validates :user, presence: true
 
-  # attr_accessible :platforms
-
 end

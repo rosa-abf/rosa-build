@@ -79,7 +79,6 @@ class ProjectPolicy < ApplicationPolicy
       add_to_repository_id
       architecture_dependent
       autostart_status
-      autostart_status
       default_branch
       description
       has_issues

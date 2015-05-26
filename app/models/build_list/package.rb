@@ -7,8 +7,6 @@ class BuildList::Package < ActiveRecord::Base
 
   serialize :dependent_packages, Array
 
-  # attr_accessible :fullname, :name, :release, :version, :sha1, :epoch, :dependent_packages
-
   validates :build_list, :build_list_id, :project, :project_id,
             :platform, :platform_id, :fullname,
             :package_type, :name, :release, :version,

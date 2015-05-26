@@ -7,9 +7,6 @@ module ExternalNodable
     validates :external_nodes,
               inclusion:              { in: EXTERNAL_NODES },
               allow_blank:            true
-
-
-    # attr_accessible :external_nodes
   end
 
 end

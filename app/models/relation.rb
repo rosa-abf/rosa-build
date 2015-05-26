@@ -15,8 +15,6 @@ class Relation < ActiveRecord::Base
 #  validate { errors.add(:actor, :taken) if Relation.where(actor_type: self.actor_type, actor_id: self.actor_id).present? }
   before_validation :add_default_role
 
-  # attr_accessible :actor_id, :actor_type, :target_id, :target_type, :actor, :target, :role
-
   scope :by_user_through_groups, ->(u) {
     where("actor_type = 'User' AND actor_id = ? OR actor_type = 'Group' AND actor_id IN (?)", u.id, u.group_ids)
   }

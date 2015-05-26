@@ -5,14 +5,11 @@ class Feedback
   include ActiveModel::Conversion
   include ActiveModel::Validations
   include ActiveModel::Serializers::JSON
-  include ActiveModel::MassAssignmentSecurity
   extend  ActiveModel::Naming
 
   self.include_root_in_json = false
 
   attr_accessor :name, :email, :subject, :message
-
-  # attr_accessible :name, :email, :subject, :message
 
   validates :name, :subject, :message, presence: true
   validates :email, presence: true,
@@ -24,7 +21,7 @@ class Feedback
     if args.respond_to? :name and args.respond_to? :email
       self.name, self.email = args.name, args.email
     elsif args.respond_to? :each_pair
-      sanitize_for_mass_assignment(args, options[:as]).each_pair do |k, v|
+      args.each_pair do |k, v|
         send("#{k}=", v)
       end
     else

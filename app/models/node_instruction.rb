@@ -23,8 +23,6 @@ class NodeInstruction < ActiveRecord::Base
     errors.add(:status, 'Can be only single active instruction for each node') if !disabled? && NodeInstruction.duplicate(id.to_i, user_id).exists?
   }
 
-  # attr_accessible :instruction, :user_id, :output, :status
-
   state_machine :status, initial: :ready do
 
     after_transition(on: :restart) do |instruction, transition|

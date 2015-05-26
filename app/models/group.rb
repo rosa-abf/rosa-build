@@ -32,7 +32,6 @@ class Group < Avatar
     joins(:actors).where('relations.role' => ['admin', 'writer'], 'relations.actor_id' => actor.id, 'relations.actor_type' => 'User')
   }
 
-  # attr_accessible :uname, :description, :delete_avatar
   attr_readonly :uname
 
   attr_accessor :delete_avatar

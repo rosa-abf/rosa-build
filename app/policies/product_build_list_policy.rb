@@ -39,6 +39,7 @@ class ProductBuildListPolicy < ApplicationPolicy
       product_name
       project_id
       project_version
+      status
       time_living
     )
   end

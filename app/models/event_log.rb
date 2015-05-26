@@ -12,7 +12,6 @@ class EventLog < ActiveRecord::Base
     self.eventable_name ||= eventable.name if eventable.respond_to?(:name)
   end
   # after_create { self.class.current_controller = nil }
-  # attr_accessible :kind, :message, :eventable, :eventable_name
 
   class << self
     def create_with_current_controller(attributes)

@@ -7,7 +7,7 @@ class Users::SettingsController < Users::BaseController
   def profile
     if request.patch?
       send_confirmation = params[:user][:email] != @user.email
-      if @user.update_without_password(params[:user])
+      if @user.update_without_password(user_params)
         update_avatar(@user, params)
         if send_confirmation
           @user.confirmed_at = @user.confirmation_sent_at = nil
@@ -29,7 +29,7 @@ class Users::SettingsController < Users::BaseController
 
   def private
     if request.patch?
-      if @user.update_with_password(params[:user])
+      if @user.update_with_password(user_params)
         flash[:notice] = t('flash.user.saved')
         redirect_to private_settings_path and return
       end
@@ -51,12 +51,22 @@ class Users::SettingsController < Users::BaseController
   def builds_settings
     @user.builds_setting ||= @user.build_builds_setting
     if request.patch?
-      if @user.builds_setting.update_attributes(params[:user_builds_setting])
+      if @user.builds_setting.update_attributes(user_builds_setting_params)
         flash[:notice] = I18n.t("flash.settings.saved")
         redirect_to builds_settings_settings_path and return
       end
       flash[:error] = I18n.t("flash.settings.save_error")
     end
+  end
+
+  private
+
+  def user_params
+    subject_params(User)
+  end
+
+  def user_builds_setting_params
+    subject_params(UserBuildsSetting)
   end
 
 end

@@ -75,12 +75,13 @@ class PlatformPolicy < ApplicationPolicy
       name
       owner
       parent_platform_id
-      platform_arch_settings_attributes
       platform_type
       released
       term
       visibility
-    )
+    ) + [
+      platform_arch_settings_attributes: %i(id arch_id platform_id default time_living)
+    ]
   end
 
   class Scope < Scope

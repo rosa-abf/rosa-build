@@ -47,7 +47,6 @@ class Issue < ActiveRecord::Base
   before_create :update_statistic
   before_update :update_statistic
 
-  # attr_accessible :labelings_attributes, :title, :body, :assignee_id
   accepts_nested_attributes_for :labelings,
     reject_if:     -> (attributes) { attributes['label_id'].blank? },
     allow_destroy: true

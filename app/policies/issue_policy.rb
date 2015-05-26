@@ -25,7 +25,7 @@ class IssuePolicy < ApplicationPolicy
     pa = %i(title body)
     if ProjectPolicy.new(user, record.project).write?
       pa << :assignee_id
-      pa << { labelings_attributes: %i(name color label_id) }
+      pa << { labelings_attributes: %i(id name color label_id _destroy) }
       pa << { labelings: [] }
     end
     pa

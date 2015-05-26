@@ -49,7 +49,6 @@ class PullRequest < ActiveRecord::Base
   after_destroy :clean_dir
 
   accepts_nested_attributes_for :issue
-  # attr_accessible :issue_attributes, :to_ref, :from_ref
 
   scope :needed_checking,       -> { includes(:issue).where(issues: { status: [STATUS_OPEN, STATUS_BLOCKED, STATUS_READY] }) }
   scope :not_closed_or_merged,  -> { needed_checking }

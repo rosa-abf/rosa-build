@@ -18,7 +18,6 @@ module TimeLiving
     }
 
     before_validation :convert_time_living
-    # attr_accessible :time_living
   end
 
   protected

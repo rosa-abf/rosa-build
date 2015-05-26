@@ -62,10 +62,6 @@ class Project < ActiveRecord::Base
     errors.delete :project_to_repositories
   end
 
-  # attr_accessible :name, :description, :visibility, :srpm, :is_package,
-  #                 :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64,
-  #                 :url, :srpms_list, :mass_import, :add_to_repository_id, :architecture_dependent,
-  #                 :autostart_status
   attr_readonly :owner_id, :owner_type
 
   before_validation :truncate_name, on: :create

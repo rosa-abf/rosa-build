@@ -1,4 +1,5 @@
 ActiveAdmin.register FlashNotify do
+  permit_params :body_ru, :body_en, :status, :published
 
   menu parent: 'Misc'
 
