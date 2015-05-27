@@ -40,7 +40,7 @@ class Users::SettingsController < Users::BaseController
 
   def notifiers
     if request.patch?
-      if @user.notifier.update_attributes(params[:settings_notifier])
+      if @user.notifier.update_attributes(settings_notifier_params)
         flash[:notice] = I18n.t("flash.settings.saved")
         redirect_to notifiers_settings_path and return
       end
@@ -60,6 +60,10 @@ class Users::SettingsController < Users::BaseController
   end
 
   private
+
+  def settings_notifier_params
+    subject_params(SettingsNotifier)
+  end
 
   def user_params
     subject_params(User)
