@@ -236,7 +236,12 @@ class Projects::BuildListsController < Projects::BaseController
 
     params[:build_list] ||= {}
     policy(BuildList).permitted_attributes.each do |key|
-      params[:build_list][key] = build_list.send(key)
+      params[:build_list][key] =
+        if build_list.respond_to?(key)
+          build_list.send(key)
+        elsif build_list.respond_to?("#{key}?")
+          build_list.send("#{key}?")
+        end
     end
     params[:arches] = [build_list.arch_id]
     [:owner_filter, :status_filter].each { |t| params[t] = 'true' if %w(true undefined).exclude? params[t] }
