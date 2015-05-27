@@ -10,7 +10,7 @@ NewMassBuildController = (dataservice, $http, MassBuild) ->
     repo.checked and vm.projects_list.length > 0
 
   vm.selectRepository = (repo) ->
-    return false if repo.checked # 'checked' have a previous value!
+    return false unless repo.checked
 
     promise = MassBuild.get_projects(vm.platform_id, repo.id)
 
