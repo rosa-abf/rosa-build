@@ -9,7 +9,10 @@ massBuildService = ($http) ->
         }
       )
 
-      $http.get(path)
+      $http.get(path, {
+        transformResponse: (data, headers)->
+          data
+      })
   }
 
 angular
