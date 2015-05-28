@@ -18,4 +18,5 @@
                              href        = anchor
                              ng-click    = "commentsCtrl.update(#{comment.id})" ]
             = t('layout.update')
-          =< link_to t('layout.cancel'), anchor
+          =< link_to t('layout.cancel'), anchor,
+                     'ng-click' => "commentsCtrl.closeEditForm(#{comment.id})"

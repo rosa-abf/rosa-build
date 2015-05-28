@@ -66,7 +66,7 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
     vm.processing = false
     false
 
-  vm.toggleEditForm = (id) ->
+  vm.toggleEditForm = (id)->
     $('.open-comment').addClass('hidden')
     form = $('.open-comment.comment-'+id)
     if form.length is 1
@@ -74,6 +74,10 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
       true
     else
       false
+
+  vm.closeEditForm = (id)->
+    $('.open-comment.comment-'+id).addClass('hidden')
+    false
 
   vm.add = ($event)->
     $event.preventDefault()
