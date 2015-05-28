@@ -14,8 +14,8 @@ module Feed::Comment
 
     if issue_comment?
       commentable.subscribes.each do |subscribe|
-        if user_id == subscribe.user_id || can_notify_on_new_comment?(subscribe)
-          UserMailer.new_comment_notification(self, subscribe.user_id).deliver
+        if can_notify_on_new_comment?(subscribe)
+          UserMailer.new_comment_notification(self, subscribe.user_id).deliver unless own_comment?(subscribe.user)
           ActivityFeed.create(
             {
               user_id:           subscribe.user_id,
