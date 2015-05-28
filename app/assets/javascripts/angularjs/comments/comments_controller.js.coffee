@@ -71,6 +71,12 @@ CommentsController = (Comment, Preview, confirmMessage, $scope, compileHTML, $ro
     form = $('.open-comment.comment-'+id)
     if form.length is 1
       form.removeClass('hidden')
+      ########## Maybe Chrome 43 bug? don't show text in the textarea :(
+      textarea = form.find('.form-group textarea')
+      tmp = textarea.val()
+      textarea.val('')
+      textarea.val(tmp)
+      ##########
       true
     else
       false
