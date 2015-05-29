@@ -1,6 +1,8 @@
 RosaLab ABF
 ===========
 
+[![Join the chat at https://gitter.im/rosa-abf/rosa-build](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rosa-abf/rosa-build?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 A distributed environment to build distributions, supporting all steps from managing source code to creating ISO images. If you have any problems or requests please contact
 [support](https://abf.rosalinux.ru/contact).
 
