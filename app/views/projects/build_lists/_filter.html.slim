@@ -7,7 +7,7 @@
   .panel-body ng-show = 'isOpenFilters'
     = form_for :filter, html: { class: :form, id: 'monitoring_filter' }, authenticity_token: false do |f|
       .row
-        .col-lg-12.col-md-4
+        .col-xl-12.col-md-4
           h4= t 'layout.build_lists.ownership.header'
           =f.hidden_field :ownership, value: '{{params.filter.ownership}}' if current_user
           .btn-group.btn-group-justified
@@ -32,7 +32,7 @@
                      { include_blank: true },
                      html_options.merge(id: 'status', 'ng-model' => 'params.filter.status')
 
-        .col-lg-12.col-md-4
+        .col-xl-12.col-md-4
           h4= t 'activerecord.models.platform'
           = f.select :save_to_platform_id, filter_by_save_to_platform,
                      { include_blank: true },
@@ -46,10 +46,10 @@
           = f.select :mass_build_id, mass_build_options, { include_blank: true },
                      html_options.merge(id: 'mass_build', 'ng-model' => 'params.filter.mass_build_id')
 
-        .col-lg-12.col-md-4
+        .col-xl-12.col-md-4
           .row ng-controller = 'DatePickerController as datePickerCtrl'
             -[:updated_at_start, :updated_at_end].each do |attr|
-              .col-lg-12.col-md-6
+              .col-xl-12.col-md-6
                 h4= t attr == :updated_at_start ? '_on' : 'until'
                 = f.text_field attr, size: 10, class: 'form-control',
                   'datepicker-popup' => '{{datePickerCtrl.format}}',
@@ -75,11 +75,11 @@
                                         disabled = @project.present? ]
 
         .clearfix
-        .col-lg-12.col-md-4.offset10
+        .col-xl-12.col-md-4.offset10
           = label_tag :autoreload do
             = check_box_tag :autoreload, true, true
             = t 'layout.autoreload_page'
-        .col-lg-12.col-lg-offset-0.col-md-4.col-md-offset-4.offset10
+        .col-xl-12.col-xl-offset-0.col-md-4.col-md-offset-4.offset10
           .btn-group.btn-group-justified
             .btn-group ng-show = 'isRequest'
               button.btn.btn-default type = 'button' disabled = true

@@ -2,7 +2,7 @@
 
 .row.offset10 ng-controller = 'BuildListsController' ng-init = 'init()' ng-cloak = true
   = hidden_field_tag :name_with_owner, @project.try(:name_with_owner)
-  .col-lg-2.col-sm-12
+  .col-xl-2.col-sm-12
     -if @project && policy(@project.build_lists.build).create?
 
         button.btn.btn-primary.btn-block[ id = 'filter_new_build'
@@ -12,7 +12,7 @@
           =< t('layout.build_lists.new_header')
         .offset10
     == render 'filter'
-  .col-lg-10.col-sm-12
+  .col-xl-10.col-sm-12
     table.table.table-condensed
       thead
         tr
