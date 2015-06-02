@@ -233,17 +233,8 @@ class Projects::BuildListsController < Projects::BaseController
   def create_from_build_list
     return if params[:build_list_id].blank?
     build_list = @project.build_lists.find(params[:build_list_id])
-
-    params[:build_list] ||= {}
-    policy(BuildList).permitted_attributes.each do |key|
-      params[:build_list][key] =
-        if build_list.respond_to?(key)
-          build_list.send(key)
-        elsif build_list.respond_to?("#{key}?")
-          build_list.send("#{key}?")
-        end
-    end
-    params[:arches] = [build_list.arch_id]
+    params[:build_list] = build_list.attributes
+    params[:arches]     = [build_list.arch_id]
     [:owner_filter, :status_filter].each { |t| params[t] = 'true' if %w(true undefined).exclude? params[t] }
   end
 end
