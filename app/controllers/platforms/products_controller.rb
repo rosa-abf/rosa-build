@@ -19,7 +19,7 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def create
-    authorize @product = @platform.products.build(params[:product])
+    authorize @product = @platform.products.build(product_params)
     if @product.save
       flash[:notice] = t('flash.product.saved')
       redirect_to platform_product_path(@platform, @product)
@@ -31,7 +31,7 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def update
-    if @product.update_attributes(params[:product])
+    if @product.update_attributes(product_params)
       flash[:notice] = t('flash.product.saved')
       redirect_to platform_product_path(@platform, @product)
     else
@@ -60,6 +60,10 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   private
+
+  def product_params
+    subject_params(Product)
+  end
 
   # Private: before_action hook which loads Product.
   def load_product

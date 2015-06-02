@@ -2,7 +2,7 @@ class BuildList::Item < ActiveRecord::Base
 
   belongs_to :build_list, touch: true
 
-  attr_protected :build_list_id
+  # attr_protected :build_list_id
 
   GIT_ERROR = 5
 

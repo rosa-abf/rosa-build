@@ -4,9 +4,10 @@ describe MassBuild do
   before { stub_symlink_methods }
 
   context 'ensures that validations and associations exist' do
+    let(:mass_build) { FactoryGirl.build(:mass_build) }
 
     it 'is valid given valid attributes' do
-      FactoryGirl.create(:mass_build).should be_truthy
+      expect(mass_build).to be_valid
     end
 
     it { should belong_to(:build_for_platform) }
@@ -21,12 +22,10 @@ describe MassBuild do
     it { should validate_presence_of(:name)}
 
     it { should validate_presence_of(:projects_list)}
-    it { should ensure_length_of(:projects_list).is_at_most(500_000) }
+    it { should validate_length_of(:projects_list).is_at_most(500_000) }
 
-    it { should ensure_length_of(:description).is_at_most(255) }
+    it { should validate_length_of(:description).is_at_most(255) }
 
-    it { should_not allow_mass_assignment_of(:name) }
-    it { should_not allow_mass_assignment_of(:arch_names) }
   end
 
   it 'ensures that projects_list contains unique projects' do
@@ -35,19 +34,17 @@ describe MassBuild do
       ab
     )
     mass_build = FactoryGirl.build(:mass_build, projects_list: projects_list)
-    mass_build.should be_valid
+    expect(mass_build).to be_valid
     list = mass_build.projects_list.split(/[\r]*\n/)
     expect(list.count).to eq 2
-    list.should include('at', 'ab')
+    expect(list).to include('at', 'ab')
   end
 
   it '#generate_list' do
     mb = FactoryGirl.build(:mass_build)
     bl = double(:build_list)
 
-    # allow(service).to receive(:already_pulled?).with(post.identifier).and_return(true)
-    # allow(BuildList).to receive(:find_each).and_yield(bl)
-    BuildList.stub_chain(:select, :where, :joins, :find_each).and_yield(bl)
+    allow(BuildList).to receive_message_chain(:select, :where, :joins, :find_each).and_yield(bl)
     expect(bl).to receive(:id)
     expect(bl).to receive(:project_name)
     expect(bl).to receive(:arch_name)

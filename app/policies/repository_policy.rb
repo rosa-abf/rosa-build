@@ -54,6 +54,20 @@ class RepositoryPolicy < ApplicationPolicy
   end
   alias_method :remove_repo_lock_file?, :add_repo_lock_file?
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(
+      name
+      description
+      publish_without_qa
+      synchronizing_publications
+      publish_builds_only_from_branch
+      build_for_platform_id
+    )
+  end
+
 private
 
   # Public: Get user ids of repository.

@@ -31,7 +31,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def create
-    @project   = Project.new(params[:project])
+    @project   = Project.new subject_params(Project)
     p_params   = params[:project] || {}
     owner_type = %w(User Group).find{ |t| t == p_params[:owner_type] }
     if owner_type.present?

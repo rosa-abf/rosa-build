@@ -24,13 +24,6 @@ describe Comment do
       set_commentable_data
     end
 
-    context 'with mass assignment' do
-      it 'should not be able to update commentable' do
-        @comment.update_attributes({commentable_type: 'Grit::Commit', commentable_id: 0})
-        expect(@comment.reload.commentable).to eq(@issue)
-      end
-    end
-
     context 'automatic issue linking' do
       before(:each) do
         @same_name_project = FactoryGirl.create(:project, name: @project.name)

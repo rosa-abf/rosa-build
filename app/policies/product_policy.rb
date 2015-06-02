@@ -17,4 +17,21 @@ class ProductPolicy < ApplicationPolicy
   alias_method :destroy?, :create?
   alias_method :update?,  :create?
 
+  # Public: Get list of parameters that the user is allowed to alter.
+  #
+  # Returns Array
+  def permitted_attributes
+    %i(
+      autostart_status
+      description
+      main_script
+      name
+      params
+      platform_id
+      project_id
+      project_version
+      time_living
+    )
+  end
+
 end

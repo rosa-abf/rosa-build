@@ -33,7 +33,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def create
-    authorize @platform = Platform.new(params[:platform])
+    authorize @platform = Platform.new(platform_params)
     @admin_id    = params[:admin_id]
     @admin_uname = params[:admin_uname]
     # FIXME: do not allow manipulate owner model, only platforms onwer_id and onwer_type
@@ -53,13 +53,12 @@ class Platforms::PlatformsController < Platforms::BaseController
     @admin_id = params[:admin_id]
     @admin_uname = params[:admin_uname]
 
-    platform_params = params[:platform] || {}
-    platform_params = platform_params.slice(:description, :platform_arch_settings_attributes, :released, :automatic_metadata_regeneration, :default_branch)
-    platform_params[:owner] = User.find(@admin_id) if @admin_id.present?
+    pp = platform_params
+    pp[:owner] = User.find(@admin_id) if @admin_id.present?
 
     respond_to do |format|
       format.html do
-        if @platform.update_attributes(platform_params)
+        if @platform.update_attributes(pp)
           flash[:notice] = I18n.t("flash.platform.saved")
           redirect_to @platform
         else
@@ -68,7 +67,7 @@ class Platforms::PlatformsController < Platforms::BaseController
         end
       end
       format.json do
-        if @platform.update_attributes(platform_params)
+        if @platform.update_attributes(pp)
           render json: { notice: I18n.t("flash.platform.saved") }.to_json
         else
           render json: { error: I18n.t("flash.platform.save_error") }.to_json, status: 422
@@ -108,7 +107,7 @@ class Platforms::PlatformsController < Platforms::BaseController
 
   def make_clone
     authorize @platform
-    @cloned = @platform.full_clone params[:platform].merge(owner: current_user)
+    @cloned = @platform.full_clone platform_params.merge(owner: current_user)
     if @cloned.persisted?
       flash[:notice] = I18n.t("flash.platform.clone_success")
       redirect_to @cloned
@@ -164,6 +163,10 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   private
+
+  def platform_params
+    subject_params(Platform)
+  end
 
   # Private: before_action hook which loads Platform.
   def load_platform

@@ -25,7 +25,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
   def update
     authorize @repository
-    if @repository.update_attributes params[:repository].slice(:description, :synchronizing_publications, :publish_builds_only_from_branch).merge(publish_without_qa: (params[:repository][:publish_without_qa] || @repository.publish_without_qa))
+    if @repository.update_attributes(repository_params)
       flash[:notice] = I18n.t("flash.repository.updated")
       redirect_to platform_repository_path(@platform, @repository)
     else
@@ -67,7 +67,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def create
-    authorize @repository = @platform.repositories.build(params[:repository])
+    authorize @repository = @platform.repositories.build(repository_params)
     if @repository.save
       flash[:notice] = t('flash.repository.saved')
       redirect_to platform_repository_path(@platform, @repository)
@@ -174,6 +174,10 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   protected
+
+  def repository_params
+    subject_params(Repository)
+  end
 
   # Private: before_action hook which loads Repository.
   def load_repository

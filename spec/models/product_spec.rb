@@ -22,14 +22,10 @@ describe Product do
       it { should validate_uniqueness_of(:name).scoped_to(:platform_id) }
     end
 
-    it { should ensure_length_of(:main_script).is_at_most(255) }
-    it { should ensure_length_of(:params).is_at_most(255) }
+    it { should validate_length_of(:main_script).is_at_most(255) }
+    it { should validate_length_of(:params).is_at_most(255) }
 
     it { should have_readonly_attribute(:platform_id) }
-
-    it { should_not allow_mass_assignment_of(:platform) }
-    #it { should_not allow_mass_assignment_of(:platform_id) }
-    it { should_not allow_mass_assignment_of(:product_build_lists) }
   end
 
 
@@ -48,7 +44,7 @@ describe Product do
         params = {main_script: 'text.sh', project_version: product.project.default_branch}
         product.update_attributes params.merge(autostart_status: Product::ONCE_A_12_HOURS)
         FactoryGirl.create :product, params.merge(autostart_status: Product::ONCE_A_DAY)
-        FactoryGirl.create(:arch, name: 'x86_64')
+        FactoryGirl.build(:arch, name: 'x86_64').save
       end
 
       it 'should be created only one product_build_list' do

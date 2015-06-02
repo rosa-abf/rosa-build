@@ -27,7 +27,7 @@ class Projects::CommentsController < Projects::BaseController
 
   def update
     respond_to do |format|
-      if @comment.update_attributes(params[:comment])
+      if @comment.update_attributes(comment_params)
         format.json { render json: {message:t('flash.comment.updated'), body: view_context.markdown(@comment.body)} }
       else
         format.json { render json: {message:t('flash.comment.error_in_updating')}, status: 422 }
@@ -48,6 +48,10 @@ class Projects::CommentsController < Projects::BaseController
 
   protected
 
+  def comment_params
+    subject_params(Comment)
+  end
+
   def find_commentable
     @commentable = params[:issue_id].present? && @project.issues.find_by(serial_id: params[:issue_id]) ||
                    params[:commit_id].present? && @project.repo.commit(params[:commit_id])
@@ -55,7 +59,7 @@ class Projects::CommentsController < Projects::BaseController
 
   def find_or_build_comment
     @comment = params[:id].present? && Comment.where(automatic: false).find(params[:id]) ||
-               current_user.comments.build(params[:comment]) {|c| c.commentable = @commentable; c.project = @project}
+               current_user.comments.build(comment_params) {|c| c.commentable = @commentable; c.project = @project}
     authorize @comment
   end
 end

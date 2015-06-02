@@ -1,4 +1,5 @@
 ActiveAdmin.register NodeInstruction do
+  permit_params :instruction, :user_id, :output, :status
 
   menu priority: 3
 

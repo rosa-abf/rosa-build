@@ -66,7 +66,7 @@ shared_examples_for 'pull request user with project reader rights' do
 
   it "should create pull request to the same project" do
     @parent = FactoryGirl.create(:project)
-    @project.update_attributes({parent_id: @parent}, without_protection: true)
+    @project.update_attributes(parent_id: @parent)
 
     expect do
       post :create, @create_params
@@ -77,7 +77,7 @@ shared_examples_for 'pull request user with project reader rights' do
 
   it "should create pull request to the parent project" do
     @parent = FactoryGirl.create(:project_with_commit)
-    @project.update_attributes({parent_id: @parent}, without_protection: true)
+    @project.update_attributes(parent_id: @parent)
 
     expect do
       post :create, @create_params.merge({to_project: @parent.name_with_owner})

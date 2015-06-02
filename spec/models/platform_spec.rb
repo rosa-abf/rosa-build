@@ -39,39 +39,34 @@ describe Platform do
     it { should have_readonly_attribute(:parent_platform_id) }
     it { should have_readonly_attribute(:platform_type) }
 
-    it { should_not allow_mass_assignment_of(:repositories) }
-    it { should_not allow_mass_assignment_of(:products) }
-    it { should_not allow_mass_assignment_of(:members) }
-    it { should_not allow_mass_assignment_of(:parent) }
-
-    it {should_not allow_value("How do you do...\nmy_platform").for(:name)}
+    it { should_not allow_value("How do you do...\nmy_platform").for(:name) }
   end
 
   it 'ensures that folder of platform will be removed after destroy' do
     platform = FactoryGirl.create :platform
     FileUtils.mkdir_p platform.path
     platform.destroy
-    Dir.exists?(platform.path).should be_falsy
+    expect(Dir.exists?(platform.path)).to be_falsy
   end
 
   it 'ensures that owner of personal platform can not be changed' do
     platform = FactoryGirl.create :personal_platform
     owner = platform.owner
     platform.owner = FactoryGirl.create :user
-    platform.save.should be_falsy
+    expect(platform.save).to be_falsy
   end
 
   it 'ensures that owner of platform of group can not be changed' do
     group = FactoryGirl.create :group
     platform = FactoryGirl.create :personal_platform, owner: group
     platform.owner = FactoryGirl.create :user
-    platform.save.should be_falsy
+    expect(platform.save).to be_falsy
   end
 
   it 'ensures that owner of main platform can be changed' do
     platform = FactoryGirl.create :platform
     platform.owner = FactoryGirl.create :user
-    platform.save.should be_truthy
+    expect(platform.save).to be_truthy
   end
 
 end

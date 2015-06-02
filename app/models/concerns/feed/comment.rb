@@ -17,22 +17,20 @@ module Feed::Comment
         if can_notify_on_new_comment?(subscribe)
           UserMailer.new_comment_notification(self, subscribe.user_id).deliver unless own_comment?(subscribe.user)
           ActivityFeed.create(
-            {
-              user_id:           subscribe.user_id,
-              kind:              'new_comment_notification',
-              project_owner:     project.owner_uname,
-              project_name:      project.name,
-              creator_id:        user_id,
-              data: {
-                creator_name:    user.name,
-                creator_email:   user.email,
-                comment_body:    body.truncate(100, omission: '…'),
-                issue_title:     commentable.title,
-                issue_serial_id: commentable.serial_id,
-                project_id:      commentable.project.id,
-                comment_id:      id
-              }
-            }, without_protection: true
+            user_id:           subscribe.user_id,
+            kind:              'new_comment_notification',
+            project_owner:     project.owner_uname,
+            project_name:      project.name,
+            creator_id:        user_id,
+            data: {
+              creator_name:    user.name,
+              creator_email:   user.email,
+              comment_body:    body.truncate(100, omission: '…'),
+              issue_title:     commentable.title,
+              issue_serial_id: commentable.serial_id,
+              project_id:      commentable.project.id,
+              comment_id:      id
+            }
           )
         end
       end
@@ -46,23 +44,21 @@ module Feed::Comment
           UserMailer.new_comment_notification(self, subscribe.user_id).deliver
         end
         ActivityFeed.create(
-          {
-            user_id:          subscribe.user_id,
-            kind:             'new_comment_commit_notification',
-            project_owner:    project.owner_uname,
-            project_name:     project.name,
-            creator_id:       user_id,
-            data:     {
-              creator_name:   user.name,
-              creator_email:  user.email,
+          user_id:          subscribe.user_id,
+          kind:             'new_comment_commit_notification',
+          project_owner:    project.owner_uname,
+          project_name:     project.name,
+          creator_id:       user_id,
+          data:     {
+            creator_name:   user.name,
+            creator_email:  user.email,
 
-              comment_body:   body.truncate(100, omission: '…'),
-              commit_message: commentable.message.truncate(70, omission: '…'),
-              commit_id:      commentable.id,
-              project_id:     project.id,
-              comment_id:     id
-            }
-          }, without_protection: true
+            comment_body:   body.truncate(100, omission: '…'),
+            commit_message: commentable.message.truncate(70, omission: '…'),
+            commit_id:      commentable.id,
+            project_id:     project.id,
+            comment_id:     id
+          }
         )
       end
     end

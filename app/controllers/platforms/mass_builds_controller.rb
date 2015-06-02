@@ -22,7 +22,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def create
-    @mass_build                 = @platform.mass_builds.build(params[:mass_build])
+    @mass_build                 = @platform.mass_builds.build(subject_params(MassBuild))
     @mass_build.user            = current_user
     @mass_build.arches          = params[:arches] || []
     @mass_build.repositories  ||= params[:repositories] || []

@@ -34,14 +34,5 @@ describe Users::ProfileController, type: :controller do
       expect(response).to be_success
     end
 
-    context 'with mass assignment' do
-      it 'should not be able to update role' do
-        expect(@simple_user).to_not allow_mass_assignment_of :role
-      end
-
-      it 'should not be able to update other user' do
-        expect(@simple_user).to_not allow_mass_assignment_of :id
-      end
-    end
   end
 end

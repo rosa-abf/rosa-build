@@ -12,8 +12,6 @@ class Advisory < ActiveRecord::Base
   after_create :generate_advisory_id
   before_save  :normalize_references, if: :references_changed?
 
-  attr_accessible :description, :references
-
   ID_TEMPLATE        = 'ROSA-%<type>s-%<year>d:%<id>04d'
   ID_STRING_TEMPLATE = 'ROSA-%<type>s-%<year>04s:%<id>04s'
   TYPES = {'security' => 'SA', 'bugfix' => 'A'}
