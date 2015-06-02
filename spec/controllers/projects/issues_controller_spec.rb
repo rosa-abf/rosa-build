@@ -21,7 +21,7 @@ shared_context "issues controller" do
       issue: {
         title: "issue1",
         body: "issue body",
-        labelings_attributes: { @label.id => { label_id: @label.id }},
+        labelings_attributes: { @label.id.to_s => { label_id: @label.id }},
         assignee_id: @issue_user.id
       }
     }

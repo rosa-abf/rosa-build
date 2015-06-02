@@ -76,7 +76,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     authorize @pull
 
     if pull_params.present?
-      attrs = pull_params.slice(:title, :body)
+      attrs = subject_params(PullRequest)
       attrs.merge!(assignee_id: pull_params[:assignee_id]) if policy(@project).write?
 
       if action = %w(close reopen).find{ |s| s == pull_params[:status] }

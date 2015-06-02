@@ -34,7 +34,7 @@ class Projects::PullRequestsController < Projects::BaseController
     to_project = find_destination_project
     authorize to_project, :show?
 
-    @pull  = to_project.pull_requests.new pull_params
+    @pull  = to_project.pull_requests.build pull_params
     @issue = @pull.issue
     @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if policy(to_project).write?
     @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
@@ -131,7 +131,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def pull_params
-    @pull_params ||= params[:pull_request].presence
+    @pull_params ||= subject_params(PullRequest).presence
   end
 
   def json_for_autocomplete_base items

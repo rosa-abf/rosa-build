@@ -30,10 +30,6 @@ describe Repository do
 
     it { should have_readonly_attribute(:name) }
     it { should have_readonly_attribute(:platform_id) }
-
-    it { should_not allow_mass_assignment_of(:platform) }
-    it { should_not allow_mass_assignment_of(:platform_id) }
-
   end
 
   context '#sync_lock_file_exists?, #add_sync_lock_file, #remove_sync_lock_file, #add_repo_lock_file, #remove_repo_lock_file' do

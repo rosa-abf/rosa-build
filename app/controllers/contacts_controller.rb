@@ -6,7 +6,7 @@ class ContactsController < ApplicationController
   end
 
   def create
-    @form = Feedback.new(params[:feedback])
+    @form = Feedback.new(feedback_params)
     if @form.perform_send
       flash[:notice] = I18n.t("flash.contact.success")
       redirect_to sended_contact_path
@@ -17,6 +17,12 @@ class ContactsController < ApplicationController
   end
 
   def sended
+  end
+
+  private
+
+  def feedback_params
+    params[:feedback].permit(:name, :email, :subject, :message)
   end
 
 end

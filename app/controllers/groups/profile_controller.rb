@@ -43,7 +43,9 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def create
-    authorize @group = current_user.own_groups.build(params[:group])
+    @group = current_user.own_groups.new
+    @group.assign_attributes(group_params)
+    authorize @group
     if @group.save
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
@@ -56,7 +58,7 @@ class Groups::ProfileController < Groups::BaseController
 
   def update
     authorize @group
-    if @group.update_attributes(params[:group])
+    if @group.update_attributes(group_params)
       update_avatar(@group, params)
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
@@ -80,6 +82,10 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   protected
+
+  def group_params
+    subject_params(Group, @group)
+  end
 
   def paginate_projects(page)
     @projects.paginate(page: (page>0 ? page : nil), per_page: 24)

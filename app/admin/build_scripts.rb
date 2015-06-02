@@ -1,4 +1,5 @@
 ActiveAdmin.register BuildScript do
+  permit_params :project_name, :treeish, :commit, :sha1, :status
 
   menu priority: 4
 

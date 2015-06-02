@@ -52,9 +52,6 @@ Rosa::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  # Raise exception on mass assignment protection for Active Record models
-  config.active_record.mass_assignment_sanitizer = :strict
-
   config.middleware.insert_before Rails::Rack::Logger, DisableAssetsLogger
 
   config.eager_load = false

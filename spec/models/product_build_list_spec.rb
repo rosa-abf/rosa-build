@@ -32,10 +32,6 @@ describe ProductBuildList do
     it { is_expected.to_not allow_value(555).for(:status) }
 
     it { is_expected.to have_readonly_attribute(:product_id) }
-    #it { should_not allow_mass_assignment_of(:product_id) }
-
-    it { is_expected.to allow_mass_assignment_of(:status) }
-    it { is_expected.to allow_mass_assignment_of(:base_url) }
   end
 
   describe '#abf_worker_srcpath' do

@@ -8,7 +8,7 @@ class Users::SshKeysController < Users::BaseController
   end
 
   def create
-    @ssh_key = current_user.ssh_keys.new params[:ssh_key]
+    @ssh_key = current_user.ssh_keys.new ssh_key_params
 
     if @ssh_key.save
       flash[:notice] = t 'flash.ssh_keys.saved'
@@ -27,6 +27,12 @@ class Users::SshKeysController < Users::BaseController
       flash[:error] = t 'flash.ssh_keys.destroy_error'
     end
     redirect_to ssh_keys_path
+  end
+
+  private
+
+  def ssh_key_params
+    subject_params(SshKey)
   end
 
 end

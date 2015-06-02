@@ -34,7 +34,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def run_mass_import
-    @project = Project.new params[:project]
+    @project = Project.new project_params
     @project.owner = choose_owner
     authorize @project
     @project.valid?
@@ -54,7 +54,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def create
-    @project = Project.new params[:project]
+    @project = Project.new project_params
     @project.owner = choose_owner
     authorize @project
 
@@ -73,18 +73,17 @@ class Projects::ProjectsController < Projects::BaseController
     params[:project].delete(:maintainer_id) if params[:project][:maintainer_id].blank?
     respond_to do |format|
       format.html do
-        if @project.update_attributes(params[:project])
+        if @project.update_attributes(project_params)
           flash[:notice] = t('flash.project.saved')
           redirect_to @project
         else
-          @project.save
           flash[:error] = t('flash.project.save_error')
           flash[:warning] = @project.errors.full_messages.join('. ')
           render action: :edit
         end
       end
       format.json do
-        if @project.update_attributes(params[:project])
+        if @project.update_attributes(project_params)
           render json: { notice: I18n.t('flash.project.saved') }
         else
           render json: { error: I18n.t('flash.project.save_error') }, status: 422
@@ -95,7 +94,7 @@ class Projects::ProjectsController < Projects::BaseController
 
   def schedule
     authorize @project
-    p_to_r = @project.project_to_repositories.where(repository_id: params[:repository_id]).first
+    p_to_r = @project.project_to_repositories.find_by(repository_id: params[:repository_id])
     unless p_to_r.repository.publish_without_qa
       authorize p_to_r.repository.platform, :local_admin_manage?
     end
@@ -143,7 +142,7 @@ class Projects::ProjectsController < Projects::BaseController
   def sections
     authorize @project, :update?
     if request.patch?
-      if @project.update_attributes(params[:project])
+      if @project.update_attributes(project_params)
         flash[:notice] = t('flash.project.saved')
         redirect_to sections_project_path(@project)
       else
@@ -191,6 +190,10 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   protected
+
+  def project_params
+    subject_params(Project)
+  end
 
   def who_owns
     @who_owns = (@project.try(:owner_type) == 'User' ? :me : :group)

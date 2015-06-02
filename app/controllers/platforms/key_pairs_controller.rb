@@ -6,7 +6,7 @@ class Platforms::KeyPairsController < Platforms::BaseController
   end
 
   def create
-    @key_pair         = KeyPair.new params[:key_pair]
+    @key_pair         = KeyPair.new subject_params(KeyPair)
     @key_pair.user_id = current_user.id
     authorize @key_pair
     if @key_pair.save

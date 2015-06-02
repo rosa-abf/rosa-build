@@ -165,7 +165,7 @@ describe Projects::BuildListsController, type: :controller do
 
         it 'returns an error if user is project reader' do
           @another_user = FactoryGirl.create(:user)
-          @build_list.project.collaborators.create(actor_type: 'User', actor_id: @another_user.id, role: 'reader')
+          Collaborator.create(actor_type: 'User', actor_id: @another_user.id, role: 'reader', project: @build_list.project)
           set_session_for(@another_user)
 
           expect_any_instance_of(BuildList).to_not receive(:rerun_tests)
@@ -245,7 +245,7 @@ describe Projects::BuildListsController, type: :controller do
             @another_user = FactoryGirl.create(:user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_repository.update_column(:publish_without_qa, true)
-            @build_list.project.collaborators.create(actor_type: 'User', actor_id: @another_user.id, role: 'reader')
+            Collaborator.create(actor_type: 'User', actor_id: @another_user.id, role: 'reader', project: @build_list.project)
             set_session_for(@another_user)
             do_reject_publish
           end

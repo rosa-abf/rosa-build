@@ -17,10 +17,10 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
   end
 
   def create
-    @product_build_list = ProductBuildList.new(params[:product_build_list])
-    @product_build_list.project ||= @product_build_list.try(:product).try(:project)
+    @product_build_list = ProductBuildList.new subject_params(ProductBuildList)
+    @product_build_list.project     ||= @product_build_list.try(:product).try(:project)
     @product_build_list.main_script ||= @product_build_list.try(:product).try(:main_script)
-    @product_build_list.params ||= @product_build_list.try(:product).try(:params)
+    @product_build_list.params      ||= @product_build_list.try(:product).try(:params)
     @product_build_list.time_living ||= @product_build_list.try(:product).try(:time_living)
     create_subject @product_build_list
   end

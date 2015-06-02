@@ -32,17 +32,17 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def create
-    platform_params = params[:platform] || {}
-    owner = User.where(id: platform_params[:owner_id]).first
-    @platform       = Platform.new platform_params
+    pp = params[:platform] || {}
+    owner = User.find_by(id: pp[:owner_id])
+    @platform       = Platform.new(platform_params)
     @platform.owner = owner || get_owner
     create_subject @platform
   end
 
   def update
-    platform_params = params[:platform] || {}
-    owner = User.where(id: platform_params[:owner_id]).first
-    platform_params[:owner] = owner if owner
+    pp = params[:platform] || {}
+    owner = User.find_by(id: pp[:owner_id])
+    pp[:owner] = owner if owner
     update_subject @platform
   end
 
@@ -79,6 +79,10 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   private
+
+  def platform_params
+    subject_params(Platform)
+  end
 
   # Private: before_action hook which loads Platform.
   def load_platform
