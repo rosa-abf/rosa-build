@@ -126,6 +126,7 @@ group :development do
   gem 'localeapp'
   gem 'skype'
   #gem 'ruby-dbus' if RUBY_PLATFORM =~ /linux/i # Error at deploy
+  gem 'rack-mini-profiler', require: false
 end
 
 group :development, :test do
