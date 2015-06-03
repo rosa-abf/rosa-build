@@ -8,9 +8,9 @@ class Projects::IssuesController < Projects::BaseController
   layout false, only: [:update, :search_collaborators]
 
   def index
-    raise Pundit::NotAuthorizedError unless @project.has_issues?
-
     params[:kind]      = params[:kind] == 'pull_requests' ? 'pull_requests' : 'issues'
+    raise Pundit::NotAuthorizedError if !@project.has_issues? && params[:kind] == 'issues'
+
     params[:filter]    = params[:filter].in?(['created', 'assigned']) ? params[:filter] : 'all'
     params[:sort]      = params[:sort] == 'submitted' ? 'submitted' : 'updated'
     params[:direction] = params[:direction] == 'asc' ? :asc : :desc
