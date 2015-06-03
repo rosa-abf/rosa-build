@@ -1,6 +1,4 @@
 class Projects::CollaboratorsController < Projects::BaseController
-  respond_to :html, :json
-
   before_action :authenticate_user!
   before_action :authorize_collaborators
 
@@ -9,7 +7,6 @@ class Projects::CollaboratorsController < Projects::BaseController
 
   def index
     @collaborators = Collaborator.find_by_project(@project)
-    respond_with @collaborators
   end
 
   def find
@@ -20,7 +17,6 @@ class Projects::CollaboratorsController < Projects::BaseController
       groups = groups.search(params[:term]).first(5)
     end
     @collaborators = (users | groups).map{|act| Collaborator.new(actor: act, project: @project)}
-    respond_with @collaborators
   end
 
   def create

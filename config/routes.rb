@@ -1,4 +1,4 @@
-Rosa::Application.routes.draw do
+Rails.application.routes.draw do
 
   # ActiveAdmin routes.
   ActiveAdmin.routes(self)
