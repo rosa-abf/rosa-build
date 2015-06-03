@@ -127,7 +127,7 @@ class Issue < ActiveRecord::Base
   end
 
   def set_serial_id
-    self.serial_id = self.project.issues.count
+    self.serial_id = self.project.issues.maximum(:serial_id).to_i+1
     self.save!
   end
 
