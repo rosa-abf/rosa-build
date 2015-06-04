@@ -69,7 +69,7 @@ gem 'gemoji'
 
 # AngularJS related stuff
 gem 'underscore-rails'
-gem 'angularjs-rails'
+gem 'angularjs-rails', '~> 1.3.14'
 gem 'ng-rails-csrf'
 gem 'momentjs-rails'
 gem 'angular-i18n'
