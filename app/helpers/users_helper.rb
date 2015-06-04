@@ -8,7 +8,7 @@ module UsersHelper
     if subject.try('avatar?')
       subject.avatar.url(size)
     elsif subject.kind_of? Group
-      image_path('ava-big.png')
+      'ava-big.png'
     else
       gravatar_url(subject.email, User::AVATAR_SIZES[size])
     end
