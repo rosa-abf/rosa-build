@@ -20,6 +20,7 @@ describe BuildLists::DependentPackagesJob do
     allow(Project).to receive_message_chain(:where, :to_a).and_return([project])
     allow(Arch).to receive_message_chain(:where, :to_a).and_return([build_list.arch])
 
+    allow_any_instance_of(BuildList).to       receive(:update_statistic)
     allow_any_instance_of(BuildListPolicy).to receive(:show?).and_return(true)
     allow_any_instance_of(ProjectPolicy).to   receive(:write?).and_return(true)
     allow_any_instance_of(BuildListPolicy).to receive(:create?).and_return(true)
