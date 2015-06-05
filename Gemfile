@@ -4,7 +4,7 @@ gem 'rails'
 
 gem 'activeadmin',                      github: 'activeadmin'
 gem 'pg'
-gem 'schema_plus', '~> 1.5'
+gem 'schema_plus'
 ########
 gem 'devise'
 gem 'omniauth'
