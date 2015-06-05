@@ -3,8 +3,8 @@ class AdvisoriesController < ApplicationController
   skip_before_action :authenticate_user! if APP_CONFIG['anonymous_access']
 
   def index
-    authorize :advisories
-    @advisories = Advisory.includes(:platforms).search(params[:q]).uniq
+    authorize :advisory
+    @advisories = Advisory.includes(:platforms, :projects).search(params[:q]).uniq
     @advisories_count = @advisories.count
     @advisories = @advisories.paginate(page: current_page, per_page: Advisory.per_page)
     respond_to do |format|
@@ -20,7 +20,7 @@ class AdvisoriesController < ApplicationController
   end
 
   def search
-    authorize :advisories
+    authorize :advisory
     @advisory = Advisory.by_update_type(params[:bl_type]).search_by_id(params[:query]).first
     if @advisory.nil?
       render nothing: true, status: 404

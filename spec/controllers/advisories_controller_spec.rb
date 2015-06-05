@@ -6,5 +6,10 @@ describe AdvisoriesController, type: :controller do
       get :search
       expect(response).to_not redirect_to(forbidden_path)
     end
+
+    it "should be able to perform index action" do
+      get :index
+      expect(response).to be_success
+    end
   end
 end
