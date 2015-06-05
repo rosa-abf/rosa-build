@@ -74,7 +74,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   def index
     authorize :product_build_list
-    @product_build_list = ProductBuildList.new(params[:product_build_list])
+    @product_build_list = ProductBuildList.new(product_build_list_params)
     @product_build_list.status = nil if params[:product_build_list].try(:[], :status).blank?
     @product_build_lists   = @platform.product_build_lists if @platform
     @product_build_lists ||= PlatformPolicy::Scope.new(current_user, ProductBuildList.joins(product: :platform)).show
