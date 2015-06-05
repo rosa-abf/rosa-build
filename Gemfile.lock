@@ -578,7 +578,7 @@ GEM
       thin (~> 1.5.0)
     skype (0.2.8)
       tmp_cache
-    slim (3.0.4)
+    slim (3.0.6)
       temple (~> 0.7.3)
       tilt (>= 1.3.3, < 2.1)
     soundmanager-rails (1.0.1)
