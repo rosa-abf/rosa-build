@@ -26,16 +26,17 @@ class MassBuildPolicy < ApplicationPolicy
       build_for_platform_id
       description
       external_nodes
-      extra_build_lists
-      extra_mass_builds
-      extra_repositories
       include_testing_subrepository
       increase_release_tag
       projects_list
       repositories
       use_cached_chroot
       use_extra_tests
-    )
+    ) << {
+      extra_build_lists:  [],
+      extra_mass_builds:  [],
+      extra_repositories: []
+    }
   end
 
 end
