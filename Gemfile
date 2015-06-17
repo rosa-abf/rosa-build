@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.10'
+gem 'rails', '4.1.11'
 
 gem 'activeadmin',                      github: 'activeadmin'
 gem 'pg'
@@ -50,7 +50,7 @@ gem 'sprockets'
 gem 'will_paginate'
 gem 'meta-tags', require: 'meta_tags'
 gem 'haml-rails'
-gem 'jquery-rails'
+gem 'jquery-rails', '3.1.3'
 gem 'jquery-migrate-rails'
 gem 'ruby-haml-js'
 gem 'slim'
