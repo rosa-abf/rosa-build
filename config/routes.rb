@@ -1,4 +1,4 @@
-Rosa::Application.routes.draw do
+Rails.application.routes.draw do
 
   # ActiveAdmin routes.
   ActiveAdmin.routes(self)
@@ -300,7 +300,7 @@ Rosa::Application.routes.draw do
         get   :mass_import
       end
     end
-    scope '*name_with_owner', constraints: { name_with_owner: Project::OWNER_AND_NAME_REGEXP } do # project
+    scope '*name_with_owner', name_with_owner: Project::OWNER_AND_NAME_REGEXP do # project
       scope as: 'project' do
         resources :wiki do
           collection do

@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.1.11'
+gem 'rails'
 
 gem 'activeadmin',                      github: 'activeadmin'
 gem 'pg'
-gem 'schema_plus', '~> 1.5'
+gem 'schema_plus'
 ########
 gem 'devise'
 gem 'omniauth'
@@ -50,7 +50,7 @@ gem 'sprockets'
 gem 'will_paginate'
 gem 'meta-tags', require: 'meta_tags'
 gem 'haml-rails'
-gem 'jquery-rails', '3.1.3'
+gem 'jquery-rails'
 gem 'jquery-migrate-rails'
 gem 'ruby-haml-js'
 gem 'slim'
@@ -69,7 +69,7 @@ gem 'gemoji'
 
 # AngularJS related stuff
 gem 'underscore-rails'
-gem 'angularjs-rails'
+gem 'angularjs-rails', '~> 1.3.14'
 gem 'ng-rails-csrf'
 gem 'momentjs-rails'
 gem 'angular-i18n'

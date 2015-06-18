@@ -24,7 +24,6 @@ class BuildList::Package < ActiveRecord::Base
   scope :like_name,       ->(name)     { where("#{table_name}.name ILIKE ?", "%#{name}%") if name.present? }
 
   before_create :set_epoch
-  before_create :normalize_dependent_packages
 
   def assignee
     project.maintainer
@@ -47,11 +46,13 @@ class BuildList::Package < ActiveRecord::Base
     end
   end
 
-  protected
-
-  def normalize_dependent_packages
-    self.dependent_packages = dependent_packages.to_s.split(/\s/).select(&:present?)
+  # Public: Set dependent_packages.
+  def dependent_packages=(v)
+    v = v.to_s.split(/\s/).select(&:present?) if v.is_a?(String)
+    write_attribute :dependent_packages, v
   end
+
+  protected
 
   def set_epoch
     self.epoch = nil if epoch.blank? || epoch == 0

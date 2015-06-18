@@ -41,13 +41,13 @@ ActiveAdmin.register User do
     f.actions
   end
 
-  action_item only: %i(show edit) do
+  action_item(:reset_token, only: :show) do
     link_to 'Reset token', reset_token_admin_user_path(resource),
       'data-method' => :put,
       data:         { confirm: 'Are you sure you want to reset token?' }
   end
 
-  action_item only: :show do
+  action_item(:login_as, only: :show) do
     link_to 'Login as user', login_as_admin_user_path(resource)
   end
 

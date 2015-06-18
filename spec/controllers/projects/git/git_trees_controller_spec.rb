@@ -57,12 +57,10 @@ describe Projects::Git::TreesController, type: :controller do
       expect { get :archive, @params.merge(format: 'tar.gz') }.to raise_error(ActionController::RoutingError)
     end
 
-    it 'should not be able to injection code with format' do
-      expect { get :archive, @params.merge(format: "tar.gz master > /dev/null; echo 'I am hacker!';\#") }.to raise_error(ActionController::RoutingError)
-    end
-
     it 'should not be able to injection code with treeish' do
-      expect { get :archive, @params.merge(treeish: "master > /dev/null; echo 'I am hacker!';\#") }.to raise_error(ActionController::RoutingError)
+      expect do
+        get :archive, @params.merge(format: 'tar.gz', treeish: "master > /dev/null; echo 'I am hacker!';\#")
+      end.to raise_error(ActionController::RoutingError)
     end
 
     it 'should be able to perform archive action' do

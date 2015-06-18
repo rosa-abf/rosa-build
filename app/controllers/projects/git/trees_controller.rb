@@ -23,7 +23,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
     format, @treeish = params[:format], params[:treeish]
     raise Grit::NoSuchPathError unless  @treeish =~ /^#{@project.name}-/ &&
                                         @treeish !~ /[\s]+/ &&
-                                        format =~ /^(zip|tar\.gz)$/
+                                        format =~ /\A(zip|tar\.gz)\z/
     @treeish.gsub!(/^#{@project.name}-/, '')
     sha1 = @project.build_scripts.by_active.by_treeish(@treeish).first.try(:sha1)
     unless sha1
