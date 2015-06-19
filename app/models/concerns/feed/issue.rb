@@ -14,6 +14,7 @@ module Feed::Issue
   private
 
   def new_issue_notifications
+    return unless user
     collect_recipients.each do |recipient|
       if user_id != recipient.id && recipient.notifier.can_notify &&
          recipient.notifier.new_issue && assignee_id != recipient.id
