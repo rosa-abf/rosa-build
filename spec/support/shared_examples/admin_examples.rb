@@ -1,4 +1,5 @@
 shared_examples_for 'an admin controller' do
+  before { stub_symlink_methods }
 
   it 'redirects to login when accessed unauthorised' do
     get :index

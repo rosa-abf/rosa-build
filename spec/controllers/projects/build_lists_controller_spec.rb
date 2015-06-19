@@ -113,16 +113,12 @@ describe Projects::BuildListsController, type: :controller do
     end
 
     context 'for user' do
+      let(:user) { FactoryGirl.create(:user) }
       before do
         allow_any_instance_of(BuildList).to receive(:current_duration).and_return(100)
         @build_list = FactoryGirl.create(:build_list)
         @project = @build_list.project
         @owner_user = @project.owner
-        @member_user = FactoryGirl.create(:user)
-        create_relation(@project, @member_user, 'reader')
-
-        @user = FactoryGirl.create(:user)
-        set_session_for(@user)
         @show_params = { name_with_owner: @project.name_with_owner, id: @build_list.id }
         @build_list.save_to_repository.update_column(:publish_without_qa, false)
         @request.env['HTTP_REFERER'] = build_list_path(@build_list)
@@ -158,6 +154,7 @@ describe Projects::BuildListsController, type: :controller do
         end
 
         it 'returns an error if user is not project owner' do
+          set_session_for(user)
           expect_any_instance_of(BuildList).to_not receive(:rerun_tests)
           do_rerun_tests
           expect(response).to redirect_to(forbidden_url)
@@ -227,6 +224,7 @@ describe Projects::BuildListsController, type: :controller do
           before do
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_platform.update_column(:released, true)
+            set_session_for(user)
             do_reject_publish
           end
 
@@ -287,12 +285,13 @@ describe Projects::BuildListsController, type: :controller do
           @build_list2 = FactoryGirl.create(:build_list)
           @build_list2.project.update_column(:visibility, 'hidden')
 
-          project = FactoryGirl.create(:project_with_commit, visibility: 'hidden', owner: @user)
+          project = FactoryGirl.create(:project_with_commit, visibility: 'hidden', owner: user)
           @build_list3 = FactoryGirl.create(:build_list_with_attaching_project, project: project)
 
           @build_list4 = FactoryGirl.create(:build_list)
           @build_list4.project.update_column(:visibility, 'hidden')
-          create_relation(@build_list4.project, @user, 'reader')
+          create_relation(@build_list4.project, user, 'reader')
+          set_session_for(user)
         end
 
         it 'should be able to perform index action' do
@@ -310,8 +309,12 @@ describe Projects::BuildListsController, type: :controller do
       end
 
       context 'for open project' do
-        it_should_behave_like 'show build list'
-        it_should_behave_like 'not create build list'
+        context 'for user' do
+          before { set_session_for(user) }
+
+          it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
+        end
 
         context 'if user is project owner' do
           before {set_session_for(@owner_user)}
@@ -332,7 +335,12 @@ describe Projects::BuildListsController, type: :controller do
         end
 
         context 'if user is project read member' do
-          before {set_session_for(@member_user)}
+          before do
+            @member_user = FactoryGirl.create(:user)
+            create_relation(@project, @member_user, 'reader')
+            set_session_for(@member_user)
+          end
+
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
         end
@@ -340,12 +348,14 @@ describe Projects::BuildListsController, type: :controller do
 
       context 'for hidden project' do
         before do
-          @project.visibility = 'hidden'
-          @project.save
+          @project.update_column(:visibility, 'hidden')
         end
 
-        it_should_behave_like 'not show build list'
-        it_should_behave_like 'not create build list'
+        context 'for user' do
+          before { set_session_for(user) }
+          it_should_behave_like 'not show build list'
+          it_should_behave_like 'not create build list'
+        end
 
         context 'if user is project owner' do
           before {set_session_for(@owner_user)}
@@ -354,7 +364,12 @@ describe Projects::BuildListsController, type: :controller do
         end
 
         context 'if user is project read member' do
-          before {set_session_for(@member_user)}
+          before do
+            @member_user = FactoryGirl.create(:user)
+            create_relation(@project, @member_user, 'reader')
+            set_session_for(@member_user)
+          end
+
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
         end
@@ -362,20 +377,12 @@ describe Projects::BuildListsController, type: :controller do
     end
 
     context 'for group' do
+      let(:user) { FactoryGirl.create(:user) }
       before do
-
-        @user = FactoryGirl.create(:user)
-        set_session_for(@user)
-
         @build_list = FactoryGirl.create(:build_list_by_group_project)
         @project = @build_list.project
         @owner_group = @build_list.project.owner
         @owner_user =  @owner_group.owner
-
-        @member_group = FactoryGirl.create(:group)
-        @member_user = FactoryGirl.create(:user)
-        create_actor_relation(@member_group, @member_user, 'reader')
-        create_relation(@project, @member_group, 'reader')
 
         @show_params = { name_with_owner: @project.name_with_owner, id: @build_list.id }
       end
@@ -387,12 +394,13 @@ describe Projects::BuildListsController, type: :controller do
           @build_list2 = FactoryGirl.create(:build_list)
           @build_list2.project.update_column(:visibility, 'hidden')
 
-          project = FactoryGirl.create(:project_with_commit, visibility: 'hidden', owner: @user)
+          project = FactoryGirl.create(:project_with_commit, visibility: 'hidden', owner: user)
           @build_list3 = FactoryGirl.create(:build_list_with_attaching_project, project: project)
 
           @build_list4 = FactoryGirl.create(:build_list)
           @build_list4.project.update_column(:visibility, 'hidden')
-          create_relation(@build_list4.project, @user, 'reader')
+          create_relation(@build_list4.project, user, 'reader')
+          set_session_for(user)
         end
 
         it 'should be able to perform index action' do
@@ -410,8 +418,12 @@ describe Projects::BuildListsController, type: :controller do
       end
 
       context 'for open project' do
-        it_should_behave_like 'show build list'
-        it_should_behave_like 'not create build list'
+        context 'for user' do
+          before { set_session_for(user) }
+
+          it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
+        end
 
         context 'if user is group owner' do
           before {set_session_for(@owner_user)}
@@ -420,7 +432,14 @@ describe Projects::BuildListsController, type: :controller do
         end
 
         context 'if user is group read member' do
-          before {set_session_for(@member_user)}
+          before do
+            @member_group = FactoryGirl.create(:group)
+            @member_user = FactoryGirl.create(:user)
+            create_actor_relation(@member_group, @member_user, 'reader')
+            create_relation(@project, @member_group, 'reader')
+            set_session_for(@member_user)
+          end
+
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
         end
@@ -428,12 +447,15 @@ describe Projects::BuildListsController, type: :controller do
 
       context 'for hidden project' do
         before do
-          @project.visibility = 'hidden'
-          @project.save
+          @project.update_column(:visibility, 'hidden')
         end
 
-        it_should_behave_like 'not show build list'
-        it_should_behave_like 'not create build list'
+        context 'for user' do
+          before { set_session_for(user) }
+
+          it_should_behave_like 'not show build list'
+          it_should_behave_like 'not create build list'
+        end
 
         context 'if user is group owner' do
           before {set_session_for(@owner_user)}
@@ -442,7 +464,14 @@ describe Projects::BuildListsController, type: :controller do
         end
 
         context 'if user is group read member' do
-          before {set_session_for(@member_user)}
+          before do
+            @member_group = FactoryGirl.create(:group)
+            @member_user = FactoryGirl.create(:user)
+            create_actor_relation(@member_group, @member_user, 'reader')
+            create_relation(@project, @member_group, 'reader')
+            set_session_for(@member_user)
+          end
+
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
         end
