@@ -18,14 +18,15 @@ Capistrano::Configuration.instance(:must_exist).load do
       if skype_send_notification
 
         environment_string = env
-        if self.respond_to?(:stage)
-          environment_string = "#{stage} (#{env})"
-        end
+        # if self.respond_to?(:stage)
+        #   environment_string = "#{stage} (#{env})"
+        # end
+        environment_string = domain if self.respond_to?(:domain)
 
         on_rollback do
-          send("Cancelled deployment of #{deployment_name} to #{environment_string}.\n#{'#'*60}")
+          send("Cancelled deployment of #{deployment_name} to #{environment_string}\n#{'#'*60}")
         end
-        send("#{'#'*60}\nDeploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}.")
+        send("#{'#'*60}\nDeploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}")
       end
     end
 
@@ -33,11 +34,12 @@ Capistrano::Configuration.instance(:must_exist).load do
       if skype_send_notification
 
         environment_string = env
-        if self.respond_to?(:stage)
-          environment_string = "#{stage} (#{env})"
-        end
+        # if self.respond_to?(:stage)
+        #   environment_string = "#{stage} (#{env})"
+        # end
+        environment_string = domain if self.respond_to?(:domain)
         elapsed = (Time.now - start_time).to_i
-        send("(#{elapsed} secs) Finished deploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}.\n#{'#'*60}")
+        send("(#{elapsed} secs) Finished deploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}\n#{'#'*60}")
       end
     end
 
