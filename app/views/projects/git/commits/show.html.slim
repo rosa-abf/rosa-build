@@ -8,7 +8,10 @@
 
 == render 'submenu'
 
-.col-xs-12.col-md-10.col-md-offset-1
+- ctrl_params = "{ kind: 'commit', id: '#{@commit.id}' }"
+.col-xs-12.col-md-10.col-md-offset-1[ ng-controller= 'CommentsController as commentsCtrl'
+  ng-init= "commentsCtrl.init('#{@project.name_with_owner}', #{ctrl_params})" ]
+
   - GitPresenters::CommitAsMessagePresenter.present(@commit, project: @project) do |presenter|
     .panel.panel-default
       .panel-body
@@ -18,11 +21,12 @@
   #repo-wrapper
     == render 'show'
 
-    - ctrl_params = "{ kind: 'commit', id: '#{@commit.id}' }"
-    -comments = @comments.select {|c| c.data.blank? } # dont work @comments.where(data: nil)
-    div[ ng-controller = 'CommentsController as commentsCtrl'
-         ng-init       = "commentsCtrl.init('#{@project.name_with_owner}', #{ctrl_params})" ]
+    - comments = @comments.select {|c| c.data.blank? } # dont work @comments.where(data: nil)
+    div
       == render "projects/comments/list", list: comments, project: @project, commentable: @commit
       == render "projects/comments/add", project: @project, commentable: @commit if current_user
 
   = hidden_field_tag :preview_url, project_md_preview_path(@project)
+
+div ng-non-bindable = true
+  == render 'projects/comments/new_line'

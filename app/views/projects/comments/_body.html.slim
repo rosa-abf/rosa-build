@@ -3,7 +3,7 @@ tabset
     .offset10
       - if defined?(ang_model)
         = f.input :body, label: false, as: :text,
-          input_html: { rows: 10, id: "#{id}-body",
+          input_html: { rows: 10, id: "#{id}-body", style: 'resize: vertical',
                         'ng-model' => "#{ctrl}.#{ang_model}", 'ng-value' => "#{ctrl}.#{ang_model}" }
       - else
         = f.input :body, label: false, as: :text,
