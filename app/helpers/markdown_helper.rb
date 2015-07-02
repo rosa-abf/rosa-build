@@ -65,7 +65,7 @@ module MarkdownHelper
       insert_piece($1)
     end
 
-    sanitize text.html_safe, attributes: (ActionView::Base.sanitized_allowed_attributes || []) + %w(id class)
+    sanitize text.html_safe, attributes: %w(href src alt id class)
   end
 
   private
