@@ -29,3 +29,12 @@ en:
     placeholders:
       build_list_package:
         name:       Enter the package name here.
+
+  platforms:
+    maintainers:
+      list:
+        project: Project
+        packages: Packages
+        version: Version-Release
+        maintainer: Maintainer
+        updated_at: Last Update

@@ -3,6 +3,6 @@
 = render 'platforms/base/submenu'
 .col-xs-12.col-md-10.col-md-offset-1
   .row
-    = render partial: 'list', object: @maintainers
-    = will_paginate @maintainers
-
+    / = render partial: 'list', object: @maintainers
+    / = will_paginate @maintainers
+    = render partial: 'list'
