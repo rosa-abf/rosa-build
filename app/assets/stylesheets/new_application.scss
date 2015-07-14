@@ -7,7 +7,6 @@
 */
 
 $grid-gutter-width:                16px;
-//$line-height-base:                 1.1428571428;
 
 $navbar-height:                    37px;
 $navbar-border-radius:             0px;
@@ -34,6 +33,7 @@ $navbar-inverse-toggle-hover-bg:           #ddd;
 $navbar-inverse-toggle-icon-bar-bg:        #888;
 $navbar-inverse-toggle-border-color:       #ddd;
 
+$blockquote-font-size:                     14px;
 
 @import "bootstrap-sprockets";
 @import "bootstrap";
