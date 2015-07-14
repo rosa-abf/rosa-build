@@ -29,3 +29,12 @@ ru:
     placeholders:
       build_list_package:
         name:       Введите имя пакета здесь.
+
+  platforms:
+    maintainers:
+      list:
+        project: Проект
+        packages: Пакеты
+        version: Версия-Релиз
+        maintainer: Майнтейнер
+        updated_at: Обновлен

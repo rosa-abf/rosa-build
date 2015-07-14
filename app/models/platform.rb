@@ -30,6 +30,7 @@ class Platform < ActiveRecord::Base
 
   has_many :repositories, dependent: :destroy
   has_many :key_pairs, through: :repositories
+  has_many :projects,  through: :repositories
 
   has_many :products, dependent: :destroy
   has_many :tokens, as: :subject, dependent: :destroy

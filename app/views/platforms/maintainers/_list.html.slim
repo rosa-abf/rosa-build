@@ -10,21 +10,29 @@
 
 
 hr
-table.table.table-striped
+
+table.table.table-condensed
   thead
     tr
-      th.text-center= t("activerecord.attributes.maintainer.package_name")
-      th.text-center= t("activerecord.attributes.maintainer.package_type")
-      th.text-center= t("activerecord.attributes.maintainer.version")
-      th.text-center colspan=2
-        = t("activerecord.models.maintainer")
-      th.text-center= t("activerecord.attributes.maintainer.updated_at")
+      th.col-md-1.text-center= t('.project')
+      th.col-md-4.text-center= t('.packages')
+      th.col-md-2.text-center= t('.version')
+      th.col-md-3.text-center= t('.maintainer')
+      th.col-md-2.text-center= t('.updated_at')
   tbody
-    - MaintainerPresenter.present_collection(@maintainers) do |pr|
+    - @projects.each do |project|
+      - packages = @packages[project.id]
       tr
-        td= pr.package_link
-        td= pr.package_type
-        td= pr.package_version_release
-        td= pr.maintainer_link
-        td= pr.maintainer_email_link.html_safe
-        td= pr.package_updated_at
+        td= link_to project.name, project_path(project)
+        td= packages.map(&:name).uniq.sort * ', '
+        td.text-center
+          = packages.map{ |p| "#{p.version}-#{p.release}" }.uniq * '; '
+        - if project.maintainer
+          td
+            => link_to project.maintainer.fullname, project.maintainer
+            = mail_to project.maintainer.email, project.maintainer.email, encode: 'javascript'
+        - else
+          td
+        td.text-center= packages.map(&:updated_at).max
+
+= will_paginate @projects
