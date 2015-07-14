@@ -171,7 +171,7 @@ class Projects::BuildListsController < Projects::BaseController
 
   def log
     render json: {
-      log: @build_list.log(params[:load_lines]),
+      log: @build_list.log,
       building: @build_list.build_started?
     }
   end

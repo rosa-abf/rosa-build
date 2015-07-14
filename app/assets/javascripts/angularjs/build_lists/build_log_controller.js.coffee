@@ -12,7 +12,7 @@ RosaABF.controller 'BuildLogController', ['$scope', '$http', '$timeout', ($scope
     return unless $scope.build_started
 
     if $('.build-log').is(':visible')
-      $http.get($scope.path).success((res) ->
+      $http.get($scope.path, timeout: 30000).success((res) ->
         $scope.log = res.log
         $scope.build_started = res.building
       ).error(->
