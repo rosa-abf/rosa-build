@@ -18,7 +18,7 @@ module AbfWorkerMethods
   end
 
   def abf_worker_log
-    self.class.log_server.get(service_queue) || I18n.t('layout.build_lists.log.not_available')
+    (self.class.log_server.get(service_queue) || I18n.t('layout.build_lists.log.not_available')).truncate(40000)
   end
 
   def add_job_to_abf_worker_queue
