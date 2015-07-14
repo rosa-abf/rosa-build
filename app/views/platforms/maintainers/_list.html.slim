@@ -11,29 +11,28 @@
 
 hr
 
-table.table.table-striped
+table.table.table-condensed
   thead
     tr
-      th.text-center= t('.project')
-      th.text-center= t('.packages')
-      th.text-center= t('.version')
-      th.text-center= t('.maintainer')
-      th.text-center= t('.updated_at')
+      th.col-md-1.text-center= t('.project')
+      th.col-md-4.text-center= t('.packages')
+      th.col-md-2.text-center= t('.version')
+      th.col-md-3.text-center= t('.maintainer')
+      th.col-md-2.text-center= t('.updated_at')
   tbody
     - @projects.each do |project|
       - packages = @packages[project.id]
       tr
         td= link_to project.name, project_path(project)
         td= packages.map(&:name).uniq.sort * ', '
-        td
+        td.text-center
           = packages.map{ |p| "#{p.version}-#{p.release}" }.uniq * '; '
         - if project.maintainer
           td
-            = link_to project.maintainer.fullname, project.maintainer
-            br
+            => link_to project.maintainer.fullname, project.maintainer
             = mail_to project.maintainer.email, project.maintainer.email, encode: 'javascript'
         - else
           td
-        td= packages.map(&:updated_at).max
+        td.text-center= packages.map(&:updated_at).max
 
 = will_paginate @projects
