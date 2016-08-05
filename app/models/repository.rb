@@ -62,7 +62,7 @@ class Repository < ActiveRecord::Base
 
   def clone_relations(from)
     with_skip do
-      from.projects.find_each {|p| self.projects << p}
+      from.projects.find_each {|p| self.projects << p if self.projects.exclude?(p)}
     end
   end
   later :clone_relations, loner: true, queue: :low
