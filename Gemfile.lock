@@ -362,7 +362,7 @@ GEM
     polyamorous (1.2.0)
       activerecord (>= 3.0)
     posix-spawn (0.3.11)
-    puma (2.11.3)
+    puma (2.16.0)
       rack (>= 1.1, < 2.0)
     pundit (1.0.1)
       activesupport (>= 3.0.0)
