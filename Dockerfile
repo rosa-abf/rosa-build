@@ -17,6 +17,9 @@ ENV RAILS_ENV production
 
 ENV GEM_HOME /usr/local/bundle
 ENV BUNDLE_APP_CONFIG /usr/local/bundle
+ENV REDIS_URL redis://redis:6379/0
+ENV REDIS_CACHE_URL redis://redis:6379/1
+ENV DATABASE_URL postgresql://postgres@postgres/rosa-build?pool=5&statement_limit=100
 
 WORKDIR /rosa-build
 COPY bin ./bin
