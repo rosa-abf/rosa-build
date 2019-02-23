@@ -1,6 +1,6 @@
 class Redis
   def self.connect!
-    opts = { url: "redis://localhost:6379/#{::Rails.env.test? ? 1 : 0}" }
+    opts = { url: ENV['REDIS_URL'] }
 
     opts[:logger] = ::Rails.logger if ::Rails.application.config.log_redis
 

@@ -7,7 +7,7 @@ class ApiDefender < Rack::Throttle::Hourly
 
   def initialize(app)
     options = {
-      cache: Redis.new(thread_safe: true),
+      cache: Redis.new(url: ENV['REDIS_CACHE_URL'], thread_safe: true),
       key_prefix: :throttle,
       max: 3000 # only 3000 request per hour
     }

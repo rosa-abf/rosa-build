@@ -270,13 +270,20 @@ module Git
           end
         rescue => e
           f.close if defined?(f)
-          Airbrake.notify_or_ignore(e, link: link.to_s, url: url, owner: owner)
+          Raven.capture_exception(e, extra: {
+            link: link.to_s,
+            url: url,
+            owner: owner
+          })
         ensure
           File.delete srpm_file if srpm_file
         end
       end
     rescue => e
-      Airbrake.notify_or_ignore(e, url: url, owner: owner)
+      Raven.capture_exception(e, extra: {
+        url: url,
+        owner: owner
+      })
     ensure
       FileUtils.remove_entry_secure dir if dir
     end

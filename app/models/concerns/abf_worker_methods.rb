@@ -6,10 +6,7 @@ module AbfWorkerMethods
 
   module ClassMethods
     def log_server
-      @log_server ||= Redis.new(
-        host: APP_CONFIG['abf_worker']['log_server']['host'],
-        port: APP_CONFIG['abf_worker']['log_server']['port']
-      )
+      @log_server ||= Redis.new(url: ENV['REDIS_URL'])
     end
 
     def next_build

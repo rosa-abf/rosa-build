@@ -1,0 +1,8 @@
+.git
+log/*
+doc
+spec
+tmp/cache/*
+tmp/data/*
+tmp/miniprofiler/*
+public

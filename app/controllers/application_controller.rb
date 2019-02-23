@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   include StrongParams
   include Pundit
 
-  AIRBRAKE_IGNORE = [
+  SENTRY_IGNORE = [
     ActionController::InvalidAuthenticityToken,
     AbstractController::ActionNotFound
   ]
@@ -86,9 +86,9 @@ class ApplicationController < ActionController::Base
   end
 
   def render_500(e)
-    #check for exceptions Airbrake ignores by default and exclude them from manual Airbrake notification
-    if Rails.env.production? && !AIRBRAKE_IGNORE.include?(e.class)
-      notify_airbrake(e)
+    #check for exceptions Sentry ignores by default and exclude them from manual Sentry notification
+    if Rails.env.production? && !SENTRY_IGNORE.include?(e.class)
+      Raven.capture_exception(e)
     end
     Rails.logger.error e.message
     Rails.logger.error e.backtrace.inspect

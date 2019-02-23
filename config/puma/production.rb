@@ -1,7 +1,7 @@
-base_path  = "/srv/rosa_build"
-pidfile File.join(base_path, 'shared', 'pids', 'unicorn.pid')
-state_path File.join(base_path, 'shared', 'pids', 'puma.state')
-bind 'unix:///tmp/rosa_build_unicorn.sock'
+base_path  = "/rosa-build"
+#pidfile File.join(base_path, 'shared', 'pids', 'unicorn.pid')
+#state_path File.join(base_path, 'shared', 'pids', 'puma.state')
+bind 'unix:///rosa-build/tmp/sockets/rosa_build.sock'
 
 environment ENV['RAILS_ENV'] || 'production'
 threads *(ENV['PUMA_THREADS'] || '12,12').split(',')
@@ -15,13 +15,8 @@ on_worker_boot do
     ActiveSupport.on_load(:active_record) do
       ActiveRecord::Base.connection.disconnect! rescue ActiveRecord::ConnectionNotEstablished
 
-      config = Rails.application.config.database_configuration[Rails.env]
-      # config['reaping_frequency'] = ENV['DB_REAP_FREQ'] || 10 # seconds
-      # config['pool']              = ENV['DB_POOL']      || 3
-
-      ActiveRecord::Base.establish_connection(config)
-
-      Rails.logger.info "Connected to PG. Connection pool size #{config['pool']}, reaping frequency #{config['reaping_frequency']}"
+      ActiveRecord::Base.establish_connection(ENV['DATABASE_URL'])
+      Rails.logger.info(ActiveRecord::Base.configurations)
     end
     # QC::Conn.connect
     Rails.logger.info('Connected to PG')
@@ -30,5 +25,3 @@ on_worker_boot do
   Redis.connect!
   Rails.logger.info('Connected to Redis')
 end
-
-activate_control_app 'unix:///tmp/rosa_build_pumactl.sock'

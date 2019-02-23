@@ -29,7 +29,7 @@ gem 'redis-rails'
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git', require: 'git_http'
 gem 'grit', git: 'git://github.com/rosa-abf/grit.git', tag: '2.6.17'
 gem 'charlock_holmes'
-gem 'github-linguist', '3.1.5', require: 'linguist'
+gem 'github-linguist', require: 'linguist'
 gem 'diff-display'
 
 # Wiki
@@ -41,7 +41,6 @@ gem 'rdiscount'
 gem 'RedCloth'
 gem 'wikicloth'
 
-gem 'newrelic_rpm'
 gem 'whenever', require: false
 
 gem 'jbuilder'
@@ -89,11 +88,13 @@ gem 'zeroclipboard-rails'
 
 gem 'compass-rails'
 gem 'uglifier'
-gem 'therubyracer', platforms: [:mri, :rbx]
-gem 'therubyrhino', platforms: :jruby
 gem 'sitemap_generator'
 
 gem 'codemirror-rails', '~> 4.5'
+
+gem 'sentry-raven'
+
+gem 'pygments.rb'
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-notifyjs'
@@ -102,7 +103,6 @@ end
 gem 'rack-utf8_sanitizer'
 
 group :production do
-  gem 'airbrake'
   #gem 'bluepill', '~> 0.0.60', require: false
   gem 'puma'
 end
@@ -123,7 +123,7 @@ group :development do
   gem 'meta_request'
   gem 'localeapp'
   gem 'skype'
-  #gem 'ruby-dbus' if RUBY_PLATFORM =~ /linux/i # Error at deploy
+  gem 'ruby-dbus' if RUBY_PLATFORM =~ /linux/i # Error at deploy
   gem 'rack-mini-profiler', require: false
 end
 
