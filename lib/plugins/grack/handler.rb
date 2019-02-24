@@ -8,7 +8,7 @@ module Grack
     def call(env)
       super
       if git?
-        ::GitHttp::App.new(@config).call(env)
+        Grack::App.new(@config).call(env)
       else
         @app.call(env)
       end

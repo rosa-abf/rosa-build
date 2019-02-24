@@ -27,10 +27,11 @@ GIT
       sass-rails
 
 GIT
-  remote: git://github.com/rosa-abf/grack.git
-  revision: 020be3fef3fb308b9d214252522aa5945bf6584a
+  remote: git://github.com/grackorg/grack.git
+  revision: 88d3b20943ce5484006dd44747232c6f9b7da12d
   specs:
-    grack (0.2.0)
+    grack (0.1.0)
+      rack
 
 GIT
   remote: git://github.com/rosa-abf/grit.git
