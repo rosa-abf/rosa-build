@@ -17,7 +17,7 @@ ru:
       new_comment_notification: Новый комментарий к Вашей задаче
       new_commit_comment_notification: Новый комментарий к коммиту
       new_issue_notification: Новая задача добавлена к проекту
-      new_user_notification: Регистрация на проекте «%{ project_name }»
+      new_user_notification: Регистрация на проекте «%{project_name}»
       issue_assign_notification: Вам назначили задачу
       invite_approve_notification: Приглашение в ABF
       for_arch: для архитектуры %{arch}.

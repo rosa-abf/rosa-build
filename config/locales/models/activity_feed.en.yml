@@ -17,7 +17,7 @@ en:
       new_comment_notification: New comment to your task
       new_commit_comment_notification: New comment to commit
       new_issue_notification: New task added to project
-      new_user_notification: Registered on project «%{ project_name }»
+      new_user_notification: Registered on project «%{project_name}»
       issue_assign_notification: New task assigned
       invite_approve_notification: Invitation to ABF
       for_arch: for arch %{arch}.
