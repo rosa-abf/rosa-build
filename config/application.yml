@@ -1,0 +1,55 @@
+production: &production
+  action_mailer_host: "mail.rosalinux.ru"
+  tmpfs_path: /tmp
+  root_path: /share
+  git_path:  /mnt/gitstore
+  do-not-reply-email: do-not-reply@rosalinux.ru
+  abf_host: abf-n.rosalinux.ru
+  project_name: ABF
+  github_services:
+    ip: 10.76.0.242
+    port: 4000
+  distr_types: ['mdv', 'rhel', 'arm']
+  allowed_addresses:
+    -
+  abf_worker:
+    publish_workers_count: 4
+  keys:
+    key_pair_secret_key: <%=ENV['KEY_PAIR_SECRET_KEY'] %>
+    node_instruction_secret_key: <%=ENV['NODE_INSTRUCTION_SECRET_KEY'] %>
+    secret_token: <%=ENV['SECRET_TOKEN'] %>
+    secret_key_base: <%=ENV['SECRET_KEY_BASE'] %>
+    github:
+      id: <%=ENV['GITHUB_ID'] %>
+      secret: <%=ENV['GITHUB_SECRET'] %>
+    google:
+      id: <%=ENV['GOOGLE_ID'] %>
+      secret: <%=ENV['GOOGLE_SECRET'] %>
+    facebook:
+      id: <%=ENV['FACEBOOK_ID'] %>
+      secret: <%=ENV['FACEBOOK_SECRET'] %>
+    devise:
+      pepper: <%=ENV['DEVISE_PEPPER'] %>
+      secret: <%=ENV['DEVISE_SECRET'] %> 
+
+  anonymous_access: true
+  mailer_https_url: true
+  file_store_url: <%=ENV['FILE_STORE_URL'] %>
+  wiki_formats:
+    markdown:  "Markdown"
+    textile:   "Textile"
+    org:       "Org-mode"
+  feedback:
+    email:
+      - 'abf-support@rosalab.ru'
+    cc:
+      - 'shadowpilot34@gmail.com'
+      - 'alexander@meson.ru'
+    subject_prefixes:
+      - 'abf-users'
+      - 'feeback_form'
+  shell_user: 'git'
+  downloads_url: <%=ENV['DOWNLOADS_URL'] %>
+
+development:
+  <<: *production

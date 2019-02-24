@@ -584,7 +584,7 @@ class BuildList < ActiveRecord::Base
       sha1 = build_for_platform.cached_chroot(arch.name)
       cmd_params.merge!('CACHED_CHROOT_SHA1' => sha1) if sha1.present?
     end
-    cmd_params = cmd_params.map{ |k, v| "#{k}='#{v}'" }.join(' ')
+    # cmd_params = cmd_params.map{ |k, v| "#{k}='#{v}'" }.join(' ')
 
     {
       id:            id,

@@ -29,7 +29,7 @@ gem 'redis-rails'
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git', require: 'git_http'
 gem 'grit', git: 'git://github.com/rosa-abf/grit.git', tag: '2.6.17'
 gem 'charlock_holmes'
-gem 'github-linguist', require: 'linguist'
+gem 'github-linguist', '~> 3.1.5', require: 'linguist'
 gem 'diff-display'
 
 # Wiki
@@ -93,8 +93,6 @@ gem 'sitemap_generator'
 gem 'codemirror-rails', '~> 4.5'
 
 gem 'sentry-raven'
-
-gem 'pygments.rb'
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-notifyjs'
