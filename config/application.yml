@@ -1,10 +1,9 @@
 production: &production
-  action_mailer_host: "mail.rosalinux.ru"
+  action_mailer_host: <%=ENV['ABF_HOST'] %>
   tmpfs_path: /tmp
   root_path: /share
   git_path:  /mnt/gitstore
   do-not-reply-email: do-not-reply@rosalinux.ru
-  abf_host: abf-n.rosalinux.ru
   project_name: ABF
   github_services:
     ip: 10.76.0.242
