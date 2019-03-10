@@ -1,4 +1,4 @@
-class RemoveOutdatedItemsJob < BaseActiveRecordJob
+class RemoveOutdatedItemsJob
   def self.perform
     log_file = Rails.root.join("log", "remove_outdated.log").to_s
     counter_bl = 0
