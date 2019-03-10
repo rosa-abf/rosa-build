@@ -23,6 +23,7 @@ RUN gem install bundler:1.17.3
 RUN bundle config build.rugged --use-system-libraries
 COPY Gemfile Gemfile.lock ./
 RUN bundle install --without development test --jobs 16 --clean --deployment --no-cache --verbose
+RUN apk add --no-cache file imagemagick
 RUN apk del .ruby-builddeps && rm -rf /root/.bundle && rm -rf /proxy/vendor/bundle/ruby/2.3.0/cache
 
 FROM scratch
