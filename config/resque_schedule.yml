@@ -12,13 +12,6 @@ build_lists_publish_task_manager:
   queue: middle
   description: 'Creates tasks for publishing'
 
-build_lists_queues_monitoring:
-  every:
-    - '1m'
-  class: 'BuildLists::QueuesMonitoringJob'
-  queue: middle
-  description: 'Monitoring for "user/mass-build" queues'
-
 clean_api_defender_statistics:
   every:
     - '1d'
@@ -40,9 +33,33 @@ run_extra_mass_builds:
   queue: low
   description: 'Run mass builds with relations'
 
-restart_nodes:
-  every:
-    - '5m'
-  class: 'RestartNodesJob'
+remove_outdated_items:
+  cron: '0 3 * * *'
+  class: 'RemoveOutdatedItemsJob'
   queue: low
-  description: 'Restarts unavailable nodes'
+  description: 'Removes outdated mass builds, product build lists and build lists'
+
+autostart_builds_daily:
+  cron: '0 4 * * *'
+  class: 'AutostartBuildsDailyJob'
+  queue: low
+  description: 'Starts automatic builds every 24 hours'
+
+autostart_builds_once_every_twelve_hours:
+  cron: '0 4,16 * * *'
+  class: 'AutostartBuildsOnceEveryTwelveHoursJob'
+  queue: low
+  description: 'Starts automatic builds every 12 hours'
+
+autostart_builds_weekly:
+  cron: '0 4 * * 0'
+  class: 'AutostartBuildsWeeklyJob'
+  queue: low
+  description: 'Starts automatic builds every week'
+
+build_canceling_destroy:
+  every:
+    - '1h'
+  class: 'BuildLists::BuildCancelingDestroyJob'
+  queue: low
+  description: 'Remove build canceling build lists'
