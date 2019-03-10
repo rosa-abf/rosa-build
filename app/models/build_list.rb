@@ -182,11 +182,6 @@ class BuildList < ActiveRecord::Base
   after_destroy :remove_container
 
   state_machine :status, initial: :waiting_for_response do
-
-    after_transition(on: [:place_build, :rerun_tests]) do |build_list, transition|
-      build_list.add_job_to_abf_worker_queue if build_list.external_nodes.blank?
-    end
-
     after_transition on: :published,
       do: %i(set_version_and_tag actualize_packages)
     after_transition on: :publish, do: :set_publisher
@@ -300,7 +295,6 @@ class BuildList < ActiveRecord::Base
   end
 
   later :publish, queue: :middle
-  later :add_job_to_abf_worker_queue, queue: :middle
 
   HUMAN_CONTAINER_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_publish,
                                BUILD_PUBLISHED => :container_published,
@@ -541,6 +535,15 @@ class BuildList < ActiveRecord::Base
     packages.pluck(:sha1).compact | (results || []).map{ |r| r['sha1'] }.compact
   end
 
+  def cancel_job
+    if [BUILD_PENDING, RERUN_TESTS].include?(status)
+      build_canceled
+    elsif
+      send_stop_signal
+    end
+    true
+  end
+
   def abf_worker_args
     repos = include_repos
     include_repos_hash = {}.tap do |h|
@@ -610,50 +613,6 @@ class BuildList < ActiveRecord::Base
       id
     )
   end
-
-  def self.next_build(arch_ids, platform_ids)
-    build_list   = next_build_from_queue(USER_BUILDS_SET, arch_ids, platform_ids)
-    build_list ||= next_build_from_queue(MASS_BUILDS_SET, arch_ids, platform_ids)
-
-    build_list.delayed_add_job_to_abf_worker_queue if build_list
-    build_list
-  end
-
-  def self.next_build_from_queue(set, arch_ids, platform_ids)
-    kind_id = Redis.current.spop(set)
-    key     =
-      case set
-      when USER_BUILDS_SET
-        "user_build_#{kind_id}_rpm_worker_default"
-      when MASS_BUILDS_SET
-        "mass_build_#{kind_id}_rpm_worker"
-      end if kind_id
-
-    task = Resque.pop(key) if key
-
-    if task || Redis.current.llen("resque:queue:#{key}") > 0
-      Redis.current.sadd(set, kind_id)
-    end
-
-    build_list = BuildList.where(id: task['args'][0]['id']).first if task
-    return unless build_list
-
-    if platform_ids.present? && platform_ids.exclude?(build_list.build_for_platform_id)
-      build_list.restart_job
-      return
-    end
-    if arch_ids.present? && arch_ids.exclude?(build_list.arch_id)
-      build_list.restart_job
-      return
-    end
-
-    build_list
-  end
-
-  def delayed_add_job_to_abf_worker_queue(*args)
-    restart_job if valid? && status == BUILD_PENDING
-  end
-  later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :middle
 
   def valid_branch_for_publish?
     @valid_branch_for_publish ||= begin

@@ -157,6 +157,7 @@ GEM
       sass-rails (<= 5.0.1)
       sprockets (< 2.13)
     concurrent-ruby (1.1.4)
+    connection_pool (2.2.2)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
     crass (1.0.4)
@@ -436,6 +437,8 @@ GEM
       redis-actionpack (~> 4)
       redis-activesupport (~> 4)
       redis-store (~> 1.1.0)
+    redis-semaphore (0.3.1)
+      redis
     redis-store (1.1.4)
       redis (>= 2.2)
     responders (2.1.0)
@@ -671,6 +674,7 @@ DEPENDENCIES
   codemirror-rails (~> 4.5)
   coffee-rails
   compass-rails
+  connection_pool
   creole
   devise
   diff-display
@@ -720,6 +724,7 @@ DEPENDENCIES
   rdiscount
   redcarpet (~> 3.3)
   redis-rails
+  redis-semaphore
   resque
   resque-scheduler (~> 2.5.4)
   resque-status

@@ -99,6 +99,8 @@ source 'https://rails-assets.org' do
 end
 
 gem 'rack-utf8_sanitizer'
+gem 'redis-semaphore'
+gem 'connection_pool'
 
 group :production do
   #gem 'bluepill', '~> 0.0.60', require: false

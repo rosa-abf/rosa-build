@@ -9,3 +9,4 @@ class Redis
 end
 
 Redis.connect!
+Redis::Semaphore.new(:job_shift_lock).delete!

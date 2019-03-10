@@ -63,7 +63,6 @@ class NodeInstruction < ActiveRecord::Base
 
     build_lists.find_each do |bl|
       bl.update_column(:status, BuildList::BUILD_PENDING)
-      bl.restart_job
     end
 
     update_column(:output, stdout)

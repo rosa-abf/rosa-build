@@ -8,30 +8,33 @@ class Api::V1::JobsController < Api::V1::BaseController
   skip_after_action :verify_authorized
 
   def shift
-    @build_list = BuildList.next_build(arch_ids, platform_ids) if current_user.system?
-    if @build_list
-      set_builder
-    else
+    clear_stale_builders
+    job_shift_sem = Redis::Semaphore.new(:job_shift_lock)
+    job_shift_sem.lock do
       build_lists = BuildList.scoped_to_arch(arch_ids).
-        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
-        for_platform(platform_ids).
-        oldest.order(:created_at)
+      for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
+      for_platform(platform_ids).where(builder: nil)
 
-      ActiveRecord::Base.transaction do
-        if current_user.system?
-          @build_list ||= build_lists.external_nodes(:everything).first
-        else
-          @build_list   = build_lists.external_nodes(:owned).for_user(current_user).first
-          @build_list ||= BuildListPolicy::Scope.new(current_user, build_lists).owned.
-            external_nodes(:everything).readonly(false).first
+      if current_user.system?
+        build_lists = build_lists.where(external_nodes: ["", nil, "everything"])
+        uid = build_lists.where(mass_build_id: nil).pluck('DISTINCT user_id').sample
+        if !uid
+          uid = build_lists.pluck('DISTINCT user_id').sample
         end
-        set_builder
+
+        @build_list = build_lists.where(user_id: uid).order(:created_at).first if uid
+      else
+        build_lists = build_lists.order(:created_at)
+        @build_list   = build_lists.external_nodes(:owned).for_user(current_user).first
+        @build_list ||= BuildListPolicy::Scope.new(current_user, build_lists).owned.
+          external_nodes(:everything).readonly(false).first
       end
+      set_builder
     end
 
     job = {
-      worker_queue: @build_list.worker_queue_with_priority(false),
-      worker_class: @build_list.worker_queue_class,
+      worker_queue: '',
+      worker_class: '',
       :worker_args  => [@build_list.abf_worker_args]
     } if @build_list
     render json: { job: job }.to_json
@@ -81,6 +84,12 @@ class Api::V1::JobsController < Api::V1::BaseController
   end
 
   protected
+
+  def clear_stale_builders
+    BuildList.where("updated_at < ?", 300.seconds.ago).
+      where(status: [BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
+      where.not(builder: nil).update_all('builder_id = NULL')
+  end
 
   def platform_ids
     @platform_ids ||= begin
