@@ -33,7 +33,7 @@ cpio -idv < srpm.cpio
 rm -f srpm.cpio
 
 # Remove archives
-bundle exec $script $token $file_store_url
+bundle exec ruby $script $token $file_store_url
 
 # Commit and push changes
 git add -A .
