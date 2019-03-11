@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # import_srpm.sh: Import SRPM packages to git repo
 # Input data
 srpm_path=$1
@@ -33,7 +33,7 @@ cpio -idv < srpm.cpio
 rm -f srpm.cpio
 
 # Remove archives
-$script $token $file_store_url
+bundle exec $script $token $file_store_url
 
 # Commit and push changes
 git add -A .
