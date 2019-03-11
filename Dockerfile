@@ -47,4 +47,6 @@ COPY app/ ./app
 COPY script ./script
 COPY vendor ./vendor
 COPY Rakefile config.ru entrypoint.sh entrypoint_resque.sh entrypoint_resque_scheduler.sh ./
+RUN git config --global user.email "abf@rosalinux.ru"
+RUN git config --global user.name "ABF"
 ENTRYPOINT ["/rosa-build/entrypoint.sh"]

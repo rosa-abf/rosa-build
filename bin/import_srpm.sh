@@ -18,8 +18,7 @@ git clone $git_path $tmp_dir
 # Switch to import branch
 cd $tmp_dir
 git branch --track $git_branch origin/$git_branch # Try track remote
-git branch $git_branch # Try create local
-git checkout $git_branch
+git checkout -b $git_branch
 
 # Remove all files except .git
 rm -rf $tmp_dir/*
@@ -33,13 +32,13 @@ cpio -idv < srpm.cpio
 rm -f srpm.cpio
 
 # Remove archives
-bundle exec ruby $script $token $file_store_url
+BUNDLE_GEMFILE=/rosa-build/Gemfile bundle exec ruby $script $token $file_store_url
 
 # Commit and push changes
 git add -A .
 git commit -m "Automatic import for version $version"
 git branch $git_branch # Ensure branch exists
-git push origin master $git_branch
+git push origin $git_branch
 
 # Cleanup
 rm -rf $tmp_dir
