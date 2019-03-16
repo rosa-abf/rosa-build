@@ -13,7 +13,7 @@ module Grack
 
     def read?
       (get? && !(@env['REQUEST_URI'] =~ /git-receive-pack$/)) ||
-      (post? && @env['REQUEST_URI'] =~ /git-upload-pack$/)
+      (post? && !(@env['REQUEST_URI'] =~ /git-upload-pack$/).nil?)
     end
 
     def write?
