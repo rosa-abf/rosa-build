@@ -6,7 +6,7 @@ module Grack
 
     protected
 
-    def _call
+    def _call(env)
       @env = env
       @project = nil
     end
