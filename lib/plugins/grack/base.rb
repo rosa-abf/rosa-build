@@ -1,11 +1,15 @@
 module Grack
   class Base # abstract
     def call(env)
-      @env = env
-      @project = nil
+      dup._call(env)
     end
 
     protected
+
+    def _call
+      @env = env
+      @project = nil
+    end
 
     def git?
       @env['HTTP_USER_AGENT'] =~ /^git\//

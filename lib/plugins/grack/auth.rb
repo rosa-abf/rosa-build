@@ -5,7 +5,7 @@ module Grack
     end
 
     # TODO tests!!!
-    def call(env)
+    def _call(env)
       super
       if git?
         return render_not_found if project.blank?

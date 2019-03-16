@@ -5,7 +5,7 @@ module Grack
       @config = config
     end
 
-    def call(env)
+    def _call(env)
       super
       if git?
         Grack::App.new(@config).call(env)
