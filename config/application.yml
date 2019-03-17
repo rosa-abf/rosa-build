@@ -2,7 +2,7 @@ production: &production
   action_mailer_host: "<%=ENV['ABF_HOST'] %>"
   tmpfs_path: /tmp
   root_path: /share
-  git_path:  /mnt/gitstore
+  git_path: /home/mnt/gitstore
   do-not-reply-email: do-not-reply@rosalinux.ru
   project_name: ABF
   github_services:
