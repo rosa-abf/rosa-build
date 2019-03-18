@@ -27,9 +27,7 @@ h4.offset10= t("activerecord.attributes.build_list.preferences")
     label
       - checked = params[:build_list].try(:[], kind)
       - checked = @build_list.send(kind) if checked.nil?
-      input[type=     'checkbox'
-            checked=  checked
-            name=     "build_list[#{kind}]" ]
+      = f.check_box kind, {}, "true", "false"
       = BuildList.human_attribute_name kind
 
 - selected = params[:build_list].try(:[], :external_nodes)
