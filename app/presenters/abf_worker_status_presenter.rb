@@ -11,11 +11,11 @@ class AbfWorkerStatusPresenter < ApplicationPresenter
       result[:rpm][:build_tasks]    += nodes[:busy]
       result[:rpm][:other_workers]  = nodes[:others]
 
-      external_bls = BuildList.for_status(BuildList::BUILD_PENDING).external_nodes(:everything).count
-      result[:rpm][:default_tasks] += external_bls + count_of_tasks('user_build_')
+      external_bls = BuildList.for_status(BuildList::BUILD_PENDING).where(mass_build_id: nil).count
+      result[:rpm][:default_tasks] = external_bls
 
-      mass_build_tasks = count_of_tasks('mass_build_')
-      result[:rpm][:low_tasks] += mass_build_tasks
+      mass_build_tasks = BuildList.for_status(BuildList::BUILD_PENDING).where.not(mass_build_id: nil).count
+      result[:rpm][:low_tasks] = mass_build_tasks
       result[:rpm][:tasks] += external_bls + mass_build_tasks
       result
     end
@@ -29,12 +29,6 @@ class AbfWorkerStatusPresenter < ApplicationPresenter
   end
 
   protected
-
-  def count_of_tasks(regexp)
-    Redis.current.smembers('resque:queues').
-      select{ |q| q =~ /#{regexp}/ }.
-      map{ |q| Redis.current.llen("resque:queue:#{q}") }.sum
-  end
 
   def get_status(*queues)
     status = {}
