@@ -279,12 +279,12 @@ class BuildList < ActiveRecord::Base
     # ===== into testing - end
 
     event :build_success do
-      transition [:build_started, :build_canceling, :build_canceled, :rerunning_tests] => :success
+      transition [:build_started, :build_canceling, :build_canceled, :rerunning_tests, :build_pending] => :success
     end
 
     [:build_error, :tests_failed].each do |kind|
       event kind do
-        transition [:build_started, :build_canceling, :build_canceled] => kind
+        transition [:build_started, :build_canceling, :build_canceled, :build_pending] => kind
         transition rerunning_tests: :tests_failed
       end
     end
