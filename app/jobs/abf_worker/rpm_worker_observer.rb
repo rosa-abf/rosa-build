@@ -83,6 +83,7 @@ module AbfWorker
       else
         Redis.current.lpush RESTARTED_BUILD_LISTS, subject.id
         subject.update_column(:status, BuildList::BUILD_PENDING)
+        subject.update_column(:builder_id, nil)
         return true
       end
     end
