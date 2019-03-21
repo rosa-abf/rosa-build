@@ -96,8 +96,11 @@ class Api::V1::JobsController < Api::V1::BaseController
 
   def platform_ids
     @platform_ids ||= begin
+      platform_types = params[:platform_types].to_s.split(',') & APP_CONFIG['distr_types']
       platforms = params[:platforms].to_s.split(',')
-      platforms.present? ? Platform.where(name: platforms).pluck(:id) : []
+      platforms = platforms.present? ? Platform.where(name: platforms).pluck(:id) : []
+      platforms |= Platform.main.where(distrib_type: platform_types).pluck(:id) if !platform_types.empty?
+      platforms
     end
   end
 
