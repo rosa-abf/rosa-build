@@ -43,11 +43,14 @@ class Api::V1::JobsController < Api::V1::BaseController
   def statistics
     if params[:uid].present?
       RpmBuildNode.create(
-        id:           params[:uid],
-        user_id:      current_user.id,
-        system:       current_user.system?,
-        worker_count: params[:worker_count],
-        busy_workers: params[:busy_workers]
+        id:            params[:uid],
+        user_id:       current_user.id,
+        system:        current_user.system?,
+        worker_count:  params[:worker_count],
+        busy_workers:  params[:busy_workers],
+        host:          params[:host].to_s,
+        query_string:  params[:query_string].to_s,
+        last_build_id: params[:last_build_id].to_s
       ) rescue nil
     end
     render nothing: true
