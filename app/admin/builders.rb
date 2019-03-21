@@ -11,7 +11,7 @@ ActiveAdmin.register_page 'Builders' do
         column :busy_workers
         column :query_string
         column 'Last build ID' do |b|
-          if b.last_build_id
+          if b.last_build_id.present?
             link_to b.last_build_id, build_list_path(b.last_build_id)
           else
             'None'
