@@ -30,6 +30,14 @@ module AbfWorker
         return
       end
 
+      if options['hostname']
+        subject.update_attribute(:hostname, options['hostname'])
+      end
+
+      if options['fail_reason']
+        subject.update_attribute(:fail_reason, options['fail_reason'])
+      end
+
       rerunning_tests = subject.rerunning_tests?
 
       case status

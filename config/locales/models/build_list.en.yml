@@ -123,6 +123,9 @@ en:
       attached_advisory: Attached advisory
       create_advisory: Create new advisory
 
+      hostname: Builder hostname
+      fail_reason: Fail reason
+
       ownership:
         header: Build list ownership
         owned: My
