@@ -102,7 +102,7 @@ class PullRequest < ActiveRecord::Base
     end
     res = merge
     new_status = case res
-                 when /Already up to date/
+                 when /up to date/
                    'already'
                  when /Merge made by/
                    system("cd #{path} && git reset --hard HEAD^") # remove merge commit
