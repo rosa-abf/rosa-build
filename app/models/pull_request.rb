@@ -102,7 +102,7 @@ class PullRequest < ActiveRecord::Base
     end
     res = merge
     new_status = case res
-                 when /up to date/
+                 when /Already up-to-date/
                    'already'
                  when /Merge made by/
                    system("cd #{path} && git reset --hard HEAD^") # remove merge commit
@@ -129,8 +129,10 @@ class PullRequest < ActiveRecord::Base
       commit = repo.commits(to_ref).first
       system "git config user.name \"#{who.uname}\" && git config user.email \"#{who.email}\""
       res = merge
+      puts res
       if commit.id != repo.commits(to_ref).first.id
         res2 = %x(export GL_ID=user-#{who.id} GL_REPO_NAME=#{to_project.path} && git push origin HEAD)
+        puts res2
         system("git reset --hard HEAD^") # for diff maybe FIXME
 
         if old_commit.id == to_project.repo.commits(to_ref).first.id
@@ -202,7 +204,14 @@ class PullRequest < ActiveRecord::Base
 
   protected
 
+  def system(*args)
+    puts args.join(" ")
+    Kernel.system(*args)
+  end
+
   def merge
+    puts "From: #{from_project.try(:path)}"
+    puts "To: #{to_project.try(:path)}"
     clone
     message = "Merge pull request ##{serial_id} from #{from_project_owner_uname}/#{from_project_name}:#{from_ref}\r\n #{title}"
     %x(cd #{path} && git checkout #{to_ref.shellescape} && git merge --no-ff #{from_branch.shellescape} -m #{message.shellescape})
