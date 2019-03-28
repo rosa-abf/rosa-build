@@ -53,9 +53,9 @@ module Project::Finders
       arr = first.try(:split, '/') || []
       arr = (arr << last).compact
       return nil if arr.length != 2
-      Rails.cache.fetch(['Project.find_by_owner_and_name', arr.first, arr.last]) do
-        find_by(owner_uname: arr.first, name: arr.last)
-      end || by_owner_and_name(*arr).first
+      find_by(owner_uname: arr.first, name: arr.last) || by_owner_and_name(*arr).first
+#      Rails.cache.fetch(['Project.find_by_owner_and_name', arr.first, arr.last]) do
+#      end || by_owner_and_name(*arr).first
     end
 
     def find_by_owner_and_name!(first, last = nil)
