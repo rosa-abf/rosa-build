@@ -26,8 +26,8 @@ class KeyPair < ActiveRecord::Base
           system "gpg --homedir #{dir} --dearmor < #{filename}.txt > #{filename}.gpg"
         end
 
-        public_key = get_info_of_key "#{dir}/pubring.gpg"
-        secret_key = get_info_of_key "#{dir}/secring.gpg"
+        public_key = get_info_of_key "#{dir}/pubring.txt"
+        secret_key = get_info_of_key "#{dir}/secring.txt"
 
         if correct_key?(public_key, :public) & correct_key?(secret_key, :secret)
           if public_key[:fingerprint] != secret_key[:fingerprint]
@@ -63,7 +63,7 @@ class KeyPair < ActiveRecord::Base
 
     def get_info_of_key(file_path)
       results = {}
-      str = %x[ gpg --with-fingerprint #{file_path} | sed -n 1,2p]
+      str = %x[ cat #{filepath} | gpg --quiet --import-options import-show --dry-run --import | sed -n 1,2p ]
       info = str.strip.split("\n")
       if info.size == 2
         results[:fingerprint] = info[1].gsub(/.*\=/, '').strip.gsub(/\s/, ':')
