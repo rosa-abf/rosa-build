@@ -6,15 +6,12 @@
     %li ·
     %li= link_to t('bottom_menu.about'), t('bottom_menu.about_url')
     %li ·
-    %li= link_to t('bottom_menu.contacts'), t('bottom_menu.contacts_url')
-    %li ·
     %li= link_to t('bottom_menu.tos'), tos_url
     %li ·
     %li= link_to t('bottom_menu.support'), contact_url
     %li ·
     %li= link_to t('bottom_menu.developer_api'), t('bottom_menu.developer_api_url')
-    - if pr = Project.find_by_owner_and_name('abf/abf-ideas')
-      %li ·
-      %li= link_to t('bottom_menu.abf_ideas'), project_issues_url(pr)
+    %li ·
+    %li= link_to t('bottom_menu.abf_ideas'), "https://github.com/rosa-abf/rosa-build/issues"
     %li ·
     %li= link_to t('bottom_menu.abf_blog'), t('bottom_menu.abf_blog_url')

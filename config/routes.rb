@@ -14,10 +14,10 @@ Rails.application.routes.draw do
   match '/robots.txt' => 'sitemap#robots', via: [:get, :post, :head], as: :robots
 
   resources :statistics, only: [:index]
-  resource :contact, only: [:new, :create, :sended] do
-    get '/' => 'contacts#new'
-    get :sended
-  end
+#  resource :contact, only: [:new, :create, :sended] do
+#    get '/' => 'contacts#new'
+#    get :sended
+#  end
 
   devise_scope :user do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
