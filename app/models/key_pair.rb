@@ -63,13 +63,13 @@ class KeyPair < ActiveRecord::Base
 
     def get_info_of_key(file_path)
       results = {}
-      str = %x[ cat #{file_path} | gpg --quiet --import-options import-show --dry-run --import | sed -n 1,2p ]
+      str = %x[ cat #{file_path} | gpg --quiet --import-options import-show --dry-run --keyid-format LONG --import | sed -n 1,2p ]
       info = str.strip.split("\n")
       if info.size == 2
         results[:fingerprint] = info[1].gsub(/.*\=/, '').strip.gsub(/\s/, ':')
 
         results[:type] = info[0] =~ /^pub\s/ ? :public : nil
-        results[:type] ||= info[0] =~ /^sec\s/ ? :secret : nil
+        results[:type] ||= info[0] =~ /^sec#\s/ ? :secret : nil
 
         if keyid = info[0].match(/\/[\w]+\s/)
           results[:keyid] = keyid[0].strip[1..-1]

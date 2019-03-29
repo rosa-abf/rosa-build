@@ -25,6 +25,7 @@ COPY Gemfile Gemfile.lock ./
 RUN bundle install --without development test --jobs 16 --clean --deployment --no-cache --verbose
 RUN apk add --no-cache file imagemagick curl gnupg
 RUN apk del .ruby-builddeps && rm -rf /root/.bundle && rm -rf /proxy/vendor/bundle/ruby/2.3.0/cache
+RUN mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
 
 FROM scratch
 COPY --from=rosa-build-gems / /
