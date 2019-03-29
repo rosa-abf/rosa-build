@@ -63,7 +63,7 @@ class KeyPair < ActiveRecord::Base
 
     def get_info_of_key(file_path)
       results = {}
-      str = %x[ cat #{filepath} | gpg --quiet --import-options import-show --dry-run --import | sed -n 1,2p ]
+      str = %x[ cat #{file_path} | gpg --quiet --import-options import-show --dry-run --import | sed -n 1,2p ]
       info = str.strip.split("\n")
       if info.size == 2
         results[:fingerprint] = info[1].gsub(/.*\=/, '').strip.gsub(/\s/, ':')
