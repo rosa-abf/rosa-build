@@ -95,7 +95,7 @@ class Platform < ActiveRecord::Base
   after_update :freeze_platform_and_update_repos
   after_update :update_owner_relation
 
-  after_create  -> { symlink_directory unless hidden? }
+  after_commit  -> { symlink_directory unless hidden? }, on: :create
   after_destroy -> { remove_symlink_directory unless hidden? }
 
   accepts_nested_attributes_for :platform_arch_settings, allow_destroy: true
