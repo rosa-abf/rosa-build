@@ -68,7 +68,7 @@ class Project < ActiveRecord::Base
   before_save -> { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
   after_save :attach_to_personal_repository
-  after_update -> { update_path_to_project(name_was) }, if: :name_changed?
+  before_update -> { update_path_to_project(name_was) }, if: :name_changed?
 
   attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
 
