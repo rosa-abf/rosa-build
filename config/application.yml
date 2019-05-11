@@ -10,7 +10,8 @@ production: &production
     port: 4000
   distr_types: ['mdv', 'rhel', 'arm']
   allowed_addresses:
-    -
+    - 127.0.0.1
+    - ::1
   abf_worker:
     publish_workers_count: 4
   keys:
