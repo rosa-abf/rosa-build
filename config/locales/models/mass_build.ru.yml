@@ -2,6 +2,7 @@ ru:
   layout:
     mass_builds:
       new: Новая массовая сборка
+      show_fail_reason_link: Список упавших сборок с причинами
       recreate: Пересоздать массовую сборку
       publish_success: Опубликовать успешные сборки
       publish_test_failed: Опубликовать сборки с проваленными тестами
@@ -16,6 +17,10 @@ ru:
       cancel_confirm: Вы уверены, что хотите отменить массовую сборку?
       projects_list: Проекты
       missed_projects_list: 'Несуществующие проекты: '
+      show_fail_reason:
+        title: Сборки с причиной провала
+        no_failed_builds: Нет сборок с ошибкой
+        return: Вернутся к массовой сборке
 
       placeholder:
         description: Описание

@@ -5,7 +5,7 @@ class MassBuildPolicy < ApplicationPolicy
   end
   alias_method :read?,       :show?
   alias_method :get_list?,   :show?
-
+  alias_method :show_fail_reason?, :show?
   def create?
     is_admin? || owner?(record.save_to_platform) || local_admin?(record.save_to_platform)
   end

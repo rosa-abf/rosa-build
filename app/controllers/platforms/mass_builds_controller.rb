@@ -4,7 +4,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:index, :get_list] if APP_CONFIG['anonymous_access']
 
-  before_action :find_mass_build, only: %i(show publish cancel get_list)
+  before_action :find_mass_build, only: %i(show publish cancel get_list show_fail_reason)
 
   def new
     if params[:mass_build_id].present?
@@ -67,6 +67,27 @@ class Platforms::MassBuildsController < Platforms::BaseController
         @mass_build.send params[:kind]
       end
     render text: text
+  end
+
+  def show_fail_reason
+    @build_lists = @mass_build.build_lists.where(status: 666).page(params[:page])
+    data = @build_lists.pluck(:id, :project_id, :arch_id, :fail_reason)
+    arches = {}
+    Arch.all.map do |arch|
+      arches[arch.id] = arch.name
+    end
+    projects = {}
+    @items = data.map do |item|
+      if projects[item[1]]
+        item[1] = projects[item[1]]
+      else
+        project_name_with_owner = Project.find(item[1]).name_with_owner
+        projects[item[1]] = project_name_with_owner
+        item[1] = project_name_with_owner
+      end
+      item[2] = arches[item[2]]
+      item
+    end
   end
 
   private

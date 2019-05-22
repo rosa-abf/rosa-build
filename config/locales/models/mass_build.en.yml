@@ -2,6 +2,7 @@ en:
   layout:
     mass_builds:
       new: New mass build
+      show_fail_reason_link: List of failed builds with reasons
       recreate: Recreate mass build
       publish_success: Publish success builds
       publish_test_failed: Publish test failed builds
@@ -16,6 +17,10 @@ en:
       cancel_confirm: Are you sure you want to cancel mass build?
       projects_list: Projects list
       missed_projects_list: 'Missed projects: '
+      show_fail_reason:
+        title: Build Lists with fail reason
+        no_failed_builds: No failed builds
+        return: Return to mass build
 
       placeholder:
         description: Description

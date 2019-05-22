@@ -153,3 +153,7 @@
         = link_to t('layout.mass_builds.recreate'),
           new_platform_mass_build_path(@platform, mass_build_id: @mass_build.id),
           class: 'btn btn-primary'
+      - if policy(@mass_build).show_fail_reason? && @mass_build.build_error_count > 0
+        = link_to t('layout.mass_builds.show_fail_reason_link'),
+          show_fail_reason_platform_mass_build_path,
+          class: 'btn btn-info'

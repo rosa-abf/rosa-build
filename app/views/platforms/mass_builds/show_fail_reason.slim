@@ -1,0 +1,35 @@
+- title = title_object(@mass_build)
+- set_meta_tags title: title
+
+= render 'submenu'
+
+.row
+  .col-md-12
+    - if !@items.empty?
+      table.table.table-condensed
+        thead
+          tr
+            th
+              = t("activerecord.attributes.build_list.id")
+            th
+              = t("activerecord.attributes.build_list.project")
+            th
+              = t("activerecord.attributes.build_list.arch")
+            th
+              = t("activerecord.attributes.build_list.fail_reason")
+        tbody
+          - @items.each do |item|
+            tr
+              td
+                = link_to item[0], build_list_path(item[0])
+              td
+                = link_to item[1], project_build_lists_path(item[1])
+              td
+                = item[2]
+              td
+                pre
+                  = item[3]
+    -else
+      = t('layout.mass_builds.show_fail_reason.no_failed_builds')
+  =will_paginate @build_lists
+

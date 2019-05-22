@@ -190,6 +190,7 @@ Rails.application.routes.draw do
         member do
           post   :cancel
           post   :publish
+          get 'show_fail_reason(/:page)' => 'mass_builds#show_fail_reason', as: :show_fail_reason, page: /[0-9]+/, defaults: { page: '1' }
           get '/:kind' => "mass_builds#get_list", as: :get_list, kind: /failed_builds_list|missed_projects_list|projects_list|tests_failed_builds_list|success_builds_list/
         end
       end
