@@ -35,6 +35,14 @@ $navbar-inverse-toggle-border-color:       #ddd;
 
 $blockquote-font-size:                     14px;
 
+.pre-fail-reason {
+  border: none;
+  border-radius: 0;
+  background: none;
+  padding: 0;
+  margin: 0;
+}
+
 @import "bootstrap-sprockets";
 @import "bootstrap";
 @import "BootstrapXL";

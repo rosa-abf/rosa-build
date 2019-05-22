@@ -4,7 +4,7 @@
 = render 'submenu'
 
 .row
-  .col-md-12
+  .col-md-10.col-md-offset-1
     - if !@items.empty?
       table.table.table-condensed
         thead
@@ -27,7 +27,7 @@
               td
                 = item[2]
               td
-                pre
+                pre.pre-fail-reason
                   = item[3]
     -else
       = t('layout.mass_builds.show_fail_reason.no_failed_builds')
