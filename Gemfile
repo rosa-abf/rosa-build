@@ -27,7 +27,7 @@ gem 'state_machines-activerecord'
 gem 'redis-rails'
 
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git'
-gem 'grit', git: 'git://github.com/rosa-abf/grit.git', tag: '2.6.17'
+gem 'grit', git: 'git://github.com/rosa-abf/grit.git', branch: 'rosa'
 gem 'charlock_holmes'
 gem 'github-linguist', '~> 3.1.5', require: 'linguist'
 gem 'diff-display'
