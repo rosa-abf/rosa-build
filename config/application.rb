@@ -20,7 +20,7 @@ module Rosa
     end
 
     # Rate limit
-    config.middleware.insert_before Rack::Runtime, ApiDefender
+    # config.middleware.insert_before Rack::Runtime, ApiDefender
     # Rack::UTF8Sanitizer is a Rack middleware which cleans up invalid UTF8 characters in request URI and headers.
     config.middleware.insert 0, Rack::UTF8Sanitizer
 
