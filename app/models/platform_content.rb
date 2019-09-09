@@ -82,7 +82,7 @@ class PlatformContent
           # Strip out the non-ascii character
           p.gsub(/[\\\/]+/, '')
            .gsub(/^[\.]+/, '')
-           .gsub(/[^\w\-\.]/, '_')
+           .gsub(/[^\w\-\+\.]/, '_')
         }.join(File::SEPARATOR)
   end
 
