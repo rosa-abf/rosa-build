@@ -7,7 +7,7 @@ module BuildLists
     def self.perform
       build_lists = BuildList.where(save_buildroot: true).
         for_status(BuildList::BUILD_ERROR).
-        where('updated_at < ?', Time.now - 1.hour).
+        where('updated_at < ?', Time.now - 7.days).
         where('results ~ ?', "file_name: #{FILENAME}")
 
       build_lists.find_each do |build_list|
