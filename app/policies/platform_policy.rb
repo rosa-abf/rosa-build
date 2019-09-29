@@ -15,6 +15,7 @@ class PlatformPolicy < ApplicationPolicy
     return true if record.owner == user
     owner? || local_reader? || user_platform_ids.include?(record.id)
   end
+  alias_method :projects?,   :show?
   alias_method :advisories?, :show?
   alias_method :owned?,      :show?
   alias_method :read?,       :show?

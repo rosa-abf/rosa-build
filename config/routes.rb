@@ -52,6 +52,7 @@ Rails.application.routes.draw do
         }
         member {
           get :members
+          get :projects
           put :add_member
           delete :remove_member
           post :clone

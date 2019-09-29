@@ -1,7 +1,7 @@
 class Api::V1::PlatformsController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: :allowed
-  skip_before_action :authenticate_user!, only: [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
+  skip_before_action :authenticate_user!, only: [:show, :platforms_for_build, :members, :projects] if APP_CONFIG['anonymous_access']
   before_action :load_platform, except: [:index, :allowed, :platforms_for_build, :create]
 
   def allowed
@@ -23,6 +23,10 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def show
+  end
+
+  def projects
+    render plain: @platform.projects.pluck(:owner_uname, :name).map { |p| "#{p[0]}/#{p[1]}" }.join("\n")
   end
 
   def platforms_for_build
