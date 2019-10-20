@@ -8,7 +8,7 @@ class PlatformContent
 
   def build_list
     return @build_list if !!@build_list
-    return nil if @path !~ /\/(release|updates)+\/[\w\-\.]+$/
+    return nil if @path !~ /\/(release|updates)+\/[\w\-\.\+]+$/
     return nil unless repository_name = @path.match(/\/[\w]+\/(release|updates)\//)
     repository_name = repository_name[0].gsub(/\/(release|updates)\/$/, '').gsub('/', '')
 
