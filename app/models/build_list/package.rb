@@ -34,7 +34,7 @@ class BuildList::Package < ActiveRecord::Base
   # @return [Number] -1 if +other+ is greater than, 0 if +other+ is equal to,
   #   and +1 if other is less than version.
   def rpmvercmp(other)
-    RPM::C.rpmvercmp to_vre_epoch_zero, other.to_vre_epoch_zero
+    RPM.compareVREs to_vre_epoch_zero, other.to_vre_epoch_zero
   end
 
   def self.by_repository(repository, &block)
@@ -62,9 +62,23 @@ class BuildList::Package < ActiveRecord::Base
   # @return [String]
   # @note The epoch is included always. As 0 if not present
   def to_vre_epoch_zero
-    evr = epoch.present? ? "#{epoch}:#{version}" : "0:#{version}"
-    evr << "-#{release}" if release.present?
-    evr
+    res = []
+    if epoch.present?
+      res << epoch.to_s
+    else
+      res << '0'
+    end
+    if version.present?
+      res << version.to_s
+    else
+      res << ''
+    end
+    if release.present?
+      res << release.to_s
+    else
+      res << ''
+    end
+    res
   end
 
 end
