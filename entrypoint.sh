@@ -7,6 +7,10 @@ then
         rm /MIGRATE
 fi
 
+rm -f /mnt/gitstore
+ln -sv /home/mnt/gitstore /mnt/gitstore
+
+#rm -rf public/assets/*
 #bundle exec rake assets:precompile
 cd public/assets
 rm -f new_application.css new_application.js
