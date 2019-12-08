@@ -31,7 +31,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   def platforms_for_build
     authorize :platform
-    @platforms = Platform.availables_main_platforms(current_user).paginate(paginate_params)
+    @platforms = Platform.availables_main_platforms(current_user)
     render :index
   end
 
