@@ -8,7 +8,7 @@ production: &production
   github_services:
     ip: 10.76.0.242
     port: 4000
-  distr_types: ['mdv', 'rhel', 'arm']
+  distr_types: ['mdv', 'rhel', 'arm', 'dnf']
   allowed_addresses:
     - 127.0.0.1
     - ::1
