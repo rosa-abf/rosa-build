@@ -572,14 +572,17 @@ class BuildList < ActiveRecord::Base
     cmd_params = {
       'PACKAGE'                       => project.name,
       'GIT_PROJECT_ADDRESS'           => git_project_address,
+      'GIT_REPO'                      => git_project_address,
       'COMMIT_HASH'                   => commit_hash,
+      'PROJECT_VERSION'               => project_version,
       'USE_EXTRA_TESTS'               => use_extra_tests?,
       'SAVE_BUILDROOT'                => save_buildroot?,
       'EXTRA_CFG_OPTIONS'             => extra_params['cfg_options'],
       'EXTRA_CFG_URPM_OPTIONS'        => extra_params['cfg_urpm_options'],
       'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],
       'EXTRA_BUILD_RPM_OPTIONS'       => extra_params['build_rpm'],
-      'PLATFORM_NAME'                 => build_for_platform.name
+      'PLATFORM_NAME'                 => build_for_platform.name,
+      'FILE_STORE_ADDR'               => APP_CONFIG['file_store_url'].gsub(/\/$/, '')
     }
     cmd_params.merge!(
       'RERUN_TESTS' => true,
