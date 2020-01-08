@@ -57,7 +57,8 @@ module AbfWorkerService
       {
         'RELEASED'        => repository.platform.released,
         'REPOSITORY_NAME' => repository.name,
-        'TYPE'            => distrib_type
+        'TYPE'            => distrib_type,
+        'FILE_STORE_ADDR' => APP_CONFIG['file_store_url']
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
     end
 

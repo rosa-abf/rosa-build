@@ -54,7 +54,8 @@ module AbfWorkerService
         'TYPE'                => build_for_platform.distrib_type,
         'REGENERATE_METADATA' => true,
         'SAVE_TO_PLATFORM'    => repository.platform.name,
-        'BUILD_FOR_PLATFORM'  => build_for_platform.name
+        'BUILD_FOR_PLATFORM'  => build_for_platform.name,
+        'FILE_STORE_ADDR'     => APP_CONFIG['file_store_url']
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
     end
 

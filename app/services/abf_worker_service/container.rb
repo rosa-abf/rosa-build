@@ -54,7 +54,8 @@ module AbfWorkerService
         'IS_CONTAINER'        => true,
         'ID'                  => build_list.id,
         'SAVE_TO_PLATFORM'    => build_list.save_to_platform.name,
-        'BUILD_FOR_PLATFORM'  => build_list.build_for_platform.name
+        'BUILD_FOR_PLATFORM'  => build_list.build_for_platform.name,
+        'FILE_STORE_ADDR'     => APP_CONFIG['file_store_url']
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
     end
 

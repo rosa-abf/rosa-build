@@ -142,7 +142,8 @@ module AbfWorkerService
         'TYPE'                => distrib_type,
         'SAVE_TO_PLATFORM'    => save_to_platform.name,
         'BUILD_FOR_PLATFORM'  => build_for_platform.name,
-        'TESTING'             => testing
+        'TESTING'             => testing,
+        'FILE_STORE_ADDR'     => APP_CONFIG['file_store_url']
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
     end
 
