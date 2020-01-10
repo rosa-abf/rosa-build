@@ -7,42 +7,6 @@
       = render 'form', f: f
     hr
   .row
-
-    - if policy(@platform).regenerate_metadata?
-      h4= t('layout.platforms.metadata')
-
-      table.table
-        tbody
-          tr
-            td= t('activerecord.attributes.regeneration_status.status')
-            td= t("layout.regeneration_statuses.statuses.#{@platform.human_status}")
-
-          tr
-            td= t('activerecord.attributes.regeneration_status.last_regenerated_at')
-            td= @platform.last_regenerated_at
-
-          tr
-            td= t('activerecord.attributes.regeneration_status.last_regenerated_status')
-            td= t("layout.regeneration_statuses.last_regenerated_statuses.#{@platform.human_regeneration_status}")
-          tr
-            td= t('activerecord.attributes.regeneration_status.last_regenerated_log_sha1')
-            td= link_to_file_store('regeneration.log', @platform.last_regenerated_log_sha1)
-          tr
-            td= t('activerecord.attributes.platform.automatic_metadata_regeneration')
-            td ng-controller='AutomaticMetadataRegenerationController' ng-init="platform_id = #{@platform.id}"
-              select ng-options='k as (v | i18n) for (k, v) in items' ng-model='amr' ng-change='update()' ng-init="amr = '#{@platform.automatic_metadata_regeneration.to_s}'"
-                option value=''
-          tr
-            td
-            td
-              br
-              = link_to t('layout.regeneration_statuses.regenerate_metadata'),
-                regenerate_metadata_platform_path(@platform),
-                method: :put,
-                data:   { confirm: t('layout.confirm') },
-                class:  'btn btn-xs btn-warning'
-
-
     - if policy(@platform).destroy?
       hr
       p
