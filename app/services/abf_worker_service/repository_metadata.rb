@@ -24,6 +24,7 @@ module AbfWorkerService
         'args' => [{
           id:              Time.now.to_i,
           cmd_params:      cmd_params,
+          resign_rpms:     @repository_status.resign_rpms,
           main_script:     'build.sh',
           rollback_script: 'rollback.sh',
           platform:        {

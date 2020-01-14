@@ -154,7 +154,8 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
   def regenerate_metadata
     authorize @repository
-    if @repository.regenerate(params[:repository].try :[], :build_for_platform_id)
+    resign_rpms = params[:repository][:resign_rpms] == '1'
+    if @repository.regenerate(params[:repository].try(:[], :build_for_platform_id), resign_rpms)
       flash[:notice] = t('flash.repository.regenerate_in_queue')
     else
       flash[:error] = t('flash.repository.regenerate_already_in_queue')

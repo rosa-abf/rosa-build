@@ -65,6 +65,7 @@ class RepositoryPolicy < ApplicationPolicy
       synchronizing_publications
       publish_builds_only_from_branch
       build_for_platform_id
+      resign_rpms
     )
   end
 

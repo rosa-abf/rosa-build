@@ -41,6 +41,8 @@
           - if @platform.personal?
             = f.input :build_for_platform_id, collection: platform_options, label: false, include_blank: false
         .col-md-2
+          = f.input :resign_rpms, as: :boolean, label: t('layout.repositories.resign_rpms')
+        .col-md-2
           = f.button :submit, t('layout.repositories.regenerate_metadata'), data: { confirm: t('layout.confirm') }, class: 'btn-warning'
 
     - if @repository.repository_statuses.present?

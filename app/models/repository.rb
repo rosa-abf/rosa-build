@@ -37,11 +37,13 @@ class Repository < ActiveRecord::Base
   before_destroy  :detele_directory
 
   attr_readonly :name, :platform_id
-  attr_accessor :projects_list, :build_for_platform_id
+  attr_accessor :projects_list, :build_for_platform_id, :resign_rpms
 
-  def regenerate(build_for_platform_id = nil)
+  def regenerate(build_for_platform_id = nil, resign_rpms = false)
     build_for_platform = Platform.main.find build_for_platform_id if platform.personal?
     status = repository_statuses.find_or_create_by(platform_id: build_for_platform.try(:id) || platform_id)
+    status.resign_rpms = resign_rpms
+    status.save
     status.regenerate
   end
 

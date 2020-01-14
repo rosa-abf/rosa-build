@@ -23,6 +23,7 @@ en:
       clear: Clear
       clear_confirm: Are you sure you want to clear this platform?
       clear_warning: Attention! Cleared packages cannot be restored!
+      resign_rpms: Resign RPMs
       regenerate_metadata: Regenerate metadata
       mass_delete: Mass delete
 
