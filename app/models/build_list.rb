@@ -730,7 +730,7 @@ class BuildList < ActiveRecord::Base
       params = extra_params.slice(*BuildList::EXTRA_PARAMS)
       params.update(params) do |k,v|
         v.strip.gsub(I18n.t("activerecord.attributes.build_list.extra_params.#{k}"), '').
-          gsub(/[^\w\s\-["]]/, '')
+          gsub(/[^\w\s\-["]=]/, '')
       end
       self.extra_params = params.select{ |k,v| v.present? }
     end
