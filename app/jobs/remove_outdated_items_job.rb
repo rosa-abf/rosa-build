@@ -9,6 +9,9 @@ class RemoveOutdatedItemsJob
     MassBuild.outdated.find_each do |mb|
       mb.destroy && (counter_mb += 1) if mb.build_lists.count == 0
     end
+    User.find_each do |user|
+      user.activity_feeds.outdated.delete_all
+    end
     counter_pbl = ProductBuildList.outdated.count
     ProductBuildList.outdated.destroy_all
     File.open(log_file, "w") do |f|

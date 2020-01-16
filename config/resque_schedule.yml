@@ -63,3 +63,10 @@ build_canceling_destroy:
   class: 'BuildLists::BuildCancelingDestroyJob'
   queue: low
   description: 'Remove build canceling build lists'
+
+clear_stale_builders:
+  every:
+    - '5m'
+  class: 'ClearStaleBuildersJob'
+  queue: low
+  description: 'Clear jobs with builders who didn\'t send build started'

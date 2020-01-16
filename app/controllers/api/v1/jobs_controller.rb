@@ -8,7 +8,6 @@ class Api::V1::JobsController < Api::V1::BaseController
   skip_after_action :verify_authorized
 
   def shift
-    clear_stale_builders
     job_shift_sem = Redis::Semaphore.new(:job_shift_lock)
     job_shift_sem.lock do
       build_lists = BuildList.scoped_to_arch(arch_ids).
@@ -87,12 +86,6 @@ class Api::V1::JobsController < Api::V1::BaseController
   end
 
   protected
-
-  def clear_stale_builders
-    BuildList.where("updated_at < ?", 300.seconds.ago).
-      where(status: [BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
-      where.not(builder: nil).update_all('builder_id = NULL')
-  end
 
   def platform_ids
     @platform_ids ||= begin
