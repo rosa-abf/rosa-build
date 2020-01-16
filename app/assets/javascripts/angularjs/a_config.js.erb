@@ -18,6 +18,10 @@ RosaABF.config(function(cfpLoadingBarProvider) {
   cfpLoadingBarProvider.includeSpinner = false;
 });
 
+RosaABF.config(['$compileProvider', function ($compileProvider) {
+  $compileProvider.debugInfoEnabled(false);
+}]);
+
 var SoundNotificationsHelper = function() {
   var isOn = true;
   var statusChangedSound = null;

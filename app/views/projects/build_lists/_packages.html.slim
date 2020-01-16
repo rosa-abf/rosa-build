@@ -14,7 +14,7 @@
     tbody
       tr ng-repeat-start='package in build_list.packages'
         td
-          a.expand ng-show='::package.dependent_projects'
+          a.expand ng-if='::package.dependent_projects.length'
             span.fa.fa-chevron-up[
               ng-show   = 'package.show_dependent_projects'
               ng-click  = 'package.show_dependent_projects = false' ]
@@ -37,6 +37,7 @@
 
       tr[
           ng-repeat-end = ''
+          ng-if         = '::package.dependent_projects.length'
           ng-show       = 'package.show_dependent_projects'
           ng-repeat     = 'project in ::package.dependent_projects' ]
         td
