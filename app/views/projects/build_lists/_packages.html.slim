@@ -14,7 +14,7 @@
     tbody
       tr ng-repeat-start='package in build_list.packages'
         td
-          a.expand ng-show='package.dependent_projects'
+          a.expand ng-show='::package.dependent_projects'
             span.fa.fa-chevron-up[
               ng-show   = 'package.show_dependent_projects'
               ng-click  = 'package.show_dependent_projects = false' ]
@@ -22,30 +22,30 @@
               ng-hide   = 'package.show_dependent_projects'
               ng-click  = 'package.show_dependent_projects = true' ]
         td
-          div ng-if='!package.url'
-            | {{package.fullname}}
-          a ng-if='package.url' ng-href="{{package.url}}"
-            | {{package.fullname}}
+          div ng-if='::!package.url'
+            | {{::package.fullname}}
+          a ng-if='::package.url' ng-href="{{::package.url}}"
+            | {{::package.fullname}}
         td
-          | {{package.name}}
+          | {{::package.name}}
         td
-          | {{package.epoch}}
+          | {{::package.epoch}}
         td
-          | {{package.version}}
+          | {{::package.version}}
         td
-          | {{package.release}}
+          | {{::package.release}}
 
       tr[
           ng-repeat-end = ''
           ng-show       = 'package.show_dependent_projects'
-          ng-repeat     = 'project in package.dependent_projects' ]
+          ng-repeat     = 'project in ::package.dependent_projects' ]
         td
         td
-          a ng-href="{{project.url}}"
-            | {{project.name}}
+          a ng-href="{{::project.url}}"
+            | {{::project.name}}
         td
-          p ng-repeat='package in project.dependent_packages'
-            | {{package}}
+          p ng-repeat='package in ::project.dependent_packages'
+            | {{::package}}
         td colspan=3
-          a ng-href='{{project.new_url}}'
+          a ng-href='{{::project.new_url}}'
             = t('layout.build_lists.create_build_list')
