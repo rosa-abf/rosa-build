@@ -69,4 +69,4 @@ clear_stale_builders:
     - '5m'
   class: 'ClearStaleBuildersJob'
   queue: low
-  description: 'Clear jobs with builders who didn\'t send build started'
+  description: 'Clear jobs with builders who did not send build started'
