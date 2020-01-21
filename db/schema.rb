@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20200114084156) do
+ActiveRecord::Schema.define(version: 20200121215842) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,7 @@ ActiveRecord::Schema.define(version: 20200114084156) do
     t.string   "sha1",               limit: 255
     t.integer  "epoch"
     t.text     "dependent_packages"
+    t.integer  "size",               limit: 8,   default: 0
     t.index name: "build_list_packages_ordering", expression: "lower((name)::text), length((name)::text)"
   end
 
