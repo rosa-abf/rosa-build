@@ -94,9 +94,7 @@ gem 'codemirror-rails', '~> 4.5'
 
 gem 'sentry-raven'
 
-source 'https://rails-assets.org' do
-  gem 'rails-assets-notifyjs'
-end
+gem 'rails-assets-notifyjs', '0.3.2', path: 'vendor/gems/rails-assets-notifyjs-0.3.2'
 
 gem 'rack-utf8_sanitizer'
 gem 'redis-semaphore'
