@@ -60,6 +60,7 @@ ru:
       build_list/package:
         name: Название
         fullname: Полное имя
+        size: Размер
         epoch: Эпоха
         release: Релиз
         version: Версия

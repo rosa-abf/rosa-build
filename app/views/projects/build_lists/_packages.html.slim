@@ -8,6 +8,7 @@
         th
         th= t('activerecord.attributes.build_list/package.fullname')
         th= t('activerecord.attributes.build_list/package.name')
+        th= t('activerecord.attributes.build_list/package.size')
         th= t('activerecord.attributes.build_list/package.epoch')
         th= t('activerecord.attributes.build_list/package.version')
         th= t('activerecord.attributes.build_list/package.release')
@@ -28,6 +29,8 @@
             | {{::package.fullname}}
         td
           | {{::package.name}}
+        td
+          | {{::package.size}}
         td
           | {{::package.epoch}}
         td

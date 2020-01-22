@@ -102,4 +102,20 @@ module ApplicationHelper
       "alert-#{type}"
     end
   end
+
+  def bytes_to_size(bytes)
+    sizes = [0, 1024, 1024*1024, 1024*1024*1024]
+    names = ['B', 'KiB', 'MiB', 'GiB']
+    sizes.each_with_index do |l, i|
+      low, high = sizes[i], sizes[i+1]
+      if bytes >= low && (!high || bytes < high)
+        if low == 0
+          sz = bytes
+        else
+          sz = (bytes.to_f / low).round(2)
+        end
+        return "#{sz}#{names[i]}"
+      end
+    end
+  end
 end
