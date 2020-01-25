@@ -107,6 +107,7 @@ Rails.application.routes.draw do
       end
       resources :groups, only: [:index, :show, :update, :create, :destroy] do
         member {
+          get :projects
           get :members
           put :add_member
           delete :remove_member

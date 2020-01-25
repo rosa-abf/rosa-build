@@ -13,7 +13,7 @@
       alt: @group.uname, height: size, width: size
   .col-md-8
       h2
-        = @group.uname
+        = "#{@group.uname}(ID #{@group.id})"
       h4
         = t('activerecord.attributes.group.description')
       p

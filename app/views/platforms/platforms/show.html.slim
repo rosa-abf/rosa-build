@@ -17,6 +17,12 @@
 
       .row
         .col-md-4
+          b
+            | ID
+        .col-md-8= @platform.id
+
+      .row
+        .col-md-4
           b= t('activerecord.attributes.platform.description')
         .col-md-8= @platform.description
 

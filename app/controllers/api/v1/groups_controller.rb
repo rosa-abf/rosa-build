@@ -1,7 +1,7 @@
 class Api::V1::GroupsController < Api::V1::BaseController
 
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: [:show] if APP_CONFIG['anonymous_access']
+  skip_before_action :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
   before_action :load_group, except: %i(index create)
 
   def index
@@ -17,6 +17,11 @@ class Api::V1::GroupsController < Api::V1::BaseController
     authorize @group
     @members = @group.members.where('actor_id != ?', @group.owner_id)
                      .order('name').paginate(paginate_params)
+  end
+
+  def projects
+    authorize @group
+    render plain: @group.projects.pluck(:owner_uname, :name).map { |p| "#{p[0]}/#{p[1]}" }.join("\n")
   end
 
   def update

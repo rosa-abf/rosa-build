@@ -9,6 +9,7 @@ class GroupPolicy < ApplicationPolicy
   def show?
     true
   end
+  alias_method :projects?, :show?
 
   def reader?
     !user.guest? && ( is_admin? || local_reader? )
