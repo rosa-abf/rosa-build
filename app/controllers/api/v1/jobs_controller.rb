@@ -19,12 +19,22 @@ class Api::V1::JobsController < Api::V1::BaseController
         uid = build_lists.where(mass_build_id: nil).pluck('DISTINCT user_id').sample
         if !uid
           uid = build_lists.pluck('DISTINCT user_id').sample
+          mass_build = true
+        else
+          mass_build = false
         end
 
-        @build_list = build_lists.where(user_id: uid).order(:created_at).first if uid
+        if uid
+          if !mass_build
+            @build_list = build_lists.where(user_id: uid, mass_build_id: nil).order(:created_at).first
+          else
+            @build_list = build_lists.where(user_id: uid).order(:created_at).first
+          end
+        end
       else
-        build_lists = build_lists.order(:created_at)
-        @build_list   = build_lists.external_nodes(:owned).for_user(current_user).first
+        build_lists = build_lists.external_nodes(:owned).for_user(current_user).order(:created_at)
+        @build_list   = build_lists.where(mass_build_id: nil).first
+        @build_list ||= build_lists.first
         @build_list ||= BuildListPolicy::Scope.new(current_user, build_lists).owned.
           external_nodes(:everything).readonly(false).first
       end
