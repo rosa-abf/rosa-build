@@ -371,7 +371,7 @@ GEM
     pygments.rb (0.6.3)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.2.0)
-    rack (1.6.11)
+    rack (1.6.13)
     rack-contrib (1.2.0)
       rack (>= 0.9.1)
     rack-mini-profiler (0.9.3)
