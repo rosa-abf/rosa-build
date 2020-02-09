@@ -100,6 +100,8 @@ gem 'rack-utf8_sanitizer'
 gem 'redis-semaphore'
 gem 'connection_pool'
 
+gem 'recaptcha'
+
 group :production do
   #gem 'bluepill', '~> 0.0.60', require: false
   gem 'puma'
