@@ -28,6 +28,14 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
     destroy_subject @repository
   end
 
+  def public_key
+    if @repository.key_pair
+      render plain: @repository.key_pair.public
+    else
+      render plain: ''
+    end
+  end
+
   def key_pair
   end
 

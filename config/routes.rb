@@ -63,6 +63,7 @@ Rails.application.routes.draw do
       resources :repositories, only: [:show, :update, :destroy] do
         member {
           get     :projects
+          get     :public_key
           get     :key_pair
           get     :packages
           put     :add_member

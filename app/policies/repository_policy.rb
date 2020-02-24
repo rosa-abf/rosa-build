@@ -6,6 +6,7 @@ class RepositoryPolicy < ApplicationPolicy
   alias_method :projects?,      :show?
   alias_method :projects_list?, :show?
   alias_method :read?,          :show?
+  alias_method :public_key?,    :show?
 
   def reader?
     is_admin? || local_reader?(record.platform)
