@@ -30,7 +30,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
 
   def public_key
     if @repository.key_pair
-      render plain: @repository.key_pair.public.gsub("\r\n", "\n")
+      render plain: @repository.key_pair.public.gsub("\r\n", "\n") + "\n"
     else
       render plain: ''
     end
