@@ -29,7 +29,7 @@ gem 'redis-rails'
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git'
 gem 'grit', git: 'git://github.com/rosa-abf/grit.git', branch: 'rosa'
 gem 'charlock_holmes'
-gem 'github-linguist', '~> 3.1.5', require: 'linguist'
+gem 'github-linguist', require: 'linguist'
 gem 'diff-display'
 
 # Wiki
@@ -101,6 +101,8 @@ gem 'redis-semaphore'
 gem 'connection_pool'
 
 gem 'recaptcha'
+
+gem 'pygments.rb'
 
 group :production do
   #gem 'bluepill', '~> 0.0.60', require: false

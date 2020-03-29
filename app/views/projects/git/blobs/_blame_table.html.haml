@@ -20,7 +20,7 @@
 
       %td.code.formatted
         = preserve do
-          = blame_highlight @blob, elem[1].first
+          = blame_highlight @blob, @path, elem[1].first
 
       - elem[1][1..-1].each do |line|
         %tr
@@ -29,4 +29,4 @@
             - index += 1
           %td.code.formatted
             = preserve do
-              = blame_highlight @blob, line
+              = blame_highlight @blob, @path, line

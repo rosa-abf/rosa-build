@@ -24,7 +24,7 @@ h3= t("layout.projects.files_in_project")
     $(function() {
       var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
         lineNumbers: true,
-        mode: '#{@blob.raw_mime_type}'
+        mode: '#{@lazy.language.try(:codemirror_mode)}'
       });
       $(".CodeMirror").resizable({
         stop: function() { editor.refresh(); },

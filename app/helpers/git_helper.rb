@@ -107,28 +107,51 @@ module GitHelper
     end
   end
 
-  def blob_highlight(blob)
-    return if blob.nil? || blob.data.blank?
-    result = if blob.mime_type == 'text/rpm-spec'
-               Pygments.highlight blob.data, highlight_options.merge(lexer: 'spec')
-             else
-               blob.colorize(highlight_options)
-             end
-    result.present? ? result.html_safe : blob.data
-  rescue => e
-    blob.data.html_safe
-  end
-
-  def blame_highlight(blob, text)
-    return if blob.nil? || text.blank?
-    result = if blob.mime_type == 'text/rpm-spec'
-               Pygments.highlight(text, lexer: 'spec')
-             else
-               blob.lexer.highlight text
-             end
+  def blob_highlight(blob, path)
+    return if blob.nil? || blob.size == 0
+    rugged = blob.repo.rugged
+    lazy = Linguist::LazyBlob.new(rugged, blob.id, path, blob.mode)
+    language = lazy.language
+    lexer = nil
+    if language
+      lexer = Pygments::Lexer.find_by_name(language.name)
+      if !lexer
+        language.aliases.each do |al|
+          lexer = Pygments::Lexer.find_by_alias(al)
+          break if lexer
+        end
+      end
+      lexer = Pygments::Lexer.find('spec') if language.name == 'RPM Spec'
+    end
+    lexer = Pygments::Lexer.find('Text') if !lexer
+    result = lexer.highlight rugged.lookup(blob.id).text, highlight_options
     result.present? ? result.html_safe : text
   rescue => e
-    text.html_safe
+    "<pre>#{blob.data}</pre>".html_safe
+  end
+
+  def blame_highlight(blob, path, text)
+    return if blob.nil? || text.blank?
+    rugged = blob.repo.rugged
+    lazy = Linguist::LazyBlob.new(rugged, blob.id, path, blob.mode)
+    language = lazy.language
+    lexer = nil
+    if language
+      lexer = Pygments::Lexer.find_by_name(language.name)
+      if !lexer
+        language.aliases.each do |al|
+          lexer = Pygments::Lexer.find_by_alias(al)
+          break if lexer
+        end
+      end
+      lexer = Pygments::Lexer.find('spec') if language.name == 'RPM Spec'
+    end
+    lexer = Pygments::Lexer.find('Text') if !lexer
+    result = lexer.highlight(text)
+    result.present? ? result.html_safe : text
+  rescue => e
+    puts e
+    "<pre>#{text}</pre>".html_safe
   end
 
   protected

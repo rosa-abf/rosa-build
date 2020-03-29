@@ -6,6 +6,8 @@ class Projects::Git::BlobsController < Projects::Git::BaseController
   end
 
   def edit
+    rugged = @blob.repo.rugged
+    @lazy = Linguist::LazyBlob.new(rugged, @blob.id, @path, @blob.mode)
   end
 
   def update
