@@ -35,7 +35,7 @@ GIT
 
 GIT
   remote: git://github.com/rosa-abf/grit.git
-  revision: 92815243031f4d963f04caa2de50afc38ed27c37
+  revision: 7cdab9492513a53d72eae57f0ea68551125583a6
   branch: rosa
   specs:
     grit (2.5.0)
