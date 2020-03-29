@@ -166,7 +166,8 @@ module MarkdownHelper
   end
 
   def reference_commit(identifier)
-    if commit = @project.repo.commit(identifier)
+    commit = @project.repo.commit(identifier) rescue nil
+    if commit
       link_to shortest_hash_id(commit.id), commit_path(@project, commit.id)
       title = GitPresenters::CommitAsMessagePresenter.present(commit, project: @project) do |presenter|
         link_to(identifier, commit_path(@project, commit), html_options.merge(title: presenter.caption, class: "gfm gfm-commit #{html_options[:class]}"))
