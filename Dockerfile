@@ -17,7 +17,7 @@ FROM ruby:2.4.9-alpine3.11 as rosa-build-gems
 #COPY --from=libgit-container /libgit2/include/git2.h /usr/include/
 
 WORKDIR /rosa-build
-RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs py3-pygments && \
+RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs python2 && \
     apk add --virtual .ruby-builddeps --no-cache postgresql-dev build-base cmake icu-dev
 RUN gem install bundler:1.17.3
 #RUN bundle config build.rugged --use-system-libraries
@@ -26,7 +26,8 @@ COPY Gemfile Gemfile.lock ./
 RUN bundle install --without development test --jobs 16 --clean --deployment --no-cache --verbose
 RUN apk add --no-cache file imagemagick curl gnupg openssh-keygen
 RUN apk del .ruby-builddeps && rm -rf /root/.bundle && rm -rf /proxy/vendor/bundle/ruby/2.4.0/cache
-RUN mkdir -p /root/.gnupg && chmod 700 /root/.gnupg && rm -rf vendor
+RUN mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
+RUN git clone -b 2.2.0 https://github.com/pygments/pygments.git && cd pygments && python setup.py install && cd .. && rm -rf pygments
 
 FROM scratch
 COPY --from=rosa-build-gems / /

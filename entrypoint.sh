@@ -17,4 +17,4 @@ rm -f new_application.css new_application.js
 ln -sv new_application*.css new_application.css
 ln -sv new_application*.js new_application.js
 cd ../..
-bundle exec puma -C /rosa-build/config/puma/production.rb
+RUBYOPT="-W0" bundle exec puma -C /rosa-build/config/puma/production.rb
