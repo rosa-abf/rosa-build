@@ -70,23 +70,48 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def show_fail_reason
-    @build_lists = @mass_build.build_lists.where(status: 666).page(params[:page])
-    data = @build_lists.pluck(:id, :project_id, :arch_id, :fail_reason)
-    arches = {}
-    Arch.all.map do |arch|
-      arches[arch.id] = arch.name
-    end
-    projects = {}
-    @items = data.map do |item|
-      if projects[item[1]]
-        item[1] = projects[item[1]]
-      else
-        project_name_with_owner = Project.find(item[1]).name_with_owner
-        projects[item[1]] = project_name_with_owner
-        item[1] = project_name_with_owner
-      end
-      item[2] = arches[item[2]]
-      item
+    respond_to do |format|
+      format.html {
+        @build_lists = @mass_build.build_lists.where(status: BuildList::BUILD_ERROR).page(params[:page])
+        data = @build_lists.pluck(:id, :project_id, :arch_id, :fail_reason)
+        arches = {}
+        Arch.all.map do |arch|
+          arches[arch.id] = arch.name
+        end
+        projects = {}
+        @items = data.map do |item|
+          if projects[item[1]]
+            item[1] = projects[item[1]]
+          else
+            project_name_with_owner = Project.find(item[1]).name_with_owner
+            projects[item[1]] = project_name_with_owner
+            item[1] = project_name_with_owner
+          end
+          item[2] = arches[item[2]]
+          item
+        end
+      }
+      format.csv {
+        headers.delete("Content-Length")
+        headers["Cache-Control"] = "no-cache"
+        headers["Content-Type"] = "text/csv"
+        headers["Content-Disposition"] = "attachment; filename=\"mass_build_#{@mass_build.id}_failures.csv\""
+        headers["X-Accel-Buffering"] = "no"
+
+        self.response_body = Enumerator.new do |y|
+          @mass_build.build_lists.includes(:project, :arch).where(status: BuildList::BUILD_ERROR).find_each.lazy.each do |bl|
+            log = bl.results.select { |x| x['file_name'] == 'script_output.log' }.first
+            line = CSV.generate_line([
+              bl.id,
+              bl.project.name_with_owner,
+              bl.arch.name,
+              bl.fail_reason,
+              log.present? ? "http://file-store.rosalinux.ru/api/v1/file_stores/#{log['sha1']}.log?show=true" : ''
+            ])
+            y << line
+          end
+        end
+      }
     end
   end
 
