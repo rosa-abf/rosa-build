@@ -233,7 +233,7 @@ module AbfWorkerService
           order(:updated_at)
         locked_ids  = Redis.current.lrange(LOCKED_BUILD_LISTS, 0, -1)
         build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) if locked_ids.present?
-        build_lists = build_lists.limit(150)
+        build_lists = build_lists.limit(1500)
         filter_build_lists_without_packages(build_lists.to_a)
       end
     end
