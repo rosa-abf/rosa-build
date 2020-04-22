@@ -106,7 +106,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
               bl.id,
               bl.project.name_with_owner,
               bl.arch.name,
-              bl.fail_reason,
+              bl.fail_reason.presence || 'Empty',
               log.present? ? "http://file-store.rosalinux.ru/api/v1/file_stores/#{log['sha1']}.log?show=true" : ''
             ], col_sep: ';;')
             y << line
