@@ -158,7 +158,9 @@
         = link_to t('layout.mass_builds.show_fail_reason_link'),
           show_fail_reason_platform_mass_build_path,
           class: 'btn btn-info'
-        |&nbsp;
-        = link_to 'CSV',
-          show_fail_reason_platform_mass_build_path(format: 'csv'),
-          class: 'btn btn-info'
+        hr
+        - url = show_fail_reason_platform_mass_build_path(id: @mass_build.id, format: 'csv')
+        = simple_form_for 'csv', url: url, method: :get, html: { class: 'form-inline' } do |f|
+          = f.input :log_name, required: false, label: false, input_html: { value: 'script_output.log' }
+          |&nbsp;
+          = f.input 'CSV', label: false, input_html: { type: 'submit', class: 'btn btn-info' }

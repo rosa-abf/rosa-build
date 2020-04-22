@@ -92,6 +92,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
         end
       }
       format.csv {
+        log_name = params[:csv][:log_name].presence || 'script_output.log'
         headers.delete("Content-Length")
         headers["Cache-Control"] = "no-cache"
         headers["Content-Type"] = "text/csv"
@@ -100,14 +101,14 @@ class Platforms::MassBuildsController < Platforms::BaseController
 
         self.response_body = Enumerator.new do |y|
           @mass_build.build_lists.includes(:project, :arch).where(status: BuildList::BUILD_ERROR).find_each.lazy.each do |bl|
-            log = bl.results.select { |x| x['file_name'] == 'script_output.log' }.first
+            log = bl.results.select { |x| x['file_name'] == log_name }.first
             line = CSV.generate_line([
               bl.id,
               bl.project.name_with_owner,
               bl.arch.name,
               bl.fail_reason,
               log.present? ? "http://file-store.rosalinux.ru/api/v1/file_stores/#{log['sha1']}.log?show=true" : ''
-            ])
+            ], col_sep: ';;')
             y << line
           end
         end
