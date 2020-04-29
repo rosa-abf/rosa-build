@@ -35,8 +35,9 @@ NewMassBuildController = (dataservice, $http, MassBuild) ->
   vm.getExtraRepositories = (val) ->
     path = Routes.autocomplete_extra_repositories_autocompletes_path(
       {
-        platform_id: vm.platform_id,
-        term:        val
+        platform_id:           vm.platform_id,
+        build_for_platform_id: vm.build_for_platform_id,
+        term:                  val
       }
     )
 

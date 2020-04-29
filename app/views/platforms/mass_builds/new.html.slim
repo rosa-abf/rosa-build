@@ -5,6 +5,7 @@
 .col-xs-12.col-md-10.col-md-offset-1
 
   .row[ ng-controller = 'NewMassBuildController as newMassBuildCtrl'
+        ng-init       = "newMassBuildCtrl.build_for_platform_id = #{availables_main_platforms.try(:first).try(:id) || "\"\""}"
         ng-cloak      = true ]
     = simple_form_for @mass_build, url: platform_mass_builds_path(@platform) do |f|
       .col-md-4.col-md-offset-2
@@ -47,7 +48,8 @@
             collection:    availables_main_platforms,
             label_method:  :name,
             value_method:  :id,
-            include_blank: false
+            include_blank: false,
+            input_html:    { 'ng-model' => 'newMassBuildCtrl.build_for_platform_id' }
 
           = render 'shared/autocomplete_form',
                    field:       :ExtraRepositories,
