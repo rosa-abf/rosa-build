@@ -1,6 +1,6 @@
 class Projects::IssuesController < Projects::BaseController
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
+  skip_before_action :authenticate_user!, only: [:index, :show, :pull_requests] if APP_CONFIG['anonymous_access']
   before_action :load_issue,               only: %i(show edit update destroy)
   before_action :load_and_authorize_label, only: %i(create_label update_label destroy_label)
   before_action :find_collaborators,       only: :search_collaborators
