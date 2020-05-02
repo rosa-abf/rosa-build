@@ -25,6 +25,7 @@
           th= t('activerecord.attributes.build_list.save_to_repository')
           th= t('activerecord.attributes.build_list.arch_short')
           th= t('activerecord.attributes.build_list.user')
+          th= t('activerecord.attributes.build_list.hostname')
           th= t('activerecord.attributes.build_list.updated_at')
       tbody
         tr[ ng-repeat = 'bl in build_lists'
@@ -77,6 +78,9 @@
           / user
           td
             a[ ng-href = '{{bl.user.url}}' ] {{bl.user.fullname}}
+
+          td
+            | {{bl.hostname}}
 
           / updated_at
           td title = '{{bl.updated_at_utc}}'
