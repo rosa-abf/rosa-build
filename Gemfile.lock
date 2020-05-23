@@ -367,7 +367,7 @@ GEM
       mimemagic (= 0.3.0)
     pg (0.18.2)
     posix-spawn (0.3.13)
-    puma (4.3.3)
+    puma (4.3.5)
       nio4r (~> 2.0)
     pundit (1.0.1)
       activesupport (>= 3.0.0)
