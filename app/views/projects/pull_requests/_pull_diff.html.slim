@@ -29,7 +29,7 @@
       == render 'projects/git/commits/show_image', diff: diff, blob: blob, old_blob: old_blob
 
     - if diff.a_mode != diff.b_mode && diff.diff.blank?
-      == render 'file_change_mode', blob: blob, diff: diff
+      == render 'projects/git/commits/file_change_mode', blob: blob, diff: diff
 
     - elsif diff.diff.blank? && diff.renamed_file
       == render 'projects/git/commits/file_removed_not_changed', blob: blob
