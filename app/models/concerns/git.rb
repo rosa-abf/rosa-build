@@ -23,7 +23,12 @@ module Git
   end
 
   def repo
-    @repo ||= Grit::Repo.new(path) rescue Grit::Repo.new(GAP_REPO_PATH)
+    begin
+      @repo ||= Grit::Repo.new(path)
+    rescue => e
+      Raven.capture_exception(e)
+      Grit::Repo.new(GAP_REPO_PATH)
+    end
   end
 
   def path
