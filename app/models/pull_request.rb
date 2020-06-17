@@ -83,10 +83,9 @@ class PullRequest < ActiveRecord::Base
   def update_relations(old_from_project_name = nil)
     FileUtils.mv path(old_from_project_name), path, force: true if old_from_project_name
     return unless Dir.exists?(path)
-    Dir.chdir(path) do
-      system 'git', 'remote', 'set-url', 'origin',  to_project.path
-      system 'git', 'remote', 'set-url', 'head',    from_project.path if cross_pull?
-    end
+    git_path = File.join(path, '.git')
+    system 'git', '--git-dir', git_path, 'remote', 'set-url', 'origin',  to_project.path
+    system 'git', '--git-dir', git_path, 'remote', 'set-url', 'head',    from_project.path if cross_pull?
   end
   later :update_relations, queue: :middle
 
@@ -124,29 +123,28 @@ class PullRequest < ActiveRecord::Base
 
   def merge!(who)
     return false unless can_merging?
-    Dir.chdir(path) do
-      old_commit = to_project.repo.commits(to_ref).first
-      commit = repo.commits(to_ref).first
-      system "git config user.name \"#{who.uname}\" && git config user.email \"#{who.email}\""
-      res = merge
-      puts "Merge result start:"
-      puts res
-      puts "Merge result end."
-      if commit.id != repo.commits(to_ref).first.id
-        res2 = %x(export GL_ID=user-#{who.id} GL_REPO_NAME=#{to_project.path} && git push origin HEAD)
-        puts "Push result start:"
-        puts res2
-        puts "Push result end."
-        system("git reset --hard HEAD^") # for diff maybe FIXME
+    old_commit = to_project.repo.commits(to_ref).first
+    commit = repo.commits(to_ref).first
+    git_path = File.join(path, '.git')
+    system "git --git-dir #{git_path} config user.name \"#{who.uname}\" && git --git-dir #{git_path} config user.email \"#{who.email}\""
+    res = merge
+    puts "Merge result start:"
+    puts res
+    puts "Merge result end."
+    if commit.id != repo.commits(to_ref).first.id
+      res2 = %x(export GL_ID=user-#{who.id} GL_REPO_NAME=#{to_project.path} && git --git-dir #{git_path} push origin HEAD)
+      puts "Push result start:"
+      puts res2
+      puts "Push result end."
+      system("git --git-dir #{git_path} reset --hard HEAD^") # for diff maybe FIXME
 
-        if old_commit.id == to_project.repo.commits(to_ref).first.id
-          raise "merge result pull_request #{id}: #{$?.exitstatus}; #{res2}; #{res}"
-        end
-        set_user_and_time who
-        merging
-      else # Try to catch no merge errors
-        raise "merge result pull_request #{id}: #{res}"
+      if old_commit.id == to_project.repo.commits(to_ref).first.id
+        raise "merge result pull_request #{id}: #{$?.exitstatus}; #{res2}; #{res}"
       end
+      set_user_and_time who
+      merging
+    else # Try to catch no merge errors
+      raise "merge result pull_request #{id}: #{res}"
     end
   end
 
@@ -224,6 +222,7 @@ class PullRequest < ActiveRecord::Base
   def clone
     return if from_project.nil?
     git = Grit::Git.new(path)
+    git_path = File.join(path, '.git')
     if new_record? || !git.exist?
       #~ FileUtils.mkdir_p(path)
       #~ system("git clone --local --no-hardlinks #{to_project.path} #{path}")
@@ -232,41 +231,36 @@ class PullRequest < ActiveRecord::Base
       git.fs_mkdir('..')
       git.clone(options, to_project.path, path)
       if cross_pull?
-        Dir.chdir(path) do
-          system 'git', 'remote', 'add', 'head', from_project.path
-        end
+        system 'git', '--git-dir', git_path, 'remote', 'add', 'head', from_project.path
       end
       #clean # Need testing
     end
 
-    Dir.chdir(path) do
-      system 'git', 'tag', '-d', from_ref, to_ref
-      system 'git fetch --tags && git fetch --all'
+    system 'git', '--git-dir', git_path, 'tag', '-d', from_ref, to_ref
+    system "git --git-dir #{git_path} fetch --tags && git --git-dir #{git_path} fetch --all"
 
-      tags, head = repo.tags.map(&:name), to_project == from_project ? 'origin' : 'head'
-      system 'git', 'checkout', to_ref
-      unless tags.include? to_ref
-        system 'git', 'reset', '--hard', "origin/#{to_ref}"
-      end
-      unless tags.include? from_ref
-        system 'git', 'branch', '-D', from_branch
-        system 'git', 'fetch', head, "+#{from_ref}:#{from_branch}"
-        system 'git', 'checkout', to_ref
-      end
+    tags, head = repo.tags.map(&:name), to_project == from_project ? 'origin' : 'head'
+    system 'git', '--git-dir', git_path, 'checkout', to_ref
+    unless tags.include? to_ref
+      system 'git', '--git-dir', git_path, 'reset', '--hard', "origin/#{to_ref}"
+    end
+    unless tags.include? from_ref
+      system 'git', '--git-dir', git_path, 'branch', '-D', from_branch
+      system 'git', '--git-dir', git_path, 'fetch', head, "+#{from_ref}:#{from_branch}"
+      system 'git', '--git-dir', git_path, 'checkout', to_ref
     end
   end
 
   def clean
-    Dir.chdir(path) do
-      to_project.repo.branches.each {|branch| system 'git', 'checkout', branch.name}
-      system 'git', 'checkout', to_ref
+    git_path = File.join(path, '.git')
+    to_project.repo.branches.each {|branch| system 'git', 'checkout', branch.name}
+    system 'git', '--git-dir', git_path, 'checkout', to_ref
 
-      to_project.repo.branches.each do |branch|
-        system 'git', 'branch', '-D', branch.name unless [to_ref, from_branch].include? branch.name
-      end
-      to_project.repo.tags.each do |tag|
-        system 'git', 'tag', '-d', tag.name unless [to_ref, from_branch].include? tag.name
-      end
+    to_project.repo.branches.each do |branch|
+      system 'git', '--git-dir', git_path, 'branch', '-D', branch.name unless [to_ref, from_branch].include? branch.name
+    end
+    to_project.repo.tags.each do |tag|
+      system 'git', '--git-dir', git_path, 'tag', '-d', tag.name unless [to_ref, from_branch].include? tag.name
     end
   end
 
