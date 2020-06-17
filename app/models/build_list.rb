@@ -686,7 +686,7 @@ class BuildList < ActiveRecord::Base
       self.extra_repositories = nil
     else
       self.extra_repositories = PlatformPolicy::Scope.new(user, Repository.joins(:platform)).show.
-        where(id: extra_repositories, platforms: {platform_type: 'personal'}).
+        where(id: extra_repositories).
         pluck('repositories.id')
     end
   end
