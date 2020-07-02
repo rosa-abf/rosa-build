@@ -81,19 +81,17 @@ module Grit
     # Returns Grit::DiffStat[]
     def diff_stats(a,b)
       stats = []
-      Dir.chdir(path) do
-        lines = self.git.native(:diff, {numstat: true}, "#{a}...#{b}").split("\n")
-        while !lines.empty?
-          files = []
-          while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/
-            additions, deletions, filename = lines.shift.gsub(' => ', '=>').split
-            additions, deletions = additions.to_i, deletions.to_i
-            stat = DiffStat.new filename, additions, deletions
-            stats << stat
-          end
+      lines = self.git.native(:diff, {numstat: true}, "#{a}...#{b}").split("\n")
+      while !lines.empty?
+        files = []
+        while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/
+          additions, deletions, filename = lines.shift.gsub(' => ', '=>').split
+          additions, deletions = additions.to_i, deletions.to_i
+          stat = DiffStat.new filename, additions, deletions
+          stats << stat
         end
-        stats
       end
+      stats
     end
   end
 end
