@@ -99,6 +99,9 @@ Rails.application.routes.draw do
       resources :users, only: [:show]
       get 'user' => 'users#show_current_user'
       resource :user, only: [:update] do
+        collection {
+          get :tokens
+        }
         member {
           get :notifiers
           put :notifiers

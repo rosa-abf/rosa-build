@@ -11,6 +11,10 @@ class UserPolicy < ApplicationPolicy
   alias_method :show_current_user?, :update?
   alias_method :write?,             :update?
 
+  def tokens?
+    user.role == 'system'
+  end
+
   # Public: Get list of parameters that the user is allowed to alter.
   #
   # Returns Array

