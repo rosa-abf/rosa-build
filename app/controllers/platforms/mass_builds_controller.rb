@@ -100,10 +100,11 @@ class Platforms::MassBuildsController < Platforms::BaseController
         headers["X-Accel-Buffering"] = "no"
 
         self.response_body = Enumerator.new do |y|
-          @mass_build.build_lists.includes(:project, :arch).where(status: BuildList::BUILD_ERROR).find_each.lazy.each do |bl|
-            log = bl.results.select { |x| x['file_name'] == log_name }.first
+          @mass_build.build_lists.includes(:project, :arch).find_each.lazy.each do |bl|
+            log = bl.results.select { |x| x['file_name'] == log_name }.last
             line = CSV.generate_line([
               bl.id,
+              BuildList::HUMAN_STATUSES[bl.status].to_s,
               bl.project.name_with_owner,
               bl.arch.name,
               bl.fail_reason.presence || 'Empty',

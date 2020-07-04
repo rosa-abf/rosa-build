@@ -21,6 +21,11 @@ en:
         title: Build Lists with fail reason
         no_failed_builds: No failed builds
         return: Return to mass build
+      csv_generator:
+        title: Build list info CSV generator
+        description: "Generates CSV listing all build lists. Format is: build list id, status, project name, arch name, fail reason, link to specified log if present. Separator is ;;"
+        log_name: Log name
+        submit: Download
 
       placeholder:
         description: Description

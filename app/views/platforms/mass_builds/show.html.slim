@@ -160,7 +160,11 @@
           class: 'btn btn-info'
         hr
         - url = show_fail_reason_platform_mass_build_path(id: @mass_build.id, format: 'csv')
+        h3
+          = t('layout.mass_builds.csv_generator.title')
+        h4
+          = t('layout.mass_builds.csv_generator.description')
         = simple_form_for 'csv', url: url, method: :get, html: { class: 'form-inline' } do |f|
-          = f.input :log_name, required: false, label: false, input_html: { value: 'script_output.log' }
+          = f.input :log_name, required: false, label: t('layout.mass_builds.csv_generator.log_name'), input_html: { value: 'script_output.log' }
           |&nbsp;
-          = f.input 'CSV', label: false, input_html: { type: 'submit', class: 'btn btn-info' }
+          = f.input 'CSV', label: false, input_html: { type: 'submit', class: 'btn btn-info', value: t('layout.mass_builds.csv_generator.submit') }
