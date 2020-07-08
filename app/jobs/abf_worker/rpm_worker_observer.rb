@@ -24,6 +24,7 @@ module AbfWorker
       fill_container_data if status != STARTED
 
       unless subject.valid?
+        Raven.capture_message('Invalid build list', extra: { id: subject.id, errors: subject.errors.full_messages })
         item.update_attributes({status: BuildList::BUILD_ERROR})
         subject.build_error(false)
         subject.save(validate: false)

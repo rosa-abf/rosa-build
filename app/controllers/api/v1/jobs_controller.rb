@@ -117,6 +117,9 @@ class Api::V1::JobsController < Api::V1::BaseController
   def set_builder
     return unless @build_list
     @build_list.builder = current_user
+    if !@build_list.valid?
+      Raven.capture_message('Invalid build list', extra: { id: @build_list.id, errors: @build_list.errors.full_messages })
+    end
     @build_list.save
   end
 
