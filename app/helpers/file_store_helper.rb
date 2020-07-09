@@ -2,7 +2,7 @@ module FileStoreHelper
 
   def file_store_results_url(sha1, file_name)
     url = "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}"
-    url << '.log?show=true' if file_name =~ /.*\.(log|txt)$/
+    url << '.log?show=true' if file_name =~ /.*\.(log|txt)$/ || file_name =~ /.*\.(log.gz|txt.gz)/
     url
   end
 
