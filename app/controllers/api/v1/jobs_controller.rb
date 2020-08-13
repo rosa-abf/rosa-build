@@ -32,11 +32,15 @@ class Api::V1::JobsController < Api::V1::BaseController
           end
         end
       else
-        build_lists = build_lists.external_nodes(:owned).for_user(current_user).order(:created_at)
-        @build_list   = build_lists.where(mass_build_id: nil).first
-        @build_list ||= build_lists.first
-        @build_list ||= BuildListPolicy::Scope.new(current_user, build_lists).owned.
-          external_nodes(:everything).readonly(false).first
+        tmp           = build_lists.external_nodes(:owned).for_user(current_user).order(:created_at)
+        @build_list   = tmp.where(mass_build_id: nil).first
+        @build_list ||= tmp.first
+        if !@build_list
+          tmp           = BuildListPolicy::Scope.new(current_user, build_lists).owned.
+                          external_nodes(:everything).readonly(false).order(:created_at)
+          @build_list ||= tmp.where(mass_build_id: nil).first
+          @build_list ||= tmp.first
+        end
       end
       set_builder
     end
@@ -120,7 +124,7 @@ class Api::V1::JobsController < Api::V1::BaseController
     if !@build_list.valid?
       Raven.capture_message('Invalid build list', extra: { id: @build_list.id, errors: @build_list.errors.full_messages })
     end
-    @build_list.save
+    @build_list.save(validate: false)
   end
 
 end
