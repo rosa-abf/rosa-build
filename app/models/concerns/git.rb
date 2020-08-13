@@ -26,7 +26,7 @@ module Git
     begin
       @repo ||= Grit::Repo.new(path)
     rescue => e
-      if !e.is_a?(Grit::NoSuchPathError)
+      if !e.is_a?(Grit::NoSuchPathError) && !e.is_a?(Rugged::RepositoryError)
         Raven.capture_exception(e)
       end
       Grit::Repo.new(GAP_REPO_PATH)
