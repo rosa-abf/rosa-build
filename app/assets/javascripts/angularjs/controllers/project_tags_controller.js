@@ -14,6 +14,16 @@ RosaABF.controller('ProjectTagsController', ['$scope', '$http', 'ApiProject', fu
 
   }
 
+  $scope.getTagSha1 = function(tag, type, e) {
+    e.preventDefault();
+    $http({
+      method: 'GET',
+      url: tag.get_sha1_of_archive_path($scope.project, type)
+    }).then(function(response) {
+      tag.sha_types[type] = response.data;
+    })
+  }
+
   $scope.getTags = function() {
 
     $scope.project_resource.$tags(

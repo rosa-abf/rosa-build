@@ -15,6 +15,7 @@
           tr ng-repeat = 'tag in tags | filter:query'
             td
               strong[] {{tag.ref}}
+              | &nbsp;
               span.small[] {{tag.object.authored_date * 1000 | date:'yyyy.MM.dd'}}
             td
               ul.list-inline.pull-right.boffset_auto
@@ -22,6 +23,12 @@
                   a ng-href = '{{tag.path(project)}}'
                     = t('layout.projects.browse_code')
                 - %w(zip tar.gz).each do |type|
-                  li
+                  li ng-if = "!tag.sha_types['#{type}']"
+                    a ng-click = "getTagSha1(tag, '#{type}', $event)" ng-href = "{{tag.get_sha1_of_archive_path(project, '#{type}')}}"
+                      | SHA1
+                    | &nbsp;/&nbsp;
                     a ng-href = "{{tag.archive_path(project, '#{type}')}}"
                       = t('layout.projects.source_code', type: type)
+                  li ng-if = "tag.sha_types['#{type}']"
+                    a ng-href = "{{tag.archive_path(project, '#{type}')}}"
+                      = "{{tag.sha_types['#{type}']}}"

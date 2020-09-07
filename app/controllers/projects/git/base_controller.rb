@@ -1,8 +1,8 @@
 class Projects::Git::BaseController < Projects::BaseController
   before_action :authenticate_user!
   if APP_CONFIG['anonymous_access']
-    skip_before_action :authenticate_user!, only: %i(show index blame raw archive diff tags branches)
-    before_action :authenticate_user,       only: %i(show index blame raw archive diff tags branches)
+    skip_before_action :authenticate_user!, only: %i(show index blame raw archive get_sha1_of_archive diff tags branches)
+    before_action :authenticate_user,       only: %i(show index blame raw archive get_sha1_of_archive diff tags branches)
   end
 
   before_action :set_treeish_and_path

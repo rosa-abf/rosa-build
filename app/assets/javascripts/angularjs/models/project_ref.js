@@ -12,6 +12,7 @@ var ProjectRef = function(atts) {
   //with some logic...
   self.isTag = self.object.type == 'tag';
   self.ui_container = false;
+  self.sha_types = {};
 
   self.path = function(project) {
     return Routes.tree_path(project.fullname, self.ref);
@@ -23,6 +24,10 @@ var ProjectRef = function(atts) {
 
   self.archive_path = function(project, type) {
     return Routes.archive_path(project.fullname, project.name + '-' + self.ref, {format: type});
+  }
+
+  self.get_sha1_of_archive_path = function(project, type) {
+    return Routes.get_sha1_of_archive_path(project.fullname, project.name + '-' + self.ref, {format: type});
   }
 
   //return the scope-safe instance

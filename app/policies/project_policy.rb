@@ -16,6 +16,7 @@ class ProjectPolicy < ApplicationPolicy
   end
   alias_method :read?,                      :show?
   alias_method :archive?,                   :show?
+  alias_method :get_sha1_of_archive?,       :show?
   alias_method :get_id?,                    :show?
   alias_method :refs_list?,                 :show?
 

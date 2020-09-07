@@ -1,12 +1,12 @@
 class Projects::Git::TreesController < Projects::Git::BaseController
 
-  skip_before_action :set_branch_and_tree,      only: :archive
-  skip_before_action :set_treeish_and_path,     only: :archive
+  skip_before_action :set_branch_and_tree,      only: [:archive, :get_sha1_of_archive]
+  skip_before_action :set_treeish_and_path,     only: [:archive, :get_sha1_of_archive]
   before_action      :redirect_to_project,      only: :show
   before_action      :resolve_treeish,          only: [:branch, :destroy]
 
   # skip_authorize_resource :project,                 only: [:destroy, :restore_branch, :create]
-  before_action -> { authorize(@project, :show?)  },  only: [:show, :archive, :tags, :branches]
+  before_action -> { authorize(@project, :show?)  },  only: [:show, :archive, :tags, :branches, :get_sha1_of_archive]
 
   def show
     unless request.xhr?
@@ -25,13 +25,10 @@ class Projects::Git::TreesController < Projects::Git::BaseController
                                         @treeish !~ /[\s]+/ &&
                                         format =~ /\A(zip|tar\.gz)\z/
     @treeish.gsub!(/^#{@project.name}-/, '')
-    sha1 = @project.build_scripts.by_active.by_treeish(@treeish).first.try(:sha1)
-    unless sha1
-      @commit = @project.repo.commits(@treeish, 1).first
-      raise Grit::NoSuchPathError unless @commit
-      tag     = @project.repo.tags.find{ |t| t.name == @treeish }
-      sha1    = @project.get_project_tag_sha1(tag, format) if tag
-    end
+    @commit = @project.repo.commits(@treeish, 1).first
+    raise Grit::NoSuchPathError unless @commit
+    tag     = @project.repo.tags.find{ |t| t.name == @treeish }
+    sha1    = @project.get_project_tag_sha1(tag, format) if tag
 
     if sha1.present?
       redirect_to "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}"
@@ -39,6 +36,21 @@ class Projects::Git::TreesController < Projects::Git::BaseController
       archive = @project.archive_by_treeish_and_format @treeish, format
       send_file archive[:path], disposition: 'attachment', type: "application/#{format == 'zip' ? 'zip' : 'x-tar-gz'}", filename: archive[:fullname]
     end
+  end
+
+  def get_sha1_of_archive
+    format, @treeish = params[:format], params[:treeish]
+    raise Grit::NoSuchPathError unless  @treeish =~ /^#{@project.name}-/ &&
+                                        @treeish !~ /[\s]+/ &&
+                                        format =~ /\A(zip|tar\.gz)\z/
+    @treeish.gsub!(/^#{@project.name}-/, '')
+    @commit = @project.repo.commits(@treeish, 1).first
+    raise Grit::NoSuchPathError unless @commit
+    tag     = @project.repo.tags.find{ |t| t.name == @treeish }
+    sha1    = @project.get_project_tag_sha1(tag, format) if tag
+    sha1    ||= ''
+
+    render plain: sha1
   end
 
   def tags

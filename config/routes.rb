@@ -412,6 +412,8 @@ Rails.application.routes.draw do
           get '/raw/:treeish/*path' => "git/blobs#raw", as: :raw, format: false
           # Archive
           get '/archive/:treeish.:format' => "git/trees#archive", as: :archive, format: /zip|tar\.gz/
+          # get sha1 of archive
+          get '/get_sha1_of_archive/:treeish.:format' => "git/trees#get_sha1_of_archive", as: :get_sha1_of_archive, format: /zip|tar\.gz/
           # Git diff
           get '/diff/:diff' => "git/commits#diff", as: :diff, format: false, diff: /.*/
         end
