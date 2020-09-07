@@ -1,26 +1,9 @@
-#FROM alpine:3.8 as libgit-container
-
-#ADD qsort_r.patch /
-#RUN apk add --no-cache --virtual .builddeps git build-base cmake python2 && \
-#    git clone -b v0.21.4 --single-branch https://github.com/libgit2/libgit2 && \
-#    cd libgit2 && \
-#    git apply ../qsort_r.patch && \
-#    cat src/util.c && \
-#    mkdir build && cd build && \
-#    cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="-O2" && \
-#    make -j16 && apk del .builddeps
-
 FROM ruby:2.4.9-alpine3.11 as rosa-build-gems
-#COPY --from=libgit-container /libgit2/build/libgit2.so* /usr/lib/
-#COPY --from=libgit-container /libgit2/build/libgit2.pc /usr/lib/pkgconfig/
-#COPY --from=libgit-container /libgit2/include/git2/ /usr/include/git2/
-#COPY --from=libgit-container /libgit2/include/git2.h /usr/include/
 
 WORKDIR /rosa-build
-RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs python2 && \
+RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs python2 redis && \
     apk add --virtual .ruby-builddeps --no-cache postgresql-dev build-base cmake icu-dev
 RUN gem install bundler:1.17.3
-#RUN bundle config build.rugged --use-system-libraries
 COPY vendor ./vendor
 COPY Gemfile Gemfile.lock ./
 RUN bundle install --without development test --jobs 16 --clean --deployment --no-cache --verbose
