@@ -19,6 +19,12 @@ nav.navbar.navbar-inverse.top_menu role = "navigation"
                 i.fa.visible-sm-inline-block.fa-2x class=top_menu_icon(base)
                 span.hidden-sm
                   =< title
+        li
+          a href="http://repoclosure.rosalinux.ru" target="_blank"
+            i.fa.hidden-sm.fa-circle-o
+            i.fa.visible-sm-inline-block.fa-2x.fa-circle-o
+            span.hidden-sm
+              = " Repoclosure"
         - if current_user.try(:admin?)
           li class=top_menu_class('admin')
             a href=admin_users_path
