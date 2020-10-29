@@ -46,6 +46,8 @@ class CreateEmptyMetadataJob < Struct.new(:class_name, :id)
       path << '/repodata/'
     when 'mdv'
       path << '/media_info/'
+    when 'dnf'
+      path << '/repodata/'
     else
       return
     end
