@@ -97,7 +97,7 @@ module GitHelper
 
   def split_commits_by_date(commits)
     # See: https://github.com/gitlabhq/gitlabhq/blob/master/app/views/projects/commits/_commits.html.haml#L1
-    commits.sort{|x, y| y.committed_date <=> x.committed_date}.inject({}) do |h, commit|
+    commits.inject({}) do |h, commit|
       dt = commit.committed_date
       h[dt.year] ||= {}
       h[dt.year][dt.month] ||= {}
