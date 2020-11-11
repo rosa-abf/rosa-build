@@ -1,4 +1,3 @@
-puts 11111111
 class Gollum::BlobEntry
   def name
     @name ||= begin
