@@ -426,7 +426,7 @@ GEM
     rdiscount (2.1.8)
     recaptcha (5.3.0)
       json
-    redcarpet (3.3.2)
+    redcarpet (3.5.1)
     redis (3.0.7)
     redis-actionpack (4.0.0)
       actionpack (~> 4)
@@ -735,7 +735,7 @@ DEPENDENCIES
   rake
   rdiscount
   recaptcha
-  redcarpet (~> 3.3)
+  redcarpet (~> 3.5)
   redis-rails
   redis-semaphore
   resque
