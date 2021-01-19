@@ -173,7 +173,7 @@ module AbfWorkerService
         # remove duplicates of sources for different arches
         bl.packages.by_package_type('source').each{ |s| new_sources["#{s.fullname}"] = s.sha1 }
         fill_packages(bl, packages)
-        bl.last_published(testing).includes(:packages).limit(1).each{ |old_bl|
+        bl.last_published(testing).includes(:packages).limit(2).each{ |old_bl|
           fill_packages(old_bl, old_packages, :fullname)
         }
         # TODO: do more flexible
