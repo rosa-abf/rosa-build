@@ -6,11 +6,12 @@ RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs python2 r
 RUN gem install bundler:1.17.3
 COPY vendor ./vendor
 COPY Gemfile Gemfile.lock ./
-RUN bundle install --without development test --jobs 16 --clean --deployment --no-cache --verbose
-RUN apk add --no-cache file imagemagick curl gnupg openssh-keygen
-RUN apk del .ruby-builddeps && rm -rf /root/.bundle && rm -rf /proxy/vendor/bundle/ruby/2.4.0/cache
-RUN mkdir -p /root/.gnupg && chmod 700 /root/.gnupg
-RUN git clone -b 2.2.0 https://github.com/pygments/pygments.git && cd pygments && python setup.py install && cd .. && rm -rf pygments
+RUN bundle install --without development test --jobs 16 --clean --deployment --no-cache --verbose && \
+    apk add --no-cache file imagemagick curl gnupg openssh-keygen && \
+    apk del .ruby-builddeps && rm -rf /root/.bundle && rm -rf /proxy/vendor/bundle/ruby/2.4.0/cache && \
+    mkdir -p /root/.gnupg && chmod 700 /root/.gnupg && \
+    git clone -b 2.2.0 https://github.com/pygments/pygments.git && cd pygments && python setup.py install && cd .. && rm -rf pygments && \
+    cd /rosa-build/vendor/bundle/ruby && find -name *.o -exec rm {} \;
 
 FROM scratch
 COPY --from=rosa-build-gems / /

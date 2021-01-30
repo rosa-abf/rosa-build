@@ -14,16 +14,14 @@ class User < Avatar
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
   NAME_REGEXP = /[a-z0-9_]+/
 
-  devise :database_authenticatable, :registerable, :omniauthable,
-         :recoverable, :rememberable, :validatable, :lockable, :confirmable
-  devise :omniauthable, omniauth_providers: [:facebook, :google_oauth2, :github]
+  devise :database_authenticatable, :registerable, :recoverable,
+         :rememberable, :validatable, :lockable, :confirmable
 
   has_one :notifier,       class_name: 'SettingsNotifier',  dependent: :destroy #:notifier
   has_one :builds_setting, class_name: 'UserBuildsSetting', dependent: :destroy
 
   has_many :activity_feeds, dependent: :destroy
 
-  has_many :authentications, dependent: :destroy
   has_many :build_lists, dependent: :destroy
   has_many :subscribes, foreign_key: :user_id, dependent: :destroy
   has_many :comments, dependent: :destroy

@@ -1,10 +1,7 @@
-
 .panel.panel-default
   .panel-heading
     h4= t('layout.devise.shared_links.sign_in')
   .panel-body
-
-
     - login = t('devise.sessions.login'); password = t('devise.sessions.password')
     = hidden_field_tag :login_default, login
     = hidden_field_tag :password_default, password
@@ -18,7 +15,7 @@
         = f.input :remember_me, as: :boolean, checked: true
       .pull-right
         = f.button :submit, t('layout.devise.shared_links.sign_in')
-  .panel-footer
-    == render 'devise/shared/providers'
 
 = link_to t('layout.devise.shared_links.forgot_password'), new_password_path(resource_name)
+br
+= link_to t('layout.devise.shared_links.confirm_again'), new_confirmation_path(resource_name)

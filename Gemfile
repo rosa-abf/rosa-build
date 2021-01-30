@@ -7,11 +7,6 @@ gem 'pg'
 gem 'schema_plus'
 ########
 gem 'devise'
-gem 'omniauth'
-gem 'omniauth-facebook'
-gem 'omniauth-google-oauth2'
-gem 'omniauth-github'
-# gem 'omniauth-openid', '~> 1.0.1'
 gem 'pundit'
 
 gem 'ancestry'
@@ -37,7 +32,6 @@ gem 'gollum-lib', '~> 3.0'
 gem 'redcarpet', '~> 3.5'
 gem 'creole'
 gem 'rdiscount'
-# gem 'org-ruby'
 gem 'RedCloth'
 gem 'wikicloth'
 
@@ -84,7 +78,6 @@ gem 'sass-rails'
 gem 'coffee-rails'
 gem 'bootstrap-sass'
 gem 'font-awesome-rails'
-gem 'zeroclipboard-rails'
 
 gem 'compass-rails'
 gem 'uglifier'
@@ -105,7 +98,6 @@ gem 'recaptcha'
 gem 'pygments.rb'
 
 group :production do
-  #gem 'bluepill', '~> 0.0.60', require: false
   gem 'puma'
 end
 
@@ -114,18 +106,11 @@ group :development do
   gem 'rails3-generators'
   gem 'hirb'
   gem 'shotgun'
-  # deploy
-  gem 'capistrano', require: false
-  gem 'rvm-capistrano', require: false
-  gem 'cape', require: false
-  gem 'capistrano_colors', require: false
   # Better Errors & RailsPanel
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'meta_request'
   gem 'localeapp'
-  gem 'skype'
-  gem 'ruby-dbus' if RUBY_PLATFORM =~ /linux/i # Error at deploy
   gem 'rack-mini-profiler', require: false
 end
 

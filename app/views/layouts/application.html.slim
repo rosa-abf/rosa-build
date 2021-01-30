@@ -3,7 +3,6 @@ html
   head
     meta name="viewport" content="width=device-width, initial-scale=1.0"
     meta content="text/html; charset=utf-8" http-equiv="Content-Type"
-    == render 'shared/header'
     == csrf_meta_tag
     = display_meta_tags site: APP_CONFIG['project_name'], reverse: true, separator: '-'
     - if user_signed_in?

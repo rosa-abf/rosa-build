@@ -71,8 +71,8 @@ en:
         sign_in: Sign in
         sign_up: Sign up
         forgot_password: Forgot your password?
-        confirm_again: Do not receive the confirmation link?
-        unlock: Do not receive unlock instructions?
+        confirm_again: Did not receive the confirmation link?
+        unlock: Did not receive unlock instructions?
         sign_in_through: Sign in by %{provider}
 
     weekdays:

@@ -52,7 +52,6 @@ en:
   admins_menu_header: Admin
   admins_menu:
     users: Users
-    register_requests: Invites
     flash_notifies: Notifies
     event_logs: Event log
     resque_server: Resque

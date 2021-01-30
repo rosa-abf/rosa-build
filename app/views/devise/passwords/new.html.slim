@@ -4,8 +4,6 @@
   .panel-body
 
     = simple_form_for resource, url: password_path(resource_name), html: { method: :post } do |f|
-      = hidden_field_tag :invitation_token, @invitation_token
-
       = f.input :email
       hr
       .pull-right

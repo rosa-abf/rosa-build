@@ -25,7 +25,6 @@ class Project < ActiveRecord::Base
   has_many :issues,         dependent: :destroy
   has_many :pull_requests,  dependent: :destroy, foreign_key: 'to_project_id'
   has_many :labels,         dependent: :destroy
-  has_many :build_scripts,  dependent: :destroy
 
   has_many :project_imports, dependent: :destroy
   has_many :project_to_repositories, dependent: :destroy

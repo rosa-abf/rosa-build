@@ -25,3 +25,5 @@ config/deploy.rb
 .ruby-version
 .localeapp
 envfile
+Gemfile.bak
+Gemfile.lock.bak

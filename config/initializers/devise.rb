@@ -191,10 +191,6 @@ Devise.setup do |config|
   # require 'openid/store/filesystem'
   # config.omniauth :openid, :name => 'open_id' #, :store => OpenID::Store::Filesystem.new('./tmp')
 
-  config.omniauth :facebook, APP_CONFIG['keys']['facebook']['id'], APP_CONFIG['keys']['facebook']['secret']
-  config.omniauth :google_oauth2, APP_CONFIG['keys']['google']['id'], APP_CONFIG['keys']['google']['secret'], {:access_type => 'offline', :approval_prompt => ''}
-  config.omniauth :github, APP_CONFIG['keys']['github']['id'], APP_CONFIG['keys']['github']['secret'], {:scope => 'user:email'}
-
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

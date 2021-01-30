@@ -20,15 +20,11 @@ Rails.application.routes.draw do
 #  end
 
   devise_scope :user do
-    get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
     get 'users/sign_up' => 'users/registrations#new',    as: :new_user_registration
     post 'users'        => 'users/registrations#create', as: :user_registration
   end
 
-  devise_for :users, controllers: {
-    omniauth_callbacks: 'users/omniauth_callbacks',
-    confirmations:      'users/confirmations'
-  }, skip: [:registrations]
+  devise_for :users, skip: [:registrations]
 
   namespace :api do
     namespace :v1, constraints: { format: 'json' }, defaults: { format: 'json' } do
@@ -148,7 +144,6 @@ Rails.application.routes.draw do
   get  '/forbidden'        => 'pages#forbidden',      as: 'forbidden'
   get  '/terms-of-service' => 'pages#tos',            as: 'tos'
   get  '/tour/:id'         => 'pages#tour_inside',    as: 'tour_inside', id: /projects|sources|builds/
-  #match '/invite.html'     => redirect('/register_requests/new')
 
   get '/activity_feeds.:format' => 'home#activity',     as: 'atom_activity_feeds', format: /atom/
   get '/own_activity'           => 'home#own_activity', as: 'own_activity'
@@ -263,7 +258,6 @@ Rails.application.routes.draw do
         put :reset_auth_token
       end
     end
-    #resources :register_requests, only: [:new, :create], format: /ru|en/ #view support only two languages
 
     get '/allowed'  => 'users#allowed'
     get '/check'    => 'users#check'

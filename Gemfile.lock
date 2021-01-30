@@ -118,16 +118,8 @@ GEM
     bourbon (5.1.0)
       sass (~> 3.4)
       thor (~> 0.19)
-    builder (3.2.3)
+    builder (3.2.4)
     callsite (0.0.11)
-    cape (1.8.0)
-    capistrano (2.15.5)
-      highline
-      net-scp (>= 1.0.0)
-      net-sftp (>= 2.0.0)
-      net-ssh (>= 2.0.14)
-      net-ssh-gateway (>= 1.1.0)
-    capistrano_colors (0.5.5)
     charlock_holmes (0.7.7)
     chronic (0.10.2)
     chunky_png (1.3.4)
@@ -161,7 +153,7 @@ GEM
       compass (~> 1.0.0)
       sass-rails (<= 5.0.1)
       sprockets (< 2.13)
-    concurrent-ruby (1.1.5)
+    concurrent-ruby (1.1.8)
     connection_pool (2.2.2)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
@@ -235,7 +227,6 @@ GEM
     has_scope (0.7.2)
       actionpack (>= 4.1)
       activesupport (>= 4.1)
-    hashie (3.6.0)
     highline (1.6.21)
     hike (1.2.3)
     hirb (0.7.3)
@@ -255,7 +246,7 @@ GEM
       has_scope (~> 0.6)
       railties (>= 4.2, < 5.3)
       responders
-    its-it (1.1.1)
+    its-it (1.3.0)
     jbuilder (2.2.16)
       activesupport (>= 3.0.0, < 5)
       multi_json (~> 1.2)
@@ -270,7 +261,6 @@ GEM
       railties (>= 3.2)
       sprockets-rails
     json (1.8.6)
-    jwt (1.5.0)
     kaminari (0.17.0)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -305,26 +295,17 @@ GEM
     mimemagic (0.3.0)
     mini_mime (1.0.1)
     mini_portile2 (2.1.0)
-    minitest (5.11.3)
+    minitest (5.14.3)
     mock_redis (0.14.1)
-    modware (0.1.2)
-      its-it
+    modware (0.1.3)
       key_struct (~> 0.4)
     momentjs-rails (2.10.2)
       railties (>= 3.1)
     mono_logger (1.1.0)
     multi_json (1.13.1)
-    multi_xml (0.5.5)
     multipart-post (2.0.0)
     nest (1.1.2)
       redis
-    net-scp (1.2.1)
-      net-ssh (>= 2.6.5)
-    net-sftp (2.1.2)
-      net-ssh (>= 2.6.5)
-    net-ssh (2.9.2)
-    net-ssh-gateway (1.2.0)
-      net-ssh (>= 2.6.5)
     netrc (0.11.0)
     ng-rails-csrf (0.1.0)
     ngmin-rails (0.4.0)
@@ -332,32 +313,12 @@ GEM
     nio4r (2.5.2)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
-    oauth2 (1.0.0)
-      faraday (>= 0.8, < 0.10)
-      jwt (~> 1.0)
-      multi_json (~> 1.3)
-      multi_xml (~> 0.5)
-      rack (~> 1.2)
     ohm (1.3.2)
       nest (~> 1.0)
       redis
       scrivener (~> 0.0.3)
     ohm-expire (0.1.3.2)
       ohm (>= 0.1.5)
-    omniauth (1.9.0)
-      hashie (>= 3.4.6, < 3.7.0)
-      rack (>= 1.6.2, < 3)
-    omniauth-facebook (2.0.1)
-      omniauth-oauth2 (~> 1.2)
-    omniauth-github (1.1.2)
-      omniauth (~> 1.0)
-      omniauth-oauth2 (~> 1.1)
-    omniauth-google-oauth2 (0.2.6)
-      omniauth (> 1.0)
-      omniauth-oauth2 (~> 1.1)
-    omniauth-oauth2 (1.3.0)
-      oauth2 (~> 1.0)
-      omniauth (~> 1.2)
     orm_adapter (0.5.0)
     paperclip (4.3.0)
       activemodel (>= 3.2.0)
@@ -490,7 +451,6 @@ GEM
       rspec-mocks (~> 3.2.0)
       rspec-support (~> 3.2.0)
     rspec-support (3.2.2)
-    ruby-dbus (0.15.0)
     ruby-haml-js (0.0.5)
       execjs
       sprockets (>= 2.0.0)
@@ -501,8 +461,6 @@ GEM
     rugged (0.99.0)
     russian (0.6.0)
       i18n (>= 0.5.0)
-    rvm-capistrano (1.5.6)
-      capistrano (~> 2.15.4)
     safe_yaml (1.0.4)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)
@@ -516,19 +474,19 @@ GEM
     sassc (2.0.1)
       ffi (~> 1.9)
       rake
-    schema_auto_foreign_keys (0.1.0)
+    schema_auto_foreign_keys (0.1.3)
+      its-it (~> 1.2)
       schema_plus_foreign_keys (~> 0.1)
       schema_plus_indexes (~> 0.2)
-    schema_monkey (2.1.0)
-      activerecord (~> 4.2)
-      its-it
+    schema_monkey (2.1.5)
+      activerecord (>= 4.2)
       modware (~> 0.1)
-    schema_plus (2.0.0)
+    schema_plus (2.0.1)
       activerecord (~> 4.2)
       schema_auto_foreign_keys (~> 0.1)
       schema_monkey (~> 2.1)
       schema_plus_columns (~> 0.1)
-      schema_plus_core (~> 0.4)
+      schema_plus_core (~> 1.0)
       schema_plus_db_default (~> 0.1)
       schema_plus_default_expr (~> 0.1)
       schema_plus_enums (~> 0.1)
@@ -537,37 +495,50 @@ GEM
       schema_plus_pg_indexes (~> 0.1, >= 0.1.3)
       schema_plus_tables (~> 0.1)
       schema_plus_views (~> 0.1)
-    schema_plus_columns (0.1.0)
-      activerecord (~> 4.2)
-      schema_plus_indexes (~> 0.1)
-    schema_plus_core (0.5.0)
-      activerecord (~> 4.2)
+    schema_plus_columns (0.3.0)
+      activerecord (>= 4.2, < 5.3)
+      its-it (~> 1.2)
+      schema_plus_core
+      schema_plus_indexes (~> 0.2)
+    schema_plus_compatibility (0.4.0)
+      activerecord (>= 4.2, < 5.3)
       schema_monkey (~> 2.1)
-    schema_plus_db_default (0.1.0)
+    schema_plus_core (1.0.2)
       activerecord (~> 4.2)
-      schema_plus_core (~> 0.2, >= 0.2.1)
-    schema_plus_default_expr (0.1.0)
+      its-it (~> 1.2)
+      schema_monkey (~> 2.1)
+    schema_plus_db_default (0.1.1)
       activerecord (~> 4.2)
-      schema_plus_core (~> 0.2, >= 0.2.1)
-    schema_plus_enums (0.1.0)
-      activerecord (~> 4.2)
-      schema_plus_core (~> 0.2, >= 0.2.1)
-    schema_plus_foreign_keys (0.1.2)
-      activerecord (~> 4.2)
-      schema_plus_core (~> 0.5)
+      schema_plus_core (~> 1.0)
+    schema_plus_default_expr (0.1.5)
+      activerecord (>= 4.2, < 6.0)
+      its-it (~> 1.2)
+      schema_plus_core
+    schema_plus_enums (0.1.8)
+      activerecord (>= 4.2, < 5.3)
+      its-it (~> 1.2)
+      schema_plus_core
+    schema_plus_foreign_keys (0.1.8)
+      activerecord (>= 4.2, < 5.3)
+      its-it (~> 1.2)
+      schema_plus_compatibility (~> 0.2)
+      schema_plus_core
       valuable
-    schema_plus_indexes (0.2.0)
+    schema_plus_indexes (0.3.1)
+      activerecord (>= 4.2, < 5.3)
+      its-it (~> 1.2)
+      schema_plus_core
+    schema_plus_pg_indexes (0.1.12)
       activerecord (~> 4.2)
-      schema_plus_core (~> 0.1)
-    schema_plus_pg_indexes (0.1.4)
-      activerecord (~> 4.2)
+      its-it (~> 1.2)
+      schema_plus_core (~> 1.0)
       schema_plus_indexes (~> 0.1, >= 0.1.3)
-    schema_plus_tables (0.1.0)
+    schema_plus_tables (0.1.1)
       activerecord (~> 4.2)
-      schema_plus_core (~> 0.2)
-    schema_plus_views (0.2.0)
+      schema_plus_core (~> 1.0)
+    schema_plus_views (0.3.1)
       activerecord (~> 4.2)
-      schema_plus_core (~> 0.1)
+      schema_plus_core (~> 1.0)
     scrivener (0.0.3)
     sentry-raven (2.9.0)
       faraday (>= 0.7.6, < 1.0)
@@ -592,8 +563,6 @@ GEM
     skinny (0.2.3)
       eventmachine (~> 1.0.0)
       thin (~> 1.5.0)
-    skype (0.2.8)
-      tmp_cache
     slim (3.0.6)
       temple (~> 0.7.3)
       tilt (>= 1.3.3, < 2.1)
@@ -630,10 +599,9 @@ GEM
       activesupport
       i18n
     timecop (0.7.4)
-    tmp_cache (0.1.1)
     twitter-text (1.12.0)
       unf (~> 0.1.0)
-    tzinfo (1.2.5)
+    tzinfo (1.2.9)
       thread_safe (~> 0.1)
     uglifier (2.7.1)
       execjs (>= 0.3.0)
@@ -642,7 +610,7 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.7)
-    valuable (0.9.9)
+    valuable (0.9.14)
     vegas (0.1.11)
       rack (>= 1.0.0)
     warden (1.2.7)
@@ -660,8 +628,6 @@ GEM
       twitter-text
     will_paginate (3.0.7)
     ya2yaml (0.31)
-    zeroclipboard-rails (0.1.0)
-      railties (>= 3.1)
 
 PLATFORMS
   ruby
@@ -678,9 +644,6 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-sass
-  cape
-  capistrano
-  capistrano_colors
   charlock_holmes
   codemirror-rails (~> 4.5)
   coffee-rails
@@ -715,10 +678,6 @@ DEPENDENCIES
   ngmin-rails
   ohm (~> 1.3.2)
   ohm-expire (~> 0.1.3)
-  omniauth
-  omniauth-facebook
-  omniauth-github
-  omniauth-google-oauth2
   paperclip
   perform_later!
   pg
@@ -745,10 +704,8 @@ DEPENDENCIES
   rest-client
   rr
   rspec-rails
-  ruby-dbus
   ruby-haml-js
   russian
-  rvm-capistrano
   sass-rails
   schema_plus
   sentry-raven
@@ -757,7 +714,6 @@ DEPENDENCIES
   shoulda-matchers
   simple_form (= 3.1.0.rc2)
   sitemap_generator
-  skype
   slim
   soundmanager-rails
   sprockets
@@ -771,7 +727,6 @@ DEPENDENCIES
   whenever
   wikicloth
   will_paginate
-  zeroclipboard-rails
 
 BUNDLED WITH
    1.17.3

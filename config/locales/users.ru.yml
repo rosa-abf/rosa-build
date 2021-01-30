@@ -5,6 +5,7 @@ ru:
       new: Создать
       profile: Профиль
       settings: Настройки
+      invites: Приглашения
       builds_settings: Настройки сборок
       new_header: Новый пользователь
       edit_header: Редактировать
@@ -28,8 +29,6 @@ ru:
         real: Обычные
         banned: Забаненные
         tester: Тестеры
-    register_request:
-      list_header: Заявки на регистрацию
 
   activerecord:
     attributes:

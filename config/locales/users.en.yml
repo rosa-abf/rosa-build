@@ -5,6 +5,7 @@ en:
       new: Create
       profile: Profile
       settings: Settings
+      invites: Invites
       builds_settings: Builds settings
       new_header: New user
       edit_header: Edit
@@ -28,8 +29,6 @@ en:
         real: Real
         banned: Banned
         tester: Testers
-    register_request:
-      list_header: Register requests
 
   activerecord:
     attributes:

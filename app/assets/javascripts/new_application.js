@@ -25,8 +25,6 @@
 
 //= require underscore
 
-//= require zeroclipboard
-
 //= require notifyjs
 //= require notifyjs/styles/bootstrap/notify-bootstrap
 
@@ -58,8 +56,6 @@ $(document).ready(function() {
     var expires="expires="+exdate.toUTCString();
     setCookie("flash_notify_hash", FLASH_HASH_ID, expires);
   });
-
-  var clip = new ZeroClipboard($("#copy_to_clipboard"));
 
   $('.datetime_moment').each(function() {
     var mtime = moment($(this).attr('origin_datetime'), 'YYYY-MM-DD HH:mm Z');

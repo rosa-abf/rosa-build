@@ -84,17 +84,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def invite_approve_notification(register_request)
-    set_locale register_request
-    @register_request = register_request
-    mail(
-      to:      register_request.email,
-      subject: I18n.t("notifications.subjects.invite_approve_notification")
-    ) do |format|
-      format.html
-    end
-  end
-
   def git_delete_branch_notification(user, options)
     set_locale user
     mail(
