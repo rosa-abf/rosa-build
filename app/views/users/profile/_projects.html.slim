@@ -42,7 +42,10 @@
       => f.button :submit, t('.search')
       => t('.or')
       = link_to t('.clear'), subject, class: 'btn btn-default'
-hr
+
+- if policy(:project).create? && current_user.id == subject.id
+    hr.offset10
+      p= link_to t('layout.projects.new'), new_project_path, class: 'btn btn-primary'
 
 table.table.table-striped ng-show='!processing'
   thead

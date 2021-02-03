@@ -196,7 +196,12 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def who_owns
-    @who_owns = (@project.try(:owner_type) == 'User' ? :me : :group)
+    t = @project.try(:owner_type)
+    @who_owns = if t.nil?
+      :me
+    else
+      t == 'User' ? :me : :group
+    end
   end
 
   def choose_owner
