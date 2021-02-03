@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
   before_action -> { EventLog.current_controller = self },
                 only: [:create, :destroy, :open_id, :cancel, :publish, :change_visibility] # :update
   before_action :banned?
+  before_action :set_raven_context
   after_action -> { EventLog.current_controller = nil }
   after_action      :verify_authorized, unless: :devise_controller?
   skip_after_action :verify_authorized, only: %i(render_500 render_404)
@@ -150,5 +151,10 @@ class ApplicationController < ActionController::Base
     params[:page] = 1 if params[:page].to_i < 1
 
     params[:page]
+  end
+
+  def set_raven_context
+    Raven.user_context(email: current_user.try(:email), id: current_user.try(:id))
+    Raven.extra_context(params: params.to_unsafe_h, url: request.url)
   end
 end
