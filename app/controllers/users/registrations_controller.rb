@@ -4,12 +4,16 @@ class Users::RegistrationsController < Devise::RegistrationsController
 
   def new
     super do |resource|
-      invite = Invite.find_by_invite_key(params[:invite_key])
-      if !invite || invite.used?
-        flash[:error] = I18n.t('errors.messages.bad_invite_key')
+      if params[:invite_key].to_s.strip.empty?
         resource.invite_key = ''
       else
-        resource.invite_key = params[:invite_key]
+        invite = Invite.find_by_invite_key(params[:invite_key])
+        if !invite || invite.used?
+          flash[:error] = I18n.t('errors.messages.bad_invite_key')
+          resource.invite_key = ''
+        else
+          resource.invite_key = params[:invite_key]
+        end
       end
     end
   end
