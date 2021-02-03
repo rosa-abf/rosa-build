@@ -256,6 +256,8 @@ Rails.application.routes.draw do
         get :builds_settings
         patch :builds_settings
         put :reset_auth_token
+        get :invites
+        get :create_invite
       end
     end
 

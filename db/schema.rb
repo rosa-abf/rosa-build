@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210130134627) do
+ActiveRecord::Schema.define(version: 20210203100058) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -223,6 +223,14 @@ ActiveRecord::Schema.define(version: 20210130134627) do
     t.integer  "build_priority",          :default=>50
     t.boolean  "sound_notifications",     :default=>true
     t.boolean  "hide_email",              :default=>true, :null=>false
+  end
+
+  create_table "invites", force: :cascade do |t|
+    t.integer  "user_id",         :null=>false, :index=>{:name=>"index_invites_on_user_id"}, :foreign_key=>{:references=>"users", :name=>"fk_invites_user_id", :on_update=>:no_action, :on_delete=>:no_action}
+    t.integer  "invited_user_id", :index=>{:name=>"index_invites_on_invited_user_id"}
+    t.string   "invite_key",      :default=>"", :index=>{:name=>"index_invites_on_invite_key"}
+    t.datetime "created_at",      :null=>false
+    t.datetime "updated_at",      :null=>false
   end
 
   create_table "issues", force: :cascade do |t|

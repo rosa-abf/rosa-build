@@ -6,6 +6,8 @@ en:
     settings:
       profile:
         title: 'Your Profile'
+      invites:
+        title: 'Invites'
   projects:
     build_lists:
       index:

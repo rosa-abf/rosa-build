@@ -2,11 +2,42 @@ class Users::RegistrationsController < Devise::RegistrationsController
   before_action :update_sanitized_params, if: :devise_controller?
   before_action :check_captcha, only: [:create]
 
+  def new
+    super do |resource|
+      invite = Invite.find_by_invite_key(params[:invite_key])
+      if !invite || invite.used?
+        flash[:error] = I18n.t('errors.messages.bad_invite_key')
+        resource.invite_key = ''
+      else
+        resource.invite_key = params[:invite_key]
+      end
+    end
+  end
+
+  def create
+    invite_key = params[:user][:invite_key]
+    invite = Invite.find_by_invite_key(invite_key)
+    if !invite || invite.used?
+      flash[:error] = I18n.t('errors.messages.bad_invite_key')
+      self.resource = resource_class.new sign_up_params
+      resource.validate
+      set_minimum_password_length
+      render :new
+    else
+      super do |r|
+        if r.persisted?
+          invite.invited_user = r
+          invite.save
+        end
+      end
+    end
+  end
+
   protected
 
   def update_sanitized_params
     devise_parameter_sanitizer.for(:sign_up) do |u|
-      u.permit(:uname, :name, :email, :password, :password_confirmation)
+      u.permit(:invite_key, :uname, :name, :email, :password, :password_confirmation)
     end
   end
 
@@ -15,7 +46,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def check_captcha
     unless verify_recaptcha
       self.resource = resource_class.new sign_up_params
-      resource.validate # Look for any other validation errors besides Recaptcha
+      resource.validate
       set_minimum_password_length
       render :new
     end

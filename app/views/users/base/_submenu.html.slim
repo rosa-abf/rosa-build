@@ -29,6 +29,10 @@
               a href=builds_settings_settings_path
                 i.fa.fa-cogs>
                 = t('layout.users.builds_settings')
+            li class=('active' if act == :invites)
+              a href=invites_settings_path
+                i.fa.fa-user-plus>
+                = t('layout.users.invites')
             li class=('active' if act == :notifiers)
               a href=notifiers_settings_path
                 i.fa.fa-inbox>

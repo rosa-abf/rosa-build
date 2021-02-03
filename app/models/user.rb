@@ -43,6 +43,9 @@ class User < Avatar
   has_many :key_pairs
   has_many :ssh_keys, dependent: :destroy
 
+  has_many :invites, dependent: :destroy
+  has_one :invitation, class_name: 'Invite', foreign_key: :invited_user_id, dependent: :destroy
+
   validates :uname, presence: true,
             uniqueness: { case_sensitive: false },
             format: { with: /\A#{NAME_REGEXP.source}\z/ },
@@ -55,7 +58,7 @@ class User < Avatar
   validates :language, inclusion: { in: LANGUAGES }, allow_blank: true
 
   attr_readonly :uname
-  attr_accessor :login, :delete_avatar
+  attr_accessor :login, :delete_avatar, :invite_key
 
   scope :opened, -> { where('users.role != \'system\' OR users.role IS NULL') }
   scope :real,   -> { where(role: ['', nil]) }

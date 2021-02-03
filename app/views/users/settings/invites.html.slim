@@ -1,0 +1,34 @@
+- set_meta_tags title: t('.title')
+
+= render 'users/base/submenu'
+
+.container.col-md-offset-2.col-md-8
+  .row
+    a.btn.btn-primary href=create_invite_settings_path
+      = t('layout.users.new')
+    table.table.table-hover.offset10
+      thead
+        tr
+          th= t 'activerecord.attributes.invite.id'
+          th= t 'layout.invites.link'
+          th= t 'layout.invites.invited_user'
+          th= t 'layout.invites.ttl'
+      tbody
+        - @invites.each do |invite|
+          tr
+            td= invite.id
+            td
+              - if invite.unused?
+                = link_to t('layout.invites.copy_this'), new_user_registration_path(invite_key: invite.invite_key)
+              - else
+                | -
+            td
+              - if invite.invited_user.nil?
+                = t 'layout.invites.no_user'
+              - else
+                = link_to invite.invited_user.fullname, user_path(invite.invited_user)
+            td
+              - if invite.unused?
+                = distance_of_time_in_words(invite.remaining_ttl)
+              - else
+                | -

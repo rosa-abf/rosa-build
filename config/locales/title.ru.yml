@@ -6,6 +6,8 @@ ru:
     settings:
       profile:
         title: 'Ваш профиль'
+      invites:
+        title: 'Приглашения'
   projects:
     build_lists:
       index:

@@ -1,6 +1,8 @@
 class Users::SettingsController < Users::BaseController
   include AvatarHelper
 
+  skip_before_action :find_user
+
   before_action :set_current_user
   before_action -> { authorize @user, :update? }
 
@@ -35,6 +37,25 @@ class Users::SettingsController < Users::BaseController
       end
       flash[:error] = t('flash.user.save_error')
       flash[:warning] = @user.errors.full_messages.join('. ')
+    end
+  end
+
+  def invites
+    authorize :invite
+    @invites = Invite.owned(@user).order('id desc')
+  end
+
+  def create_invite
+    authorize :invite
+    invite = Invite.create(
+      user_id: @user.id
+    )
+    if invite.valid?
+      flash[:success] = I18n.t("flash.invite.created")
+      redirect_to invites_settings_path
+    else
+      flash[:error] = invite.errors.full_messages.join('. ')
+      redirect_to invites_settings_path
     end
   end
 

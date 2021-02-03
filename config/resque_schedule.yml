@@ -59,7 +59,7 @@ autostart_builds_weekly:
 
 build_canceling_destroy:
   every:
-    - '1h'
+    - '20m'
   class: 'BuildLists::BuildCancelingDestroyJob'
   queue: low
   description: 'Remove build canceling build lists'
@@ -70,3 +70,10 @@ clear_stale_builders:
   class: 'ClearStaleBuildersJob'
   queue: low
   description: 'Clear jobs with builders who did not send build started'
+
+clear_unused_invites:
+  every:
+    - '5m'
+  class: 'ClearUnusedInvitesJob'
+  queue: low
+  description: 'Clear unused invites that have surpassed their ttl'

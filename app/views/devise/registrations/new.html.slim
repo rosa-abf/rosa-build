@@ -4,14 +4,18 @@
     h4= t('layout.devise.shared_links.sign_up')
   .panel-body
 
-    = simple_form_for resource, url: registration_path(resource_name) do |f|
-      = f.input :uname
-      = f.input :name
-      = f.input :email
-      = f.input :password
-      = f.input :password_confirmation
-      = recaptcha_tags
+    - if resource.invite_key.empty?
+      = t 'devise.registrations.new.invites_only'
+    - else
+      = simple_form_for resource, url: registration_path(resource_name) do |f|
+        = f.input :invite_key, as: :hidden, value: params[:invite_key]
+        = f.input :uname
+        = f.input :name
+        = f.input :email
+        = f.input :password
+        = f.input :password_confirmation
+        = recaptcha_tags
 
-      hr
-      .pull-right
-        = f.button :submit, t('layout.devise.shared_links.sign_up')
+        hr
+        .pull-right
+          = f.button :submit, t('layout.devise.shared_links.sign_up')

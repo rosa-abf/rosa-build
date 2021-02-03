@@ -1,0 +1,19 @@
+en:
+  activerecord:
+    models:
+      invite: Invite
+    attributes:
+      invite:
+        id: ID
+
+  layout:
+    invites:
+      link: Registration link
+      invited_user: Invited user
+      ttl: Time left to use this invite
+      copy_this: Copy this link
+  
+  flash:
+    invite:
+      created: A new invite has been created. Please provide the registration link to the user whom you wish to invite.
+      max_limit_exceeded: You can have no more than %{number} of unused invites
