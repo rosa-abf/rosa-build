@@ -1,0 +1,8 @@
+.panel.panel-default
+  .panel-heading
+    h4= title t("devise.confirmations.new.title")
+  .panel-body
+    = simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name)) do |f|
+      = f.input :email
+
+      = f.button :submit, t("devise.confirmations.new.submit_html")
