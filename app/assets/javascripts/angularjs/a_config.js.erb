@@ -24,14 +24,8 @@ RosaABF.config(['$compileProvider', function ($compileProvider) {
 
 var SoundNotificationsHelper = function() {
   var isOn = true;
-  var statusChangedSound = null;
-  soundManager.setup({
-    // url: '/assets/swf/',
-    preferFlash: false,
-    onready: function() {
-      statusChangedSound = soundManager.createSound({url: "<%=asset_path('garbage_shattering.wav')%>"});
-    }
-  });
+  var statusChangedSound = document.createElement('AUDIO');
+  statusChangedSound.src = "<%=asset_path('garbage_shattering.wav')%>";
   return {
     buildStatusChanged: function() {
       if (isOn && statusChangedSound)

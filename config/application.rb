@@ -1,7 +1,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require './lib/api_defender'
+# require './lib/api_defender'
 
 # Prevent deprecation warning
 I18n.config.enforce_available_locales = true

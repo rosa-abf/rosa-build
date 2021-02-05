@@ -1,10 +1,5 @@
 - title = [title_object(@advisory), t('activerecord.models.advisory')]
-- set_meta_tags title: title
-- title = title.reverse * ' - '
-- set_meta_tags og:      { title:       title,
-                           description: truncate(@advisory.description, length: 255) }
-- set_meta_tags twitter: { title:       title,
-                           description: truncate(@advisory.description, length: 200) }
+- set_page_title title
 
 - render partial: 'submenu'
 

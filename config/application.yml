@@ -29,15 +29,6 @@ production: &production
     markdown:  "Markdown"
     textile:   "Textile"
     org:       "Org-mode"
-  feedback:
-    email:
-      - 'abf-support@rosalab.ru'
-    cc:
-      - 'shadowpilot34@gmail.com'
-      - 'alexander@meson.ru'
-    subject_prefixes:
-      - 'abf-users'
-      - 'feeback_form'
   shell_user: 'git'
   downloads_url: "<%=ENV['DOWNLOADS_URL'] %>"
 

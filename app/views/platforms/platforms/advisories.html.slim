@@ -1,7 +1,4 @@
-- set_meta_tags title: [title_object(@platform), t('layout.advisories.list_header')]
-- title = t('layout.advisories.list_header') + ' - ' + title_object(@platform)
-- set_meta_tags og:      { title: title, description: t('layout.advisories.search') }
-- set_meta_tags twitter: { title: title, description: t('layout.advisories.search') }
+- set_page_title [title_object(@platform), t('layout.advisories.list_header')]
 == render 'submenu'
 
 .col-xs-12.col-md-10.col-md-offset-1

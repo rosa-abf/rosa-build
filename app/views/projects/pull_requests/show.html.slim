@@ -1,4 +1,4 @@
--set_meta_tags title: [title_object(@project), t('.title', name: @pull.title.truncate(40), user: @pull.user.try(:uname))]
+-set_page_title [title_object(@project), t('.title', name: @pull.title.truncate(40), user: @pull.user.try(:uname))]
 == render 'submenu'
 == render "projects/comments/markdown_help" if current_user
 

@@ -1,4 +1,4 @@
-- set_meta_tags title: [title_object(@project), t("projects.#{params[:kind]}.index.title")]
+- set_page_title [title_object(@project), t("projects.#{params[:kind]}.index.title")]
 - render 'submenu'
 
 .col-xs-12.col-md-10.col-md-offset-1 ng-controller = 'IssuesController as issuesCtrl' ng-cloak = true

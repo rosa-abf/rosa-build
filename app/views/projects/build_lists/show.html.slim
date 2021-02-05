@@ -1,9 +1,5 @@
 - title = title_object(@build_list.project)
-- set_meta_tags title: [title, t('activerecord.models.build_list')]
-- description = @build_list.packages.map(&:fullname) * ', '
-- title = t('activerecord.models.build_list') + ' - ' + title
-- set_meta_tags og:      { title: title, description: truncate(description, length: 255) }
-- set_meta_tags twitter: { title: title, description: truncate(description, length: 200) }
+- set_page_title [title, t('activerecord.models.build_list')]
 
 
 = render 'submenu'

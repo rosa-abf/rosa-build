@@ -45,6 +45,12 @@ autostart_builds_daily:
   queue: low
   description: 'Starts automatic builds every 24 hours'
 
+autostart_regens_daily:
+  cron: '0 4 * * *'
+  class: 'AutostartRegensDailyJob'
+  queue: low
+  description: 'Starts automatic metadata regenerations every 24 hours'
+
 autostart_builds_once_every_twelve_hours:
   cron: '0 4,16 * * *'
   class: 'AutostartBuildsOnceEveryTwelveHoursJob'
@@ -57,9 +63,21 @@ autostart_builds_weekly:
   queue: low
   description: 'Starts automatic builds every week'
 
+autostart_regens_weekly:
+  cron: '0 4 * * 0'
+  class: 'AutostartRegensWeeklyJob'
+  queue: low
+  description: 'Starts automatic builds every week'
+
+clean_temp_pull_requests:
+  cront: '30 3 * * *'
+  class: 'CleanTempPullRequestsJob'
+  queue: low
+  description: Clean temporary pull request files more that a day old
+
 build_canceling_destroy:
   every:
-    - '20m'
+    - '10m'
   class: 'BuildLists::BuildCancelingDestroyJob'
   queue: low
   description: 'Remove build canceling build lists'

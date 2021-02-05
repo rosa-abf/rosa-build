@@ -1,9 +1,6 @@
 - title = title_object(@repository)
-- set_meta_tags title: title
-- set_meta_tags og:      { title:       title,
-                           description: truncate(@repository.description, length: 255) }
-- set_meta_tags twitter: { title:       title,
-                           description: truncate(@repository.description, length: 200) }
+- set_page_title title
+
 = render 'submenu'
 
 .container.col-md-offset-2.col-md-8

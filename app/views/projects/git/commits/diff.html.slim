@@ -1,15 +1,10 @@
 - title = "#{t('diff')} #{shortest_hash_id @commit1.id}...#{shortest_hash_id @commit.id}"
 - title = [title_object(@project), title]
-- set_meta_tags title: title
-- title = title * ' - '
-- set_meta_tags og:      { title:       title,
-                           description: truncate(@project.description, length: 255) }
-- set_meta_tags twitter: { title:       title,
-                           description: truncate(@project.description, length: 200) }
+- set_page_title title
 == render 'submenu'
 
 .col-xs-12.col-md-10.col-md-offset-1
-  h3= title
+  h3= title * ' - '
 
   #repo-wrapper
     -begin

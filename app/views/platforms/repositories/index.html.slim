@@ -1,10 +1,5 @@
 - title = title_object(@platform)
-- set_meta_tags title: [title, t('layout.repositories.list_header')]
-- title = t('layout.repositories.list_header') + ' - ' + title
-- set_meta_tags og:      { title: title,
-                           description: truncate(@platform.description, length: 255) }
-- set_meta_tags twitter: { title: title,
-                           description: truncate(@platform.description, length: 200) }
+- set_page_title [title, t('layout.repositories.list_header')]
 
 = render 'submenu' if params[:platform_id]
 

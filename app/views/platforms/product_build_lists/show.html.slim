@@ -1,8 +1,5 @@
 - title = title_object(@product_build_list.product)
-- set_meta_tags title: [title, t('layout.product_build_lists.show')]
-- description = @product_build_list.results.map{ |r| r['file_name'] }.select{ |n| n =~ /.iso$/ } * ', '
-- set_meta_tags og:      { title: title, description: description }
-- set_meta_tags twitter: { title: title, description: description }
+- set_page_title [title, t('layout.product_build_lists.show')]
 
 = render 'submenu'
 

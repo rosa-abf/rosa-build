@@ -1,19 +1,5 @@
 # robots.txt for <%= root_url %>
 
 User-agent: *
-Disallow: /*/*/tree/*
-Disallow: /*/*/blob/*
-Disallow: /*/*/wiki/*/*
-Disallow: /*/*/issues?*
-Disallow: /*/*/commits/*
-Disallow: /*/blame/
-Disallow: /*/raw/
-Disallow: /*.git
-Disallow: /*.git/
-Disallow: /search
-Disallow: /users/sign_up
-Disallow: /users/sign_in
-Disallow: /users/password/new
-Allow: /
+Disallow: /
 Host: <%= root_url.gsub(/\/$/, '') %>
-Sitemap: <%= sitemap_url %>

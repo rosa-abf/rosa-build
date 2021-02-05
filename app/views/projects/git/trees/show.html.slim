@@ -1,8 +1,4 @@
 - title = title_object(@project)
-- set_meta_tags title: "#{title} #{t('at') if @branch} #{@branch.try :name}"
-- set_meta_tags og:      { title:       title,
-                           description: truncate(@project.description, length: 255) }
-- set_meta_tags twitter: { title:       title,
-                           description: truncate(@project.description, length: 200) }
+- set_page_title "#{title} #{t('at') if @branch} #{@branch.try :name}"
 
 == render partial: "show", layout: 'layout'

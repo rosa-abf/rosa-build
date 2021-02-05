@@ -4,7 +4,8 @@ html
     meta name="viewport" content="width=device-width, initial-scale=1.0"
     meta content="text/html; charset=utf-8" http-equiv="Content-Type"
     == csrf_meta_tag
-    = display_meta_tags site: APP_CONFIG['project_name'], reverse: true, separator: '-'
+    title
+      = get_page_title site: APP_CONFIG['project_name']
     == stylesheet_link_tag 'new_application', cache: 'application'
 
   body
@@ -26,4 +27,3 @@ html
       == javascript_include_tag 'moment/ru.js', cache: 'moment'
       == javascript_include_tag 'angular-locale_ru-ru', cache: 'angular-locale'
     == yield :additional_scripts if content_for?(:additional_scripts)
-    == render 'layouts/counters' if Rails.env.production?

@@ -5,25 +5,24 @@
 
 //= require bootstrap-sprockets
 
-//= require angular
-//= require angular-sanitize
-//= require angular-ui-bootstrap-tpls
+//= require bundle/angular.min
+//= require bundle/angular-sanitize.min
+//= require bundle/angular-ui-bootstrap-tpls.min
 //= require ui-codemirror
-//= require angular-i18n
+//= require lib/angular-i18n
 
-//= require angular-resource
-//= require ng-rails-csrf
-//= require angular-cookies
-//= require soundmanager2-nodebug-jsmin
+//= require bundle/angular-resource.min
+//= require lib/ng-rails-csrf
+//= require bundle/angular-cookies.min
 
 //= require angular-rails-templates
 
-//= require moment
+//= require bundle/moment.min
 
 //= require_tree ./angularjs
 //= require loading-bar
 
-//= require underscore
+//= require bundle/underscore.min
 
 //= require notifyjs
 //= require notifyjs/styles/bootstrap/notify-bootstrap

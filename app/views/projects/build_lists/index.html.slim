@@ -1,4 +1,4 @@
--set_meta_tags title: t('.title')
+-set_page_title t('.title')
 
 .row.offset10 ng-controller = 'BuildListsController' ng-init = 'init()' ng-cloak = true
   = hidden_field_tag :name_with_owner, @project.try(:name_with_owner)
