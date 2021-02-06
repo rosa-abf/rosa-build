@@ -1,5 +1,6 @@
 - set_page_title t('.header')
 
+= javascript_include_tag "Chart.js", cache: "chartjs"
 .container#manage-statistics ng-controller='StatisticsController' ng-init='init()'
 
   = render 'filter'

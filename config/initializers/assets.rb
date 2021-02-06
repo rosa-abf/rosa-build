@@ -8,5 +8,5 @@ Rails.application.config.assets.version = '1.0'
 Rails.application.config.assets.precompile += %w(
   login.css login.js reg_session.css gollum/editor/langs/*.js
   moment/ru.js codemirror_editor.js codemirror_editor.css new_application.css
-  new_application.js angular-locale_ru-ru.js
+  new_application.js angular-locale_ru-ru.js Chart.js tpls.js
 )

@@ -65,7 +65,5 @@ module Rosa
     config.active_record.raise_in_transactional_callbacks = true
 
     config.log_redis = false
-
-    config.angular_templates.ignore_prefix = 'angularjs/templates/'
   end
 end

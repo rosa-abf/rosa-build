@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rails'
 
-gem 'activeadmin', github: 'activeadmin'
+gem 'activeadmin'
 gem 'pg'
 gem 'schema_plus'
 gem 'devise'
@@ -53,8 +53,6 @@ gem 'attr_encrypted'
 gem 'gemoji'
 
 gem 'js-routes'
-gem 'angular-rails-templates'
-gem 'ngmin-rails'
 
 gem 'time_diff'
 
@@ -84,15 +82,7 @@ group :production do
 end
 
 group :development do
-  gem 'mailcatcher' # 'letter_opener'
-  gem 'rails3-generators'
-  gem 'hirb'
-  gem 'shotgun'
-  # Better Errors & RailsPanel
-  gem 'better_errors'
-  gem 'binding_of_caller'
-  gem 'meta_request'
-  gem 'localeapp'
+  gem 'mailcatcher'
   gem 'rack-mini-profiler', require: false
 end
 

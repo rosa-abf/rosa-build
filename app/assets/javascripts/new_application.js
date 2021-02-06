@@ -1,6 +1,5 @@
 //= require jquery
 //= require jquery_ujs
-//= require jquery-ui
 //= require js-routes
 
 //= require bootstrap-sprockets
@@ -15,7 +14,7 @@
 //= require lib/ng-rails-csrf
 //= require bundle/angular-cookies.min
 
-//= require angular-rails-templates
+//= require templates
 
 //= require bundle/moment.min
 
@@ -27,7 +26,6 @@
 //= require notifyjs
 //= require notifyjs/styles/bootstrap/notify-bootstrap
 
-//= require lib/Chart
 //= require lib/bootstrap-typeahead
 //= require lib/custom-bootstrap-typeahead
 
@@ -76,10 +74,6 @@ $(document).ready(function() {
     var form = $('form#branch_changer');
     form.attr('action', $(this).val());
     form.submit();
-  });
-
-  $('#create_fork').click(function () {
-    $(this).button('loading');
   });
 
   $('[data-toggle="tooltip"]').tooltip();
