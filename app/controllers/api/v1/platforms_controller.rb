@@ -90,7 +90,11 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   # Private: before_action hook which loads Platform.
   def load_platform
-    authorize @platform = Platform.find(params[:id])
+    @platform = Platform.find(params[:id])
+    if @platform.hidden?
+      authenticate_user!
+    end
+    authorize @platform
   end
 
 end
