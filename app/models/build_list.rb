@@ -507,9 +507,9 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_attach_to_advisory?
-    !save_to_repository.publish_without_qa &&
+    #!save_to_repository.publish_without_qa &&
       save_to_platform.main? &&
-      save_to_platform.released &&
+      #save_to_platform.released &&
       build_published?
   end
 
