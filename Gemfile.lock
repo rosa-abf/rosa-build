@@ -49,6 +49,11 @@ PATH
   specs:
     rails-assets-notifyjs (0.3.2)
 
+PATH
+  remote: vendor/gems/mimemagic-0.3.0
+  specs:
+    mimemagic (0.3.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -689,6 +694,7 @@ DEPENDENCIES
   rack-utf8_sanitizer
   rails
   rails-assets-notifyjs (= 0.3.2)!
+  mimemagic (= 0.3.0)!
   rails3-generators
   rails3-jquery-autocomplete
   rake
