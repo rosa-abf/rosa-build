@@ -489,11 +489,19 @@ class BuildList < ActiveRecord::Base
   end
 
   def human_current_duration
-    I18n.t("layout.build_lists.human_current_duration", {hours: (current_duration/3600).to_i, minutes: (current_duration%3600/60).to_i})
+    I18n.t("layout.build_lists.human_current_duration", {
+      hours: (current_duration/3600).to_i,
+      minutes: (current_duration%3600/60).to_i,
+      seconds: (current_duration%60).to_i
+    })
   end
 
   def human_duration
-    I18n.t("layout.build_lists.human_duration", {hours: (duration.to_i/3600).to_i, minutes: (duration.to_i%3600/60).to_i})
+    I18n.t("layout.build_lists.human_duration", {
+      hours: (duration.to_i/3600).to_i,
+      minutes: (duration.to_i%3600/60).to_i,
+      seconds: (duration.to_i%60).to_i
+    })
   end
 
   def in_work?
