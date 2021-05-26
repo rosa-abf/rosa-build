@@ -5,15 +5,16 @@
 //= require bootstrap-sprockets
 
 //= require bundle/angular.min
+//= require lib/angular-i18n
+//= require angular-locale_ru-ru
+//= require angular-locale_en-us
 //= require bundle/angular-sanitize.min
 //= require bundle/angular-ui-bootstrap-tpls.min
 //= require ui-codemirror
-//= require lib/angular-i18n
 
 //= require bundle/angular-resource.min
 //= require lib/ng-rails-csrf
 //= require bundle/angular-cookies.min
-
 //= require templates
 
 //= require bundle/moment.min
