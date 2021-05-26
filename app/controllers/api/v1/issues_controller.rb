@@ -2,7 +2,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   include Api::V1::Issueable
 
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: %i(index group_index show) if APP_CONFIG['anonymous_access']
+  # skip_before_action :authenticate_user!, only: %i(index group_index show) if APP_CONFIG['anonymous_access']
 
   before_action :load_group,        only: :group_index
   before_action :load_project

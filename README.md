@@ -9,7 +9,7 @@ A distributed environment to build distributions, supporting all steps from mana
 [![Join the chat at https://gitter.im/rosa-abf/rosa-build](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/rosa-abf/rosa-build?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
  [![Build Status](https://travis-ci.org/rosa-abf/rosa-build.png?branch=master)](https://travis-ci.org/rosa-abf/rosa-build) [![Dependency Status](https://gemnasium.com/rosa-abf/rosa-build.png)](https://gemnasium.com/rosa-abf/rosa-build) <a href="https://codeclimate.com/github/rosa-abf/rosa-build"><img src="https://codeclimate.com/github/rosa-abf/rosa-build.png" /></a>
 
-* [API](http://abf-doc.rosalinux.ru/abf/api/)
+* [API](https://rosa-abf.github.io/)
 * [Integration with FileStore (.abf.yml)](http://abf-doc.rosalinux.ru/abf/file_store_integration/)
 * [ISO build environment](http://abf-doc.rosalinux.ru/abf/iso_build/)
 * [Package build environment](http://abf-doc.rosalinux.ru/abf/scripts/)

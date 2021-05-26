@@ -4,7 +4,7 @@ class Advisory < ActiveRecord::Base
 
   has_and_belongs_to_many :platforms
   has_and_belongs_to_many :projects
-  has_many :build_lists
+  has_many :build_lists, dependent: :nullify
 
   validates :description, :update_type, presence: true
   validates :update_type, inclusion: BuildList::RELEASE_UPDATE_TYPES

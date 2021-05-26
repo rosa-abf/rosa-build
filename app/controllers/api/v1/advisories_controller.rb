@@ -1,8 +1,8 @@
 class Api::V1::AdvisoriesController < Api::V1::BaseController
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: %i(index show) if APP_CONFIG['anonymous_access']
-  before_action :load_advisory,           only: %i(show update)
-  before_action :load_build_list,         only: %i(create update)
+  # skip_before_action :authenticate_user!, only: %i(index show) if APP_CONFIG['anonymous_access']
+  before_action :load_advisory,           only: %i(show update attach_build_list destroy)
+  before_action :load_build_list,         only: %i(create attach_build_list)
 
   def index
     authorize :advisory
@@ -25,12 +25,23 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   end
 
   def update
+    update_subject @advisory
+  end
+
+  def attach_build_list
     if @advisory && @build_list.can_attach_to_advisory? &&
         @advisory.attach_build_list(@build_list) && @build_list.save
       render_json_response @advisory, "Build list '#{@build_list.id}' has been attached to advisory successfully"
     else
       render_validation_error @advisory, error_message(@build_list, 'Build list has not been attached to advisory')
     end
+  end
+
+  def destroy
+    @advisory.build_lists.each do |bl|
+      authorize bl.save_to_platform, :local_admin_manage?
+    end
+    destroy_subject @advisory
   end
 
   protected

@@ -22,7 +22,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1, constraints: { format: 'json' }, defaults: { format: 'json' } do
-      resources :advisories, only: [:index, :show, :create, :update]
+      resources :advisories, only: [:index, :show, :create, :update, :destroy] do
+        member {
+          post :attach_build_list
+        }
+      end
       resources :search, only: [:index]
       resources :build_lists, only: [:index, :create, :show] do
         member {

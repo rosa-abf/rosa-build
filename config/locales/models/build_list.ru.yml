@@ -116,8 +116,8 @@ ru:
       tests_failed: Некоторые тесты провалились. Будьте осторожны!
       wrong_branch_for_publish_html: Публикация разрешена только для сборок из <b>%{branch}</b> ветки
 
-      human_current_duration: Сборка длится уже %{hours} ч. %{minutes} мин.
-      human_duration: Собрано за %{hours} ч. %{minutes} мин.
+      human_current_duration: Сборка длится уже %{hours} ч. %{minutes} мин, %{seconds} сек.
+      human_duration: Собрано за %{hours} ч. %{minutes} мин, %{seconds} сек.
 
       attached_advisory: Связанный бюллетень
       create_advisory: Создать новый бюллетень

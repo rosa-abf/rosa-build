@@ -1,7 +1,7 @@
 class Api::V1::GroupsController < Api::V1::BaseController
 
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
+  # skip_before_action :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
   before_action :load_group, except: %i(index create)
 
   def index

@@ -1,6 +1,6 @@
 class Api::V1::ProductBuildListsController < Api::V1::BaseController
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
+  # skip_before_action :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
 
   before_action :load_product,            only: :index
   before_action :load_product_build_list, except: [:index, :create]

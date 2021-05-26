@@ -1,7 +1,7 @@
 class Api::V1::PlatformsController < Api::V1::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: :allowed
-  skip_before_action :authenticate_user!, only: [:show, :platforms_for_build, :members, :projects] if APP_CONFIG['anonymous_access']
+  # skip_before_action :authenticate_user!, only: [:show, :platforms_for_build, :members, :projects] if APP_CONFIG['anonymous_access']
   before_action :load_platform, except: [:index, :allowed, :platforms_for_build, :create]
 
   def allowed
@@ -90,7 +90,11 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   # Private: before_action hook which loads Platform.
   def load_platform
-    authorize @platform = Platform.find(params[:id])
+    @platform = Platform.find(params[:id])
+    if @platform.hidden?
+      authenticate_user!
+    end
+    authorize @platform
   end
 
 end

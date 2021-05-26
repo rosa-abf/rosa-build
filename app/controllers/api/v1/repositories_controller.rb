@@ -2,7 +2,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   respond_to :csv, only: :packages
 
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
+  # skip_before_action :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
   before_action :load_repository
 
   def show
