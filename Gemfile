@@ -77,7 +77,9 @@ gem 'recaptcha'
 
 gem 'pygments.rb'
 
-gem 'mimemagic', '0.3.0', path: 'vendor/gems/mimemagic-0.3.0'
+gem 'mimemagic'
+
+# gem 'mimemagic', '0.3.0', path: 'vendor/gems/mimemagic-0.3.0'
 
 group :production do
   gem 'puma'
