@@ -9,7 +9,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
                                             rerun_tests
                                             show
                                           )
-  skip_before_action :authenticate_user!, only: %i(show index) if APP_CONFIG['anonymous_access']
+  # skip_before_action :authenticate_user!, only: %i(show index) if APP_CONFIG['anonymous_access']
 
   def show
     authorize @build_list

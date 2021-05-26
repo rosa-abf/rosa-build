@@ -2,7 +2,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   include Api::V1::Issueable
 
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: %i(show index group_index commits files) if APP_CONFIG['anonymous_access']
+  # skip_before_action :authenticate_user!, only: %i(show index group_index commits files) if APP_CONFIG['anonymous_access']
 
   before_action :load_group,   only:   %i(group_index)
   before_action :load_project, except: %i(all_index user_index)

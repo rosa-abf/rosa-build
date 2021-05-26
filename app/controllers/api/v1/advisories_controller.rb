@@ -1,6 +1,6 @@
 class Api::V1::AdvisoriesController < Api::V1::BaseController
   before_action :authenticate_user!
-  skip_before_action :authenticate_user!, only: %i(index show) if APP_CONFIG['anonymous_access']
+  # skip_before_action :authenticate_user!, only: %i(index show) if APP_CONFIG['anonymous_access']
   before_action :load_advisory,           only: %i(show update attach_build_list destroy)
   before_action :load_build_list,         only: %i(create attach_build_list)
 
