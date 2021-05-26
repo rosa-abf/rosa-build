@@ -588,7 +588,6 @@ DEPENDENCIES
   jquery-rails
   js-routes
   mailcatcher
-  mimemagic
   mock_redis
   ohm (~> 1.3.2)
   ohm-expire (~> 0.1.3)

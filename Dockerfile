@@ -1,7 +1,7 @@
 FROM ruby:2.4.9-alpine3.11 as rosa-build-gems
 
 WORKDIR /rosa-build
-RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs python2 redis && \
+RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs python2 redis shared-mime-info && \
     apk add --virtual .ruby-builddeps --no-cache postgresql-dev build-base cmake icu-dev
 RUN gem install bundler:1.17.3
 COPY vendor ./vendor
