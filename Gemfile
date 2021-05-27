@@ -19,6 +19,8 @@ gem 'russian'
 gem 'state_machines-activerecord'
 gem 'redis-rails'
 
+gem 'ngmin-rails'
+
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git'
 gem 'grit', git: 'git://github.com/rosa-abf/grit.git', branch: 'rosa'
 gem 'charlock_holmes'
