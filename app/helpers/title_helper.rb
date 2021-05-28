@@ -3,6 +3,8 @@ module TitleHelper
     @current_page_title = title
   end
 
+  alias_method :title, :set_page_title
+
   def get_page_title(opts = {})
     title = (@current_page_title && [@current_page_title]) || []
 
