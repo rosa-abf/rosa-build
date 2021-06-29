@@ -17,7 +17,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :user
   belongs_to :builder,    class_name: 'User'
   belongs_to :publisher,  class_name: 'User'
-  belongs_to :advisory
+  # belongs_to :advisory
   belongs_to :mass_build, counter_cache: true
   has_many :items, class_name: '::BuildList::Item', dependent: :destroy
   has_many :packages, class_name: '::BuildList::Package', dependent: :destroy
@@ -51,10 +51,10 @@ class BuildList < ActiveRecord::Base
 
   validates_numericality_of :priority, greater_than_or_equal_to: 0
   validates :auto_publish_status, inclusion: { in: AUTO_PUBLISH_STATUSES }
-  validates :update_type, inclusion: UPDATE_TYPES,
-            unless: Proc.new { |b| b.advisory.present? }
-  validates :update_type, inclusion: { in: RELEASE_UPDATE_TYPES, message: I18n.t('flash.build_list.frozen_platform') },
-            if: Proc.new { |b| b.advisory.present? }
+  validates :update_type, inclusion: UPDATE_TYPES
+            # unless: Proc.new { |b| b.advisory.present? }
+  # validates :update_type, inclusion: { in: RELEASE_UPDATE_TYPES, message: I18n.t('flash.build_list.frozen_platform') },
+  #           if: Proc.new { |b| b.advisory.present? }
   validate -> {
     if save_to_platform.try(:main?) && save_to_platform_id != build_for_platform_id
       errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform'))
@@ -509,17 +509,17 @@ class BuildList < ActiveRecord::Base
     #[WAITING_FOR_RESPONSE, BUILD_PENDING, BUILD_STARTED].include?(status)
   end
 
-  def associate_and_create_advisory(params)
-    build_advisory(params){ |a| a.update_type = update_type }
-    advisory.attach_build_list(self)
-  end
+  # def associate_and_create_advisory(params)
+  #   build_advisory(params){ |a| a.update_type = update_type }
+  #   advisory.attach_build_list(self)
+  # end
 
-  def can_attach_to_advisory?
-    #!save_to_repository.publish_without_qa &&
-      save_to_platform.main? &&
-      #save_to_platform.released &&
-      build_published?
-  end
+  # def can_attach_to_advisory?
+  #   #!save_to_repository.publish_without_qa &&
+  #     save_to_platform.main? &&
+  #     #save_to_platform.released &&
+  #     build_published?
+  # end
 
   def log(load_lines=nil)
     if new_core?

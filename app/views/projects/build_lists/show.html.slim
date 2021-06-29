@@ -188,18 +188,10 @@ row[ ng-controller='BuildListController'
               = link_to @build_list.mass_build.name,
                 platform_mass_build_path(@build_list.save_to_platform, @build_list.mass_build_id)
 
-        tr ng-show='build_list.advisory'
-          td= t('layout.build_lists.attached_advisory')
-          td
-            a ng-href='{{build_list.advisory.path}}'
-              | {{build_list.advisory.advisory_id}}
-
         tr ng-show='build_list.human_duration'
           td
           td
             | {{build_list.human_duration }}
-
-        = render 'advisory', build_list: @build_list, advisories: @advisories, f: f
 
         tr.alert.alert-danger ng-hide='build_list.extra_build_lists_published'
           td colspan=2

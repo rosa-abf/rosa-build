@@ -36,11 +36,6 @@ json.build_list do
       json.path user_path(@build_list.builder)
     end if @build_list.builder && (!@build_list.builder.system? || current_user.try(:admin?))
 
-    json.advisory do
-      json.(@build_list.advisory, :description, :advisory_id)
-      json.path advisory_path(@build_list.advisory)
-    end if @build_list.advisory
-
     json.results @build_list.results do |result|
       json.file_name result['file_name']
       json.sha1 result['sha1']

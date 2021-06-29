@@ -18,6 +18,7 @@ class AdvisoryPolicy < ApplicationPolicy
   # Returns Array
   def permitted_attributes
     %i(
+      update_type
       description
       references
     )

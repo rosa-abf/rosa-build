@@ -8,7 +8,7 @@ ru:
       project_names: Проекты
       build_lists: Сборочные листы
       affected_versions: Применен в версиях
-      affected_in: Применен в
+      affected_in: Проекты
       ref_comment: Вставляйте ссылки по одной на строку
       no_: Нет
       new: Новый

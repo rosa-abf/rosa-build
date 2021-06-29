@@ -5,7 +5,8 @@
       .navbar-header
         %ul.nav.navbar-nav
           - if @advisory.present?
-            %li= @advisory.advisory_id
+            %li{ class: 'active' }
+              = link_to @advisory.advisory_id, advisory_path(@advisory)
           - else
             %li{ class: ('active' if act.in? [:index]) }
               = link_to t('layout.list'), advisories_path, class: act.in?([:index]) ? 'active' : nil

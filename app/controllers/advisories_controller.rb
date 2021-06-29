@@ -4,7 +4,7 @@ class AdvisoriesController < ApplicationController
 
   def index
     authorize :advisory
-    @advisories = Advisory.includes(:platforms, :projects).search(params[:q]).uniq
+    @advisories = Advisory.search(params[:q]).uniq
     @advisories_count = @advisories.count
     @advisories = @advisories.paginate(page: current_page, per_page: Advisory.per_page)
     respond_to do |format|
@@ -16,7 +16,6 @@ class AdvisoriesController < ApplicationController
 
   def show
     authorize @advisory = Advisory.find_by(advisory_id: params[:id])
-    @packages_info = @advisory.fetch_packages_info
   end
 
   def search

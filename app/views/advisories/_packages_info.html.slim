@@ -2,22 +2,17 @@
   h3
     = t('layout.advisories.affected_in')
   ul
-    - @packages_info.each_pair do |platform, projects|
+    - platforms_projects = @advisory.fetch_platforms_projects
+    - platforms_projects.keys.each do |platform_id|
+      - platform = Platform.find_by_id(platform_id)
+      - next if !platform
       li
         p
           => t('activerecord.models.platform')
           = link_to platform.name, platform_path(platform)
         ul
-          - projects.each_pair do |project, packages|
+          - platforms_projects[platform_id].each do |project_id|
+            - project = Project.find_by_id(project_id)
+            - next if !project
             li
               p= raw "#{ t('activerecord.models.project') } #{ link_to project.name, project_path(project) }"
-              ul
-                li
-                  p SRPM:
-                  ul
-                    li= packages[:srpm]
-                li
-                  p RPM:
-                  ul
-                    - packages[:rpm].each do |package|
-                      li= package

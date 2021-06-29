@@ -5,11 +5,6 @@ json.advisory do
   json.(@advisory, :update_type)
   json.references @advisory.references.split('\n')
 
-  json.build_lists @advisory.build_lists do |build_list|
-    json.(build_list, :id)
-    json.url api_v1_build_list_path(build_list.id, format: :json)
-  end
-
   json.affected_in @packages_info do |package_info|
     json.partial! 'api/v1/platforms/platform', platform: package_info[0]
 
