@@ -40,7 +40,7 @@ class Project < ActiveRecord::Base
   has_many :groups,        through: :relations, source: :actor, source_type: 'Group'
 
   has_many :packages, class_name: 'BuildList::Package', dependent: :destroy
-  has_and_belongs_to_many :advisories # should be without dependent: :destroy
+  has_many :advisory_items, dependent: :destroy
 
   validates :name, uniqueness: { scope: [:owner_id, :owner_type], case_sensitive: false },
                    presence: true,

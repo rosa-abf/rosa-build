@@ -3,7 +3,7 @@
 
 - render partial: 'submenu'
 
-.container.col-md-offset-2.col-md-8
+.container.col-md-offset-1.col-md-10
   .row
     h3
       => t('activerecord.models.advisory')
@@ -34,17 +34,19 @@
             = link_to platform_printed_name(platform), platform_path(platform)
 
   .row
-    .col-md-6
+    .col-md-12
       b
         = t('activerecord.attributes.advisory.description')
-    .col-md-6
+  .row
+    .col-md-12
       = simple_format @advisory.description
 
   .row
-    .col-md-6
+    .col-md-12
       b
         = t('activerecord.attributes.advisory.references')
-    .col-md-6
+  .row
+    .col-md-12
       ul.list-unstyled
         - @advisory.references.gsub(/\r| /, '').split("\n").each do |ref|
           li

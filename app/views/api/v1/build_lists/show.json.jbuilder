@@ -62,15 +62,6 @@ json.build_list do
 
   json.extra_params @build_list.extra_params
 
-  if @build_list.advisory
-    json.advisory do
-      json.name @build_list.advisory.advisory_id
-      json.(@build_list.advisory, :description)
-    end 
-  else
-    json.advisory nil
-  end
-
   if @build_list.mass_build
     json.mass_build do
       json.(@build_list.mass_build, :id, :name)
