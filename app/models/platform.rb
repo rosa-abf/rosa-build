@@ -253,6 +253,7 @@ class Platform < ActiveRecord::Base
 
     return true unless platform_name
     platform_name = platform_name[0].gsub(/\//, '')
+    return true if platform_name == 'rosa2019.1'
 
     Rails.cache.fetch([platform_name, token, :platform_allowed], expires_in: 2.minutes) do
       platform = Platform.find_by name: platform_name
