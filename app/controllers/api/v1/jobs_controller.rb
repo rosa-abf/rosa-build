@@ -10,7 +10,13 @@ class Api::V1::JobsController < Api::V1::BaseController
   def shift
     job_shift_sem = Redis::Semaphore.new(:job_shift_lock)
     job_shift_sem.lock do
-      build_lists = BuildList.scoped_to_arch(arch_ids).
+      shifted_build_lists = Redis.current.smembers('abf_worker:shifted_build_lists').map(&:to_i)
+      build_lists = if shifted_build_lists.empty?
+        BuildList
+      else
+        BuildList.where.not(id: shifted_build_lists)
+      end
+      build_lists = build_lists.scoped_to_arch(arch_ids).
       for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
       for_platform(platform_ids).where(builder: nil)
 
@@ -124,6 +130,7 @@ class Api::V1::JobsController < Api::V1::BaseController
     if !@build_list.valid?
       Raven.capture_message('Invalid build list', extra: { id: @build_list.id, errors: @build_list.errors.full_messages })
     end
+    Redis.current.sadd('abf_worker:shifted_build_lists', @build_list.id)
     @build_list.save(validate: false)
   end
 

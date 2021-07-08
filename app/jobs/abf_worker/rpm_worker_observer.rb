@@ -28,6 +28,7 @@ module AbfWorker
         item.update_attributes({status: BuildList::BUILD_ERROR})
         subject.build_error(false)
         subject.save(validate: false)
+        Redis.current.srem('abf_worker:shifted_build_lists', subject.id)
         return
       end
 
@@ -93,6 +94,7 @@ module AbfWorker
         Redis.current.lpush RESTARTED_BUILD_LISTS, subject.id
         subject.update_column(:status, BuildList::BUILD_PENDING)
         subject.update_column(:builder_id, nil)
+        Redis.current.srem('abf_worker:shifted_build_lists', subject.id)
         return true
       end
     end
