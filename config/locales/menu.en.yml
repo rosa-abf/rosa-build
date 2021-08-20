@@ -11,7 +11,7 @@ en:
     advisories: Advisories
     statistics: Statistics
   bottom_menu:
-    copyright: ROSA Lab © %{year}
+    copyright: ROSA Lab &copy; %{year}
     about: About the company
     about_url: http://www.rosalab.com/about
     contacts: Contacts

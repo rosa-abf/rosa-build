@@ -11,7 +11,7 @@ ru:
     advisories: Бюллетени
     statistics: Статистика
   bottom_menu:
-    copyright: ROSA Лаб. © %{year}
+    copyright: ROSA Лаб. &copy; %{year}
     about: О компании
     about_url: http://www.rosalab.ru/about
     contacts: Контакты
