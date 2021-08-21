@@ -83,7 +83,6 @@ class ProjectPolicy < ApplicationPolicy
       default_branch
       description
       has_issues
-      has_wiki
       is_package
       maintainer_id
       mass_import

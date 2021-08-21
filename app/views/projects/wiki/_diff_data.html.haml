@@ -1,7 +1,0 @@
-.file
-  %a{name: "diff-#{diff_counter}"}
-  .top
-    .l= h((diff.deleted_file ? diff.a_path : diff.b_path).rtruncate 100)
-    .clear
-  .diff_data.highlight= render_diff(diff, diff_counter: diff_counter, in_wiki: true)
-

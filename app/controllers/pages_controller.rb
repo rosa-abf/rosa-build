@@ -8,7 +8,7 @@ class PagesController < ApplicationController
                       when 'sources'
                         %w(source history annotation edit)
                       when 'projects'
-                        %w(control git tracker)
+                        %w(control tracker)
                       end
     render "pages/tour/tour-inside"
   end

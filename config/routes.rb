@@ -303,29 +303,6 @@ Rails.application.routes.draw do
     end
     scope '*name_with_owner', name_with_owner: Project::OWNER_AND_NAME_REGEXP do # project
       scope as: 'project' do
-        resources :wiki do
-          collection do
-            match '_history' => 'wiki#wiki_history', as: :history, via: :get
-            match '_access' => 'wiki#git', as: :git, via: :get
-            match '_revert/:sha1/:sha2' => 'wiki#revert_wiki', as: :revert, via: [:get, :post]
-            match '_compare' => 'wiki#compare_wiki', as: :compare, via: :post
-            #match '_compare/:versions' => 'wiki#compare_wiki', versions: /.*/, as: :compare_versions, via: :get
-            match '_compare/:versions' => 'wiki#compare_wiki', versions: /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, as: :compare_versions, via: :get
-            post :preview
-            get :search
-            get :pages
-          end
-          member do
-            get :history
-            get :edit
-            match 'revert/:sha1/:sha2' => 'wiki#revert', as: :revert_page, via: [:get, :post]
-            match ':ref' => 'wiki#show', as: :versioned, via: :get
-
-            post :compare
-            #match 'compare/*versions' => 'wiki#compare', as: :compare_versions, via: :get
-            match 'compare/:versions' => 'wiki#compare', versions: /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, as: :compare_versions, via: :get
-          end
-        end
         resources :issues, except: [:destroy, :edit] do
           resources :comments, only: [:edit, :create, :update, :destroy]
           post '/subscribe'     => "subscribes#create", as: :subscribe

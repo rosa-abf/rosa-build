@@ -77,10 +77,9 @@ shared_examples_for 'projects user without project admin rights' do
   end
 
   it 'should not be able to edit project sections' do
-    has_wiki, has_issues = @project.has_wiki, @project.has_issues
-    post :sections, project: { has_wiki: !has_wiki, has_issues: !has_issues }, name_with_owner: @project.name_with_owner
-    expect(@project.reload.has_wiki).to eq has_wiki
-    expect(@project.has_issues).to eq has_issues
+    has_issues = @project.has_issues
+    post :sections, project: { has_issues: !has_issues }, name_with_owner: @project.name_with_owner
+    expect(@project.reload.has_issues).to eq has_issues
     expect(response).to redirect_to(forbidden_path)
   end
 

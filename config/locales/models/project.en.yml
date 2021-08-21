@@ -61,11 +61,9 @@ en:
       role: Project role
       remove_user: Leave project
       issues: Issues
-      wiki: Wiki
       delete_warning: Attention! Deleted project cannot be restored!
       sections: Sections
       has_issue_description: Tracker adds a lightweight issue management system tightly integrated with your repository.
-      has_wiki_description: Wikis are the simplest way to allow other users to contribute content. Any user can create and edit pages for documentation, examples, support or anything you wish.
       git_global_setup: Git global setup
       create_repository: Create Repository
       move_files_to_folder: Move files you need to the project or create them.
@@ -134,7 +132,6 @@ en:
         created_at: Created on
         updated_at: Updated on
         has_issues: Issues tracker enabled
-        has_wiki:  Wiki enabled
         srpm: Import code from src.rpm
         who_owns:
           me: Myself

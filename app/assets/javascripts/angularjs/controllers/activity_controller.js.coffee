@@ -32,7 +32,6 @@ ActivityController = ($scope, $http, $timeout, $q, $filter, $location, ActivityF
     code: {}
     tracker: {}
     build: {}
-    wiki: {}
     owner_filter: null
     project_name_filter: null
     owner_uname_filter_tmp: null

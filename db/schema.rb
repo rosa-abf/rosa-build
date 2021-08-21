@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210628143214) do
+ActiveRecord::Schema.define(version: 20210823145116) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,7 +71,6 @@ ActiveRecord::Schema.define(version: 20210628143214) do
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
     t.string   "srpm_content_type",        :limit=>255
-    t.boolean  "has_wiki",                 :default=>false
     t.string   "default_branch",           :limit=>255, :default=>"master"
     t.boolean  "is_package",               :default=>true, :null=>false
     t.integer  "maintainer_id"

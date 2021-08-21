@@ -19,11 +19,6 @@ en:
     issues:
       index:
         title: 'Tracker'
-    wiki:
-      compare:
-        title: 'Compare Revisions'
-      searching:
-        title: 'Search in Wiki'
     pull_requests:
       index:
         title: 'Pull Requests'

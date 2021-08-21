@@ -4,7 +4,6 @@ class Project < ActiveRecord::Base
   include Autostart
   include Owner
   include Git
-  include Wiki
   include UrlHelper
   include EventLoggable
   include Project::DefaultBranch

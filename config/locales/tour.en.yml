@@ -13,7 +13,6 @@ en:
     annotation: File blame
     edit: Online editor
     control: Project Management
-    git: Git Wiki
     tracker: Lightweight task tracker
 
     projects_header: Every git repository in ABF is accompanied by tools necessary to manage a project, be it a public project or a private one.
@@ -42,11 +41,6 @@ en:
     control_description_html: |
       There are 3 possible levels of privileges for project members: read-only, read/write, and administration level. A project member can designate a real user
       or a group of developers. Both projects and groups may have unlimited number of members (every of which can be in turn a user or a group).
-    git_description_html: |
-      Project wiki is based on Gollum — open wiki engine developed by GitHub. In fact, this is a full-function git repository which can be cloned, used offline,
-      modified and pushed back to server, as if it were a usual source code. Convenient web editor allows to modify wiki online.
-      Now information about your project will be never lost and will be always available for modifications in any editor! 
-      <br/><br/>Note: for private projects, wiki is accessible by project team only. Wiki of a public project can be read by everyone.
     tracker_description_html: |
       Every project may use a lightweight and simple task tracker. Labels and assignments will allow not to get lost in tasks,
       while convenient interface will allow to concentrate on a real work, not filling huge forms.

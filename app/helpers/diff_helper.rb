@@ -105,8 +105,6 @@ module DiffHelper
       else
         [nil, -1]
       end
-
-    @no_commit_comment = true if params[:controller] == 'projects/wiki' || (params[:action] == 'diff')
   end
 
   def headerline(line)

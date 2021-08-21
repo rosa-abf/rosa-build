@@ -36,7 +36,6 @@ en:
         email: ==Your email %{user_email}
         password: ==Your password %{user_password}
       issue_assign_notification: You have been assigned to issue %{issue_link}
-      wiki_new_commit_notification: '%{user_link} has been updated %{history_link}'
       invite_approve_notification: Invite to ABF
       project: in project %{project_link}
       delete_branch: '%{user_link} deleted a %{branch_name}'

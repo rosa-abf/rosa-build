@@ -36,7 +36,6 @@ ru:
         email: ==Ваш email %{user_email}
         password: ==Ваш пароль %{user_password}
       issue_assign_notification: Вам была назначена задача %{issue_link}
-      wiki_new_commit_notification: '%{user_link} обновил %{history_link}'
       invite_approve_notification: Приглашение в ABF
       project: в проекте %{project_link}
 

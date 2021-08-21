@@ -52,12 +52,4 @@ module GitlabMarkdownHelper
 
     @markdown.render(text).html_safe
   end
-
-  def render_wiki_content(wiki_page)
-    if wiki_page.format == :markdown
-      markdown(wiki_page.content)
-    else
-      wiki_page.formatted_content.html_safe
-    end
-  end
 end

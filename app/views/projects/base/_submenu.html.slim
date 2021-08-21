@@ -46,9 +46,6 @@
             a href=project_pull_requests_path(@project)
               i.fa.fa-tasks>
               = t('project_menu.pull_requests', count: @opened_pull_requests_count)
-          - if @project.has_wiki
-            li class=('active' if contr == :wiki)
-              = link_to t('project_menu.wiki'), project_wiki_index_path(@project)
           / li
           /   = link_to t('project_menu.readme'), '#' #pending
           - if policy(@project).update?

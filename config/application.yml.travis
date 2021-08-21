@@ -31,13 +31,6 @@ common: &common
       id: 'APP_ID'
       secret: 'APP_SECRET'
   downloads_url: 'http://abf-downloads.rosalinux.ru'
-  wiki_formats:
-    markdown:  "Markdown"
-    textile:   "Textile"
-    # rdoc:      "RDoc"
-    org:       "Org-mode"
-    # creole:    "Creole"
-    # mediawiki: "MediaWiki"
   feedback:
     email:
       - 'test@example.com'

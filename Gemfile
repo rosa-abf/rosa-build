@@ -27,13 +27,7 @@ gem 'charlock_holmes'
 gem 'github-linguist', require: 'linguist'
 gem 'diff-display'
 
-# Wiki
-# gem 'gollum-lib', '~> 3.0'
 gem 'redcarpet', '~> 3.5'
-# gem 'creole'
-# gem 'rdiscount'
-# gem 'RedCloth'
-# gem 'wikicloth'
 
 gem 'jbuilder'
 gem 'rails3-jquery-autocomplete'

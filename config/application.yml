@@ -25,10 +25,6 @@ production: &production
   anonymous_access: true
   mailer_https_url: true
   file_store_url: <%=ENV['FILE_STORE_URL'] %>
-  wiki_formats:
-    markdown:  "Markdown"
-    textile:   "Textile"
-    org:       "Org-mode"
   shell_user: 'git'
   downloads_url: "<%=ENV['DOWNLOADS_URL'] %>"
 

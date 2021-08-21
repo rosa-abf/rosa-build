@@ -19,11 +19,6 @@ ru:
     issues:
       index:
         title: 'Трекер'
-    wiki:
-      compare:
-        title: 'Сравнение версий'
-      searching:
-        title: 'Поиск в вики'
     pull_requests:
       index:
         title: 'Пул реквесты'
