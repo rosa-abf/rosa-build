@@ -48,17 +48,21 @@ module Feed::Git
       options_for_mail = options.merge(project_owner: record.project.owner_uname,
                                        project_name:  record.project.name)
       record.project.all_members.each do |recipient|
-        ActivityFeed.create!(
-          user:          recipient,
-          kind:          kind,
-          project_owner: record.project.owner_uname,
-          project_name:  record.project.name,
-          creator_id:    record.user.id,
-          data:          options
-        )
-        next if record.user && record.user.id == recipient.id
-        if recipient.notifier.can_notify && recipient.notifier.update_code
-          UserMailer.send(kind, recipient, options_for_mail).deliver
+        begin
+          ActivityFeed.create!(
+            user:          recipient,
+            kind:          kind,
+            project_owner: record.project.owner_uname,
+            project_name:  record.project.name,
+            creator_id:    record.user.id,
+            data:          options
+          )
+          next if record.user && record.user.id == recipient.id
+          if recipient.notifier.can_notify && recipient.notifier.update_code
+            UserMailer.send(kind, recipient, options_for_mail).deliver
+          end
+        rescue
+          # do nothing
         end
       end
 
