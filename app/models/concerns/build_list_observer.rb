@@ -14,7 +14,12 @@ module BuildListObserver
       key:          "#{Statistic::KEY_BUILD_LIST}.#{status}",
       project_id:   project_id,
       user_id:      user_id,
-    ) if status_changed?
+    ) if status_changed? && [
+        BuildList::BUILD_STARTED,
+        BuildList::SUCCESS,
+        BuildList::BUILD_ERROR,
+        BuildList::BUILD_PUBLISHED
+      ].include?(status)
   end
 
   def update_average_build_time
