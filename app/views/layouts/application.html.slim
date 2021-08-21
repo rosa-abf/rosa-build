@@ -24,9 +24,9 @@ html
           = flash_notify.body(I18n.locale).html_safe
 
     == render 'layouts/noscript'
-    == render "layouts/flashes"
 
     article.container-fluid
+      == render "layouts/flashes"
       == yield
     == render 'layouts/menu/new_bottom'
     == javascript_include_tag 'new_application', cache: 'application'
