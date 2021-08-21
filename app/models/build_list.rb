@@ -191,7 +191,8 @@ class BuildList < ActiveRecord::Base
       end
     end
     after_transition do |build_list, transition|
-      if transition.from == BUILD_PENDING || (transition.to == BUILD_PENDING && transition.from != WAITING_FOR_RESPONSE)
+      if transition.from == BUILD_PENDING || transition.from == RERUN_TESTS ||
+         (transition.to == BUILD_PENDING && transition.from != WAITING_FOR_RESPONSE)
         Redis.current.srem('abf_worker:shifted_build_lists', build_list.id)
       end
     end
