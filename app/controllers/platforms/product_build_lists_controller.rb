@@ -40,8 +40,9 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   def log
     worker_log = @product_build_list.abf_worker_log
+    hlog = Rouge::Formatters::HTML.new.format(Rouge::Lexers::Shell.new.lex(worker_log)) rescue worker_log
     render json: {
-      log: (Pygments.highlight(worker_log, lexer: 'sh') rescue worker_log),
+      log: hlog,
       building: @product_build_list.build_started?
     }
   end

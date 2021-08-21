@@ -528,12 +528,8 @@ class BuildList < ActiveRecord::Base
   # end
 
   def log(load_lines=nil)
-    if new_core?
-      worker_log = abf_worker_log
-      Pygments.highlight(worker_log, lexer: 'sh') rescue worker_log
-    else
-      I18n.t('layout.build_lists.log.not_available')
-    end
+    worker_log = abf_worker_log
+    Rouge::Formatters::HTML.new.format(Rouge::Lexers::Shell.new.lex(worker_log)) rescue worker_log
   end
 
   def last_published(testing = false)

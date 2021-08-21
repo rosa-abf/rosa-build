@@ -6,4 +6,5 @@
     span.pull-right.fa ng-class="{'fa-chevron-down': $parent.isOpenBuildLog, 'fa-chevron-up': !$parent.isOpenBuildLog}"
   .panel-body ng-show = '$parent.isOpenBuildLog'
     .row.build-log.small ng-controller='BuildLogController' ng-init="init('#{ get_log_path }')"
-      .col-md-12 ng-bind-html='log'
+      .col-md-12
+        pre ng-bind-html='log'

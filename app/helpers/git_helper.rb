@@ -113,17 +113,20 @@ module GitHelper
     language = lazy.language
     lexer = nil
     if language
-      lexer = Pygments::Lexer.find_by_name(language.name)
+      lexer = Rouge::Lexer.find(language.name)
       if !lexer
         language.aliases.each do |al|
-          lexer = Pygments::Lexer.find_by_alias(al)
+          lexer = Rouge::Lexer.find(al)
           break if lexer
         end
       end
-      lexer = Pygments::Lexer.find('spec') if language.name == 'RPM Spec'
+      lexer = SpecLexer if language.name == 'RPM Spec'
     end
-    lexer = Pygments::Lexer.find('Text') if !lexer
-    result = lexer.highlight rugged.lookup(blob.id).text, highlight_options
+    lexer = Rouge::Lexers::PlainText if !lexer
+    text = rugged.lookup(blob.id).text
+    text += "\n" if lexer == SpecLexer && !text.ends_with?("\n")
+    lexer = lexer.new
+    result = PygmentsRougeFormatter.new.format(lexer.lex(text))
     result.present? ? result.html_safe : text
   rescue => e
     "<pre>#{blob.data}</pre>".html_safe
@@ -136,26 +139,23 @@ module GitHelper
     language = lazy.language
     lexer = nil
     if language
-      lexer = Pygments::Lexer.find_by_name(language.name)
+      lexer = Rouge::Lexer.find(language.name)
       if !lexer
         language.aliases.each do |al|
-          lexer = Pygments::Lexer.find_by_alias(al)
+          lexer = Rouge::Lexer.find(al)
           break if lexer
         end
       end
-      lexer = Pygments::Lexer.find('spec') if language.name == 'RPM Spec'
+      lexer = SpecLexer if language.name == 'RPM Spec'
     end
-    lexer = Pygments::Lexer.find('Text') if !lexer
-    result = lexer.highlight(text)
+    lexer = Rouge::Lexers::PlainText if !lexer
+    if lexer == SpecLexer
+      text += "\n" if !text.ends_with?("\n")
+    end
+    lexer = lexer.new
+    result = PygmentsRougeFormatter.new(:blame).format(lexer.lex(text))
     result.present? ? result.html_safe : text
   rescue => e
-    puts e
     "<pre>#{text}</pre>".html_safe
-  end
-
-  protected
-
-  def highlight_options
-    @highlight ||= { options: { linenos: true, lineanchors: 'lc', linespans: 'ln', anchorlinenos: true }}
   end
 end

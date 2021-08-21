@@ -1,7 +1,7 @@
 FROM ruby:2.4.9-alpine3.11 as rosa-build-gems
 
 WORKDIR /rosa-build
-RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs python2 redis shared-mime-info && \
+RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs redis shared-mime-info && \
     apk add --virtual .ruby-builddeps --no-cache postgresql-dev build-base cmake icu-dev
 RUN gem install bundler:1.17.3
 COPY vendor ./vendor
@@ -10,7 +10,6 @@ RUN bundle install --without development test --jobs 16 --clean --deployment --n
     apk add --no-cache file imagemagick curl gnupg openssh-keygen findutils && \
     apk del .ruby-builddeps && rm -rf /root/.bundle && rm -rf /proxy/vendor/bundle/ruby/2.4.0/cache && \
     mkdir -p /root/.gnupg && chmod 700 /root/.gnupg && \
-    git clone -b 2.2.0 https://github.com/pygments/pygments.git && cd pygments && python setup.py install && cd .. && rm -rf pygments && \
     cd /rosa-build/vendor/bundle/ruby && find -name *.o -exec rm {} \;
 
 FROM scratch

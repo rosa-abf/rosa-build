@@ -28,12 +28,12 @@ gem 'github-linguist', require: 'linguist'
 gem 'diff-display'
 
 # Wiki
-gem 'gollum-lib', '~> 3.0'
+# gem 'gollum-lib', '~> 3.0'
 gem 'redcarpet', '~> 3.5'
-gem 'creole'
-gem 'rdiscount'
-gem 'RedCloth'
-gem 'wikicloth'
+# gem 'creole'
+# gem 'rdiscount'
+# gem 'RedCloth'
+# gem 'wikicloth'
 
 gem 'jbuilder'
 gem 'rails3-jquery-autocomplete'
@@ -77,7 +77,7 @@ gem 'connection_pool'
 
 gem 'recaptcha'
 
-gem 'pygments.rb'
+gem 'rouge'
 
 group :production do
   gem 'puma'
