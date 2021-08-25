@@ -73,12 +73,9 @@ gem 'recaptcha'
 
 gem 'rouge'
 
-group :production do
-  gem 'puma'
-end
+gem 'puma'
 
 group :development do
-  gem 'mailcatcher'
   gem 'rack-mini-profiler', require: false
 end
 
