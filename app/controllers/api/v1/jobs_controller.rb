@@ -56,7 +56,7 @@ class Api::V1::JobsController < Api::V1::BaseController
       worker_class: '',
       :worker_args  => [@build_list.abf_worker_args]
     } if @build_list
-    render json: { job: job }.to_json
+    render json: Oj.dump({ job: job }, mode: :compat)
   end
 
   def statistics

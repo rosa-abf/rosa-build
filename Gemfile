@@ -75,6 +75,8 @@ gem 'rouge'
 
 gem 'puma'
 
+gem 'oj'
+
 group :development do
   gem 'rack-mini-profiler', require: false
 end
