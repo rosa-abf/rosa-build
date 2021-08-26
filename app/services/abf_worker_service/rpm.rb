@@ -28,17 +28,19 @@ module AbfWorkerService
         where(platforms: {platform_type: 'main'}).pluck(:repository_id)
       available_repos = available_repos.where('save_to_repository_id NOT IN (?)', locked_rep) unless locked_rep.empty?
 
-      for_cleanup = Redis.current.lrange(PROJECTS_FOR_CLEANUP, 0, -1).map do |key|
+      for_cleanup = $redis.with { |r| r.lrange(PROJECTS_FOR_CLEANUP, 0, -1) }.map do |key|
         next if testing && key !~ /^testing-/
         rep, pl = *key.split('-').last(2)
         locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
       end.compact
 
-      for_cleanup_from_testing = Redis.current.smembers(REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING).map do |key|
-        next if Redis.current.scard("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{key}") == 0
-        rep, pl = *key.split('-')
-        locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
-      end.compact if testing
+      for_cleanup_from_testing = $redis.with do |r|
+        r.smembers(REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING).map do |key|
+          next if r.scard("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{key}") == 0
+          rep, pl = *key.split('-')
+          locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
+        end.compact if testing
+      end
       for_cleanup_from_testing ||= []
 
       counter = 1
@@ -57,25 +59,29 @@ module AbfWorkerService
 
     def create
       key = "#{save_to_repository_id}-#{build_for_platform_id}"
-      projects_for_cleanup = Redis.current.lrange(PROJECTS_FOR_CLEANUP, 0, -1).select do |k|
+      projects_for_cleanup = $redis.with { |r| r.lrange(PROJECTS_FOR_CLEANUP, 0, -1) }.select do |k|
         (testing && k =~ /^testing-[\d]+-#{key}$/) || (!testing && k =~ /^[\d]+-#{key}$/)
       end
 
       prepare_build_lists(projects_for_cleanup)
 
-      projects_for_cleanup.each do |key|
-        Redis.current.lrem PROJECTS_FOR_CLEANUP, 0, key
-        packages = Redis.current.hget PACKAGES_FOR_CLEANUP, key
-        next unless packages
-        packages = JSON.parse packages
-        old_packages[:sources] |= packages['sources']
-        Arch.pluck(:name).each do |arch|
-          old_packages[:binaries][arch.to_sym] |= packages['binaries'][arch] || []
+      $redis.with do |r|
+        projects_for_cleanup.each do |key|
+          r.lrem PROJECTS_FOR_CLEANUP, 0, key
+          packages = r.hget PACKAGES_FOR_CLEANUP, key
+          next unless packages
+          packages = JSON.parse packages
+          old_packages[:sources] |= packages['sources']
+          Arch.pluck(:name).each do |arch|
+            old_packages[:binaries][arch.to_sym] |= packages['binaries'][arch] || []
+          end
         end
       end
 
       if testing
-        build_lists_for_cleanup_from_testing = Redis.current.smembers("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}")
+        build_lists_for_cleanup_from_testing = $redis.with { |r|
+          r.smembers("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}")
+        }
         BuildList.where(id: build_lists_for_cleanup_from_testing).each do |b|
           fill_packages(b, old_packages, :fullname)
         end if build_lists_for_cleanup_from_testing.present?
@@ -169,20 +175,22 @@ module AbfWorkerService
 
     def fill_in_packages
       packages, build_list_ids, new_sources = packages_structure, [], {}
-      build_lists.each do |bl|
-        # remove duplicates of sources for different arches
-        bl.packages.by_package_type('source').each{ |s| new_sources["#{s.fullname}"] = s.sha1 }
-        fill_packages(bl, packages)
-        bl.last_published(testing).includes(:packages).limit(2).each{ |old_bl|
-          fill_packages(old_bl, old_packages, :fullname)
-        }
-        # TODO: do more flexible
-        # Removes old packages which already in the main repo
-        bl.last_published(false).includes(:packages).limit(3).each{ |old_bl|
-          fill_packages(old_bl, old_packages, :fullname)
-        } if testing
-        build_list_ids << bl.id
-        Redis.current.lpush(LOCKED_BUILD_LISTS, bl.id)
+      $redis.with do |r|
+        build_lists.each do |bl|
+          # remove duplicates of sources for different arches
+          bl.packages.by_package_type('source').each{ |s| new_sources["#{s.fullname}"] = s.sha1 }
+          fill_packages(bl, packages)
+          bl.last_published(testing).includes(:packages).limit(2).each{ |old_bl|
+            fill_packages(old_bl, old_packages, :fullname)
+          }
+          # TODO: do more flexible
+          # Removes old packages which already in the main repo
+          bl.last_published(false).includes(:packages).limit(3).each{ |old_bl|
+            fill_packages(old_bl, old_packages, :fullname)
+          } if testing
+          build_list_ids << bl.id
+          r.lpush(LOCKED_BUILD_LISTS, bl.id)
+        end
       end
       packages[:sources] = new_sources.values.compact
 
@@ -190,19 +198,23 @@ module AbfWorkerService
     end
 
     def lock_projects(projects_for_cleanup)
-      projects_for_cleanup.each do |key|
-        Redis.current.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
+      $redis.with do |r|
+        projects_for_cleanup.each do |key|
+          r.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
+        end
       end
     end
 
     def cleanup(build_lists_for_cleanup_from_testing)
       rep_pl = "#{save_to_repository_id}-#{build_for_platform_id}"
       r_key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
-      build_lists_for_cleanup_from_testing.each do |key|
-        Redis.current.srem r_key, key
-      end
-      if Redis.current.scard(r_key) == 0
-        Redis.current.srem REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
+      $redis.with do |r|
+        build_lists_for_cleanup_from_testing.each do |key|
+          r.srem r_key, key
+        end
+        if r.scard(r_key) == 0
+          r.srem REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
+        end
       end
     end
 
@@ -231,7 +243,7 @@ module AbfWorkerService
           where(save_to_repository_id: save_to_repository_id).
           where(build_for_platform_id: build_for_platform_id).
           order(:updated_at)
-        locked_ids  = Redis.current.lrange(LOCKED_BUILD_LISTS, 0, -1)
+        locked_ids  = $redis.with { |r| r.lrange(LOCKED_BUILD_LISTS, 0, -1) }
         build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) if locked_ids.present?
         build_lists = build_lists.limit(300)
         filter_build_lists_without_packages(build_lists.to_a)

@@ -41,7 +41,11 @@ class AbfWorkerStatusPresenter < ApplicationPresenter
 
   def status_of_worker(workers, worker)
     key = "resque:queue:#{worker}_worker"
-    default_tasks, tasks = Redis.current.llen("#{key}_default"), Redis.current.llen(key)
+    default_tasks = 0
+    tasks = 0
+    $redis.with do |r|
+      default_tasks, tasks = r.llen("#{key}_default"), r.llen(key)
+    end
     {
       workers:       workers.count,
       build_tasks:   workers.select{ |w| w.working? }.count,

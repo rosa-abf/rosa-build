@@ -12,13 +12,6 @@ build_lists_publish_task_manager:
   queue: middle
   description: 'Creates tasks for publishing'
 
-clean_api_defender_statistics:
-  every:
-    - '1d'
-  class: 'CleanApiDefenderStatisticsJob'
-  queue: low
-  description: 'Cleans ApiDefender statistics'
-
 clean_build_list_buildroot:
   every:
     - '1h'

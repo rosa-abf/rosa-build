@@ -193,7 +193,7 @@ class BuildList < ActiveRecord::Base
     after_transition do |build_list, transition|
       if transition.from == BUILD_PENDING || transition.from == RERUN_TESTS ||
          (transition.to == BUILD_PENDING && transition.from != WAITING_FOR_RESPONSE)
-        Redis.current.srem('abf_worker:shifted_build_lists', build_list.id)
+        $redis.with { |r| r.srem('abf_worker:shifted_build_lists', build_list.id) }
       end
     end
     after_transition on: :cancel, do: :cancel_job

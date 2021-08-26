@@ -11,18 +11,18 @@ module AbfWorkerService
       if repository.platform.personal?
         Platform.main.each do |main_platform|
           key = "#{project.id}-#{repository.id}-#{main_platform.id}"
-          Redis.current.lpush PROJECTS_FOR_CLEANUP, key
+          $redis.with { |r| r.lpush PROJECTS_FOR_CLEANUP, key }
           gather_old_packages project.id, repository.id, main_platform.id
 
-          Redis.current.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key)
+          $redis.with { |r| r.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key) }
           gather_old_packages project.id, repository.id, main_platform.id, true
         end
       else
         key = "#{project.id}-#{repository.id}-#{repository.platform_id}"
-        Redis.current.lpush PROJECTS_FOR_CLEANUP, key
+        $redis.with { |r| r.lpush PROJECTS_FOR_CLEANUP, key }
         gather_old_packages project.id, repository.id, repository.platform_id
 
-        Redis.current.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key)
+        $redis.with { |r| r.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key) }
         gather_old_packages project.id, repository.id, repository.platform_id, true
       end
     end
@@ -86,7 +86,7 @@ module AbfWorkerService
         end
       end
       key = (testing ? 'testing-' : '') << "#{project_id}-#{repository_id}-#{platform_id}"
-      Redis.current.hset PACKAGES_FOR_CLEANUP, key, old_packages.to_json
+      $redis.with { |r| r.hset PACKAGES_FOR_CLEANUP, key, old_packages.to_json }
     end
 
   end

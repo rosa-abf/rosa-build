@@ -28,7 +28,7 @@ module AbfWorker
         item.update_attributes({status: BuildList::BUILD_ERROR})
         subject.build_error(false)
         subject.save(validate: false)
-        Redis.current.srem('abf_worker:shifted_build_lists', subject.id)
+        $redis.with { |r| r.srem('abf_worker:shifted_build_lists', subject.id) }
         return
       end
 
@@ -88,13 +88,20 @@ module AbfWorker
 
     def restart_task
       return false if status != FAILED
-      if Redis.current.lrem(RESTARTED_BUILD_LISTS, 0, subject.id) > 0 || (options['results'] || []).size > 1
+      deleted_count = $redis.with { |r| r.lrem(RESTARTED_BUILD_LISTS, 0, subject.id) }
+      if deleted_count > 0 || (options['results'] || []).size > 1
         return false
       else
-        Redis.current.lpush RESTARTED_BUILD_LISTS, subject.id
-        subject.update_column(:status, BuildList::BUILD_PENDING)
-        subject.update_column(:builder_id, nil)
-        Redis.current.srem('abf_worker:shifted_build_lists', subject.id)
+        $redis.with do |r|
+          r.multi do
+            r.lpush RESTARTED_BUILD_LISTS, subject.id
+            r.srem('abf_worker:shifted_build_lists', subject.id)
+          end
+        end
+        subject.update(
+          status: BuildList::BUILD_PENDING,
+          builder_id: nil
+        )
         return true
       end
     end

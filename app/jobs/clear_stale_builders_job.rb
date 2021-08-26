@@ -7,8 +7,12 @@ class ClearStaleBuildersJob
       where.not(builder: nil)
     ids = build_lists.pluck(:id)
     if !ids.empty?
-      ids.each do |id|
-        Redis.current.srem('abf_worker:shifted_build_lists', id)
+      $redis.with do |r|
+        r.multi do
+          ids.each do |id|
+            r.srem('abf_worker:shifted_build_lists', id)
+          end
+        end
       end
       build_lists.update_all('builder_id = NULL')
     end

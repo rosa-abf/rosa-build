@@ -15,16 +15,24 @@ module AbfWorkerService
     end
 
     def self.cleanup_completed(projects_for_cleanup)
-      projects_for_cleanup.each do |key|
-        Redis.current.lrem LOCKED_PROJECTS_FOR_CLEANUP, 0, key
-        Redis.current.hdel PACKAGES_FOR_CLEANUP, key
+      $redis.with do |r|
+        r.multi do
+          projects_for_cleanup.each do |key|
+            r.lrem LOCKED_PROJECTS_FOR_CLEANUP, 0, key
+            r.hdel PACKAGES_FOR_CLEANUP, key
+          end
+        end
       end
     end
 
     def self.cleanup_failed(projects_for_cleanup)
-      projects_for_cleanup.each do |key|
-        Redis.current.lrem LOCKED_PROJECTS_FOR_CLEANUP, 0, key
-        Redis.current.lpush PROJECTS_FOR_CLEANUP, key
+      $redis.with do |r|
+        r.multi do
+          projects_for_cleanup.each do |key|
+            r.lrem LOCKED_PROJECTS_FOR_CLEANUP, 0, key
+            r.lpush PROJECTS_FOR_CLEANUP, key
+          end
+        end
       end
     end
 
@@ -32,12 +40,10 @@ module AbfWorkerService
       return if build_lists.blank?
       rep_pl = "#{repository_id}-#{platform_id}"
       key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
-      Redis.current.sadd REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
-      Redis.current.sadd key, build_lists
-    end
-
-    def self.unlock_build_list(build_list)
-      Redis.current.lrem LOCKED_BUILD_LISTS, 0, build_list.id
+      $redis.with do |r|
+        r.sadd REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
+        r.sadd key, build_lists
+      end
     end
 
     protected

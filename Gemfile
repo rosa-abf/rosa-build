@@ -77,6 +77,8 @@ gem 'puma'
 
 gem 'oj'
 
+gem 'connection_pool'
+
 group :development do
   gem 'rack-mini-profiler', require: false
 end

@@ -1,7 +1,6 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-# require './lib/api_defender'
 
 # Prevent deprecation warning
 I18n.config.enforce_available_locales = true
@@ -19,8 +18,6 @@ module Rosa
       config.middleware.insert_after('Rack::Sendfile', CloseArConnectionsMiddleware)
     end
 
-    # Rate limit
-    # config.middleware.insert_before Rack::Runtime, ApiDefender
     # Rack::UTF8Sanitizer is a Rack middleware which cleans up invalid UTF8 characters in request URI and headers.
     config.middleware.insert 0, Rack::UTF8Sanitizer
 

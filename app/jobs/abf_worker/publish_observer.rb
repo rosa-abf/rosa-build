@@ -72,7 +72,13 @@ module AbfWorker
             build_list.fail_publish_into_testing || build_list.update_column(:status, BuildList::FAILED_PUBLISH_INTO_TESTING)
           end
         end
-        AbfWorkerService::Base.unlock_build_list build_list
+      end
+      $redis.with do |r|
+        r.multi do
+          options['build_list_ids'].each do |blid|
+            r.lrem LOCKED_BUILD_LISTS, 0, blid
+          end
+        end
       end
 
       case status

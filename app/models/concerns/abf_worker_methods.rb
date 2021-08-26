@@ -4,14 +4,8 @@ module AbfWorkerMethods
   MASS_BUILDS_SET = 'abf-worker::mass-builds'
   USER_BUILDS_SET = 'abf-worker::user-builds'
 
-  module ClassMethods
-    def log_server
-      @log_server ||= Redis.new(url: ENV['REDIS_URL'])
-    end
-  end
-
   def abf_worker_log
-    (self.class.log_server.get(service_queue) || I18n.t('layout.build_lists.log.not_available')).truncate(40000)
+    ($redis.with { |r| r.get(service_queue) } || I18n.t('layout.build_lists.log.not_available')).truncate(40000)
   end
 
   def add_job_to_abf_worker_queue
@@ -62,11 +56,13 @@ module AbfWorkerMethods
   private
 
   def send_stop_signal
-    Redis.current.setex(
-      "#{service_queue}::live-inspector",
-      240,    # Data will be removed from Redis after 240 sec.
-      'USR1'  # Immediately kill child but don't exit
-    )
+    $redis.with do |r|
+      r.setex(
+        "#{service_queue}::live-inspector",
+        240,    # Data will be removed from Redis after 240 sec.
+        'USR1'  # Immediately kill child but don't exit
+      )
+    end
   end
 
   def service_queue
