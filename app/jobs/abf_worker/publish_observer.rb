@@ -76,7 +76,7 @@ module AbfWorker
       $redis.with do |r|
         r.multi do
           options['build_list_ids'].each do |blid|
-            r.lrem LOCKED_BUILD_LISTS, 0, blid
+            r.lrem AbfWorkerService::Base::LOCKED_BUILD_LISTS, 0, blid
           end
         end
       end
