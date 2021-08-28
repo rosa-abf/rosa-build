@@ -48,12 +48,12 @@ class RpmBuildNode
   def self.total_statistics
     systems, others, busy = 0, 0, 0
     all.each do |n|
-      if n.system == 'true'
-        systems += n.worker_count.to_i
+      if n.system
+        systems += n.worker_count
       else
-        others += n.worker_count.to_i
+        others += n.worker_count
       end
-      busy += n.busy_workers.to_i
+      busy += n.busy_workers
     end
     { systems: systems, others: others, busy: busy }
   end
