@@ -8,7 +8,7 @@ COPY vendor ./vendor
 COPY Gemfile Gemfile.lock ./
 RUN bundle install --without development test --jobs 16 --clean --deployment --no-cache --verbose && \
     apk add --no-cache file imagemagick curl gnupg openssh-keygen findutils && \
-    apk del .ruby-builddeps && rm -rf /root/.bundle && rm -rf /proxy/vendor/bundle/ruby/2.4.0/cache && \
+    apk del --no-cache .ruby-builddeps && rm -rf /root/.bundle && rm -rf /proxy/vendor/bundle/ruby/2.4.0/cache && \
     mkdir -p /root/.gnupg && chmod 700 /root/.gnupg && \
     cd /rosa-build/vendor/bundle/ruby && find -name *.o -exec rm {} \;
 
