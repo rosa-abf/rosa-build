@@ -62,7 +62,7 @@ class RpmBuildNode
     $redis.with do |r|
       r.smembers(MODEL_LIST).each do |key|
         item = "RpmBuildNode:#{key}"
-        r.srem MODEL_LIST, item if !r.exists(item)
+        r.srem MODEL_LIST, key if !r.exists(item)
       end
     end
   end
