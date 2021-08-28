@@ -40,8 +40,6 @@ gem 'simple_form', '3.1.0.rc2'
 gem 'friendly_id'
 
 gem 'rest-client'
-gem 'ohm', '~> 1.3.2' # Ohm 2 breaks the compatibility with previous versions.
-gem 'ohm-expire', '~> 0.1.3'
 
 gem 'ffi'
 

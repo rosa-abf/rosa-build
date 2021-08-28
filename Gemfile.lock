@@ -220,20 +220,12 @@ GEM
     mono_logger (1.1.0)
     multi_json (1.15.0)
     multipart-post (2.0.0)
-    nest (1.1.2)
-      redis
     netrc (0.11.0)
     ngmin-rails (0.4.0)
       rails (>= 3.1)
     nio4r (2.5.7)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
-    ohm (1.3.2)
-      nest (~> 1.0)
-      redis
-      scrivener (~> 0.0.3)
-    ohm-expire (0.1.3.2)
-      ohm (>= 0.1.5)
     oj (3.13.2)
     orm_adapter (0.5.0)
     paperclip (6.1.0)
@@ -445,7 +437,6 @@ GEM
     schema_plus_views (0.3.1)
       activerecord (~> 4.2)
       schema_plus_core (~> 1.0)
-    scrivener (0.0.3)
     sentry-raven (2.9.0)
       faraday (>= 0.7.6, < 1.0)
     sexp_processor (4.6.0)
@@ -539,8 +530,6 @@ DEPENDENCIES
   js-routes
   mock_redis
   ngmin-rails
-  ohm (~> 1.3.2)
-  ohm-expire (~> 0.1.3)
   oj
   paperclip
   perform_later!

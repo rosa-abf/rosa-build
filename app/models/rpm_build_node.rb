@@ -1,28 +1,53 @@
-require 'ohm'
-require 'ohm/expire'
-
-class RpmBuildNode < Ohm::Model
-  include Ohm::Expire
+class RpmBuildNode
+  MAIN_KEY_FIELDS = [:id, :host]
+  MODEL_LIST = "#{self.name}:all"
 
   TTL = 120
 
-  expire TTL
+  %w(
+    id
+    user_id
+    system
+    worker_count
+    busy_workers
+    host
+    query_string
+    last_build_id
+  ).each { |attr| attr_reader attr }
 
-  attribute :user_id
-  attribute :worker_count
-  attribute :busy_workers
-  attribute :system
-  attribute :host
-  attribute :query_string
-  attribute :last_build_id
+  def initialize(opts = {})
+    opts.keys.each do |key|
+      instance_variable_set "@#{key}", opts[key]
+    end
+  end
 
-  def user
-    User.where(id: user_id).first
+  def self.create_or_update(opts = {})
+    $redis.with do |r|
+      key = MAIN_KEY_FIELDS.map { |key| opts[key] }.join(':')
+      redis_name = "RpmBuildNode:#{key}"
+      data = JSON.parse(r.get(redis_name) || '{}').merge(opts.stringify_keys)
+      r.multi do
+        r.sadd MODEL_LIST, key
+        r.setex redis_name, TTL, Oj.dump(data)
+      end
+    end
+  end
+
+  def self.all
+    Enumerator.new do |y|
+      $redis.with do |r|
+        r.smembers(MODEL_LIST).each do |key|
+          data = JSON.parse(r.get("RpmBuildNode:#{key}")) rescue nil
+          next if !data
+          y << new(data)
+        end
+      end
+    end
   end
 
   def self.total_statistics
     systems, others, busy = 0, 0, 0
-    RpmBuildNode.all.select{ |n| n.user_id }.each do |n|
+    all.each do |n|
       if n.system == 'true'
         systems += n.worker_count.to_i
       else
@@ -31,5 +56,14 @@ class RpmBuildNode < Ohm::Model
       busy += n.busy_workers.to_i
     end
     { systems: systems, others: others, busy: busy }
+  end
+
+  def self.cleanup
+    $redis.with do |r|
+      r.smembers(MODEL_LIST).each do |key|
+        item = "RpmBuildNode:#{key}"
+        r.srem MODEL_LIST, item if !r.exists(item)
+      end
+    end
   end
 end

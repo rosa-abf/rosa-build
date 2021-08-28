@@ -67,7 +67,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 
   def statistics
     if params[:uid].present?
-      RpmBuildNode.create(
+      RpmBuildNode.create_or_update(
         id:            params[:uid],
         user_id:       current_user.id,
         system:        current_user.system?,
