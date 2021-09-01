@@ -1,5 +1,4 @@
 class Platforms::RepositoriesController < Platforms::BaseController
-  include DatatableHelper
   include FileStoreHelper
   include RepositoriesHelper
   include PaginateHelper
@@ -121,11 +120,9 @@ class Platforms::RepositoriesController < Platforms::BaseController
       @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
       @projects = @projects.opened if @repository.platform.main? && !@repository.platform.hidden?
     end
-    # @projects = @projects.paginate(page: page, per_page: per_page)
 
-    # @total_projects = @projects.count
     @projects = @projects.by_owner(params[:owner_name]).
-      search(params[:project_name]).order("projects.name #{sort_dir}")
+      search(params[:project_name]).order("projects.name desc")
 
     @total_items = @projects.count
     @projects    = @projects.paginate(paginate_params)

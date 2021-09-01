@@ -1,5 +1,4 @@
 class Projects::ProjectsController < Projects::BaseController
-  include DatatableHelper
   include ProjectsHelper
 
   before_action :authenticate_user!

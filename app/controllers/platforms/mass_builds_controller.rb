@@ -1,6 +1,4 @@
 class Platforms::MassBuildsController < Platforms::BaseController
-  include DatatableHelper
-
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:index, :get_list] if APP_CONFIG['anonymous_access']
 

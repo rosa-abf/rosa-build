@@ -7,12 +7,6 @@ en:
   datatables:
     previous_label: ‹ Prev.
     next_label: Next ›
-    first_label: « First
-    last_label: Last »
-    empty_label: No data accessible
-    info_label: Records displayed from _START_ to _END_ total _TOTAL_
-    info_empty_label: Records displayed from 0 to 0 total 0
-    filtered_label: (filtered from _MAX_)
 
   layout:
     logged_in_as: You logged as
