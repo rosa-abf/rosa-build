@@ -22,12 +22,12 @@ ActiveAdmin.register_page 'Builders' do
               u.present? ? link_to(u.uname, admin_user_path(u.id)) : 'Unknown'
             end
             column :system
-            column :busy_workers
+            column :busy
             column 'Last build ID' do |b|
               if b.last_build_id.present?
                 link_to b.last_build_id, build_list_path(b.last_build_id)
               else
-                'None'
+                '-'
               end
             end
           end

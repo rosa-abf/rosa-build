@@ -1,6 +1,4 @@
 class Api::V1::JobsController < Api::V1::BaseController
-  # QUEUES = %w(iso_worker_observer publish_observer rpm_worker_observer)
-  # QUEUE_CLASSES = %w(AbfWorker::IsoWorkerObserver AbfWorker::PublishObserver AbfWorker::RpmWorkerObserver)
   QUEUES = %w(rpm_worker_observer)
   QUEUE_CLASSES = %w(AbfWorker::RpmWorkerObserver)
 
@@ -17,12 +15,11 @@ class Api::V1::JobsController < Api::V1::BaseController
         else
           BuildList.where.not(id: shifted_build_lists)
         end
-        build_lists = build_lists.scoped_to_arch(arch_ids).
-        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).
-        for_platform(platform_ids).where(builder: nil)
+        build_lists = build_lists.scoped_to_arch(arch_ids).for_platform(platform_ids).
+        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS])
 
         if current_user.system?
-          build_lists = build_lists.where(external_nodes: ["", nil, "everything"])
+          build_lists = build_lists.where("external_nodes != 'owned'")
           uid = build_lists.where(mass_build_id: nil).pluck('DISTINCT user_id').sample
           if !uid
             uid = build_lists.pluck('DISTINCT user_id').sample
@@ -33,9 +30,9 @@ class Api::V1::JobsController < Api::V1::BaseController
 
           if uid
             if !mass_build
-              @build_list = build_lists.where(user_id: uid, mass_build_id: nil).order(:created_at).first
+              @build_list = build_lists.where(user_id: uid, mass_build_id: nil).order(:id).limit(1).first
             else
-              @build_list = build_lists.where(user_id: uid).order(:created_at).first
+              @build_list = build_lists.where(user_id: uid).order(:id).limit(1).first
             end
           end
         else
@@ -69,11 +66,10 @@ class Api::V1::JobsController < Api::V1::BaseController
     if params[:uid].present?
       RpmBuildNode.create_or_update(
         id:            params[:uid],
+        host:          params[:host].to_s,
         user_id:       current_user.id,
         system:        current_user.system?,
-        worker_count:  params[:worker_count],
-        busy_workers:  params[:busy_workers],
-        host:          params[:host].to_s,
+        busy:          params[:busy_workers] == 1,
         query_string:  params[:query_string].to_s,
         last_build_id: params[:last_build_id].to_s
       ) rescue nil
@@ -90,8 +86,8 @@ class Api::V1::JobsController < Api::V1::BaseController
 
   def logs
     name = params[:name]
-    if name =~ /abfworker::rpm-worker/
-      if current_user.system? || current_user.id == BuildList.where(id: name.gsub(/[^\d]/, '')).first.try(:builder_id)
+    if name.start_with?('abfworker::rpm-worker-')
+      if current_user.system? || current_user.id == BuildList.find_by_id(id: name.split('-').second).try(:builder_id)
         $redis.with { |r| r.setex name, 15, params[:logs] }
       end
     end
@@ -114,20 +110,31 @@ class Api::V1::JobsController < Api::V1::BaseController
   protected
 
   def platform_ids
-    @platform_ids ||= begin
-      platform_types = params[:platform_types].to_s.split(',') & APP_CONFIG['distr_types']
-      platforms = params[:platforms].to_s.split(',')
-      platforms = platforms.present? ? Platform.where(name: platforms).pluck(:id) : []
-      platforms |= Platform.main.where(distrib_type: platform_types).pluck(:id) if !platform_types.empty?
-      platforms
+    platforms = params[:platforms].to_s.split(',')
+    platforms = platforms.present? ? Platform.where(name: platforms).pluck(:id) : []
+
+    platform_types = params[:platform_types].to_s.split(',') & APP_CONFIG['distr_types']
+    if !platform_types.empty?
+      distrib_type_to_ids = Rails.cache.fetch('distrib_type_to_ids', expires_in: 1.hour) do
+        res = {}
+        Platform.main.pluck(:distrib_type, :id).each do |item|
+          res[item[0]] ||= []
+          res[item[0]] << item[1]
+        end
+        res
+      end
+      platform_types.each do |type|
+        platforms |= distrib_type_to_ids[type]
+      end
     end
+    platforms
   end
 
   def arch_ids
-    @arch_ids ||= begin
-      arches = params[:arches].to_s.split(',')
-      arches.present? ? Arch.where(name: arches).pluck(:id) : []
+    arches = Rails.cache.fetch("arches_to_ids", expires_in: 24.hours) do
+      Arch.pluck(:name, :id).to_h
     end
+    params[:arches].to_s.split(',').uniq.map { |arch| arches[arch] }.compact
   end
 
 end

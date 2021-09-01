@@ -1,16 +1,16 @@
 class RpmBuildNode
   MAIN_KEY_FIELDS = [:id, :host]
-  MODEL_LIST = "#{self.name}:all"
+  REDIS_NAMESPACE = self.name
+  LIST_OF_OBJECTS = "#{REDIS_NAMESPACE}:all"
 
   TTL = 120
 
   %w(
     id
+    host
     user_id
     system
-    worker_count
-    busy_workers
-    host
+    busy
     query_string
     last_build_id
   ).each { |attr| attr_reader attr }
@@ -24,11 +24,10 @@ class RpmBuildNode
   def self.create_or_update(opts = {})
     $redis.with do |r|
       key = MAIN_KEY_FIELDS.map { |key| opts[key] }.join(':')
-      redis_name = "RpmBuildNode:#{key}"
-      data = JSON.parse(r.get(redis_name) || '{}').merge(opts.stringify_keys)
+      redis_name = "#{REDIS_NAMESPACE}:#{key}"
       r.multi do
-        r.sadd MODEL_LIST, key
-        r.setex redis_name, TTL, Oj.dump(data)
+        r.sadd LIST_OF_OBJECTS, key
+        r.setex redis_name, TTL, Oj.dump(opts, mode: :compat)
       end
     end
   end
@@ -36,9 +35,10 @@ class RpmBuildNode
   def self.all
     Enumerator.new do |y|
       $redis.with do |r|
-        r.smembers(MODEL_LIST).each do |key|
-          data = JSON.parse(r.get("RpmBuildNode:#{key}")) rescue nil
-          next if !data
+        r.smembers(LIST_OF_OBJECTS).each do |key|
+          json = r.get("#{REDIS_NAMESPACE}:#{key}")
+          next if !json
+          data = JSON.parse(json)
           y << new(data)
         end
       end
@@ -60,9 +60,9 @@ class RpmBuildNode
 
   def self.cleanup
     $redis.with do |r|
-      r.smembers(MODEL_LIST).each do |key|
-        item = "RpmBuildNode:#{key}"
-        r.srem MODEL_LIST, key if !r.exists(item)
+      r.smembers(LIST_OF_OBJECTS).each do |key|
+        item = "#{REDIS_NAMESPACE}:#{key}"
+        r.srem LIST_OF_OBJECTS, key if !r.exists(item)
       end
     end
   end
