@@ -49,11 +49,11 @@ class RpmBuildNode
     systems, others, busy = 0, 0, 0
     all.each do |n|
       if n.system
-        systems += n.worker_count
+        systems += 1
       else
-        others += n.worker_count
+        others += 1
       end
-      busy += n.busy_workers
+      busy += 1 if n.busy
     end
     { systems: systems, others: others, busy: busy }
   end
