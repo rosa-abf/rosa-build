@@ -16,7 +16,7 @@ class Api::V1::JobsController < Api::V1::BaseController
           BuildList.where.not(id: shifted_build_lists)
         end
         build_lists = build_lists.scoped_to_arch(arch_ids).for_platform(platform_ids).
-        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS])
+        for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS]).where(builder_id: nil)
 
         if current_user.system?
           build_lists = build_lists.where(external_nodes: ["", nil, "everything"])
