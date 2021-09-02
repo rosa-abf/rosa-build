@@ -19,7 +19,7 @@ class Api::V1::JobsController < Api::V1::BaseController
         for_status([BuildList::BUILD_PENDING, BuildList::RERUN_TESTS])
 
         if current_user.system?
-          build_lists = build_lists.where("external_nodes != 'owned'")
+          build_lists = build_lists.where(external_nodes: ["", nil, "everything"])
           uid = build_lists.where(mass_build_id: nil).pluck('DISTINCT user_id').sample
           if !uid
             uid = build_lists.pluck('DISTINCT user_id').sample
