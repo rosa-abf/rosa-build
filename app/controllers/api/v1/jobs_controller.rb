@@ -87,7 +87,7 @@ class Api::V1::JobsController < Api::V1::BaseController
   def logs
     name = params[:name]
     if name.start_with?('abfworker::rpm-worker-')
-      if current_user.system? || current_user.id == BuildList.find_by_id(id: name.split('-').second).try(:builder_id)
+      if current_user.system? || current_user.id == BuildList.find_by_id(name.split('-').second).try(:builder_id)
         $redis.with { |r| r.setex name, 15, params[:logs] }
       end
     end
