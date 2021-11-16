@@ -1,5 +1,5 @@
 class Arch < ActiveRecord::Base
-  DEFAULT = %w[i586 x86_64]
+  DEFAULT = %w[i686 x86_64 aarch64]
 
   has_many :build_lists, dependent: :destroy
 
