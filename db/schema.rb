@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210823145116) do
+ActiveRecord::Schema.define(version: 20220227155803) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -363,7 +363,7 @@ ActiveRecord::Schema.define(version: 20210823145116) do
     t.integer  "project_id"
     t.string   "project_version", :limit=>255
     t.string   "commit_hash",     :limit=>255
-    t.string   "params",          :limit=>255
+    t.text     "params"
     t.string   "main_script",     :limit=>255
     t.text     "results"
     t.integer  "arch_id"
@@ -380,7 +380,7 @@ ActiveRecord::Schema.define(version: 20210823145116) do
     t.datetime "updated_at"
     t.text     "description"
     t.integer  "project_id"
-    t.string   "params",           :limit=>255
+    t.text     "params"
     t.string   "main_script",      :limit=>255
     t.integer  "time_living"
     t.integer  "autostart_status"
