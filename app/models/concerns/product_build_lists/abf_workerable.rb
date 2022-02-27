@@ -73,6 +73,7 @@ module ProductBuildLists::AbfWorkerable
       'PROJECT'         => project.name_with_owner,
       'PROJECT_VERSION' => project_version,
       'COMMIT_HASH'     => commit_hash,
+      'API_TOKEN'       => User.find('iso_builder_system').authentication_token
     }
     if product.platform.hidden?
       token = product.platform.tokens.by_active.where(description: CACHED_CHROOT_TOKEN_DESCRIPTION).first
