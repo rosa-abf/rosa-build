@@ -25,7 +25,7 @@ class ProductBuildList < ActiveRecord::Base
             :main_script,
             :arch,    :arch_id,
             presence: true
-  validates :main_script, :params, length: { maximum: 255 }
+  validates :main_script, length: { maximum: 255 }
 
   attr_accessor :base_url, :product_name
 

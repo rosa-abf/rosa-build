@@ -12,7 +12,7 @@ class Product < ActiveRecord::Base
             length: { maximum: 100 }
 
   validates :project, presence: true
-  validates :main_script, :params, length: { maximum: 255 }
+  validates :main_script, length: { maximum: 255 }
 
   scope :recent, -> { order(:name) }
 
