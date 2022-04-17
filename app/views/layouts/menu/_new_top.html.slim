@@ -25,6 +25,12 @@ nav.navbar.navbar-inverse.top_menu role = "navigation"
             i.fa.visible-sm-inline-block.fa-2x.fa-circle-o
             span.hidden-sm
               = " Repoclosure"
+        li
+          a href="http://jenkins.rosalinux.ru" target="_blank"
+            i.fa.hidden-sm.fa-gears
+            i.fa.visible-sm-inline-block.fa-2x.fa-gears
+            span.hidden-sm
+              = " Jenkins"
         - if current_user.try(:admin?)
           li class=top_menu_class('admin')
             a href=admin_users_path
