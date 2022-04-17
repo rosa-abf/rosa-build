@@ -20,8 +20,8 @@
           th= t('activerecord.attributes.build_list.id')
           th= t('activerecord.attributes.build_list.status')
           th= t('activerecord.attributes.build_list.project')
-          th= t('diff')
           th= t('activerecord.attributes.build_list.project_version')
+          th= t('diff')
           th= t('activerecord.attributes.build_list.save_to_repository')
           th= t('activerecord.attributes.build_list.arch_short')
           th= t('activerecord.attributes.build_list.user')
@@ -59,13 +59,13 @@
           td ng-show = 'bl.project'
             a[ ng-href = '{{bl.project.url}}' ] {{bl.project.name_with_owner}}
 
+          / project_version
+          td[] {{bl.version_release}}
+
           / diff
           td
             a ng-href = '{{bl.version_link_url}}' ng-show = 'bl.project'
               | {{bl.version_link_text}}
-
-          / project_version
-          td[] {{bl.version_release}}
 
           / save_to_repository
           td
