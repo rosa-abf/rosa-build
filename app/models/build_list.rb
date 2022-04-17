@@ -195,7 +195,7 @@ class BuildList < ActiveRecord::Base
          (transition.to == BUILD_PENDING && transition.from != WAITING_FOR_RESPONSE)
         $redis.with { |r| r.srem('abf_worker:shifted_build_lists', build_list.id) }
       end
-      if transition.from == RERUN_TESTS
+      if transition.to == RERUN_TESTS
         self.builder_id = nil
         self.save
       end
