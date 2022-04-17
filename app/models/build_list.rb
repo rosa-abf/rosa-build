@@ -196,8 +196,8 @@ class BuildList < ActiveRecord::Base
         $redis.with { |r| r.srem('abf_worker:shifted_build_lists', build_list.id) }
       end
       if transition.to == RERUN_TESTS
-        self.builder_id = nil
-        self.save
+        build_list.builder_id = nil
+        build_list.save
       end
     end
     after_transition on: :cancel, do: :cancel_job
