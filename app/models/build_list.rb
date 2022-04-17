@@ -197,6 +197,7 @@ class BuildList < ActiveRecord::Base
       end
       if transition.from == RERUN_TESTS
         self.builder_id = nil
+        self.save
       end
     end
     after_transition on: :cancel, do: :cancel_job
