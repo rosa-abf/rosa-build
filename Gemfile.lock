@@ -484,7 +484,7 @@ GEM
       activesupport
       i18n
     timecop (0.7.4)
-    tzinfo (1.2.9)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     uglifier (2.7.1)
       execjs (>= 0.3.0)
