@@ -14,15 +14,15 @@ gem 'resque'
 gem 'resque-status'
 gem 'resque_mailer'
 gem 'resque-scheduler', '~> 2.5.4'
-gem 'perform_later', git: 'git://github.com/KensoDev/perform_later.git' # should be after resque_mailer
+gem 'perform_later', git: 'https://github.com/KensoDev/perform_later.git' # should be after resque_mailer
 gem 'russian'
 gem 'state_machines-activerecord'
 gem 'redis-rails'
 
 gem 'ngmin-rails'
 
-gem 'grack', git: 'git://github.com/rosa-abf/grack.git'
-gem 'grit', git: 'git://github.com/rosa-abf/grit.git', branch: 'rosa'
+gem 'grack', git: 'https://github.com/rosa-abf/grack.git'
+gem 'grit', git: 'https://github.com/rosa-abf/grit.git', branch: 'rosa'
 gem 'charlock_holmes'
 gem 'github-linguist', require: 'linguist'
 gem 'diff-display'

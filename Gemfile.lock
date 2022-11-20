@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/KensoDev/perform_later.git
+  remote: https://github.com/KensoDev/perform_later.git
   revision: afd40794aa7101c8e73e9f105a064dd9bec47e31
   specs:
     perform_later (1.3.0)
@@ -9,14 +9,14 @@ GIT
       resque-scheduler
 
 GIT
-  remote: git://github.com/rosa-abf/grack.git
+  remote: https://github.com/rosa-abf/grack.git
   revision: 59e9591d54790a41e9d08469b4202a7bd8c07f1d
   specs:
     grack (0.1.0)
       rack
 
 GIT
-  remote: git://github.com/rosa-abf/grit.git
+  remote: https://github.com/rosa-abf/grit.git
   revision: 8c583019e9acbd23405c09ced09a5f2d00686638
   branch: rosa
   specs:
@@ -235,7 +235,7 @@ GEM
       mimemagic (~> 0.3.0)
       terrapin (~> 0.6.0)
     pg (0.18.2)
-    posix-spawn (0.3.13)
+    posix-spawn (0.3.15)
     puma (5.5.1)
       nio4r (~> 2.0)
     pundit (1.0.1)
@@ -572,4 +572,4 @@ DEPENDENCIES
   will_paginate
 
 BUNDLED WITH
-   1.17.3
+   2.3.25
