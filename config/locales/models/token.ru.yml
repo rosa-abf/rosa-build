@@ -6,6 +6,8 @@ ru:
       about: Токен платформы
       withdraw: Отозвать
       withdraw_confirm: Уверены, что хотите отозвать токен?
+      reactivate: Реактивировать
+      reactivate_confirm: Уверены, что хотите реактивировать токен?
 
       statuses:
         active: Активный
@@ -17,6 +19,8 @@ ru:
       save_error: Не удалось добавить токен
       withdraw_success: Токен успешно отозван!
       withdraw_fail: Не удалось отозвать токен!
+      reactivation_success: Токен успешно реактивирован!
+      reactivation_fail: Не удалось реактивировать токен!
 
   activerecord:
     models:

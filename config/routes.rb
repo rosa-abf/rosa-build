@@ -54,6 +54,12 @@ Rails.application.routes.draw do
         }
         resources :maintainers, only: [ :index ]
       end
+      resources :tokens, except: %i(edit new) do
+        member {
+          post :activate
+          post :deactivate
+        }
+      end
       resources :repositories, only: [:show, :update, :destroy] do
         member {
           get     :projects
@@ -211,6 +217,7 @@ Rails.application.routes.draw do
       resources :tokens, only: [:create, :index, :show, :new] do
         member do
           post :withdraw
+          post :reactivate
         end
       end
       resources :products do

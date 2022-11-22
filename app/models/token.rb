@@ -16,6 +16,9 @@ class Token < ActiveRecord::Base
     event :block do
       transition [:active, :blocked] => :blocked
     end
+    event :unblock do
+      transition [:active, :blocked] => :active
+    end
   end
 
   protected

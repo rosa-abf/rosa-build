@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220227155803) do
+ActiveRecord::Schema.define(version: 20220605132041) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -268,6 +268,7 @@ ActiveRecord::Schema.define(version: 20220227155803) do
     t.integer  "build_priority",          :default=>50
     t.boolean  "sound_notifications",     :default=>true
     t.boolean  "hide_email",              :default=>true, :null=>false
+    t.boolean  "access_to_token_api",     :default=>false
   end
 
   create_table "invites", force: :cascade do |t|

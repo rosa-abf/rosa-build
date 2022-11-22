@@ -6,6 +6,8 @@ en:
       about: Token of platform
       withdraw: Withdraw
       withdraw_confirm: Are you sure you want to withdraw this token?
+      reactivate: Reactivate
+      reactivate_confirm: Are you sure you want to reactivate this token?
 
       statuses:
         active: Active
@@ -17,6 +19,8 @@ en:
       save_error: Unable to add token
       withdraw_success: Token withdrawed
       withdraw_fail: Unable to withdraw token
+      reactivation_success: Token reactivated
+      reactivation_fail: Unable to reactivate token
 
   activerecord:
     models:

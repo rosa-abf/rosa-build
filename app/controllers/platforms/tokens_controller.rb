@@ -5,8 +5,10 @@ class Platforms::TokensController < Platforms::BaseController
 
   def index
     authorize @platform, :local_admin_manage?
-    @tokens = @platform.tokens.includes(:creator, :updater)
-                              .paginate(per_page: 20, page: params[:page])
+    @tokens = @platform.tokens
+    @tokens = @tokens.where('description ilike ?', "%#{params[:token][:description]}%") if params[:token].try(:[], :description)
+    @tokens = @tokens.includes(:creator, :updater)
+                     .paginate(per_page: 20, page: params[:page])
   end
 
   def show
@@ -19,6 +21,16 @@ class Platforms::TokensController < Platforms::BaseController
       redirect_to :back, notice: t('flash.tokens.withdraw_success')
     else
       redirect_to :back, notice: t('flash.tokens.withdraw_fail')
+    end
+  end
+
+  def reactivate
+    if @token.unblock
+      @token.updater = current_user
+      @token.save
+      redirect_to :back, notice: t('flash.tokens.reactivation_success')
+    else
+      redirect_to :back, notice: t('flash.tokens.reactivation_fail')
     end
   end
 

@@ -43,3 +43,8 @@
                   withdraw_platform_token_path(@platform, @token),
                   method: :post, class: 'btn btn-danger',
                   data: { confirm: t('layout.tokens.withdraw_confirm') }
+    - if @token.blocked?
+        = link_to t('layout.tokens.reactivate'),
+                  reactivate_platform_token_path(@platform, @token),
+                  method: :post, class: 'btn btn-success',
+                  data: { confirm: t('layout.tokens.reactivate_confirm') }
