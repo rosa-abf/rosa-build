@@ -15,7 +15,7 @@ class User < Avatar
   NAME_REGEXP = /[a-z0-9_]+/
 
   devise :database_authenticatable, :registerable, :recoverable,
-         :rememberable, :validatable, :lockable, :confirmable
+         :rememberable, :validatable, :lockable
 
   has_one :notifier,       class_name: 'SettingsNotifier',  dependent: :destroy #:notifier
   has_one :builds_setting, class_name: 'UserBuildsSetting', dependent: :destroy
