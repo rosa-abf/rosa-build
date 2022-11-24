@@ -1,21 +1,13 @@
 class Api::V1::TokensController < Api::V1::BaseController
   before_action :authenticate_user!
   before_action :load_platform_by_name_or_id, only: %i(index create)
-  before_action :load_token, except: %i(index create)
+  before_action :load_token, except: %i(index create hidden_platforms)
 
   def index
     authorize :token_api
     tokens = @platform.tokens
     tokens = tokens.where("description like ?", "%#{params[:description]}%") if params[:description].present?
-    tokens = tokens.find_each.map do |token|
-      {
-        platform: @platform.name,
-        id: token.id,
-        description: token.description,
-        status: token.status,
-        created_at: token.created_at.to_i
-      }
-    end.sort_by { |x| -x[:created_at] }
+    tokens = tokens.find_each.map { |token| token_json(token) }.sort_by { |x| -x[:created_at] }
     render json: tokens
   end
 
@@ -70,6 +62,13 @@ class Api::V1::TokensController < Api::V1::BaseController
     else
       render_json_response @token, "Failed to deactivate token", 422
     end
+  end
+
+  def hidden_platforms
+    authorize :token_api
+    render json: {
+      platforms: Platform.main.where(visibility: Platform::VISIBILITY_HIDDEN).pluck(:name)
+    }
   end
 
   private

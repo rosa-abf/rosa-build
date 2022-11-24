@@ -55,6 +55,9 @@ Rails.application.routes.draw do
         resources :maintainers, only: [ :index ]
       end
       resources :tokens, except: %i(edit new) do
+        collection {
+          get :hidden_platforms
+        }
         member {
           post :activate
           post :deactivate
