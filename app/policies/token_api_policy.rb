@@ -4,6 +4,7 @@ class TokenApiPolicy < ApplicationPolicy
     user.access_to_token_api
   end
 
+  alias_method :allowed?,          :index?
   alias_method :show?,             :index?
   alias_method :create?,           :index?
   alias_method :update?,           :index?

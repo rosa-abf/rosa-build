@@ -57,6 +57,7 @@ Rails.application.routes.draw do
       resources :tokens, except: %i(edit new) do
         collection {
           get :hidden_platforms
+          get :allowed
         }
         member {
           post :activate

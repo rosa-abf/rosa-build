@@ -1,7 +1,7 @@
 class Api::V1::TokensController < Api::V1::BaseController
   before_action :authenticate_user!
   before_action :load_platform_by_name_or_id, only: %i(index create)
-  before_action :load_token, except: %i(index create hidden_platforms)
+  before_action :load_token, except: %i(index create hidden_platforms allowed)
 
   def index
     authorize :token_api
@@ -9,6 +9,10 @@ class Api::V1::TokensController < Api::V1::BaseController
     tokens = tokens.where("description like ?", "%#{params[:description]}%") if params[:description].present?
     tokens = tokens.find_each.map { |token| token_json(token) }.sort_by { |x| -x[:created_at] }
     render json: tokens
+  end
+
+  def allowed
+    head :ok
   end
 
   def show
