@@ -12,6 +12,7 @@ class Api::V1::TokensController < Api::V1::BaseController
   end
 
   def allowed
+    authorize :token_api
     head :ok
   end
 
