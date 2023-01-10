@@ -4,15 +4,16 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   before_action :load_advisory,           only: %i(show update attach_build_list destroy)
 
   def index
-    authorize :advisory
+    authorize :advisory_api
     @advisories = Advisory.all.paginate(paginate_params)
   end
 
   def show
+    authorize :advisory_api
   end
 
   def create
-    authorize :advisory
+    authorize :advisory_api
     projects = JSON.parse(request.body.string).try(:[], 'advisory').try(:[], 'projects')
     result = AdvisoryService::Create.call(
       advisory_params: advisory_params,
@@ -26,13 +27,12 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   end
 
   def update
+    authorize :advisory_api
     update_subject @advisory
   end
 
   def destroy
-    @advisory.platforms.each do |pl|
-      authorize pl, :local_admin_manage?
-    end
+    authorize :advisory_api
     destroy_subject @advisory
   end
 
@@ -43,8 +43,8 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   end
 
   def load_advisory
-    @advisory = Advisory.find_by(advisory_id: params[:id]) if params[:id]
-    authorize @advisory if @advisory
+    @advisory = Advisory.find_by(advisory_id: params[:id])
+    raise ActiveRecord::RecordNotFound unless @advisory
   end
 
 end

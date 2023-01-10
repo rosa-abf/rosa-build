@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20220605132041) do
+ActiveRecord::Schema.define(version: 20230110075556) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -237,38 +237,39 @@ ActiveRecord::Schema.define(version: 20220605132041) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "name",                    :limit=>255
-    t.string   "email",                   :limit=>255, :default=>"", :null=>false, :index=>{:name=>"index_users_on_email", :unique=>true}
-    t.string   "encrypted_password",      :limit=>128, :default=>"", :null=>false
-    t.string   "reset_password_token",    :limit=>255, :index=>{:name=>"index_users_on_reset_password_token", :unique=>true}
+    t.string   "name",                     :limit=>255
+    t.string   "email",                    :limit=>255, :default=>"", :null=>false, :index=>{:name=>"index_users_on_email", :unique=>true}
+    t.string   "encrypted_password",       :limit=>128, :default=>"", :null=>false
+    t.string   "reset_password_token",     :limit=>255, :index=>{:name=>"index_users_on_reset_password_token", :unique=>true}
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "ssh_key"
-    t.string   "uname",                   :limit=>255, :index=>{:name=>"index_users_on_uname", :unique=>true}
-    t.string   "role",                    :limit=>255
-    t.string   "language",                :limit=>255, :default=>"en"
-    t.integer  "own_projects_count",      :default=>0, :null=>false
+    t.string   "uname",                    :limit=>255, :index=>{:name=>"index_users_on_uname", :unique=>true}
+    t.string   "role",                     :limit=>255
+    t.string   "language",                 :limit=>255, :default=>"en"
+    t.integer  "own_projects_count",       :default=>0, :null=>false
     t.text     "professional_experience"
-    t.string   "site",                    :limit=>255
-    t.string   "company",                 :limit=>255
-    t.string   "location",                :limit=>255
-    t.string   "avatar_file_name",        :limit=>255
-    t.string   "avatar_content_type",     :limit=>255
+    t.string   "site",                     :limit=>255
+    t.string   "company",                  :limit=>255
+    t.string   "location",                 :limit=>255
+    t.string   "avatar_file_name",         :limit=>255
+    t.string   "avatar_content_type",      :limit=>255
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
-    t.integer  "failed_attempts",         :default=>0
-    t.string   "unlock_token",            :limit=>255, :index=>{:name=>"index_users_on_unlock_token", :unique=>true}
+    t.integer  "failed_attempts",          :default=>0
+    t.string   "unlock_token",             :limit=>255, :index=>{:name=>"index_users_on_unlock_token", :unique=>true}
     t.datetime "locked_at"
-    t.string   "confirmation_token",      :limit=>255, :index=>{:name=>"index_users_on_confirmation_token", :unique=>true}
+    t.string   "confirmation_token",       :limit=>255, :index=>{:name=>"index_users_on_confirmation_token", :unique=>true}
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.string   "authentication_token",    :limit=>255, :index=>{:name=>"index_users_on_authentication_token"}
-    t.integer  "build_priority",          :default=>50
-    t.boolean  "sound_notifications",     :default=>true
-    t.boolean  "hide_email",              :default=>true, :null=>false
-    t.boolean  "access_to_token_api",     :default=>false
+    t.string   "authentication_token",     :limit=>255, :index=>{:name=>"index_users_on_authentication_token"}
+    t.integer  "build_priority",           :default=>50
+    t.boolean  "sound_notifications",      :default=>true
+    t.boolean  "hide_email",               :default=>true, :null=>false
+    t.boolean  "access_to_token_api",      :default=>false
+    t.boolean  "access_to_advisories_api", :default=>false
   end
 
   create_table "invites", force: :cascade do |t|
