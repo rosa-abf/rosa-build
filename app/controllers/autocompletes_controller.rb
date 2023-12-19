@@ -51,7 +51,7 @@ class AutocompletesController < ApplicationController
             path:            platform_repository_path(platform, repository)
           }
       end
-    end if save_to_platform.personal?
+    end
     render json: results.to_json
   end
 

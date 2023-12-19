@@ -9,7 +9,14 @@ class MassBuildPolicy < ApplicationPolicy
   def create?
     is_admin? || owner?(record.save_to_platform) || local_admin?(record.save_to_platform)
   end
-  alias_method :publish?, :create?
+
+  def publish?
+    create? && (!record.save_to_platform.main? || record.extra_repositories.empty?)
+  end
+
+  def publish_into_testing?
+    create?
+  end
 
   def cancel?
     !record.stop_build && create?

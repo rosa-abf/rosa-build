@@ -5,6 +5,7 @@ en:
       show_fail_reason_link: List of failed builds with reasons
       recreate: Recreate mass build
       publish_success: Publish success builds
+      publish_into_testing: Publish into testing
       publish_test_failed: Publish test failed builds
       repositories: Repositories
       extended_data: Extended data
@@ -51,7 +52,9 @@ en:
         projects_list: Projects list
         build_for_platform: Build for platform
         external_nodes: External nodes
-
+    errors:
+      mass_build:
+        no_default_for_extra_repositories_main: "can't equal default"
   simple_form:
     labels:
       mass_build:

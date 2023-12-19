@@ -51,11 +51,11 @@
             include_blank: false,
             input_html:    { 'ng-model' => 'newMassBuildCtrl.build_for_platform_id' }
 
-          = render 'shared/autocomplete_form',
-                   field:       :ExtraRepositories,
-                   placeholder: 'uxteam_personal',
-                   ctrl_as:     'newMassBuildCtrl',
-                   hash:        'mass_build'
+        = render 'shared/autocomplete_form',
+                 field:       :ExtraRepositories,
+                 placeholder: 'uxteam_personal',
+                 ctrl_as:     'newMassBuildCtrl',
+                 hash:        'mass_build'
 
         = render 'shared/autocomplete_form',
                  field:       :ExtraMassBuilds,

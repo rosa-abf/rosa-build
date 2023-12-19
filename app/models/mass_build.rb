@@ -63,6 +63,12 @@ class MassBuild < ActiveRecord::Base
   validates :auto_publish_status,
             inclusion:              { in: AUTO_PUBLISH_STATUSES }
 
+  validate do
+    if save_to_platform.main? && !extra_repositories.empty? && auto_publish_status == 'default'
+      errors.add(:auto_publish_status, I18n.t("activerecord.errors.mass_build.no_default_for_extra_repositories_main"))
+    end
+  end
+
   validates :increase_release_tag,
             :use_cached_chroot,
             :use_extra_tests,
@@ -77,6 +83,8 @@ class MassBuild < ActiveRecord::Base
     build_pending
     build_started
     build_publish
+    build_publish_into_testing
+    build_published_into_testing
     build_error
     success
     build_canceled
@@ -142,6 +150,15 @@ class MassBuild < ActiveRecord::Base
     publish user, BuildList::TESTS_FAILED
   end
   later :publish_test_failed_builds, queue: :low
+
+  def publish_into_testing(user)
+    builds = build_lists
+    builds.update_all(publisher_id: user.id)
+    builds.find_each(batch_size: 50) do |bl|
+      bl.publish_into_testing if bl.can_publish_into_testing?
+    end
+  end
+  later :publish_into_testing, queue: :low
 
   COUNT_STATUSES.each do |stat|
     stat_count = "#{stat}_count"

@@ -138,6 +138,13 @@
           data:   { confirm: t("layout.confirm") },
           class:  'btn btn-warning'
         hr
+      - if policy(@mass_build).publish_into_testing?
+        = link_to t('layout.mass_builds.publish_into_testing'),
+          publish_into_testing_platform_mass_build_path(@platform, @mass_build.id),
+          method: :post,
+          data:   { confirm: t("layout.confirm") },
+          class:  'btn btn-success'
+        hr
       - if policy(@mass_build).cancel?
         = link_to t('layout.cancel'),
           cancel_platform_mass_build_path(@platform, @mass_build.id),

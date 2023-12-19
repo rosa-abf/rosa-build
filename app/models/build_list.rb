@@ -696,7 +696,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def prepare_extra_repositories
-    if save_to_platform && save_to_platform.main?
+    if save_to_platform && save_to_platform.main? && self.mass_build_id.nil?
       self.extra_repositories = nil
     else
       self.extra_repositories = PlatformPolicy::Scope.new(user, Repository.joins(:platform)).show.

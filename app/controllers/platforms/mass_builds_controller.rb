@@ -2,7 +2,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:index, :get_list] if APP_CONFIG['anonymous_access']
 
-  before_action :find_mass_build, only: %i(show publish cancel get_list show_fail_reason)
+  before_action :find_mass_build, only: %i(show publish publish_into_testing cancel get_list show_fail_reason)
 
   def new
     if params[:mass_build_id].present?
@@ -41,7 +41,12 @@ class Platforms::MassBuildsController < Platforms::BaseController
     else
       @mass_build.publish_success_builds current_user
     end
-    redirect_to(platform_mass_builds_path(@mass_build.save_to_platform), notice: t("flash.platform.publish_success"))
+    redirect_to(platform_mass_build_path(id: @mass_build.id), notice: t("flash.platform.publish_success"))
+  end
+
+  def publish_into_testing
+    @mass_build.publish_into_testing current_user
+    redirect_to(platform_mass_build_path(id: @mass_build.id), notice: t("flash.platform.publish_success"))
   end
 
   def index
