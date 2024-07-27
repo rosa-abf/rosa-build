@@ -206,6 +206,10 @@ class BuildList < ActiveRecord::Base
     after_transition on: :build_success, do: :notify_users,
       unless: ->(build_list) { build_list.auto_publish? || build_list.auto_publish_into_testing? }
 
+    before_transition on: :reject_publish, do: :cleanup_packages_from_testing, if: ->(bl) {
+      bl.status == BUILD_PUBLISHED_INTO_TESTING
+    }
+
     event :place_build do
       transition waiting_for_response: :build_pending
     end
