@@ -204,7 +204,7 @@ class Platform < ActiveRecord::Base
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.clone_relations(self) and c.fs_clone # later with resque
+      c.save and c.clone_relations(self) and c.fs_clone # later with resque
     end
   end
 
@@ -237,9 +237,6 @@ class Platform < ActiveRecord::Base
     end
   end
 
-  def destroy
-    with_skip {super} # avoid cascade XML RPC requests
-  end
   later :destroy, queue: :low
 
   def default_host

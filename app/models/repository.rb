@@ -63,9 +63,7 @@ class Repository < ActiveRecord::Base
   end
 
   def clone_relations(from)
-    with_skip do
-      from.projects.find_each {|p| self.projects << p if self.projects.exclude?(p)}
-    end
+    from.projects.find_each {|p| self.projects << p if self.projects.exclude?(p)}
   end
   later :clone_relations, loner: true, queue: :low
 
@@ -98,7 +96,7 @@ class Repository < ActiveRecord::Base
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.clone_relations(self) # later with resque
+      c.save and c.clone_relations(self) # later with resque
     end
   end
 
@@ -152,9 +150,6 @@ class Repository < ActiveRecord::Base
     end
   end
 
-  def destroy
-    with_skip {super} # avoid cascade XML RPC requests
-  end
   later :destroy, queue: :low
 
   def self.custom_sort(repos)
