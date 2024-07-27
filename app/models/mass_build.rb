@@ -142,7 +142,7 @@ class MassBuild < ActiveRecord::Base
   later :cancel_all, queue: :low
 
   def publish_success_builds(user)
-    publish user, BuildList::SUCCESS, BuildList::FAILED_PUBLISH
+    publish user, BuildList::SUCCESS, BuildList::FAILED_PUBLISH, BuildList::BUILD_PUBLISHED_INTO_TESTING
   end
   later :publish_success_builds, queue: :low
 
