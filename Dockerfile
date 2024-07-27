@@ -4,7 +4,7 @@ WORKDIR /rosa-build
 RUN echo -e "https://mirror.yandex.ru/mirrors/alpine/v3.11/main/\nhttps://mirror.yandex.ru/mirrors/alpine/v3.11/community/" > /etc/apk/repositories
 RUN apk add --no-cache libpq tzdata ca-certificates git icu rpm nodejs redis shared-mime-info && \
     apk add --virtual .ruby-builddeps --no-cache postgresql-dev build-base cmake icu-dev
-RUN gem update --system && gem install bundler
+RUN gem install bundler:2.3.27
 RUN bundle config set --local clean 'true' && bundle config set --local deployment 'true' && \
     bundle config set --local without 'development test' && bundle config set --local no-cache 'true'
 COPY vendor ./vendor
