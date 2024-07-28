@@ -10,7 +10,7 @@ class PlatformService::RepositoryIntegrityChecker
 
   def call
     result = {}
-    Arch.where(name: arches).find_each do |arch|
+    Arch.where(id: arches).find_each do |arch|
       result.merge!(process_arch(arch))
     end
 
