@@ -22,7 +22,11 @@ class PlatformService::RepositoryIntegrityChecker
   private
 
   def process_arch(arch)
-    bls = BuildList.where(save_to_repository_id: repository.id, arch_id: arch.id)
+    bls = BuildList.where(
+      save_to_repository_id: repository.id,
+      arch_id: arch.id,
+      project_id: repository.projects
+    )
     actual_packages = BuildList::Package.where(
       build_list_id: bls,
       actual: true,
@@ -65,7 +69,7 @@ class PlatformService::RepositoryIntegrityChecker
   end
 
   def process_srpms
-    bls = BuildList.where(save_to_repository_id: repository.id)
+    bls = BuildList.where(save_to_repository_id: repository.id, project_id: repository.projects)
     actual_packages = BuildList::Package.where(
       build_list_id: bls,
       actual: true,
