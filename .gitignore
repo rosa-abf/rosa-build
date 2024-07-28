@@ -27,3 +27,4 @@ config/deploy.rb
 envfile
 Gemfile.bak
 Gemfile.lock.bak
+public/integrity

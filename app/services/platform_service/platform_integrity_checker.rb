@@ -22,6 +22,20 @@ class PlatformService::PlatformIntegrityChecker
       result.merge!(PlatformService::RepositoryIntegrityChecker.new(repository, arches).call)
     end
 
-    result
+    by_arches_by_repos = Hash.new { |h, k| h[k] = {} }
+    arches = []
+    repositories = []
+    result.keys.map { |key| key.split('#') }.each do |line|
+      arch, repo = line
+      arches << arch
+      repositories << repo
+      by_arches_by_repos[arch][repo] = result[line.join('#')]
+    end
+
+    {
+      result: by_arches_by_repos,
+      arches: arches.uniq,
+      repositories: repositories.uniq
+    }
   end
 end
