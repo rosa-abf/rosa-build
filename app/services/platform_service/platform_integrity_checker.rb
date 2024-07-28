@@ -9,7 +9,7 @@ class PlatformService::PlatformIntegrityChecker
 
   def call
     arches = if platform.platform_arch_settings.exists?
-               platform.platform_arch_settings.pluck(:arch_id)
+               platform.platform_arch_settings.by_default.pluck(:arch_id)
              else
                Arch.pluck(:id)
              end
