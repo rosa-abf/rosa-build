@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class PlatformService::RepositoryIntegrityChecker
-  attr_reader :repository, :arches
+  attr_reader :repository, :platform, :arches
 
   def initialize(repository, arches)
     @repository = repository
     @arches = arches
+    @platform = repository.platform
   end
 
   def call
@@ -25,7 +26,8 @@ class PlatformService::RepositoryIntegrityChecker
     bls = BuildList.where(
       save_to_repository_id: repository.id,
       arch_id: arch.id,
-      project_id: repository.projects
+      project_id: repository.projects,
+      project_version: platform.default_branch
     )
     actual_packages = BuildList::Package.where(
       build_list_id: bls,
@@ -38,7 +40,7 @@ class PlatformService::RepositoryIntegrityChecker
 
     ['', 'debug_'].each do |prefix|
       repo_name = "#{prefix}#{repository.name}"
-      path = Pathname.new(repository.platform.path).join('repository', arch.name, repo_name)
+      path = Pathname.new(platform.path).join('repository', arch.name, repo_name)
       present_packages = rpms_from_fs(path)
       arch_result = if prefix.empty?
                       {
@@ -69,14 +71,18 @@ class PlatformService::RepositoryIntegrityChecker
   end
 
   def process_srpms
-    bls = BuildList.where(save_to_repository_id: repository.id, project_id: repository.projects)
+    bls = BuildList.where(
+      save_to_repository_id: repository.id,
+      project_id: repository.projects,
+      project_version: platform.default_branch
+    )
     actual_packages = BuildList::Package.where(
       build_list_id: bls,
       actual: true,
       package_type: 'source'
     ).reorder('').distinct.pluck(:fullname)
 
-    path = Pathname.new(repository.platform.path).join('repository', 'SRPMS', repository.name)
+    path = Pathname.new(platform.path).join('repository', 'SRPMS', repository.name)
     present_packages = rpms_from_fs(path)
     res = {
       missing_packages: actual_packages - present_packages,
