@@ -14,6 +14,8 @@ class PlatformService::RepositoryIntegrityChecker
       result.merge!(process_arch(arch))
     end
 
+    result.merge!(process_srpms)
+
     result
   end
 
@@ -21,8 +23,11 @@ class PlatformService::RepositoryIntegrityChecker
 
   def process_arch(arch)
     bls = BuildList.where(save_to_repository_id: repository.id, arch_id: arch.id)
-    actual_packages = BuildList::Package.where(build_list_id: bls, actual: true, package_type: 'binary')
-                                        .reorder('').pluck(:fullname)
+    actual_packages = BuildList::Package.where(
+      build_list_id: bls,
+      actual: true,
+      package_type: 'binary'
+    ).reorder('').pluck(:fullname)
     separated = separate_debug_packages(actual_packages)
 
     result = {}
@@ -57,6 +62,35 @@ class PlatformService::RepositoryIntegrityChecker
     end
 
     result
+  end
+
+  def process_srpms
+    bls = BuildList.where(save_to_repository_id: repository.id)
+    actual_packages = BuildList::Package.where(
+      build_list_id: bls,
+      actual: true,
+      package_type: 'source'
+    ).reorder('').distinct.pluck(:fullname)
+
+    path = Pathname.new(repository.platform.path).join('repository', 'SRPMS', repository.name)
+    present_packages = rpms_from_fs(path)
+    res = {
+      missing_packages: actual_packages - present_packages,
+      extra_packages: present_packages - actual_packages
+    }
+
+    res[:missing_from_build_lists] = BuildList::Package.where(
+      build_list_id: bls,
+      actual: true,
+      package_type: 'source',
+      fullname: res[:missing_packages]
+    ).reorder('').distinct.pluck(:build_list_id)
+
+    res[:missing_from_projects] = BuildList.joins(:project).where(
+      'build_lists.id' => res[:missing_from_build_lists]
+    ).pluck('projects.owner_uname', 'projects.name').map { |x| x.join('/') }
+
+    return { "SRPMS##{repository.name}" => res }
   end
 
   def rpms_from_fs(path)
