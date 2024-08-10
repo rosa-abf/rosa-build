@@ -23,18 +23,15 @@ class PlatformService::RepositoryIntegrityChecker
   private
 
   def process_arch(arch)
-    bls = BuildList.where(
-      save_to_repository_id: repository.id,
-      arch_id: arch.id,
-      project_id: repository.projects,
-      project_version: platform.default_branch
+    _, separated_for_extra = actual_packages(
+      package_type: 'binary',
+      arch_id: arch.id
     )
-    actual_packages = BuildList::Package.where(
-      build_list_id: bls,
-      actual: true,
-      package_type: 'binary'
-    ).reorder('').pluck(:fullname)
-    separated = separate_debug_packages(actual_packages)
+    bls_for_missing, separated_for_missing = actual_packages(
+      package_type: 'binary',
+      arch_id: arch.id,
+      for_version: platform.default_branch
+    )
 
     result = {}
 
@@ -44,17 +41,17 @@ class PlatformService::RepositoryIntegrityChecker
       present_packages = rpms_from_fs(path)
       arch_result = if prefix.empty?
                       {
-                        missing_packages: separated[:repo_packages] - present_packages,
-                        extra_packages: present_packages - separated[:repo_packages]
+                        missing_packages: separated_for_missing[:repo_packages] - present_packages,
+                        extra_packages: present_packages - separated_for_extra[:repo_packages]
                       }
                     else
                       {
-                        missing_packages: separated[:debug_packages] - present_packages,
-                        extra_packages: present_packages - separated[:debug_packages]
+                        missing_packages: separated_for_missing[:debug_packages] - present_packages,
+                        extra_packages: present_packages - separated_for_extra[:debug_packages]
                       }
                     end
       arch_result[:missing_from_build_lists] = BuildList::Package.where(
-        build_list_id: bls,
+        build_list_id: bls_for_missing,
         actual: true,
         package_type: 'binary',
         fullname: arch_result[:missing_packages]
@@ -71,26 +68,25 @@ class PlatformService::RepositoryIntegrityChecker
   end
 
   def process_srpms
-    bls = BuildList.where(
-      save_to_repository_id: repository.id,
-      project_id: repository.projects,
-      project_version: platform.default_branch
+    _, actual_for_extra = actual_packages(
+      package_type: 'source',
+      separate: false,
     )
-    actual_packages = BuildList::Package.where(
-      build_list_id: bls,
-      actual: true,
-      package_type: 'source'
-    ).reorder('').distinct.pluck(:fullname)
+    bls_for_missing, actual_for_missing = actual_packages(
+      package_type: 'source',
+      separate: false,
+      for_version: platform.default_branch
+    )
 
     path = Pathname.new(platform.path).join('repository', 'SRPMS', repository.name)
     present_packages = rpms_from_fs(path)
     res = {
-      missing_packages: actual_packages - present_packages,
-      extra_packages: present_packages - actual_packages
+      missing_packages: actual_for_missing - present_packages,
+      extra_packages: present_packages - actual_for_extra
     }
 
     res[:missing_from_build_lists] = BuildList::Package.where(
-      build_list_id: bls,
+      build_list_id: bls_for_missing,
       actual: true,
       package_type: 'source',
       fullname: res[:missing_packages]
@@ -110,6 +106,32 @@ class PlatformService::RepositoryIntegrityChecker
     end
 
     result
+  end
+
+  def actual_packages(package_type:, separate: true, arch_id: nil, for_version: nil)
+    bls = BuildList.where(
+      save_to_repository_id: repository.id,
+      project_id: repository.projects
+    )
+
+    if for_version
+      bls = bls.where(project_version: for_version)
+    end
+    if arch_id
+      bls = bls.where(arch_id: arch_id)
+    end
+
+    actual_packages = BuildList::Package.where(
+      build_list_id: bls,
+      actual: true,
+      package_type: package_type
+    ).reorder('').distinct.pluck(:fullname)
+
+    if separate
+      [bls, separate_debug_packages(actual_packages)]
+    else
+      [bls, actual_packages]
+    end
   end
 
   def separate_debug_packages(list)
