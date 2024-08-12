@@ -76,7 +76,7 @@ class PlatformContent
       end
     else
       term = (term || '').strip.gsub(/[\\\/]+/, '')
-                               .gsub(/[^\w\-\+\.]/, '_')
+                               .gsub(/[^\w\-\+\.\~]/, '_')
       results = Dir.glob(File.join(platform.path, path, "*#{term}*"))
       if term
         results = results.sort_by(&:length)
@@ -98,7 +98,7 @@ class PlatformContent
           # Strip out the non-ascii character
           p.gsub(/[\\\/]+/, '')
            .gsub(/^[\.]+/, '')
-           .gsub(/[^\w\-\+\.]/, '_')
+           .gsub(/[^\w\-\+\.\~]/, '_')
         }.join(File::SEPARATOR)
   end
 
