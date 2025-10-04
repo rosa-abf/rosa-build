@@ -245,7 +245,7 @@ module AbfWorkerService
           order(:updated_at)
         locked_ids  = $redis.with { |r| r.lrange(LOCKED_BUILD_LISTS, 0, -1) }
         build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) if locked_ids.present?
-        build_lists = build_lists.limit(300)
+        build_lists = build_lists.limit(2500)
         filter_build_lists_without_packages(build_lists.to_a)
       end
     end

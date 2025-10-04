@@ -667,7 +667,7 @@ class BuildList < ActiveRecord::Base
 
   def insert_token_to_path(path, platform)
     if platform.hidden?
-      path.gsub(/^http:\/\//, "http://#{user.authentication_token}:@")
+      path.gsub(/^https:\/\//, "https://#{user.authentication_token}:@")
     else
       path
     end

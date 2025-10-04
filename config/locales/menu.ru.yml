@@ -20,9 +20,9 @@ ru:
     tos_url: http://www.rosalab.ru/about
     support: Служба поддержки
     developer_api: API для разработчиков
-    developer_api_url: http://abf-doc.rosalinux.ru
+    developer_api_url: http://abf-doc.rosa.ru
     abf_blog: Блог ABF
-    abf_blog_url: http://abf-blog.rosalinux.ru
+    abf_blog_url: http://abf-blog.rosa.ru
     abf_ideas: Идеи для ABF
   project_menu:
     code: Код
