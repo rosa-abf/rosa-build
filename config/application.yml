@@ -3,7 +3,7 @@ production: &production
   tmpfs_path: /tmp
   root_path: /share
   git_path: /home/mnt/gitstore
-  do-not-reply-email: do-not-reply@rosalinux.ru
+  do-not-reply-email: rosalinux-bot.abf@rosa.ru
   project_name: ABF
   github_services:
     ip: 10.76.0.242
