@@ -64,8 +64,15 @@ Rails.application.configure do
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { host: 'abf.io' }
+  config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
-    address: 'mail.rosalinux.ru'
+    address: 'smtp.yandex.ru',
+    port: 587,
+    domain: "rosa.ru",
+    user_name: ENV['MAILER_USER'],
+    password: ENV['MAILER_PASSWORD'],
+    authentication: "plain",
+    enable_starttls: true
   }
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation cannot be found).
