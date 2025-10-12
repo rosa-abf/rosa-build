@@ -429,6 +429,8 @@ class BuildList < ActiveRecord::Base
     auto_publish? && can_publish? && has_new_packages? && can_publish_into_repository?
   end
 
+  alias_method :orig_can_publish?, :can_publish?
+
   def can_publish?
     super &&
       valid_branch_for_publish? &&
@@ -436,8 +438,34 @@ class BuildList < ActiveRecord::Base
       save_to_repository.projects.exists?(id: project_id)
   end
 
+  alias_method :orig_can_publish_into_testing?, :can_publish_into_testing?
+
   def can_publish_into_testing?
     super && valid_branch_for_publish?
+  end
+
+  def top_of_chain?
+    extra_build_lists.length.positive? && BuildList.where("extra_build_lists like E'%- ?\n%'", id).count.zero?
+  end
+
+  def can_publish_chain?
+    orig_can_publish? &&
+      valid_branch_for_publish? &&
+      save_to_repository.projects.exists?(id: project_id) &&
+      BuildList.where(id: extra_build_lists).all? { |bl| bl.can_publish_chain? }
+  end
+
+  def can_publish_chain_into_testing?
+    orig_can_publish_into_testing? && valid_branch_for_publish? &&
+      BuildList.where(id: extra_build_lists).all? { |bl| bl.can_publish_chain_into_testing? }
+  end
+
+  def publish_chain
+    Resque.enqueue(PublishChainJob, id, publisher.id)
+  end
+
+  def publish_chain_into_testing
+    Resque.enqueue(PublishChainJob, id, publisher.id, true)
   end
 
   def extra_build_lists_published?

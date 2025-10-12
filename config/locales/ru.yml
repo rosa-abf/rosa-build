@@ -32,9 +32,12 @@ ru:
     true_: Да
     false_: Нет
     publish: Опубликовать
+    publish_chain: Опубликовать цепочку
+    publish_chain_again: Опубликовать цепочку снова
     publish_again: Опубликовать снова
     publish_again_warning: Повторная публикация может привести к нарушению зависимостей в репозитории. Будьте осторожны!
     publish_into_testing: '[testing] Опубликовать'
+    publish_chain_into_testing: '[testing] Опубликовать цепочку'
     reject_publish: Отклонить
     add: Добавить
     upload: Загрузить

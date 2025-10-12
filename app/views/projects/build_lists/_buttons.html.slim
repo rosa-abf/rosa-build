@@ -24,6 +24,37 @@
   class:        'btn btn-primary roffset5 boffset5',
   'ng-show' =>  "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status != #{BuildList::TESTS_FAILED} && build_list.status != #{BuildList::BUILD_PUBLISHED}"
 
+= link_to t('layout.publish_chain'),
+  publish_chain_build_list_path(build_list),
+  method:      :put,
+  data:         { confirm: t('layout.confirm') },
+  name:         'publish_chain',
+  class:        'btn btn-primary roffset5 boffset5',
+  'ng-show' =>  "build_list.top_of_chain && build_list.can_publish_in_future && build_list.can_publish_chain && build_list.status != #{BuildList::TESTS_FAILED} && build_list.status != #{BuildList::BUILD_PUBLISHED}"
+
+= link_to t('layout.publish_chain_again'),
+  publish_chain_build_list_path(build_list),
+  method:      :put,
+  data:         { confirm: t("layout.publish_again_warning") },
+  name:         'publish_chain',
+  class:        'btn btn-primary roffset5 boffset5',
+  'ng-show' =>  "build_list.top_of_chain && build_list.can_publish_chain && build_list.status == #{BuildList::BUILD_PUBLISHED}"
+
+= link_to t('layout.publish_chain'),
+  publish_chain_build_list_path(build_list),
+  method:      :put,
+  data:         { confirm: t('layout.build_lists.tests_failed') },
+  name:         'publish_chain',
+  class:        'btn btn-primary roffset5 boffset5',
+  'ng-show' =>  "build_list.top_of_chain && build_list.can_publish_in_future && build_list.can_publish_chain && build_list.status == #{BuildList::TESTS_FAILED}"
+
+= link_to t('layout.publish_chain_into_testing'),
+  publish_chain_into_testing_build_list_path(build_list),
+  method:      :put,
+  data:        { confirm: t('layout.confirm') },
+  class:       'btn btn-primary roffset5 boffset5',
+  'ng-show' => 'build_list.can_publish_into_testing'
+
 = link_to t('layout.publish_into_testing'),
   publish_into_testing_build_list_path(build_list),
   method:      :put,

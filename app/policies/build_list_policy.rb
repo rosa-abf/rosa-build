@@ -43,6 +43,21 @@ class BuildListPolicy < ApplicationPolicy
   end
   alias_method :update_type?, :publish?
 
+  def publish_chain?
+    return false unless record.top_of_chain? && record.can_publish_chain?
+    if record.build_published?
+      local_admin?(record.save_to_platform) || record.save_to_repository.members.exists?(id: user.id)
+    else
+      record.save_to_repository.publish_without_qa ?
+      ProjectPolicy.new(user, record.project).write? : local_admin?(record.save_to_platform)
+    end
+  end
+
+  def publish_chain_into_testing?
+    return false unless record.top_of_chain? && record.can_publish_chain_into_testing?
+    create? || ( record.save_to_platform.main? && publish_chain? )
+  end
+
   def create_container?
     return false unless record.new_core?
     ProjectPolicy.new(user, record.project).write? || local_admin?(record.save_to_platform)

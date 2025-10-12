@@ -299,6 +299,8 @@ Rails.application.routes.draw do
         put :rerun_tests
         get :log
         patch :publish
+        put :publish_chain
+        put :publish_chain_into_testing
         put :reject_publish
         put :publish_into_testing
         put :update_type

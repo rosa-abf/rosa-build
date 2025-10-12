@@ -120,6 +120,16 @@ class Projects::BuildListsController < Projects::BaseController
     do_and_back(:publish, 'publish_')
   end
 
+  def publish_chain
+    @build_list.publisher = current_user
+    do_and_back(:publish_chain, 'publish_chain_')
+  end
+
+  def publish_chain_into_testing
+    @build_list.publisher = current_user
+    do_and_back(:publish_chain_into_testing, 'publish_chain_into_testing_')
+  end
+
   def dependent_projects
     if request.post?
       prs = params[:build_list]
