@@ -53,7 +53,7 @@
   method:      :put,
   data:        { confirm: t('layout.confirm') },
   class:       'btn btn-primary roffset5 boffset5',
-  'ng-show' => 'build_list.can_publish_into_testing'
+  'ng-show' => 'build_list.top_of_chain && build_list.can_publish_into_testing'
 
 = link_to t('layout.publish_into_testing'),
   publish_into_testing_build_list_path(build_list),
