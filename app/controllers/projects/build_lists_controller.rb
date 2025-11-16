@@ -179,6 +179,10 @@ class Projects::BuildListsController < Projects::BaseController
     do_and_back(:cancel, nil, 'will_be_canceled', 'cancel_fail')
   end
 
+  def restart
+    do_and_back(:restart, nil, 'will_be_restarted', 'restart_fail')
+  end
+
   def log
     render json: {
       log: @build_list.log,

@@ -71,6 +71,7 @@ class BuildListPolicy < ApplicationPolicy
   def cancel?
     ProjectPolicy.new(user, record.project).write?
   end
+  alias_method :restart?, :cancel?
 
   # Public: Get list of parameters that the user is allowed to alter.
   #

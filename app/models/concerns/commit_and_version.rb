@@ -13,8 +13,6 @@ module CommitAndVersion
     before_create :set_last_published_commit
   end
 
-  protected
-
   def set_commit_and_version
     if project && project_version.present? && commit_hash.blank?
       self.commit_hash = project.repo.commits(project_version).try(:first).try(:id)
@@ -22,6 +20,8 @@ module CommitAndVersion
       self.project_version = commit_hash
     end
   end
+
+  protected
 
   def set_last_published_commit
     return unless self.respond_to? :last_published_commit_hash # product?

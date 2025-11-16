@@ -6,6 +6,14 @@
     class:        'btn btn-primary roffset5 boffset5',
     'ng-show' =>  'build_list.can_cancel'
 
+- if policy(build_list).restart?
+  = link_to t("layout.build_lists.restart"),
+    restart_build_list_path(build_list),
+    method:       :put,
+    data:         { confirm: t('layout.confirm') },
+    class:        'btn btn-primary roffset5 boffset5',
+    'ng-show' =>  'build_list.can_restart'
+
 = submit_tag t('layout.publish_again'),
   data:         { confirm: t("layout.publish_again_warning") },
   name:         'publish',

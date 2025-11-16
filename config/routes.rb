@@ -295,6 +295,7 @@ Rails.application.routes.draw do
     resources :build_lists, only: [:index, :show] do
       member do
         put :cancel
+        put :restart
         put :create_container
         put :rerun_tests
         get :log

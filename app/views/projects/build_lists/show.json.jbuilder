@@ -25,7 +25,7 @@ json.build_list do
     json.top_of_chain @build_list.top_of_chain?
     json.can_publish_chain policy(@build_list).publish_chain? && @build_list.can_publish_chain?
     json.can_publish_chain_into_testing policy(@build_list).publish_chain_into_testing? && @build_list.can_publish_chain_into_testing?
-
+    json.can_restart policy(@build_list).restart? && @build_list.can_restart?
     json.container_path container_url if @build_list.container_published?
 
     json.publisher do

@@ -95,7 +95,9 @@ en:
       no_items_data: No data
       show: Show
       cancel: Cancel build
+      restart: Restart build
       will_be_canceled: 'Build will be canceled...'
+      will_be_restarted: 'Build will be restarted...'
       creating: 'creating...'
       rerun_tests: Rerun tests
       rerun_tests_success: 'Build is queued for rerun tests'
@@ -113,6 +115,7 @@ en:
       publish_with_extra_fail: 'All extra build lists should be published before publishing this build list!'
       cancel_success: 'Build canceled'
       cancel_fail: 'Errors during build cancelation!'
+      restart_fail: 'Errors during build restarting!'
       reject_publish_success: 'Publishing rejected'
       reject_publish_fail: 'Rejecting publishing failed'
       container_published: 'Container published in a repository'

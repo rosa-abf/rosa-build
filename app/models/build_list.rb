@@ -391,6 +391,25 @@ class BuildList < ActiveRecord::Base
     build_started? || build_pending?
   end
 
+  def can_restart?
+    [
+      SUCCESS,
+      BUILD_ERROR,
+      PACKAGES_FAIL,
+      BUILD_CANCELED,
+      BUILD_CANCELING,
+      TESTS_FAILED,
+      UNPERMITTED_ARCH
+    ].include?(status)
+  end
+
+  def restart
+    BuildListService::Restart.new(self).call
+    true
+  rescue StandardError
+    false
+  end
+
   # Comparison between versions of current and last published build_list
   # @return [Boolean]
   # - false if no new packages
