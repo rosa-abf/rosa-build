@@ -50,7 +50,7 @@ module FileStoreService
 
     def destroy
       uri   = URI(URL)
-      Net::HTTP.start(uri.host, uri.port) do |http|
+      Net::HTTP.start(uri.host, uri.port, use_ssl: uri.scheme == "https") do |http|
         req = Net::HTTP::Delete.new("/api/v1/file_stores/#{sha1}.json")
         req.basic_auth token, ''
         http.request(req)
