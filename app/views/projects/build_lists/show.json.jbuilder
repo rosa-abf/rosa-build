@@ -23,8 +23,8 @@ json.build_list do
     json.can_publish_in_future can_publish_in_future?(@build_list)
     json.can_publish_into_repository @build_list.can_publish_into_repository?
     json.top_of_chain @build_list.top_of_chain?
-    json.can_publish_chain @build_list.can_publish_chain?
-    json.can_publish_chain_into_testing @build_list.can_publish_chain_into_testing?
+    json.can_publish_chain policy(@build_list).publish_chain? && @build_list.can_publish_chain?
+    json.can_publish_chain_into_testing policy(@build_list).publish_chain_into_testing? && @build_list.can_publish_chain_into_testing?
 
     json.container_path container_url if @build_list.container_published?
 
