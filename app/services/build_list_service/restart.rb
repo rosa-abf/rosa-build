@@ -35,6 +35,7 @@ class BuildListService::Restart
   end
 
   def update_version
+    build_list.commit_hash = ''
     build_list.set_commit_and_version
     build_list.save!
   end
