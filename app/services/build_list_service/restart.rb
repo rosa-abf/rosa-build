@@ -28,7 +28,7 @@ class BuildListService::Restart
   private
 
   def clean_filestore
-    # build_list.later_destroy_files_from_file_store(build_list.sha1_of_file_store_files)
+    build_list.later_destroy_files_from_file_store(build_list.sha1_of_file_store_files)
   end
 
   def clear_files_and_items
