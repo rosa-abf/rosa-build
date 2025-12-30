@@ -22,6 +22,7 @@ class BuildList < ActiveRecord::Base
   has_many :items, class_name: '::BuildList::Item', dependent: :destroy
   has_many :packages, class_name: '::BuildList::Package', dependent: :destroy
   has_many :source_packages, -> { where(package_type: 'source') }, class_name: '::BuildList::Package'
+  belongs_to :chain_build, required: false
 
   UPDATE_TYPES = [
     UPDATE_TYPE_BUGFIX      = 'bugfix',
@@ -124,8 +125,13 @@ class BuildList < ActiveRecord::Base
   HUMAN_STATUSES.freeze
 
   scope :recent, -> { order(updated_at: :desc) }
-  scope :for_extra_build_lists, ->(ids, save_to_platform) {
-    s = where(id: ids, container_status: BuildList::BUILD_PUBLISHED)
+  scope :for_extra_build_lists, ->(ids, save_to_platform, no_chain) {
+    s =
+      if no_chain
+        where(id: ids, container_status: BuildList::BUILD_PUBLISHED)
+      else
+        where(id: ids)
+      end
     s = s.where(save_to_platform_id: save_to_platform.id) if save_to_platform && save_to_platform.main?
     s
   }
@@ -178,7 +184,7 @@ class BuildList < ActiveRecord::Base
   serialize :extra_build_lists,   Array
   serialize :extra_params,        Hash
 
-  after_create  :place_build
+  after_create  :place_build, if: ->(bl) { bl.level == 0 }
   after_destroy :remove_container
 
   state_machine :status, initial: :waiting_for_response do
@@ -392,7 +398,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_restart?
-    [
+    allowed_states = [
       SUCCESS,
       BUILD_ERROR,
       PACKAGES_FAIL,
@@ -400,7 +406,15 @@ class BuildList < ActiveRecord::Base
       BUILD_CANCELING,
       TESTS_FAILED,
       UNPERMITTED_ARCH
-    ].include?(status)
+    ]
+    res = allowed_states.include?(status)
+    if chain_build
+      res && chain_build.build_lists.where('level > ?', level).where(arch_id: arch_id).find_each.all? do |bl|
+        allowed_states.include?(bl.status)
+      end
+    else
+      res
+    end
   end
 
   def restart
@@ -468,15 +482,33 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish_chain?
-    orig_can_publish? &&
+    if chain_build
+      orig_can_publish? &&
+      valid_branch_for_publish? &&
+      save_to_repository.projects.exists?(id: project_id) &&
+      BuildList.where(chain_build: chain_build).all? do |bl|
+        bl.orig_can_publish? &&
+        bl.valid_branch_for_publish? &&
+        bl.save_to_repository.projects.exists?(id: bl.project_id)
+      end
+    else
+      orig_can_publish? &&
       valid_branch_for_publish? &&
       save_to_repository.projects.exists?(id: project_id) &&
       BuildList.where(id: extra_build_lists).all? { |bl| bl.can_publish_chain? }
+    end
   end
 
   def can_publish_chain_into_testing?
-    orig_can_publish_into_testing? && valid_branch_for_publish? &&
+    if chain_build
+      orig_can_publish_into_testing? && valid_branch_for_publish? &&
+      BuildList.where(chain_build: chain_build).all? do |bl|
+        bl.orig_can_publish_into_testing? && bl.valid_branch_for_publish?
+      end
+    else
+      orig_can_publish_into_testing? && valid_branch_for_publish? &&
       BuildList.where(id: extra_build_lists).all? { |bl| bl.can_publish_chain_into_testing? }
+    end
   end
 
   def publish_chain
@@ -763,7 +795,7 @@ class BuildList < ActiveRecord::Base
     end
     return if extra_build_lists.blank?
     bls = BuildListPolicy::Scope.new(user, BuildList).read.
-      for_extra_build_lists(extra_build_lists, save_to_platform)
+      for_extra_build_lists(extra_build_lists, save_to_platform, chain_build.nil?)
     if save_to_platform
       if save_to_platform.distrib_type == 'rhel'
         bls = bls.where('

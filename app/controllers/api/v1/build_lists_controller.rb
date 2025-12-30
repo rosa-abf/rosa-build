@@ -35,11 +35,61 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   def create
     save_to_repository = Repository.find_by(id: build_list_params[:save_to_repository_id])
 
-    @build_list                  = current_user.build_lists.new(build_list_params)
+    create_params = build_list_params
+    chain_config = create_params.delete(:chain_config)
+    @build_list                  = current_user.build_lists.new(create_params)
     @build_list.save_to_platform = save_to_repository.platform if save_to_repository
     @build_list.priority         = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
-    create_subject @build_list
+    chain_build =
+      if chain_config[:create_chain]
+        ChainBuildService::Create.new(current_user, @build_list).call
+      elsif chain_config[:add_first]
+        ChainBuildService::Create.new(
+          current_user,
+          @build_list,
+          ChainBuild.find(chain_config[:add_first])
+        ).call
+      elsif chain_config[:add_to_chain]
+        chain_build =
+          if chain_config[:add_to_chain] == 'last'
+            ChainBuild.for_user(current_user).last
+          else
+            ChainBuild.for_user(current_user).find_by(id: chain_config[:add_to_chain])
+          end
+
+        unless chain_build
+          render json: {
+            build_list: {
+              id: nil,
+              message: "ChainBuild not found"
+            }
+          }, status: 422
+          return
+        end
+        ChainBuildService::AddBuildList.new(
+          chain_build,
+          @build_list,
+          chain_config[:next_level]
+        ).call
+      end
+
+    authorize @build_list, :create?
+    if @build_list.save
+      if chain_build
+        render json: {
+          build_list: {
+            id: @build_list.id,
+            chain_build_id: chain_build.id,
+            message: "BuildList has been created successfully"
+          }
+        }, status: status
+      else
+        render_json_response @build_list, "BuildList has been created successfully"
+      end
+    else
+      render_validation_error @build_list, "BuildList has not been created"
+    end
   end
 
   def cancel

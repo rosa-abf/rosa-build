@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20230110075556) do
+ActiveRecord::Schema.define(version: 20251221055039) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,12 +88,6 @@ ActiveRecord::Schema.define(version: 20230110075556) do
   end
   add_index "advisory_items", ["advisory_id", "platform_id", "project_id"], :name=>"unique_platform_project", :unique=>true
 
-  create_table "ar_internal_metadata", primary_key: "key", force: :cascade do |t|
-    t.string   "value"
-    t.datetime "created_at", :null=>false
-    t.datetime "updated_at", :null=>false
-  end
-
   create_table "arches", force: :cascade do |t|
     t.string   "name",       :limit=>255, :null=>false, :index=>{:name=>"index_arches_on_name", :unique=>true}
     t.datetime "created_at"
@@ -127,6 +121,48 @@ ActiveRecord::Schema.define(version: 20230110075556) do
     t.text     "dependent_packages"
     t.integer  "size",               :limit=>8, :default=>0
     t.index :name=>"build_list_packages_ordering", :expression=>"lower((name)::text), length((name)::text)"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string   "name",                     :limit=>255
+    t.string   "email",                    :limit=>255, :default=>"", :null=>false, :index=>{:name=>"index_users_on_email", :unique=>true}
+    t.string   "encrypted_password",       :limit=>128, :default=>"", :null=>false
+    t.string   "reset_password_token",     :limit=>255, :index=>{:name=>"index_users_on_reset_password_token", :unique=>true}
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "ssh_key"
+    t.string   "uname",                    :limit=>255, :index=>{:name=>"index_users_on_uname", :unique=>true}
+    t.string   "role",                     :limit=>255
+    t.string   "language",                 :limit=>255, :default=>"en"
+    t.integer  "own_projects_count",       :default=>0, :null=>false
+    t.text     "professional_experience"
+    t.string   "site",                     :limit=>255
+    t.string   "company",                  :limit=>255
+    t.string   "location",                 :limit=>255
+    t.string   "avatar_file_name",         :limit=>255
+    t.string   "avatar_content_type",      :limit=>255
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
+    t.integer  "failed_attempts",          :default=>0
+    t.string   "unlock_token",             :limit=>255, :index=>{:name=>"index_users_on_unlock_token", :unique=>true}
+    t.datetime "locked_at"
+    t.string   "confirmation_token",       :limit=>255, :index=>{:name=>"index_users_on_confirmation_token", :unique=>true}
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "authentication_token",     :limit=>255, :index=>{:name=>"index_users_on_authentication_token"}
+    t.integer  "build_priority",           :default=>50
+    t.boolean  "sound_notifications",      :default=>true
+    t.boolean  "hide_email",               :default=>true, :null=>false
+    t.boolean  "access_to_token_api",      :default=>false
+    t.boolean  "access_to_advisories_api", :default=>false
+  end
+
+  create_table "chain_builds", force: :cascade do |t|
+    t.integer  "user_id",    :index=>{:name=>"index_chain_builds_on_user_id"}, :foreign_key=>{:references=>"users", :name=>"fk_chain_builds_user_id", :on_update=>:no_action, :on_delete=>:no_action}
+    t.datetime "created_at", :null=>false
+    t.datetime "updated_at", :null=>false
   end
 
   create_table "build_lists", force: :cascade do |t|
@@ -172,6 +208,9 @@ ActiveRecord::Schema.define(version: 20230110075556) do
     t.boolean  "save_buildroot",                :default=>false, :null=>false
     t.string   "hostname"
     t.string   "fail_reason"
+    t.integer  "level",                         :default=>0
+    t.boolean  "first_in_chain",                :default=>false
+    t.integer  "chain_build_id",                :index=>{:name=>"index_build_lists_on_chain_build_id"}, :foreign_key=>{:references=>"chain_builds", :name=>"fk_build_lists_chain_build_id", :on_update=>:no_action, :on_delete=>:no_action}
   end
   add_index "build_lists", ["project_id", "save_to_repository_id", "build_for_platform_id", "arch_id"], :name=>"maintainer_search_index"
 
@@ -236,42 +275,6 @@ ActiveRecord::Schema.define(version: 20230110075556) do
     t.datetime "updated_at", :null=>false
   end
 
-  create_table "users", force: :cascade do |t|
-    t.string   "name",                     :limit=>255
-    t.string   "email",                    :limit=>255, :default=>"", :null=>false, :index=>{:name=>"index_users_on_email", :unique=>true}
-    t.string   "encrypted_password",       :limit=>128, :default=>"", :null=>false
-    t.string   "reset_password_token",     :limit=>255, :index=>{:name=>"index_users_on_reset_password_token", :unique=>true}
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "ssh_key"
-    t.string   "uname",                    :limit=>255, :index=>{:name=>"index_users_on_uname", :unique=>true}
-    t.string   "role",                     :limit=>255
-    t.string   "language",                 :limit=>255, :default=>"en"
-    t.integer  "own_projects_count",       :default=>0, :null=>false
-    t.text     "professional_experience"
-    t.string   "site",                     :limit=>255
-    t.string   "company",                  :limit=>255
-    t.string   "location",                 :limit=>255
-    t.string   "avatar_file_name",         :limit=>255
-    t.string   "avatar_content_type",      :limit=>255
-    t.integer  "avatar_file_size"
-    t.datetime "avatar_updated_at"
-    t.integer  "failed_attempts",          :default=>0
-    t.string   "unlock_token",             :limit=>255, :index=>{:name=>"index_users_on_unlock_token", :unique=>true}
-    t.datetime "locked_at"
-    t.string   "confirmation_token",       :limit=>255, :index=>{:name=>"index_users_on_confirmation_token", :unique=>true}
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.string   "authentication_token",     :limit=>255, :index=>{:name=>"index_users_on_authentication_token"}
-    t.integer  "build_priority",           :default=>50
-    t.boolean  "sound_notifications",      :default=>true
-    t.boolean  "hide_email",               :default=>true, :null=>false
-    t.boolean  "access_to_token_api",      :default=>false
-    t.boolean  "access_to_advisories_api", :default=>false
-  end
-
   create_table "invites", force: :cascade do |t|
     t.integer  "user_id",         :null=>false, :index=>{:name=>"index_invites_on_user_id"}, :foreign_key=>{:references=>"users", :name=>"fk_invites_user_id", :on_update=>:no_action, :on_delete=>:no_action}
     t.integer  "invited_user_id", :index=>{:name=>"index_invites_on_invited_user_id"}
@@ -295,14 +298,13 @@ ActiveRecord::Schema.define(version: 20230110075556) do
   end
 
   create_table "key_pairs", force: :cascade do |t|
-    t.text     "public",              :null=>false
-    t.text     "encrypted_secret",    :null=>false
-    t.string   "key_id",              :limit=>255, :null=>false
-    t.integer  "user_id",             :null=>false
-    t.integer  "repository_id",       :null=>false, :index=>{:name=>"index_key_pairs_on_repository_id", :unique=>true}
-    t.datetime "created_at",          :null=>false
-    t.datetime "updated_at",          :null=>false
-    t.string   "encrypted_secret_iv", :index=>{:name=>"index_key_pairs_on_encrypted_secret_iv", :unique=>true}
+    t.text     "public",           :null=>false
+    t.text     "encrypted_secret", :null=>false
+    t.string   "key_id",           :limit=>255, :null=>false
+    t.integer  "user_id",          :null=>false
+    t.integer  "repository_id",    :null=>false, :index=>{:name=>"index_key_pairs_on_repository_id", :unique=>true}
+    t.datetime "created_at",       :null=>false
+    t.datetime "updated_at",       :null=>false
   end
 
   create_table "labelings", force: :cascade do |t|

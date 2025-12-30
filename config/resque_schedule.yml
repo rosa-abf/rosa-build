@@ -88,3 +88,10 @@ clear_unused_invites:
   class: 'ClearUnusedInvitesJob'
   queue: low
   description: 'Clear unused invites that have surpassed their ttl'
+
+advance_chains:
+  every:
+    - '2m'
+  class: 'AdvanceChainsJob'
+  queue: low
+  description: 'Advances build chain'

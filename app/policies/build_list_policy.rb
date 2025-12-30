@@ -99,6 +99,7 @@ class BuildListPolicy < ApplicationPolicy
       include_repos:      [],
       extra_build_lists:  [],
       extra_repositories: [],
+      chain_config:       %w[create_chain add_to_chain current_level next_level add_first],
       extra_params:       BuildList::EXTRA_PARAMS,
     }
     pa

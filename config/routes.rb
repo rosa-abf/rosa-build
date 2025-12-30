@@ -27,6 +27,11 @@ Rails.application.routes.draw do
           post :attach_build_list
         }
       end
+      resources :chain_builds, only: [:show] do
+        collection {
+          get :last
+        }
+      end
       resources :search, only: [:index]
       resources :build_lists, only: [:index, :create, :show] do
         member {
