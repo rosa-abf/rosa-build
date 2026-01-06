@@ -131,17 +131,33 @@ module BuildListsHelper
     end
   end
 
-  def build_list_version_link(bl)
+  def build_list_version_link(bl, text_href = false)
     hash_size=5
+    text = ''
+    href = ''
     if bl.commit_hash.present?
       if bl.last_published_commit_hash.present? && bl.last_published_commit_hash != bl.commit_hash
-        link_to "#{shortest_hash_id bl.last_published_commit_hash, hash_size}...#{shortest_hash_id bl.commit_hash, hash_size}",
-                diff_path(bl.project, bl.last_published_commit_hash) + "...#{bl.commit_hash}"
+        text = "#{shortest_hash_id bl.last_published_commit_hash, hash_size}...#{shortest_hash_id bl.commit_hash, hash_size}"
+        href = diff_path(bl.project, bl.last_published_commit_hash) + "...#{bl.commit_hash}"
       else
-        link_to shortest_hash_id(bl.commit_hash, hash_size), commit_path(bl.project, bl.commit_hash)
+        text = shortest_hash_id(bl.commit_hash, hash_size)
+        href = commit_path(bl.project, bl.commit_hash)
       end
     else
-      bl.project_version
+      text = bl.project_version
+    end
+
+    if text_href
+      {
+        text: text,
+        href: href
+      }
+    else
+      if href != ''
+        link_to text, href
+      else
+        text
+      end
     end
   end
 
@@ -155,7 +171,12 @@ module BuildListsHelper
   end
 
   def container_url(build_list = @build_list)
-    url = "#{APP_CONFIG['downloads_url']}/#{build_list.save_to_platform.name}/container/#{build_list.id}/"
+    url =
+      if build_list.chain_build
+        "#{APP_CONFIG['downloads_url']}/#{build_list.save_to_platform.name}/container/chain_build_#{build_list.chain_build_id}/"
+      else
+        "#{APP_CONFIG['downloads_url']}/#{build_list.save_to_platform.name}/container/#{build_list.id}/"
+      end
     if ['dnf', 'mdv'].include?(build_list.build_for_platform.try(:distrib_type))
       url << "#{build_list.arch.name}/#{build_list.save_to_repository.name}/release/"
     end

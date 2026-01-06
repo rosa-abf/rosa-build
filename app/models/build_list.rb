@@ -94,9 +94,6 @@ class BuildList < ActiveRecord::Base
   STATUSES, HUMAN_STATUSES = [], {}
   [
     %w(SUCCESS                        0),
-    # %w(ERROR                          1),
-    # %w(PROJECT_SOURCE_ERROR           6),
-    # %w(DEPENDENCIES_ERROR             555),
     %w(BUILD_ERROR                    666),
     %w(PACKAGES_FAIL                  777),
     %w(BUILD_STARTED                  3000),
@@ -114,7 +111,8 @@ class BuildList < ActiveRecord::Base
     %w(BUILD_PUBLISHED_INTO_TESTING   12000),
     %w(BUILD_PUBLISH_INTO_TESTING     13000),
     %w(FAILED_PUBLISH_INTO_TESTING    14000),
-    %w(UNPERMITTED_ARCH               15000)
+    %w(UNPERMITTED_ARCH               15000),
+    %w(RESTARTING                     16000)
   ].each do |kind, value|
     value = value.to_i
     const_set kind, value
@@ -125,7 +123,7 @@ class BuildList < ActiveRecord::Base
   HUMAN_STATUSES.freeze
 
   scope :recent, -> { order(updated_at: :desc) }
-  scope :for_extra_build_lists, ->(ids, save_to_platform, no_chain) {
+  scope :for_extra_build_lists, ->(ids, save_to_platform, no_chain = true) {
     s =
       if no_chain
         where(id: ids, container_status: BuildList::BUILD_PUBLISHED)
@@ -185,7 +183,7 @@ class BuildList < ActiveRecord::Base
   serialize :extra_params,        Hash
 
   after_create  :place_build, if: ->(bl) { bl.level == 0 }
-  after_destroy :remove_container
+  after_destroy :remove_container, unless: ->(bl) { bl.chain_build }
 
   state_machine :status, initial: :waiting_for_response do
     after_transition on: :published,
@@ -407,10 +405,10 @@ class BuildList < ActiveRecord::Base
       TESTS_FAILED,
       UNPERMITTED_ARCH
     ]
-    res = allowed_states.include?(status)
+    res = allowed_states.include?(status) && container_status != BUILD_PUBLISH
     if chain_build
       res && chain_build.build_lists.where('level > ?', level).where(arch_id: arch_id).find_each.all? do |bl|
-        allowed_states.include?(bl.status)
+        allowed_states.include?(bl.status) && bl.container_status != BUILD_PUBLISH
       end
     else
       res
@@ -465,6 +463,8 @@ class BuildList < ActiveRecord::Base
   alias_method :orig_can_publish?, :can_publish?
 
   def can_publish?
+    return false if chain_build
+
     super &&
       valid_branch_for_publish? &&
       extra_build_lists_published? &&
@@ -474,10 +474,14 @@ class BuildList < ActiveRecord::Base
   alias_method :orig_can_publish_into_testing?, :can_publish_into_testing?
 
   def can_publish_into_testing?
+    return false if chain_build
+
     super && valid_branch_for_publish?
   end
 
   def top_of_chain?
+    return true if chain_build
+
     extra_build_lists.length.positive? && BuildList.where("extra_build_lists like E'%- ?\n%'", id).count.zero?
   end
 
@@ -486,7 +490,7 @@ class BuildList < ActiveRecord::Base
       orig_can_publish? &&
       valid_branch_for_publish? &&
       save_to_repository.projects.exists?(id: project_id) &&
-      BuildList.where(chain_build: chain_build).all? do |bl|
+      chain_build.build_lists.find_each.all? do |bl|
         bl.orig_can_publish? &&
         bl.valid_branch_for_publish? &&
         bl.save_to_repository.projects.exists?(id: bl.project_id)
@@ -502,7 +506,7 @@ class BuildList < ActiveRecord::Base
   def can_publish_chain_into_testing?
     if chain_build
       orig_can_publish_into_testing? && valid_branch_for_publish? &&
-      BuildList.where(chain_build: chain_build).all? do |bl|
+      chain_build.build_lists.find_each.all? do |bl|
         bl.orig_can_publish_into_testing? && bl.valid_branch_for_publish?
       end
     else
@@ -661,10 +665,14 @@ class BuildList < ActiveRecord::Base
       path << "#{bl.id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
       include_repos_hash["container_#{bl.id}"] = insert_token_to_path(path, bl.save_to_platform)
     end
+    if chain_build && level > 0
+      bl = chain_build.build_lists.where(first_in_chain: true, arch_id: arch_id).first
+      path = "#{APP_CONFIG['downloads_url']}/#{bl.save_to_platform.name}/container/"
+      path << "chain_build_#{chain_build_id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
+      include_repos_hash["chain_build_#{chain_build_id}"] = insert_token_to_path(path, bl.save_to_platform)
+    end
 
     git_project_address = project.git_project_address user
-    # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
-
 
     cmd_params = {
       'PACKAGE'                       => project.name,

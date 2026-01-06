@@ -91,7 +91,7 @@ clear_unused_invites:
 
 advance_chains:
   every:
-    - '2m'
+    - '30s'
   class: 'AdvanceChainsJob'
   queue: low
   description: 'Advances build chain'

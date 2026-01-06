@@ -8,6 +8,7 @@ ru:
         id: Id
         name: Название
         extra_repositories: Дополнительные репозитории
+        chain_build: Цепочка
         extra_build_lists: Дополнительные сборки
         extra_mass_builds: Дополнительные массовые сборки
         auto_create_container: Создать контейнер автоматически
@@ -23,7 +24,7 @@ ru:
         arch_short: Архит-ра
         new_core: Новое ядро
         is_circle: Циклическая сборка
-        updated_at: Информация получена
+        updated_at: Обновлено(статус/публикация/и т.д.)
         additional_repos: Дополнительные репозитории
         include_testing_subrepository: "Подключить 'testing' подрепозиторий"
         include_repos: Подключаемые репозитории
@@ -179,6 +180,7 @@ ru:
         dependencies_fail: зависимости не найдены
         packages_fail: пакеты не найдены
         waiting_for_response: ожидает ответа
+        restarting: Перезапускается
         build_pending: ожидает сборку
         build_canceled: сборка отменена
         build_canceling: сборка отменяется

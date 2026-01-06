@@ -80,13 +80,31 @@ var BuildList = function(atts, dictionary) {
     self.hasRelated = true;
   }
 
+  var colors = {
+    <%=BuildList::SUCCESS%>: "bg-success",
+    <%=BuildList::BUILD_ERROR%>: "bg-danger",
+    <%=BuildList::PACKAGES_FAIL%>: "bg-danger",
+    <%=BuildList::BUILD_STARTED%>: "bg-primary",
+    <%=BuildList::BUILD_CANCELED%>: "bg-danger",
+    <%=BuildList::WAITING_FOR_RESPONSE%>: "bg-primary",
+    <%=BuildList::BUILD_PENDING%>: "bg-primary",
+    <%=BuildList::RERUN_TESTS%>: "bg-primary",
+    <%=BuildList::RERUNNING_TESTS%>: "bg-primary",
+    <%=BuildList::BUILD_PUBLISHED%>: "bg-success",
+    <%=BuildList::BUILD_PUBLISH%>: "bg-primary",
+    <%=BuildList::FAILED_PUBLISH%>: "bg-danger",
+    <%=BuildList::REJECTED_PUBLISH%>: "bg-danger",
+    <%=BuildList::BUILD_CANCELING%>: "bg-primary",
+    <%=BuildList::TESTS_FAILED%>: "bg-success",
+    <%=BuildList::BUILD_PUBLISHED_INTO_TESTING%>: "bg-success",
+    <%=BuildList::BUILD_PUBLISH_INTO_TESTING%>: "bg-primary",
+    <%=BuildList::FAILED_PUBLISH_INTO_TESTING%>: "bg-danger",
+    <%=BuildList::UNPERMITTED_ARCH%>: "bg-danger",
+    <%=BuildList::RESTARTING%>: "bg-primary"
+  }
+
   self.itemStatusColor = function(status) {
-    if (status == <%=BuildList::SUCCESS%>)
-      return 'bg-success';
-    else if (status == <%=BuildList::BUILD_ERROR%>)
-      return 'bg-danger';
-    else
-      return '';
+    return colors[status];
   }
   self.humanStatus = function(status) {
     return 'build_list.status.' + status;

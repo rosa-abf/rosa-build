@@ -12,7 +12,6 @@ json.build_list do
     json.updated_at @build_list.updated_at
     json.updated_at_utc @build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
 
-
     json.can_publish policy(@build_list).publish?
     json.can_publish_into_testing policy(@build_list).publish_into_testing? && @build_list.can_publish_into_testing?
     json.can_cancel @build_list.can_cancel?
@@ -74,15 +73,16 @@ json.build_list do
 
     json.dependent_projects_exists dependent_projects_exists
 
-    json.item_groups do |group|
-      @item_groups.each_with_index do |group, level|
-        json.group group do |item|
-          json.(item, :name, :status)
-          json.path build_list_item_version_link item
-          json.level level
-        end
+    json.item_groups @item_groups do |group|
+      json.level group[:level]
+      json.items group[:build_lists] do |bl|
+        json.id bl.id
+        json.build_list_path build_list_path(bl)
+        json.name bl.project.name_with_owner
+        json.status bl.status
+        json.version_path build_list_version_link(bl, true)
       end
-    end if @item_groups.present?
+    end if @build_list.chain_build
   end
 
 end

@@ -90,7 +90,9 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def show
-    @item_groups = @build_list.items.group_by_level
+    if @build_list.chain_build
+      @item_groups = ChainBuildService::Groups.new(@build_list.chain_build, @build_list.arch_id).call
+    end
   end
 
   def publish
@@ -227,7 +229,6 @@ class Projects::BuildListsController < Projects::BaseController
     permit_params(%i(build_list advisory), *policy(Advisory).permitted_attributes)
   end
 
-  # Private: before_action hook which loads BuidList.
   def load_build_list
     authorize @build_list =
       if @project

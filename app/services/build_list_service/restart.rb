@@ -3,32 +3,39 @@
 class BuildListService::Restart
   attr_reader :build_list, :status
 
-  def initialize(build_list, status = BuildList::BUILD_PENDING)
+  def initialize(build_list)
     @build_list = build_list
-    @status = status
+    @status =
+      if build_list.chain_build
+        BuildList::RESTARTING
+      else
+        BuildList::BUILD_PENDING
+      end
   end
 
   def call
+    unpublish if build_list.chain_build
     update_version
     clean_filestore
     clear_files_and_items
-    unpublish_from_container
+    destroy_container unless build_list.chain_build
     update_status
-
-    if build_list.chain_build
-      BuildList.where(chain_build: build_list.chain_build, arch_id: build_list.arch_id)
-               .where('level > ?', build_list.level).find_each do |bl|
-        BuildListService::Restart.new(bl, BuildList::WAITING_FOR_RESPONSE).call
-      end
-    end
+    restart_chains if build_list.chain_build
 
     build_list.save!
   end
 
   private
 
+  def restart_chains
+    BuildList.where(chain_build: build_list.chain_build, arch_id: build_list.arch_id)
+              .where('level > ?', build_list.level).find_each do |bl|
+      BuildListService::Restart.new(bl).call
+    end
+  end
+
   def clean_filestore
-    build_list.later_destroy_files_from_file_store(build_list.sha1_of_file_store_files)
+    build_list.later_destroy_files_from_file_store(build_list.sha1_of_file_store_files) if Rails.env.production?
   end
 
   def clear_files_and_items
@@ -37,8 +44,11 @@ class BuildListService::Restart
     build_list.results = []
   end
 
-  # TODO: fix for chain builds
-  def unpublish_from_container
+  def unpublish
+    AbfWorkerService::Container.new(build_list).unpublish!
+  end
+
+  def destroy_container
     build_list.destroy_container
   end
 

@@ -4,23 +4,28 @@
   h4 ng-hide='build_list.item_groups'
     = t("layout.build_lists.no_items_data")
 
-div ng-repeat='group in build_list.item_groups'
-  .row ng-repeat='item in group'
-    h4
-      | {{item.name + ' #' + item.level}}
-
-    table.table
-      thead
-        tr
-          th= t('activerecord.attributes.build_list/item.name')
-          th= t('activerecord.attributes.build_list/item.version')
-          th= t('activerecord.attributes.build_list/item.status')
-      tbody
-        tr class="{{build_list.itemStatusColor(item.status)}}"
-          td
-            | {{item.name}}
-          td
-            a ng-href='{{item.path.href}}'
-              | {{item.path.text}}
-          td
-            | {{build_list.humanStatus(item.status) | i18n}}
+table.table.table-hover
+  thead
+    tr
+      th= t('activerecord.attributes.build_list.id')
+      th= t('activerecord.attributes.build_list/item.name')
+      th= t('activerecord.attributes.build_list/item.version')
+      th= t('activerecord.attributes.build_list/item.status')
+  tbody ng-repeat="group in build_list.item_groups"
+    tr
+      td colspan=4
+        | {{'#' + group.level}}
+    tr ng-repeat='item in group.items' class="{{build_list.itemStatusColor(item.status)}}"
+      td
+        span ng-if="build_list.id == item.id"
+          | &#8594; {{item.id}} &#8592;
+        span ng-if="build_list.id != item.id"
+          a ng-href='{{item.build_list_path}}'
+            | {{item.id}}
+      td
+        | {{item.name}}
+      td
+        a ng-href='{{item.version_path.href}}'
+          | {{item.version_path.text}}
+      td
+        | {{build_list.humanStatus(item.status) | i18n}}

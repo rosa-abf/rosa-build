@@ -8,6 +8,7 @@ en:
         id: Id
         name: Name
         extra_repositories: Extra repositories
+        chain_build: Chain build
         extra_build_lists: Extra build lists
         extra_mass_builds: Extra mass builds
         auto_create_container: Create container automatically
@@ -23,7 +24,7 @@ en:
         arch: Architecture
         new_core: New core
         is_circle: Recurrent build
-        updated_at: Notified at
+        updated_at: Build list updated(status/publish/etc)
         additional_repos: Additional repositories
         include_testing_subrepository: "Include 'testing' subrepository"
         include_repos: Included repositories
@@ -184,6 +185,7 @@ en:
         dependencies_fail: Dependences not found
         packages_fail: Packages not found
         waiting_for_response: Waiting for response
+        restarting: Restarting
         build_pending: Build pending
         build_canceling: Build is canceling
         build_canceled: Build canceled

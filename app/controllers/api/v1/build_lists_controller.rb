@@ -36,7 +36,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     save_to_repository = Repository.find_by(id: build_list_params[:save_to_repository_id])
 
     create_params = build_list_params
-    chain_config = create_params.delete(:chain_config)
+    chain_config = create_params.delete(:chain_config) || {}
     @build_list                  = current_user.build_lists.new(create_params)
     @build_list.save_to_platform = save_to_repository.platform if save_to_repository
     @build_list.priority         = current_user.build_priority # User builds more priority than mass rebuild with zero priority
@@ -131,7 +131,6 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     subject_params(BuildList)
   end
 
-  # Private: before_action hook which loads BuidList.
   def load_build_list
     @build_list = BuildList.find params[:id]
   end

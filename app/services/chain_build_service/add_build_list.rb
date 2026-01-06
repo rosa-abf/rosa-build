@@ -23,25 +23,15 @@ class ChainBuildService::AddBuildList
 
   def start_new_level
     current = chain_build.current_level
-    extra_build_lists = chain_build.level_arch(current, build_list.arch_id).pluck(:id)
     build_list.chain_build = chain_build
     build_list.level = current + 1
     build_list.first_in_chain = false
-    build_list.extra_build_lists = extra_build_lists
   end
 
   def continue_current_level
     current = chain_build.current_level
-    extra_build_lists =
-      if current.zero?
-        []
-      else
-        chain_build.level_arch(current - 1, build_list.arch_id).pluck(:id)
-      end
-
     build_list.chain_build = chain_build
     build_list.level = current
     build_list.first_in_chain = false
-    build_list.extra_build_lists = extra_build_lists
   end
 end

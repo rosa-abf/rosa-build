@@ -40,6 +40,32 @@ module AbfWorkerService
       )
     end
 
+    def unpublish!
+      Resque.push(
+        'publish_worker', # Low priority
+        'class' => 'AbfWorker::PublishWorker',
+        'args' => [{
+          id:                   build_list.id,
+          cmd_params:           cmd_params,
+          main_script:          'build.sh',
+          rollback_script:      'rollback.sh',
+          platform:             {
+            platform_path:        platform_path,
+            type:                 distrib_type,
+            name:                 build_list.build_for_platform.name,
+            arch:                 build_list.arch.name
+          },
+          repository:           {id: build_list.save_to_repository_id},
+          time_living:          9600, # 160 min
+          packages:             packages_structure,
+          old_packages:         old_packages,
+          build_list_ids:       [build_list.id],
+          projects_for_cleanup: [],
+          extra:                { create_container: true, unpublish: true }
+        }]
+      )
+    end
+
     def destroy!
       system "rm -rf #{platform_path}"
     end
@@ -60,11 +86,17 @@ module AbfWorkerService
     end
 
     def cleanup_folder
-      system "rm -rf #{platform_path} && mkdir -p #{platform_path}"
+      system "rm -rf #{platform_path}" unless build_list.chain_build
+      system "mkdir -p #{platform_path}"
     end
 
     def platform_path
-      @platform_path ||= "#{build_list.save_to_platform.path}/container/#{build_list.id}"
+      @platform_path ||=
+        if build_list.chain_build
+          "#{build_list.save_to_platform.path}/container/chain_build_#{build_list.chain_build_id}"
+        else
+          "#{build_list.save_to_platform.path}/container/#{build_list.id}"
+        end
     end
 
     def distrib_type
@@ -73,8 +105,15 @@ module AbfWorkerService
 
     def packages
       structure = packages_structure
-      structure[:sources] = build_list.packages.by_package_type('source').pluck(:sha1).compact
+      structure[:sources] = build_list.packages.by_package_type('source').pluck(:sha1).compact unless build_list.chain_build
       structure[:binaries][build_list.arch.name.to_sym] = build_list.packages.by_package_type('binary').pluck(:sha1).compact
+      structure
+    end
+
+    def old_packages
+      structure = packages_structure
+      structure[:binaries][build_list.arch.name.to_sym] = build_list.packages.by_package_type('binary')
+                                                                    .pluck(:fullname).compact
       structure
     end
 

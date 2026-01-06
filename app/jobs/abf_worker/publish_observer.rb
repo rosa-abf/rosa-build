@@ -28,11 +28,17 @@ module AbfWorker
             platform.ready
           end
         elsif extra['create_container'] # Container has been created
-          case status
-          when COMPLETED
-            subject.published_container
-          when FAILED, CANCELED
-            subject.fail_publish_container
+          if extra['unpublish']
+            subject.container_status = BuildList::WAITING_FOR_RESPONSE
+            subject.status = BuildList::WAITING_FOR_RESPONSE
+            subject.save
+          else
+            case status
+            when COMPLETED
+              subject.published_container
+            when FAILED, CANCELED
+              subject.fail_publish_container
+            end
           end
           update_results
         elsif !extra['resign'] # Simple publish

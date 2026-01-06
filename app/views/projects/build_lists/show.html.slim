@@ -150,14 +150,6 @@ row[ ng-controller='BuildListController'
               a ng-href='{{build_list.builder.path}}' ng-show = 'build_list.builder'
                 | {{build_list.builder.fullname}}
 
-        tr
-          td= t('activerecord.attributes.build_list.is_circle')
-          td= t("layout.#{@build_list.is_circle?}_")
-
-        tr
-          td= t('activerecord.attributes.build_list.new_core')
-          td= t("layout.#{@build_list.new_core?}_")
-
         - if @build_list.extra_build_lists.present? || @build_list.extra_repositories.present?
           tr
             td= t('activerecord.attributes.build_list.extra_repositories')
@@ -168,6 +160,11 @@ row[ ng-controller='BuildListController'
               - BuildList.where(id: @build_list.extra_build_lists).each do |bl|
                 p
                   = link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
+
+        - if @build_list.chain_build
+          tr
+            td= t('activerecord.attributes.build_list.chain_build')
+            td= @build_list.chain_build_id
 
         - if @build_list.extra_params.present?
           tr
@@ -215,7 +212,8 @@ row[ ng-controller='BuildListController'
         = render 'shared/log', { build_started: true, get_log_path: log_build_list_path(@build_list) }
 
       hr
-      = render 'item_groups'
+      - if @build_list.chain_build
+        = render 'item_groups'
       = render 'packages'
 
       - if @build_list.new_core?
