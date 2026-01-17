@@ -31,7 +31,7 @@ class BuildListService::Restart
 
   def restart_chains
     BuildList.where(chain_build: build_list.chain_build, arch_id: build_list.arch_id)
-             .where.not(status: [BuildList::WAITING_FOR_RESPONSE, BuildList::RESTARTING]).
+             .where.not(status: [BuildList::WAITING_FOR_RESPONSE, BuildList::RESTARTING])
              .where('level > ?', build_list.level).find_each do |bl|
       BuildListService::Restart.new(bl).call
     end
