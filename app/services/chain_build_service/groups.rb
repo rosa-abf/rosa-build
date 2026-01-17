@@ -14,7 +14,7 @@ class ChainBuildService::Groups
     (0..chain_build.current_level).each do |level|
       res << {
         level: level+1,
-        build_lists: chain_build.level_arch(level, arch_id)
+        build_lists: chain_build.level_arch(level, arch_id).order(id: :asc)
       }
     end
 
