@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20251221055039) do
+ActiveRecord::Schema.define(version: 20260110073501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -160,9 +160,10 @@ ActiveRecord::Schema.define(version: 20251221055039) do
   end
 
   create_table "chain_builds", force: :cascade do |t|
-    t.integer  "user_id",    :index=>{:name=>"index_chain_builds_on_user_id"}, :foreign_key=>{:references=>"users", :name=>"fk_chain_builds_user_id", :on_update=>:no_action, :on_delete=>:no_action}
-    t.datetime "created_at", :null=>false
-    t.datetime "updated_at", :null=>false
+    t.integer  "user_id",     :index=>{:name=>"index_chain_builds_on_user_id"}, :foreign_key=>{:references=>"users", :name=>"fk_chain_builds_user_id", :on_update=>:no_action, :on_delete=>:no_action}
+    t.datetime "created_at",  :null=>false
+    t.datetime "updated_at",  :null=>false
+    t.integer  "platform_id", :index=>{:name=>"index_chain_builds_on_platform_id"}, :foreign_key=>{:references=>"platforms", :name=>"fk_chain_builds_platform_id", :on_update=>:no_action, :on_delete=>:no_action}
   end
 
   create_table "build_lists", force: :cascade do |t|

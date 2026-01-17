@@ -14,7 +14,10 @@ class ChainBuildService::Create
       if chain_build
         chain_build
       else
-        ChainBuild.create(user: user)
+        ChainBuild.create(
+          user: user,
+          platform: build_list.save_to_platform
+        )
       end
     build_list.chain_build = res
     build_list.level = 0

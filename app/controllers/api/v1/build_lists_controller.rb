@@ -48,7 +48,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
         ChainBuildService::Create.new(
           current_user,
           @build_list,
-          ChainBuild.find(chain_config[:add_first])
+          ChainBuild.for_user(current_user).find(chain_config[:add_first])
         ).call
       elsif chain_config[:add_to_chain]
         chain_build =

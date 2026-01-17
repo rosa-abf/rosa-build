@@ -1,5 +1,6 @@
 class ChainBuild < ActiveRecord::Base
   belongs_to :user
+  belongs_to :platform
   has_many :build_lists
 
   scope :for_user, ->(user) { where(user: user) }
@@ -7,6 +8,14 @@ class ChainBuild < ActiveRecord::Base
     ids = BuildList.where.not(chain_build_id: nil).for_status(BuildList::WAITING_FOR_RESPONSE).select(:chain_build_id)
     where(id: ids)
   }
+
+  def chain_container_path(downloads = true)
+    if downloads
+      "#{APP_CONFIG['downloads_url']}/#{platform.name}/container/chain_build_#{id}"
+    else
+      "#{platform.path}/container/chain_build_#{id}"
+    end
+  end
 
   def current_level
     return 0 unless build_lists.exists?
