@@ -252,6 +252,18 @@ class Platform < ActiveRecord::Base
     platform_name = platform_name[0].gsub(/\//, '')
     return true if platform_name == 'rosa2019.1'
 
+    if platform_name == 'cobalt79'
+      parts = path.gsub(/^[\/]+/, '').split('/')
+      return true if parts.length <= 3
+      repo = parts[3]
+
+      allowed = %w[base extra sclo seph cloud_native office wine]
+      return true if allowed.include?(repo) || allowed.include?(repo.gsub('debug_', ''))
+
+      user = User.find_by(authentication_token: token)
+      return !!(user && PlatformPolicy.new(user, Platform.find_by(name: 'cobalt79')).show?)
+    end
+
     Rails.cache.fetch([platform_name, token, :platform_allowed], expires_in: 2.minutes) do
       platform = Platform.find_by name: platform_name
       next false  unless platform
