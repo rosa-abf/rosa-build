@@ -14,6 +14,8 @@ class BuildListService::Restart
   end
 
   def call
+    return if build_list.status == BuildList::WAITING_FOR_RESPONSE
+
     unpublish if build_list.chain_build
     update_version
     clean_filestore
@@ -29,7 +31,8 @@ class BuildListService::Restart
 
   def restart_chains
     BuildList.where(chain_build: build_list.chain_build, arch_id: build_list.arch_id)
-              .where('level > ?', build_list.level).find_each do |bl|
+             .where.not(status: [BuildList::WAITING_FOR_RESPONSE, BuildList::RESTARTING]).
+             .where('level > ?', build_list.level).find_each do |bl|
       BuildListService::Restart.new(bl).call
     end
   end

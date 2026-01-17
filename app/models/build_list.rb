@@ -397,6 +397,7 @@ class BuildList < ActiveRecord::Base
 
   def can_restart?
     allowed_states = [
+      WAITING_FOR_RESPONSE,
       SUCCESS,
       BUILD_ERROR,
       PACKAGES_FAIL,
