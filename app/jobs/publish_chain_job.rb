@@ -19,7 +19,7 @@ class PublishChainJob
   def self.old_publish(build_list, user, testing)
     return unless build_list.top_of_chain?
 
-    queue = [build_list_id]
+    queue = [build_list.id]
     loop do
       bl_id = queue.pop
       break unless bl_id
