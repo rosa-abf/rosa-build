@@ -62,6 +62,7 @@ class BuildListService::Restart
   end
 
   def update_status
+    build_list.fail_reason = nil
     build_list.status = status
     build_list.builder_id = nil
     $redis.with { |r| r.srem('abf_worker:shifted_build_lists', build_list.id) }
