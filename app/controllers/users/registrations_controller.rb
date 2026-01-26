@@ -1,6 +1,5 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   before_action :update_sanitized_params, if: :devise_controller?
-  before_action :check_captcha, only: [:create]
 
   def new
     super do |resource|
@@ -42,17 +41,6 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def update_sanitized_params
     devise_parameter_sanitizer.for(:sign_up) do |u|
       u.permit(:invite_key, :uname, :name, :email, :password, :password_confirmation)
-    end
-  end
-
-  private
-
-  def check_captcha
-    unless verify_recaptcha
-      self.resource = resource_class.new sign_up_params
-      resource.validate
-      set_minimum_password_length
-      render :new
     end
   end
 end
