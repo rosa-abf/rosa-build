@@ -41,6 +41,8 @@ module AbfWorkerService
     end
 
     def unpublish!
+      return if build_list.container_status != BuildList::BUILD_PUBLISHED
+
       Resque.push(
         'publish_worker', # Low priority
         'class' => 'AbfWorker::PublishWorker',

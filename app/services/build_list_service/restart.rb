@@ -7,7 +7,11 @@ class BuildListService::Restart
     @build_list = build_list
     @status =
       if build_list.chain_build
-        BuildList::RESTARTING
+        if build_list.container_status == BuildList::BUILD_PUBLISHED
+          BuildList::RESTARTING
+        else
+          BuildList::WAITING_FOR_RESPONSE
+        end
       else
         BuildList::BUILD_PENDING
       end
