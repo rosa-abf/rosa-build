@@ -11,10 +11,14 @@ class ChainBuild < ActiveRecord::Base
 
   def chain_container_path(downloads = true)
     if downloads
-      "#{APP_CONFIG['downloads_url']}/#{platform.name}/container/chain_build_#{id}"
+      "#{APP_CONFIG['downloads_url']}/#{platform.name}/container/chain_build_#{id}/"
     else
-      "#{platform.path}/container/chain_build_#{id}"
+      "#{platform.path}/container/chain_build_#{id}/"
     end
+  end
+
+  def release_path(arch, repo, downloads = true)
+    "#{chain_container_path(downloads)}#{arch}/#{repo}/release"
   end
 
   def current_level

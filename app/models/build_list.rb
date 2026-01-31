@@ -401,6 +401,7 @@ class BuildList < ActiveRecord::Base
       SUCCESS,
       BUILD_ERROR,
       PACKAGES_FAIL,
+      REJECTED_PUBLISH,
       BUILD_CANCELED,
       BUILD_CANCELING,
       TESTS_FAILED,
@@ -648,6 +649,7 @@ class BuildList < ActiveRecord::Base
 
   def abf_worker_args
     repos = include_repos
+    repo_names = []
     include_repos_hash = {}.tap do |h|
       Repository.where(id: (repos | (extra_repositories || [])) ).each do |repo|
         path, prefix = repo.platform.public_downloads_url(
@@ -658,6 +660,7 @@ class BuildList < ActiveRecord::Base
         h["#{prefix}release"] = insert_token_to_path(path + 'release', repo.platform)
         h["#{prefix}updates"] = insert_token_to_path(path + 'updates', repo.platform) if repo.platform.main?
         h["#{prefix}testing"] = insert_token_to_path(path + 'testing', repo.platform) if include_testing_subrepository?
+        repo_names << repo.name
       end
     end
     host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
@@ -667,10 +670,18 @@ class BuildList < ActiveRecord::Base
       include_repos_hash["container_#{bl.id}"] = insert_token_to_path(path, bl.save_to_platform)
     end
     if chain_build && level > 0
-      bl = chain_build.build_lists.where(first_in_chain: true, arch_id: arch_id).first
-      path = "#{APP_CONFIG['downloads_url']}/#{bl.save_to_platform.name}/container/"
-      path << "chain_build_#{chain_build_id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
-      include_repos_hash["chain_build_#{chain_build_id}"] = insert_token_to_path(path, bl.save_to_platform)
+      repo_names.uniq.each do |repo_name|
+        exists =
+          begin
+            File.exists?(chain_build.release_path(arch.name, repo_name, false))
+          rescue StandardError
+            false
+          end
+        if exists
+          path = chain_build.release_path(arch.name, repo_name, true)
+          include_repos_hash["chain_build_#{chain_build_id}_#{repo_name}"] = insert_token_to_path(path, chain_build.platform)
+        end
+      end
     end
 
     git_project_address = project.git_project_address user
