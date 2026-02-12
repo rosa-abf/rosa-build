@@ -1,4 +1,4 @@
-class AddMoreFieldsToRegisterRequests < ActiveRecord::Migration
+class AddMoreFieldsToRegisterRequests < ActiveRecord::Migration[8.1]
   def self.up
     add_column :register_requests, :interest, :string
     add_column :register_requests, :more, :text

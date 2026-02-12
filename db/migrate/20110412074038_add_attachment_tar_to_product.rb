@@ -1,4 +1,4 @@
-class AddAttachmentTarToProduct < ActiveRecord::Migration
+class AddAttachmentTarToProduct < ActiveRecord::Migration[8.1]
   def self.up
     add_column :products, :tar_file_name, :string
     add_column :products, :tar_content_type, :string

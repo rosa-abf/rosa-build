@@ -20,4 +20,4 @@
   == render 'projects/comments/markdown_help'
 
 - content_for :additional_scripts do
-  == render 'init_service.js.erb'
+  == render partial: 'init_service', formats: :js

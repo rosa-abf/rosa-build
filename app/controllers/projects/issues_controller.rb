@@ -110,7 +110,7 @@ class Projects::IssuesController < Projects::BaseController
           @issue.set_open if status == 'open'
           status = @issue.save ? 200 : 500
         else
-          status = 422 unless @issue.update_attributes(issue_params)
+          status = 422 unless @issue.update(issue_params)
         end
         render status: status
       }
@@ -136,7 +136,7 @@ class Projects::IssuesController < Projects::BaseController
 
   def update_label
     respond_to do |format|
-      if @label.update_attributes(name: params[:name], color: params[:color])
+      if @label.update(name: params[:name], color: params[:color])
         format.json { render partial: 'labels', locals: {project: @project} }
       else
         format.json { render text: @label.errors.full_messages, status: 422 }

@@ -25,7 +25,7 @@ module AbfWorker
 
       unless subject.valid?
         Raven.capture_message('Invalid build list', extra: { id: subject.id, errors: subject.errors.full_messages })
-        item.update_attributes({status: BuildList::BUILD_ERROR})
+        item.update({status: BuildList::BUILD_ERROR})
         subject.build_error(false)
         subject.save(validate: false)
         $redis.with { |r| r.srem('abf_worker:shifted_build_lists', subject.id) }
@@ -59,18 +59,18 @@ module AbfWorker
           subject.build_error
         end
 
-        item.update_attributes({status: BuildList::BUILD_ERROR}) unless rerunning_tests
+        item.update({status: BuildList::BUILD_ERROR}) unless rerunning_tests
       when STARTED
         subject.start_build
       when CANCELED
-        item.update_attributes({status: BuildList::BUILD_CANCELED}) unless rerunning_tests || subject.tests_failed?
+        item.update({status: BuildList::BUILD_CANCELED}) unless rerunning_tests || subject.tests_failed?
         subject.build_canceled
       when TESTS_FAILED
         subject.tests_failed
       end
 
       if !rerunning_tests && [TESTS_FAILED, COMPLETED].include?(status)
-        item.update_attributes({status: BuildList::SUCCESS})
+        item.update({status: BuildList::SUCCESS})
         subject.publish_container if subject.auto_create_container?
       end
     end

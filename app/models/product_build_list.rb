@@ -30,7 +30,7 @@ class ProductBuildList < ActiveRecord::Base
   attr_accessor :base_url, :product_name
 
   attr_readonly :product_id
-  serialize :results, Array
+  serialize :results, class_name: Array
 
 
   scope :default_order,           -> { order(updated_at: :desc) }

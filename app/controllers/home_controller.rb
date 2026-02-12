@@ -39,7 +39,7 @@ class HomeController < ApplicationController
   def issues
     @created_issues  = current_user.issues
     @assigned_issues = Issue.where(assignee_id: current_user.id)
-    @all_issues = ProjectPolicy::Scope.new(current_user, Issue).membered.uniq.joins(:project)
+    @all_issues = ProjectPolicy::Scope.new(current_user, Issue).membered.joins(:project).distinct
 
     @created_issues, @assigned_issues, @all_issues =
       if action_name == 'issues'

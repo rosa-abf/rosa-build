@@ -15,7 +15,7 @@ module Rosa
 
     unless Rails.env.test?
       require 'close_ar_connections_middleware'
-      config.middleware.insert_after('Rack::Sendfile', CloseArConnectionsMiddleware)
+      config.middleware.insert_after(Rack::Sendfile, CloseArConnectionsMiddleware) # FIXME upgrade
     end
 
     # Rack::UTF8Sanitizer is a Rack middleware which cleans up invalid UTF8 characters in request URI and headers.
@@ -59,8 +59,21 @@ module Rosa
     config.assets.version = '1.0'
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
-    config.active_record.raise_in_transactional_callbacks = true
+#    config.active_record.raise_in_transactional_callbacks = true FIXME upgrade теперь по умолчанию исключения включены и параметр удалён
 
+    config.action_controller.permit_all_parameters = true # FIXME несекьюрно, но быстро
     config.log_redis = false
+
+    config.after_initialize do
+      ActiveRecord.yaml_column_permitted_classes += [
+        Date,
+        BigDecimal,
+        ActiveSupport::TimeWithZone,
+        Time,
+        ActiveSupport::TimeZone,
+        ActiveSupport::HashWithIndifferentAccess
+      ]
+    end
+    config.active_record.encryption.extend_queries = true
   end
 end

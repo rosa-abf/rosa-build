@@ -1,6 +1,14 @@
 # Patch to use paperclip with nginx upload module
 module Paperclip
+  module AssignUpload # FIXME upgrade alias_method_chain
+    def assign(uploaded_file)
+      uploaded_file = UploadedPath.new(uploaded_file) if uploaded_file.is_a?(Hash)
+      assign_without_upload(uploaded_file)
+    end
+  end
+
   class Attachment
+    prepend Paperclip::AssignUpload
     class UploadedPath
       attr_reader :original_filename, :content_type, :size, :path
       def initialize(uploaded_file)
@@ -19,11 +27,5 @@ module Paperclip
       def close; end
       def closed?; true; end
     end
-
-    def assign_with_upload(uploaded_file)
-      uploaded_file = UploadedPath.new(uploaded_file) if uploaded_file.is_a?(Hash)
-      assign_without_upload(uploaded_file) 
-    end
-    alias_method_chain :assign, :upload
   end
 end

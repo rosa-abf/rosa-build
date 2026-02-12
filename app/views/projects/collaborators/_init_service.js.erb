@@ -3,7 +3,7 @@
     return {
       name_with_owner: '<%= @project.name_with_owner %>',
       project_id:      <%= @project.id %>,
-      collaborators:   <%= render('collaborators.json', collaborators: @collaborators).html_safe %>
+      collaborators:   <%= render(partial: 'collaborators', formats: :json, locals: { collaborators: @collaborators }).html_safe %>
     };
   });
 </script>

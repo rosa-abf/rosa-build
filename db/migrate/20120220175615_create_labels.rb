@@ -1,4 +1,4 @@
-class CreateLabels < ActiveRecord::Migration
+class CreateLabels < ActiveRecord::Migration[8.1]
   def change
     create_table :labels do |t|
       t.string :name, null: false
@@ -15,7 +15,7 @@ class CreateLabels < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :labelings, :issue_id
-    add_index :labels, :project_id
+    add_index :labelings, :issue_id, if_not_exists: true
+    add_index :labels, :project_id, if_not_exists: true
   end
 end

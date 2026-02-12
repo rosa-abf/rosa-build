@@ -8,6 +8,8 @@ ActiveAdmin.register User do
   filter :role, as: :select, collection: User::EXTENDED_ROLES
   filter :created_at
 
+  remove_filter :avatar
+
   controller do
     def update(options={}, &block)
       user_params = params[:user]

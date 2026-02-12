@@ -1,4 +1,4 @@
-class CreateInvites < ActiveRecord::Migration
+class CreateInvites < ActiveRecord::Migration[8.1]
   def change
     create_table :invites do |t|
       t.references :user, index: true, foreign_key: true, null: false

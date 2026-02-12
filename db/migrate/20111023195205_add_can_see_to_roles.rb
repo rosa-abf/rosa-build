@@ -1,4 +1,4 @@
-class AddCanSeeToRoles < ActiveRecord::Migration
+class AddCanSeeToRoles < ActiveRecord::Migration[8.1]
   def self.up
     add_column :roles, :can_see, :text
   end

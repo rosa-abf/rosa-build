@@ -1,4 +1,4 @@
-class CreateFlashNotifies < ActiveRecord::Migration
+class CreateFlashNotifies < ActiveRecord::Migration[8.1]
   def change
     create_table :flash_notifies do |t|
       t.text    :body_ru,   null: false

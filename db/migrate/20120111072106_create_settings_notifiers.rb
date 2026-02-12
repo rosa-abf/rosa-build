@@ -1,4 +1,4 @@
-class CreateSettingsNotifiers < ActiveRecord::Migration
+class CreateSettingsNotifiers < ActiveRecord::Migration[8.1]
   def self.up
     create_table :settings_notifiers do |t|
       t.integer :user_id, null: false

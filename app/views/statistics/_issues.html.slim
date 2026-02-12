@@ -14,7 +14,7 @@
         span.graph-key-color3>
         = t('.closed_title')
       .text-center.graph-loading ng-show='loading'
-        = image_tag 'loading-large.gif'
+        = image_pack_tag 'loading-large.gif'
       .text-center.no-data ng-hide='loading || statistics.issues'
         = t('.no_data')
       canvas#issues_chart ng-show='statistics.issues'
@@ -24,7 +24,7 @@
       b
         = t('.total_open')
       .panel-data
-        = image_tag 'loading-small.gif', ng_show: 'loading'
+        = image_pack_tag 'loading-small.gif', ng_show: 'loading'
         .no-data ng-hide='loading || statistics.issues.open_count >= 0'
           = t('.no_data')
         | {{ statistics.issues.open_count | number }}
@@ -33,7 +33,7 @@
       b
         = t('.total_reopen')
       .panel-data
-        = image_tag 'loading-small.gif', ng_show: 'loading'
+        = image_pack_tag 'loading-small.gif', ng_show: 'loading'
         .no-data ng-hide='loading || statistics.issues.reopen_count >= 0'
           = t('.no_data')
         | {{ statistics.issues.reopen_count | number }}
@@ -42,7 +42,7 @@
       b
         = t('.total_closed')
       .panel-data
-        = image_tag 'loading-small.gif', ng_show: 'loading'
+        = image_pack_tag 'loading-small.gif', ng_show: 'loading'
         .no-data ng-hide='loading || statistics.issues.closed_count >= 0'
           = t('.no_data')
         | {{ statistics.issues.closed_count | number }}

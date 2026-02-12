@@ -1,4 +1,4 @@
-class AddRepositoryIdToProjects < ActiveRecord::Migration
+class AddRepositoryIdToProjects < ActiveRecord::Migration[8.1]
   def self.up
     add_column :projects, :repository_id, :integer, null: false
   end

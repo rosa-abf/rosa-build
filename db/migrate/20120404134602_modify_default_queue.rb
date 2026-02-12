@@ -1,4 +1,4 @@
-class ModifyDefaultQueue < ActiveRecord::Migration
+class ModifyDefaultQueue < ActiveRecord::Migration[8.1]
   def up
     change_column :delayed_jobs, :queue, :string, default: 'default'
     execute "UPDATE delayed_jobs SET queue = 'default'"

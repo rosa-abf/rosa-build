@@ -1,6 +1,6 @@
 class UserMailer < ActionMailer::Base
-  add_template_helper ActivityFeedsHelper
-  add_template_helper CommitHelper
+#  add_template_helper ActivityFeedsHelper FIXME upgrade: undefined method add_template_helper
+#  add_template_helper CommitHelper FIXME upgrade: undefined method add_template_helper
 
   default from: "\"#{APP_CONFIG['project_name']}\" <#{APP_CONFIG['do-not-reply-email']}>"
   default_url_options.merge!(protocol: 'https') if APP_CONFIG['mailer_https_url']

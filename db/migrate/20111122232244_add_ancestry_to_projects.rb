@@ -1,4 +1,4 @@
-class AddAncestryToProjects < ActiveRecord::Migration
+class AddAncestryToProjects < ActiveRecord::Migration[8.1]
   def self.up
     add_column :projects, :ancestry, :string
   end

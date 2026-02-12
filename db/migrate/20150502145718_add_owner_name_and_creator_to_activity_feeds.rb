@@ -1,8 +1,8 @@
-class AddOwnerNameAndCreatorToActivityFeeds < ActiveRecord::Migration
+class AddOwnerNameAndCreatorToActivityFeeds < ActiveRecord::Migration[8.1]
   def up
-    add_column :activity_feeds, :project_owner, :string
-    add_column :activity_feeds, :project_name, :string
-    add_column :activity_feeds, :creator_id, :integer
+    add_column :activity_feeds, :project_owner, :string, if_not_exists: true
+    add_column :activity_feeds, :project_name, :string, if_not_exists: true
+    add_column :activity_feeds, :creator_id, :integer, if_not_exists: true
 
     add_index :activity_feeds, :project_owner
     add_index :activity_feeds, :project_name

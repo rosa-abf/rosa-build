@@ -5,7 +5,7 @@ class BuildList::Package < ActiveRecord::Base
   belongs_to :project
   belongs_to :platform
 
-  serialize :dependent_packages, Array
+  serialize :dependent_packages, class_name: Array
 
   validates :build_list, :build_list_id, :project, :project_id,
             :platform, :platform_id, :fullname,

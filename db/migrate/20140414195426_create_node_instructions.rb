@@ -1,4 +1,4 @@
-class CreateNodeInstructions < ActiveRecord::Migration
+class CreateNodeInstructions < ActiveRecord::Migration[8.1]
   def change
     create_table :node_instructions do |t|
       t.integer :user_id,             null: false

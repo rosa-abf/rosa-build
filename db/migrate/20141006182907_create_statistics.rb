@@ -1,4 +1,4 @@
-class CreateStatistics < ActiveRecord::Migration
+class CreateStatistics < ActiveRecord::Migration[8.1]
   def up
     create_table :statistics do |t|
       t.integer :user_id,                 null: false

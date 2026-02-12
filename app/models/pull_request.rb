@@ -99,8 +99,9 @@ class PullRequest < ActiveRecord::Base
       return false
     end
     res = merge
+    Rails.logger.debug("Check: '#{res}'")
     new_status = case res
-                 when /Already up-to-date/, /Already up to date/
+                 when /Already up-to-date/, /Already up to date/, /Уже актуально\./
                    'already'
                  when /Merge made by/
                    system("cd #{path} && git reset --hard HEAD^") # remove merge commit
@@ -189,7 +190,7 @@ class PullRequest < ActiveRecord::Base
     if to_project && to_project.pull_requests.needed_checking
          .where(from_project_id: from_project_id,
                 to_ref: to_ref, from_ref: from_ref)
-         .where('pull_requests.id <> :id or :id is null', id: id).count > 0
+         .where("pull_requests.id <> :id or #{id.nil? ? "null" : id} is null", id: id).count > 0
       errors.add(:base_branch, I18n.t('projects.pull_requests.duplicate', from_ref: from_ref))
     end
   end
@@ -210,8 +211,8 @@ class PullRequest < ActiveRecord::Base
   end
 
   def merge
-    puts "From: #{from_project.try(:path)}"
-    puts "To: #{to_project.try(:path)}"
+    Rails.logger.debug("Merge From: #{from_project.try(:path)}")
+    Rails.logger.debug("Merge To: #{to_project.try(:path)}")
     clone
     message = "Merge pull request ##{serial_id} from #{from_project_owner_uname}/#{from_project_name}:#{from_ref}\r\n #{title}"
     %x(cd #{path} && git checkout #{to_ref.shellescape} && git merge --no-ff #{from_branch.shellescape} -m #{message.shellescape})

@@ -1,0 +1,7 @@
+./git-ruby/repository.rb:require 'diff/lcs'
+./git-ruby/repository.rb:require 'diff/lcs/hunk'
+./git-ruby/internal/raw_object.rb:require 'digest/sha1'
+./git-ruby/commit_db.rb:  require 'sequel'
+./git-ruby/git_object.rb:require 'stringio'
+./git.rb:require 'tempfile'
+./git.rb:require 'posix-spawn'

@@ -1,4 +1,4 @@
-class AddPackageVersionToBuildLists < ActiveRecord::Migration
+class AddPackageVersionToBuildLists < ActiveRecord::Migration[8.1]
   def self.up
     add_column :build_lists, :package_version, :string
   end

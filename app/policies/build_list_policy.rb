@@ -15,6 +15,7 @@ class BuildListPolicy < ApplicationPolicy
   alias_method :list?,       :show?
 
   def create?
+    return false if record.project.nil?
     return false unless record.project.is_package
     return false unless ProjectPolicy.new(user, record.project).write?
     record.build_for_platform.blank? || PlatformPolicy.new(user, record.build_for_platform).show?

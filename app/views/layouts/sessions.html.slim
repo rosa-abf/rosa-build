@@ -6,7 +6,7 @@ html
     == csrf_meta_tag
     title
       = get_page_title site: APP_CONFIG['project_name']
-    == stylesheet_link_tag 'new_application', cache: 'application'
+    == stylesheet_pack_tag 'application'
 
   body
     == render 'layouts/menu/new_top'
@@ -18,12 +18,8 @@ html
         .col-md-6.col-md-offset-3
           .panel.panel-primary
             .panel-heading
-              = image_tag 'logo.png', class: 'img-responsive center-block img-rounded'
+              = image_pack_tag 'logo.png', class: 'img-responsive center-block img-rounded'
           == yield
     == render 'layouts/menu/new_bottom'
-    == javascript_include_tag 'new_application', cache: 'application'
-    == javascript_include_tag 'login'
-    - if I18n.locale == :ru
-      == javascript_include_tag 'moment/ru.js', cache: 'moment'
-      == javascript_include_tag 'angular-locale_ru-ru', cache: 'angular-locale'
+    == javascript_pack_tag 'application', 'login'
     == yield :additional_scripts if content_for?(:additional_scripts)

@@ -1,6 +1,7 @@
+- data = @hook.data || {}
 = hidden_field_tag 'hook[name]', @hook.name
 - Hook::SCHEMA[@hook.name.to_sym].each do |type, field|
-  - name, value = "hook[data][#{field}]", @hook.data[field]
+  - name, value = "hook[data][#{field}]", data[field]
   .form-group
     - if type != :boolean
       label.control-label.col-sm-3

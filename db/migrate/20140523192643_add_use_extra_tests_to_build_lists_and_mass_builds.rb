@@ -1,4 +1,4 @@
-class AddUseExtraTestsToBuildListsAndMassBuilds < ActiveRecord::Migration
+class AddUseExtraTestsToBuildListsAndMassBuilds < ActiveRecord::Migration[8.1]
   def up
     add_column :mass_builds, :use_extra_tests, :boolean, default: false, null: false
     # Make existing build_lists 'false', but default to 'true' in the future.

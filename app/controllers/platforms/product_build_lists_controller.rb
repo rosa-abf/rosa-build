@@ -25,7 +25,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def update
-    @product_build_list.update_attributes(not_delete: (params[:product_build_list] || {})[:not_delete])
+    @product_build_list.update(not_delete: (params[:product_build_list] || {})[:not_delete])
     render :show
   end
 

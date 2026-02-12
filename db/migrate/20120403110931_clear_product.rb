@@ -1,4 +1,4 @@
-class ClearProduct < ActiveRecord::Migration
+class ClearProduct < ActiveRecord::Migration[8.1]
   def self.up
     remove_column :products, :build_status
     remove_column :products, :build_path

@@ -1,4 +1,4 @@
-class AddAssigneeToIssues < ActiveRecord::Migration
+class AddAssigneeToIssues < ActiveRecord::Migration[8.1]
   def up
     rename_column :issues, :user_id, :assignee_id
     rename_column :issues, :creator_id, :user_id

@@ -1,4 +1,4 @@
-class AddExtraRepositoriesAndContainersToBuildList < ActiveRecord::Migration
+class AddExtraRepositoriesAndContainersToBuildList < ActiveRecord::Migration[8.1]
   def change
     add_column :build_lists, :auto_create_container, :boolean, default: false
     add_column :build_lists, :extra_repositories, :text

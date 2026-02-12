@@ -1,4 +1,4 @@
-class CreateMassBuilds < ActiveRecord::Migration
+class CreateMassBuilds < ActiveRecord::Migration[8.1]
   def change
     create_table :mass_builds do |t|
       t.integer :platform_id

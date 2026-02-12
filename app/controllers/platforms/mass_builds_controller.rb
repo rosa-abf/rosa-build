@@ -62,14 +62,13 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def get_list
-    text =
+    @text =
       case params[:kind]
       when 'failed_builds_list', 'tests_failed_builds_list', 'success_builds_list'
         @mass_build.send "generate_#{params[:kind]}"
       when 'projects_list', 'missed_projects_list'
         @mass_build.send params[:kind]
       end
-    render text: text
   end
 
   def show_fail_reason

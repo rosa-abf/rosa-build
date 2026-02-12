@@ -61,7 +61,7 @@ class Users::SettingsController < Users::BaseController
 
   def notifiers
     if request.patch?
-      if @user.notifier.update_attributes(settings_notifier_params)
+      if @user.notifier.update(settings_notifier_params)
         flash[:notice] = I18n.t("flash.settings.saved")
         redirect_to notifiers_settings_path and return
       end
@@ -72,7 +72,7 @@ class Users::SettingsController < Users::BaseController
   def builds_settings
     @user.builds_setting ||= @user.build_builds_setting
     if request.patch?
-      if @user.builds_setting.update_attributes(user_builds_setting_params)
+      if @user.builds_setting.update(user_builds_setting_params)
         flash[:notice] = I18n.t("flash.settings.saved")
         redirect_to builds_settings_settings_path and return
       end

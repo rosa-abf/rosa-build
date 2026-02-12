@@ -1,4 +1,4 @@
-class AddIndexes < ActiveRecord::Migration
+class AddIndexes < ActiveRecord::Migration[8.1]
   def change
     add_index :project_to_repositories, [:repository_id, :project_id], unique: true
     add_index :repositories, :platform_id

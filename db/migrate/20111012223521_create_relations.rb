@@ -1,9 +1,9 @@
-class CreateRelations < ActiveRecord::Migration
+class CreateRelations < ActiveRecord::Migration[8.1]
   def self.up
     create_table :relations do |t|
-      t.integer :object_id, references: nil
+      t.integer :object_id #, references: nil
       t.string :object_type
-      t.integer :target_id, references: nil
+      t.integer :target_id #, references: nil
       t.string :target_type
 
       t.timestamps

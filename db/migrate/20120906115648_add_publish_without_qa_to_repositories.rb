@@ -1,4 +1,4 @@
-class AddPublishWithoutQaToRepositories < ActiveRecord::Migration
+class AddPublishWithoutQaToRepositories < ActiveRecord::Migration[8.1]
 
   class Platform < ActiveRecord::Base
     has_many :repositories, dependent: :destroy

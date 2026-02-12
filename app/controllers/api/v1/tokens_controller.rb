@@ -34,7 +34,7 @@ class Api::V1::TokensController < Api::V1::BaseController
 
   def update
     authorize :token_api
-    if @token.update_attributes(subject_params(@token.class, @token))
+    if @token.update(subject_params(@token.class, @token))
       render json: token_json(@token)
     else
       render_validation_error @token, "Token has not been updated"

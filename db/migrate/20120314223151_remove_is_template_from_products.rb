@@ -1,4 +1,4 @@
-class RemoveIsTemplateFromProducts < ActiveRecord::Migration
+class RemoveIsTemplateFromProducts < ActiveRecord::Migration[8.1]
   def up
     remove_column :products, :is_template
   end

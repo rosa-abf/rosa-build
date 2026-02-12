@@ -1,4 +1,4 @@
-class SetTextTypeForKeyPairsPublic < ActiveRecord::Migration
+class SetTextTypeForKeyPairsPublic < ActiveRecord::Migration[8.1]
   def up
     change_column :key_pairs, :public, :text
   end

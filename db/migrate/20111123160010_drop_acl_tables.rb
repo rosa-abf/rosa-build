@@ -1,4 +1,4 @@
-class DropAclTables < ActiveRecord::Migration
+class DropAclTables < ActiveRecord::Migration[8.1]
   def self.up
     drop_table :permissions
     drop_table :rights

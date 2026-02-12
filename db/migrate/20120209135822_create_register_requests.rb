@@ -1,4 +1,4 @@
-class CreateRegisterRequests < ActiveRecord::Migration
+class CreateRegisterRequests < ActiveRecord::Migration[8.1]
   def self.up
     create_table :register_requests do |t|
       t.string :name
@@ -9,8 +9,8 @@ class CreateRegisterRequests < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :register_requests, [:email], unique: true, case_sensitive: false
-    add_index :register_requests, [:token], unique: true, case_sensitive: false
+    add_index :register_requests, [:email], unique: true #, case_sensitive: false
+    add_index :register_requests, [:token], unique: true #, case_sensitive: false
   end
 
   def self.down

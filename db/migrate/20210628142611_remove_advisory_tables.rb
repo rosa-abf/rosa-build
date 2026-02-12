@@ -1,4 +1,4 @@
-class RemoveAdvisoryTables < ActiveRecord::Migration
+class RemoveAdvisoryTables < ActiveRecord::Migration[8.1]
   def change
     Advisory.destroy_all
     drop_table :advisories_platforms

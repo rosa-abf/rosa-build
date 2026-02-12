@@ -190,7 +190,7 @@ class Project < ActiveRecord::Base
 
     if project_tag
       project_tag.destroy_files_from_file_store(project_tag.sha1)
-      project_tag.update_attributes(sha1: sha1)
+      project_tag.update(sha1: sha1)
     else
       project_tags.create(
         tag_name:  tag.name,
@@ -332,10 +332,10 @@ class Project < ActiveRecord::Base
     self.name = old_name
     old_path  = path
     self.name = new_name
-    FileUtils.mv old_path, new_path, force: true if Dir.exists?(old_path)
+    FileUtils.mv old_path, new_path, force: true if Dir.exist?(old_path)
 
     pull_requests_old_path = File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, old_name)
-    if Dir.exists?(pull_requests_old_path)
+    if Dir.exist?(pull_requests_old_path)
       FileUtils.mv  pull_requests_old_path,
                     File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, new_name),
                     force: true

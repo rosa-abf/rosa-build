@@ -1,4 +1,4 @@
-class CreateRights < ActiveRecord::Migration
+class CreateRights < ActiveRecord::Migration[8.1]
   def self.up
     create_table :rights do |t|
       t.string :name, null: false

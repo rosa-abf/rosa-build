@@ -1,4 +1,4 @@
-class AddDefaultBranchToPlatforms < ActiveRecord::Migration
+class AddDefaultBranchToPlatforms < ActiveRecord::Migration[8.1]
   def up
     add_column :platforms, :default_branch, :string
     execute "UPDATE platforms SET default_branch = name"

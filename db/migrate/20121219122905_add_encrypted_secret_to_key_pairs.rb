@@ -1,4 +1,4 @@
-class AddEncryptedSecretToKeyPairs < ActiveRecord::Migration
+class AddEncryptedSecretToKeyPairs < ActiveRecord::Migration[8.1]
   def up
     rename_table :key_pairs, :key_pairs_backup
     # rename_index :key_pairs_backup, 'index_key_pairs_on_repository_id', 'index_key_pairs_backup_on_repository_id'
@@ -6,12 +6,12 @@ class AddEncryptedSecretToKeyPairs < ActiveRecord::Migration
     create_table :key_pairs do |t|
       t.text :public, null: false
       t.text :encrypted_secret, null: false
-      t.string :key_id, null: false, references: nil
+      t.string :key_id, null: false #, references: nil
       t.references :user, null: false
       t.references :repository, null: false
       t.timestamps
     end
-    add_index :key_pairs, :repository_id, unique: true
+    add_index :key_pairs, :repository_id, unique: true, if_not_exists: true
   end
 
   def down

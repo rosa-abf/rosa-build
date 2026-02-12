@@ -1,6 +1,6 @@
-class AddSaveToRepositoryToBuildLists < ActiveRecord::Migration
+class AddSaveToRepositoryToBuildLists < ActiveRecord::Migration[8.1]
   def self.up
-    add_column :build_lists, :save_to_repository_id, :integer, references: nil
+    add_column :build_lists, :save_to_repository_id, :integer #, references: nil
 
     BuildList.includes(project: :repositories, save_to_platform: :repositories).find_in_batches do |batch|
       batch.each do |bl|

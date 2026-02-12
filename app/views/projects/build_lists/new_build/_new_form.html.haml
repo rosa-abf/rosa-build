@@ -62,4 +62,4 @@
             = t('layout.projects.build_button')
 
 - content_for :additional_scripts do
-  = render 'projects/build_lists/new_build/init_service.js.erb'
+  = render partial: 'projects/build_lists/new_build/init_service', formats: :js

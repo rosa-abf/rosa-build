@@ -1,4 +1,4 @@
-class DeleteCategories < ActiveRecord::Migration
+class DeleteCategories < ActiveRecord::Migration[8.1]
   def self.up
     remove_column :projects, :category_id
     drop_table :categories

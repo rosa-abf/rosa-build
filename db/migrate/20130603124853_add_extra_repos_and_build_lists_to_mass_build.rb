@@ -1,11 +1,11 @@
-class AddExtraReposAndBuildListsToMassBuild < ActiveRecord::Migration
+class AddExtraReposAndBuildListsToMassBuild < ActiveRecord::Migration[8.1]
   class MassBuild < ActiveRecord::Base
   end
 
   def up
-    add_column    :mass_builds, :save_to_platform_id, :integer, references: nil
+    add_column    :mass_builds, :save_to_platform_id, :integer #, references: nil
     MassBuild.update_all('save_to_platform_id = platform_id')
-    change_column :mass_builds, :save_to_platform_id, :integer, null: false, references: nil
+    change_column :mass_builds, :save_to_platform_id, :integer, null: false #, references: nil
     change_column :mass_builds, :platform_id, :integer, null: false
     rename_column :mass_builds, :platform_id, :build_for_platform_id
     add_column    :mass_builds, :extra_repositories,  :text

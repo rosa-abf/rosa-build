@@ -2,7 +2,7 @@
 class DisableAssetsLogger
   def initialize(app)
     @app = app
-    Rails.application.assets.logger = Logger.new('/dev/null')
+    Rails.application.config.assets.logger = Logger.new('/dev/null') # FIXME upgrade
   end
 
   def call(env)
@@ -20,7 +20,7 @@ Rails.application.configure do
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
 
-  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 10.minutes }
+  config.cache_store = :redis_cache_store, { url: 'redis://localhost:6379/0/cache', expires_in: 10.minutes } # FIXME upgrade
   # Do not eager load code on boot.
   config.eager_load = false
 
@@ -64,4 +64,7 @@ Rails.application.configure do
   config.middleware.insert_before Rails::Rack::Logger, DisableAssetsLogger
 
   config.log_redis = true
+
+#  config.middleware.use(JsRoutes::Middleware)
 end
+

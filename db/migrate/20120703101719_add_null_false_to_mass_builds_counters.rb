@@ -1,4 +1,4 @@
-class AddNullFalseToMassBuildsCounters < ActiveRecord::Migration
+class AddNullFalseToMassBuildsCounters < ActiveRecord::Migration[8.1]
   def change
     change_column :mass_builds, :build_lists_count, :integer, default: 0, null: false
     change_column :mass_builds, :build_published_count, :integer, default: 0, null: false

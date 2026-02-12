@@ -1,6 +1,6 @@
-class SetStringTypeForKeyPairsKeyid < ActiveRecord::Migration
+class SetStringTypeForKeyPairsKeyid < ActiveRecord::Migration[8.1]
   def up
-  	change_column :key_pairs, :key_id, :string, references: nil
+  	change_column :key_pairs, :key_id, :string #, references: nil
   end
 
   def down

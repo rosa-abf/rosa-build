@@ -1,11 +1,11 @@
-class CreateTokens < ActiveRecord::Migration
+class CreateTokens < ActiveRecord::Migration[8.1]
 
   def change
     create_table :tokens do |t|
-      t.integer :subject_id,    null: false, references: nil
+      t.integer :subject_id,    null: false #, references: nil
       t.string  :subject_type,  null: false
-      t.integer :creator_id,    null: false, references: nil
-      t.integer :updater_id,                 references: nil
+      t.integer :creator_id,    null: false #, references: nil
+      t.integer :updater_id #,                 references: nil
       t.string  :status,        default: 'active'
       t.text    :description
       t.string  :authentication_token, null: false

@@ -1,4 +1,4 @@
-class CreatePrivateUsers < ActiveRecord::Migration
+class CreatePrivateUsers < ActiveRecord::Migration[8.1]
   def self.up
     create_table :private_users do |t|
       t.integer :platform_id

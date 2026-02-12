@@ -1,4 +1,4 @@
-class AddHelpersColumnsToPullRequest < ActiveRecord::Migration
+class AddHelpersColumnsToPullRequest < ActiveRecord::Migration[8.1]
   def up
     add_column :pull_requests, :from_project_owner_uname, :string
     add_column :pull_requests, :from_project_name, :string

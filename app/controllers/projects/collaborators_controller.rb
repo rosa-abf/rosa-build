@@ -64,12 +64,12 @@ class Projects::CollaboratorsController < Projects::BaseController
 
   def find_users
     @users = @project.collaborators.order('uname')#User.all
-    @users = @users.without(@project.owner_id) if @project.owner_type == 'User'
+    @users = @users.without_items(@project.owner_id) if @project.owner_type == 'User'
   end
 
   def find_groups
     @groups = @project.groups.order('uname')#Group.all
-    @groups = @groups.without(@project.owner_id) if @project.owner_type == 'Group'
+    @groups = @groups.without_items(@project.owner_id) if @project.owner_type == 'Group'
   end
 
   def authorize_collaborators

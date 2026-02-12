@@ -176,7 +176,7 @@ Rails.application.routes.draw do
     root to: 'home#activity'
   end
 
-  resources :advisories, only: [:index, :show, :search] do
+  resources :advisories, only: [:index, :show] do
     get :search, on: :collection
   end
 

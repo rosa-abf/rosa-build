@@ -1,4 +1,4 @@
-class ProjectRestruct < ActiveRecord::Migration
+class ProjectRestruct < ActiveRecord::Migration[8.1]
   def self.up
     change_table :projects do |t|
       t.references :owner, polymorphic: true

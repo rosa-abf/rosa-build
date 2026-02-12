@@ -1,4 +1,4 @@
-class AddManyProjectsToAdvisories < ActiveRecord::Migration
+class AddManyProjectsToAdvisories < ActiveRecord::Migration[8.1]
   def up
     create_table :advisories_projects, id: false do |t|
       t.integer :advisory_id

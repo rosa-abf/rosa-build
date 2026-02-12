@@ -1,4 +1,4 @@
-class PlatformRestruct < ActiveRecord::Migration
+class PlatformRestruct < ActiveRecord::Migration[8.1]
   def self.up
     change_table :platforms do |t|
       t.references :owner, polymorphic: true

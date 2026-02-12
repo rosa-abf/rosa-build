@@ -1,11 +1,11 @@
-class CustomizePlatform < ActiveRecord::Migration
+class CustomizePlatform < ActiveRecord::Migration[8.1]
   def self.up
     change_column_null :platforms, :name, false
     #change_column_null :platforms, :distrib_type, false
     change_column_null :platforms, :platform_type, false
     change_column_null :platforms, :released, false
     change_column_null :platforms, :visibility, false
-    add_index "platforms", ["name"], unique: true, case_sensitive: false
+    add_index "platforms", ["name"], unique: true #, case_sensitive: false
   end
 
   def self.down

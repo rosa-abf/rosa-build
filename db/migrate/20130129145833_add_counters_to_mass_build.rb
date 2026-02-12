@@ -1,4 +1,4 @@
-class AddCountersToMassBuild < ActiveRecord::Migration
+class AddCountersToMassBuild < ActiveRecord::Migration[8.1]
   def up
     add_column :mass_builds, :success_count, :integer, default: 0, null: false
     add_column :mass_builds, :build_canceled_count, :integer, default: 0, null: false

@@ -1,4 +1,4 @@
-class CreateDownloads < ActiveRecord::Migration
+class CreateDownloads < ActiveRecord::Migration[8.1]
   def self.up
     create_table :downloads do |t|
       t.string :name, null: false

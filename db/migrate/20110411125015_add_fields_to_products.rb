@@ -1,4 +1,4 @@
-class AddFieldsToProducts < ActiveRecord::Migration
+class AddFieldsToProducts < ActiveRecord::Migration[8.1]
   def self.up
     add_column :products, :build, :text
     add_column :products, :counter, :text

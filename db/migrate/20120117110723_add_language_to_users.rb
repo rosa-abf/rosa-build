@@ -1,4 +1,4 @@
-class AddLanguageToUsers < ActiveRecord::Migration
+class AddLanguageToUsers < ActiveRecord::Migration[8.1]
   def self.up
     add_column :users, :language, :string, default: 'en'
   end

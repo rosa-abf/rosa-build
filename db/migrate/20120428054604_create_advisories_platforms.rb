@@ -1,4 +1,4 @@
-class CreateAdvisoriesPlatforms < ActiveRecord::Migration
+class CreateAdvisoriesPlatforms < ActiveRecord::Migration[8.1]
   def up
     create_table :advisories_platforms, id: false do |t|
       t.integer :advisory_id

@@ -1,4 +1,4 @@
-class AddProjectToComment < ActiveRecord::Migration
+class AddProjectToComment < ActiveRecord::Migration[8.1]
   def up
     add_column :comments, :project_id, :integer
     Subscribe.reset_column_information

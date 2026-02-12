@@ -1,7 +1,8 @@
-class AddAvatarToGroups < ActiveRecord::Migration
+class AddAvatarToGroups < ActiveRecord::Migration[8.1]
   def change
     change_table :groups do |t|
-      t.has_attached_file :avatar
+#      t.has_attached_file :avatar
+      t.attachment
     end
   end
 

@@ -1,4 +1,4 @@
-class RemovePlatformIdFromProjects < ActiveRecord::Migration
+class RemovePlatformIdFromProjects < ActiveRecord::Migration[8.1]
   def self.up
     remove_column :projects, :platform_id
   end

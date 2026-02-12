@@ -1,6 +1,6 @@
-class CreateActivityFeeds < ActiveRecord::Migration
+class CreateActivityFeeds < ActiveRecord::Migration[8.1]
   def self.up
-    create_table :activity_feeds do |t|
+    create_table :activity_feeds, if_not_exists: true do |t|
       t.integer :user_id, null: false
       t.string :kind
       t.text :data

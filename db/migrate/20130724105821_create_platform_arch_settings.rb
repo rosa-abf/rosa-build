@@ -1,4 +1,4 @@
-class CreatePlatformArchSettings < ActiveRecord::Migration
+class CreatePlatformArchSettings < ActiveRecord::Migration[8.1]
 
   def up
     create_table :platform_arch_settings do |t|

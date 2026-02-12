@@ -4,7 +4,7 @@ class KeyPair < ActiveRecord::Base
   belongs_to :user
 
   attr_accessor :fingerprint
-  attr_encrypted :secret, key: APP_CONFIG['keys']['key_pair_secret_key']
+  encrypts :secret
 
   validates :repository, :user, presence: true
   validates :secret, :public, presence: true, length: { maximum: 10000 }, on: :create

@@ -1,4 +1,4 @@
-class DeleteNicknameInitUname < ActiveRecord::Migration
+class DeleteNicknameInitUname < ActiveRecord::Migration[8.1]
   def self.up
     remove_column :users, :nickname
     add_index :users, :uname, unique: true

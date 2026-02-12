@@ -1,4 +1,4 @@
-class AddArchNamesToMassBuilds < ActiveRecord::Migration
+class AddArchNamesToMassBuilds < ActiveRecord::Migration[8.1]
   def change
     add_column :mass_builds, :arch_names, :string
     add_column :mass_builds, :user_id, :integer

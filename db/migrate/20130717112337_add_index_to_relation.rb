@@ -1,4 +1,4 @@
-class AddIndexToRelation < ActiveRecord::Migration
+class AddIndexToRelation < ActiveRecord::Migration[8.1]
   def change
     add_index :relations, [:actor_type, :actor_id]
     add_index :relations, [:target_type, :target_id]

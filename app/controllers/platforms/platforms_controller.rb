@@ -58,7 +58,7 @@ class Platforms::PlatformsController < Platforms::BaseController
 
     respond_to do |format|
       format.html do
-        if @platform.update_attributes(pp)
+        if @platform.update(pp)
           flash[:notice] = I18n.t("flash.platform.saved")
           redirect_to @platform
         else
@@ -67,7 +67,7 @@ class Platforms::PlatformsController < Platforms::BaseController
         end
       end
       format.json do
-        if @platform.update_attributes(pp)
+        if @platform.update(pp)
           render json: { notice: I18n.t("flash.platform.saved") }.to_json
         else
           render json: { error: I18n.t("flash.platform.save_error") }.to_json, status: 422

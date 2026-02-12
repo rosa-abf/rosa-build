@@ -14,16 +14,18 @@ module Grit
     end
   end
 
+  module DataLimit # FIXME upgrade alias_method_chain
+    def data
+      !huge? ? super : nil # 'Error: blob is too big'
+    end
+  end
+
   class Blob
+    prepend Grit::DataLimit
     include Linguist::BlobHelper
 
     MAX_VIEW_SIZE = 2.megabytes
     MAX_DATA_SIZE = 50.megabytes
-
-    def data_with_limit
-      !huge? ? data_without_limit : nil # 'Error: blob is too big'
-    end
-    alias_method_chain :data, :limit
 
     def large?
       size.to_i > MAX_VIEW_SIZE

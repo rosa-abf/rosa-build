@@ -27,7 +27,7 @@ class Projects::CommentsController < Projects::BaseController
 
   def update
     respond_to do |format|
-      if @comment.update_attributes(comment_params)
+      if @comment.update(comment_params)
         format.json { render json: {message:t('flash.comment.updated'), body: view_context.markdown(@comment.body)} }
       else
         format.json { render json: {message:t('flash.comment.error_in_updating')}, status: 422 }

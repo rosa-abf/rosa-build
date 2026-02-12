@@ -210,9 +210,9 @@ class Platform < ActiveRecord::Base
 
   def change_visibility
     if hidden?
-      update_attributes(visibility: VISIBILITY_OPEN)
+      update(visibility: VISIBILITY_OPEN)
     else
-      update_attributes(visibility: VISIBILITY_HIDDEN)
+      update(visibility: VISIBILITY_HIDDEN)
     end
   end
 
@@ -233,7 +233,7 @@ class Platform < ActiveRecord::Base
   def update_owner_relation
     if owner_id_was != owner_id
       r = relations.where(actor_id: owner_id_was, actor_type: owner_type_was).first
-      r.update_attributes(actor_id: owner_id, actor_type: owner_type)
+      r.update(actor_id: owner_id, actor_type: owner_type)
     end
   end
 

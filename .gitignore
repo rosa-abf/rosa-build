@@ -1,5 +1,7 @@
 *~
+.env*
 .bundle
+.browserslistrc
 .rvmrc
 .DS_Store
 db/*.sqlite3
@@ -28,3 +30,18 @@ envfile
 Gemfile.bak
 Gemfile.lock.bak
 public/integrity
+
+/public/packs
+/public/packs-test
+/node_modules
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+# Ignore automatically generated js-routes files.
+/home/vlad/rosa-build/app/javascript/routes.js
+/home/vlad/rosa-build/app/javascript/routes.d.ts
+
+# Ignore key files for decrypting credentials and more.
+/config/*.key
+

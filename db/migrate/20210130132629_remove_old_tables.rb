@@ -1,4 +1,4 @@
-class RemoveOldTables < ActiveRecord::Migration
+class RemoveOldTables < ActiveRecord::Migration[8.1]
   def change
     drop_table :node_instructions
     drop_table :build_scripts

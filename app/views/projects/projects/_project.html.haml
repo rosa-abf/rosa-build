@@ -1,7 +1,7 @@
 %tr{id: "Row#{project_counter}"}
   %td
     = link_to project do
-      .table-sort-left= image_tag visibility_icon(project.visibility)
+      .table-sort-left= image_pack_tag visibility_icon(project.visibility)
       .table-sort-right= link_to project.name_with_owner, project_path(project)
   %td.td2= project.description
   - alone_member = alone_member? project

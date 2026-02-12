@@ -1,7 +1,7 @@
-class CreateIssues < ActiveRecord::Migration
+class CreateIssues < ActiveRecord::Migration[8.1]
   def self.up
     create_table :issues do |t|
-      t.integer :serial_id, references: nil
+      t.integer :serial_id #, references: nil
       t.integer :project_id
       t.integer :user_id
       t.string :title

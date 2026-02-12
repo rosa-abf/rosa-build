@@ -1,4 +1,4 @@
-class ChangeTypeOfForbidToPublishBuildsNotFromInRepositories < ActiveRecord::Migration
+class ChangeTypeOfForbidToPublishBuildsNotFromInRepositories < ActiveRecord::Migration[8.1]
   def up
     remove_column :repositories, :forbid_to_publish_builds_not_from
     add_column    :repositories, :forbid_to_publish_builds_not_from, :string

@@ -1,4 +1,4 @@
-class ChangeSubscribeableIdToDecimal < ActiveRecord::Migration
+class ChangeSubscribeableIdToDecimal < ActiveRecord::Migration[8.1]
   def up
     add_column :subscribes, :subscribeable_id_tmp, :decimal, precision: 50, scale: 0
     Subscribe.reset_column_information

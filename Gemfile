@@ -1,81 +1,58 @@
 source 'https://rubygems.org'
 
-gem 'rails'
-
-gem 'activeadmin'
-gem 'pg'
-gem 'schema_plus'
-gem 'devise'
-gem 'pundit'
-
+gem 'activeadmin', '~> 3.4.0'
 gem 'ancestry'
-gem 'paperclip'
-gem 'resque'
-gem 'resque-status'
-gem 'resque_mailer'
-gem 'resque-scheduler', '~> 2.5.4'
-gem 'perform_later', git: 'https://github.com/KensoDev/perform_later.git' # should be after resque_mailer
-gem 'russian'
-gem 'state_machines-activerecord'
-gem 'redis-rails'
-
-gem 'ngmin-rails'
-
-gem 'grack', git: 'https://github.com/rosa-abf/grack.git'
-gem 'grit', git: 'https://github.com/rosa-abf/grit.git', branch: 'rosa'
+gem 'arbre', '~> 1.7.0'
+gem 'base64'
 gem 'charlock_holmes'
-gem 'github-linguist', require: 'linguist'
+gem 'connection_pool'
+gem 'connection_pool'
+gem 'devise'
 gem 'diff-display'
-
-gem 'redcarpet', '~> 3.5'
-
-gem 'jbuilder'
-gem 'rails3-jquery-autocomplete'
-gem 'sprockets'
-gem 'will_paginate'
-gem 'haml-rails'
-gem 'jquery-rails'
-gem 'slim'
-gem 'simple_form', '3.1.0.rc2'
-gem 'friendly_id'
-
-gem 'rest-client'
-
 gem 'ffi'
-
-gem 'attr_encrypted'
+gem 'friendly_id'
 gem 'gemoji'
-
+gem 'github-linguist', require: 'linguist'
+gem 'grack', path: '../grack' #git: 'https://github.com/rosa-abf/grack.git' FIXME upgrade были пропатчены версии зависимостей внутри гема gfack
+gem 'grit', path: '../grit' #git: 'https://github.com/rosa-abf/grit.git', branch: 'rosa' FIXME upgrade были пропатчены версии зависимостей внутри гема grit
+gem 'haml-rails'
+gem 'image_processing'
+gem 'importmap-rails'
+gem 'inherited_resources', '~> 1.14.0'
+gem 'irb'
+gem 'jbuilder'
 gem 'js-routes'
-
-gem 'time_diff'
-
-gem 'sass-rails'
-gem 'coffee-rails'
-gem 'bootstrap-sass'
-gem 'font-awesome-rails'
-
-gem 'uglifier'
-
-gem 'codemirror-rails', '~> 4.5'
-
-gem 'sentry-raven'
-
-gem 'rails-assets-notifyjs', '0.3.2', path: 'vendor/gems/rails-assets-notifyjs-0.3.2'
-
-gem 'rack-utf8_sanitizer'
-gem 'redis-semaphore'
-gem 'connection_pool'
-
-gem 'recaptcha'
-
-gem 'rouge'
-
-gem 'puma'
-
+gem 'mutex_m'
 gem 'oj'
-
-gem 'connection_pool'
+gem 'ostruct'
+gem 'paperclip' #FIXME нужно избавиться
+gem 'perform_later', path: '../perform_later'
+gem 'pg'
+gem 'puma'
+gem 'pundit'
+gem 'rack-utf8_sanitizer'
+gem 'rails', '~> 8.1.2'
+gem 'recaptcha'
+gem 'redcarpet'
+gem 'redis-semaphore'
+gem 'resque', '~> 3.0.0'
+gem 'resque-scheduler', '~> 5.0.0'
+gem 'resque-status', '~> 0.3.0'
+gem 'resque_mailer', '~> 2.4.3'
+gem 'rest-client'
+gem 'rouge'
+gem 'russian'
+gem 'sass-rails'
+gem 'sentry-raven'
+gem 'simple_form'
+gem 'slim'
+gem 'sprockets'
+gem 'state_machines-activerecord'
+gem 'terser'
+gem 'time_diff'
+gem 'webpacker'
+gem 'will_paginate'
+gem 'will_paginate-bootstrap-style'
 
 group :development do
   gem 'rack-mini-profiler', require: false

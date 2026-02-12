@@ -38,4 +38,4 @@ div ng-non-bindable = true
   == render 'projects/comments/new_line'
 
 - content_for :additional_scripts do
-  == render 'projects/issues/init_service.js.erb'
+  == render partial: 'projects/issues/init_service', formats: :js

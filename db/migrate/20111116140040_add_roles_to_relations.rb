@@ -1,4 +1,4 @@
-class AddRolesToRelations < ActiveRecord::Migration
+class AddRolesToRelations < ActiveRecord::Migration[8.1]
   def self.up
     add_column :relations, :role, :string
     add_column :users, :role, :string

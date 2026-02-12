@@ -1,4 +1,4 @@
-class ChangeObjectToEventableInEventLog < ActiveRecord::Migration
+class ChangeObjectToEventableInEventLog < ActiveRecord::Migration[8.1]
   def up
     change_table :event_logs do |t|
       t.rename :object_id,   :eventable_id

@@ -36,9 +36,9 @@ class MassBuild < ActiveRecord::Base
   belongs_to :user
   has_many   :build_lists, dependent: :destroy
 
-  serialize :extra_repositories,  Array
-  serialize :extra_build_lists,   Array
-  serialize :extra_mass_builds,   Array
+  serialize :extra_repositories, class_name: Array
+  serialize :extra_build_lists,  class_name: Array
+  serialize :extra_mass_builds,  class_name: Array
 
   scope :recent,      ->     { order(created_at: :desc) }
   scope :outdated,    ->     { where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME) }

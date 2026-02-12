@@ -1,4 +1,4 @@
-class RemoveNameFromGroups < ActiveRecord::Migration
+class RemoveNameFromGroups < ActiveRecord::Migration[8.1]
   def up
     remove_column :groups, :name
   end

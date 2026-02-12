@@ -6,7 +6,7 @@ class ActivityFeed < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :creator, class_name: 'User'
-  serialize  :data
+  serialize  :data, class_name: Hash
 
   default_scope { order created_at: :desc }
   scope :outdated,        -> { offset(1000) }

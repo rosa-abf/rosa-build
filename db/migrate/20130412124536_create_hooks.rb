@@ -1,4 +1,4 @@
-class CreateHooks < ActiveRecord::Migration
+class CreateHooks < ActiveRecord::Migration[8.1]
   def change
     create_table :hooks do |t|
       t.text :data

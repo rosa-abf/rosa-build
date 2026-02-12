@@ -1,8 +1,8 @@
-class RemoveRepositoriesOwner < ActiveRecord::Migration
+class RemoveRepositoriesOwner < ActiveRecord::Migration[8.1]
   def self.up
     remove_column :repositories, :owner_id
     remove_column :repositories, :owner_type
-    Relation.delete_all(target_type: 'Repository')
+    Relation.delete_all #(target_type: 'Repository')
   end
 
   def self.down

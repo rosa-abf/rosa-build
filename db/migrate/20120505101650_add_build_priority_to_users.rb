@@ -1,4 +1,4 @@
-class AddBuildPriorityToUsers < ActiveRecord::Migration
+class AddBuildPriorityToUsers < ActiveRecord::Migration[8.1]
   def up
     add_column :users, :build_priority, :integer, default: 50
     User.update_all build_priority: 50

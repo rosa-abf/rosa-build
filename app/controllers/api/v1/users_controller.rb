@@ -29,7 +29,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def notifiers
     if request.put?
-      if @user.notifier.update_attributes(notifier_params)
+      if @user.notifier.update(notifier_params)
         render_json_response @user, 'User notification settings have been updated successfully'
       else
         render_json_response @user, error_message(@user.notifier, 'User notification settings have not been updated'), 422

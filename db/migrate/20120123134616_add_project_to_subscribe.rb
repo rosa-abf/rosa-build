@@ -1,4 +1,4 @@
-class AddProjectToSubscribe < ActiveRecord::Migration
+class AddProjectToSubscribe < ActiveRecord::Migration[8.1]
   def self.up
     add_column :subscribes, :project_id, :integer
   end

@@ -1,4 +1,4 @@
-class AddNameWithOwnerToProject < ActiveRecord::Migration
+class AddNameWithOwnerToProject < ActiveRecord::Migration[8.1]
   def up
     add_column :projects, :owner_uname, :string
 

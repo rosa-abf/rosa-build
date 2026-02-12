@@ -4,7 +4,12 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 require 'resque/tasks'
-require 'resque_scheduler/tasks'
-load    'tasks/emoji.rake'
+# require 'resque-scheduler/tasks' # FIXME upgrade
+# load    'tasks/emoji.rake' # FIXME upgrade
 
 Rosa::Application.load_tasks
+# Update js-routes file before javascript build
+task "assets:precompile" => "js:routes"
+task "assets:precompile" => "angular:patch"
+task "assets:build" => "assets:precompile"
+

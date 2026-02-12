@@ -1,4 +1,5 @@
 # See: https://github.com/bootstrap-ruby/will_paginate-bootstrap/blob/master/lib/bootstrap_pagination/bootstrap_renderer.rb
+=begin FIXME upgrade
 class BootstrapLinkRenderer < WillPaginate::ActionView::LinkRenderer
 
   ELLIPSIS = "&hellip;"
@@ -60,3 +61,4 @@ class BootstrapLinkRenderer < WillPaginate::ActionView::LinkRenderer
     ["pagination", @options[:class]].compact.join(" ")
   end
 end
+=end

@@ -1,4 +1,4 @@
-class CreateAdvisoryItems < ActiveRecord::Migration
+class CreateAdvisoryItems < ActiveRecord::Migration[8.1]
   def change
     create_table :advisory_items do |t|
       t.references :advisory, index: true, foreign_key: true

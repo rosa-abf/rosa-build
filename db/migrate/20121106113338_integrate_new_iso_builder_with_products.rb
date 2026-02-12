@@ -1,4 +1,4 @@
-class IntegrateNewIsoBuilderWithProducts < ActiveRecord::Migration
+class IntegrateNewIsoBuilderWithProducts < ActiveRecord::Migration[8.1]
   def up
     remove_column :products, :build_script
     remove_column :products, :counter

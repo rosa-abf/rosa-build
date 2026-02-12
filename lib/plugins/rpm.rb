@@ -37,17 +37,17 @@ module RPM
 
   module C
 
-    extend ::FFI::Library
+#    extend ::FFI::Library FIXME upgrade
 
     begin
-      ffi_lib ['librpm.so.9', 'rpm']
+#      ffi_lib ['librpm.so.9', 'rpm'] FIXME upgrade
     rescue LoadError => e
       raise(
         "Can't find rpm libs on your system: #{e.message}"
       )
     end
 
-    attach_function 'rpmvercmp', [:string, :string], :int
+#    attach_function 'rpmvercmp', [:string, :string], :int FIXME upgrade
 
   end
 end

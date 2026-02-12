@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include StrongParams
-  include Pundit
+  include Pundit::Authorization
 
   SENTRY_IGNORE = [
     ActionController::InvalidAuthenticityToken,
@@ -28,8 +28,8 @@ class ApplicationController < ActionController::Base
   unless Rails.env.development?
     rescue_from Exception, with: :render_500
     rescue_from ActiveRecord::RecordNotFound,
-                # ActionController::RoutingError, # see: config/routes.rb:<last line>
-                ActionController::UnknownController,
+                ActionController::RoutingError, # see: config/routes.rb:<last line>
+                #ActionController::UnknownController, # FIXME upgrade uninitialized constant ActionController::UnknownController
                 ActionController::UnknownFormat,
                 AbstractController::ActionNotFound, with: :render_404
   end
@@ -38,8 +38,7 @@ class ApplicationController < ActionController::Base
     redirect_to forbidden_url, alert: t("flash.exception_message")
   end
 
-  rescue_from Grit::NoSuchPathError, with: :not_found
-
+  rescue_from Grit::NoSuchPathError, with: :render_404
 
   def render_404
     render_error 404
@@ -91,8 +90,8 @@ class ApplicationController < ActionController::Base
     if Rails.env.production? && !SENTRY_IGNORE.include?(e.class)
       Raven.capture_exception(e)
     end
-    Rails.logger.error e.message
-    Rails.logger.error e.backtrace.inspect
+    Rails.logger.error(e.message)
+    Rails.logger.error("\t#{e.backtrace.join("\n\t")}")
     render_error 500
   end
 

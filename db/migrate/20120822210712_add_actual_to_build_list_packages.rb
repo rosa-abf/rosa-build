@@ -1,4 +1,4 @@
-class AddActualToBuildListPackages < ActiveRecord::Migration
+class AddActualToBuildListPackages < ActiveRecord::Migration[8.1]
   def self.up
     add_column :build_list_packages, :actual, :boolean, default: false
     add_index :build_list_packages, [:actual, :platform_id]

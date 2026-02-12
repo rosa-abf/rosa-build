@@ -1,4 +1,4 @@
-class DisableUseCachedChrootByDefault < ActiveRecord::Migration
+class DisableUseCachedChrootByDefault < ActiveRecord::Migration[8.1]
   def up
     change_column :build_lists, :use_cached_chroot, :boolean, null: false, default: false
   end

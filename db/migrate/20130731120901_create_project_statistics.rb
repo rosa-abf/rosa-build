@@ -1,4 +1,4 @@
-class CreateProjectStatistics < ActiveRecord::Migration
+class CreateProjectStatistics < ActiveRecord::Migration[8.1]
   def change
     create_table :project_statistics do |t|
       t.integer :average_build_time,  null: false, default: 0

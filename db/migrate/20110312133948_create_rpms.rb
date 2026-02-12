@@ -1,4 +1,4 @@
-class CreateRpms < ActiveRecord::Migration
+class CreateRpms < ActiveRecord::Migration[8.1]
   def self.up
     create_table :rpms do |t|
       t.string :name, null: false

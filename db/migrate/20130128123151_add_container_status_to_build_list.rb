@@ -1,4 +1,4 @@
-class AddContainerStatusToBuildList < ActiveRecord::Migration
+class AddContainerStatusToBuildList < ActiveRecord::Migration[8.1]
   class BuildList < ActiveRecord::Base
     WAITING_FOR_RESPONSE = 4000
   end

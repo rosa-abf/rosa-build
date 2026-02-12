@@ -1,4 +1,4 @@
-class AddQueueToDelayedJobs < ActiveRecord::Migration
+class AddQueueToDelayedJobs < ActiveRecord::Migration[8.1]
   def self.up
     add_column :delayed_jobs, :queue, :string
   end

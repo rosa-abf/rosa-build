@@ -1,29 +1,29 @@
 %ul
   %li
-    = image_tag 'square.png'
+    = image_pack_tag 'square.png'
     = t('bottom_menu.copyright', year: Date.today.year)
   %li
-    = image_tag 'square.png'
-    = image_tag 'flag.png', alt: 'flag'
+    = image_pack_tag 'square.png'
+    = image_pack_tag 'flag.png', alt: 'flag'
   %li
-    = image_tag 'square.png'
+    = image_pack_tag 'square.png'
     = link_to t('bottom_menu.about'), t('bottom_menu.about_url')
   %li
-    = image_tag 'square.png'
+    = image_pack_tag 'square.png'
     = link_to t('bottom_menu.contacts'), t('bottom_menu.contacts_url')
   %li
-    = image_tag 'square.png'
+    = image_pack_tag 'square.png'
     = link_to t('bottom_menu.tos'), tos_url #t('bottom_menu.tos_url')
   %li
-    = image_tag 'square.png'
+    = image_pack_tag 'square.png'
     = link_to t('bottom_menu.support'), contact_url
   %li
-    = image_tag 'square.png'
+    = image_pack_tag 'square.png'
     = link_to t('bottom_menu.developer_api'), t('bottom_menu.developer_api_url')
   -if pr = Project.find_by_owner_and_name('abf/abf-ideas')
     %li
-      = image_tag 'square.png'
+      = image_pack_tag 'square.png'
       = link_to t('bottom_menu.abf_ideas'), project_issues_url(pr)
   %li
-    = image_tag 'square.png'
+    = image_pack_tag 'square.png'
     = link_to t('bottom_menu.abf_blog'), t('bottom_menu.abf_blog_url')

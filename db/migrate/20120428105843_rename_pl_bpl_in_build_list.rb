@@ -1,4 +1,4 @@
-class RenamePlBplInBuildList < ActiveRecord::Migration
+class RenamePlBplInBuildList < ActiveRecord::Migration[8.1]
   def up
     change_table :build_lists do |t|
       t.rename :pl_id,  :save_to_platform_id

@@ -177,10 +177,10 @@ class BuildList < ActiveRecord::Base
 
   serialize :additional_repos
   serialize :include_repos
-  serialize :results, Array
-  serialize :extra_repositories,  Array
-  serialize :extra_build_lists,   Array
-  serialize :extra_params,        Hash
+  serialize :results,            class_name: Array
+  serialize :extra_repositories, class_name: Array
+  serialize :extra_build_lists,  class_name: Array
+  serialize :extra_params,       class_name: Hash
 
   after_create  :place_build, if: ->(bl) { bl.level == 0 }
   after_destroy :remove_container, unless: ->(bl) { bl.chain_build }
@@ -484,7 +484,7 @@ class BuildList < ActiveRecord::Base
   def top_of_chain?
     return true if chain_build
 
-    extra_build_lists.length.positive? && BuildList.where("extra_build_lists like E'%- ?\n%'", id).count.zero?
+    extra_build_lists&.length&.positive? && BuildList.where("extra_build_lists like E'%- ?\n%'", id).count.zero?
   end
 
   def can_publish_chain?
@@ -532,7 +532,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def human_average_build_time
-    I18n.t('layout.project_statistics.human_average_build_time', {hours: (average_build_time/3600).to_i, minutes: (average_build_time%3600/60).to_i})
+    I18n.t('layout.project_statistics.human_average_build_time', hours: (average_build_time/3600).to_i, minutes: (average_build_time%3600/60).to_i)
   end
 
   def formatted_average_build_time
@@ -588,19 +588,19 @@ class BuildList < ActiveRecord::Base
   end
 
   def human_current_duration
-    I18n.t("layout.build_lists.human_current_duration", {
+    I18n.t("layout.build_lists.human_current_duration",
       hours: (current_duration/3600).to_i,
       minutes: (current_duration%3600/60).to_i,
       seconds: (current_duration%60).to_i
-    })
+    )
   end
 
   def human_duration
-    I18n.t("layout.build_lists.human_duration", {
+    I18n.t("layout.build_lists.human_duration",
       hours: (duration.to_i/3600).to_i,
       minutes: (duration.to_i%3600/60).to_i,
       seconds: (duration.to_i%60).to_i
-    })
+    )
   end
 
   def in_work?
@@ -673,7 +673,7 @@ class BuildList < ActiveRecord::Base
       repo_names.uniq.each do |repo_name|
         exists =
           begin
-            File.exists?(chain_build.release_path(arch.name, repo_name, false))
+            File.exist?(chain_build.release_path(arch.name, repo_name, false))
           rescue StandardError
             false
           end

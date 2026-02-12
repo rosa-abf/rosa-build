@@ -58,7 +58,7 @@ class Groups::ProfileController < Groups::BaseController
 
   def update
     authorize @group
-    if @group.update_attributes(group_params)
+    if @group.update(group_params)
       update_avatar(@group, params)
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)

@@ -1,4 +1,4 @@
-class RenameNameAndUnixname < ActiveRecord::Migration
+class RenameNameAndUnixname < ActiveRecord::Migration[8.1]
   def self.up
   	remove_column :projects, :name
   	rename_column :projects, :unixname, :name

@@ -1,4 +1,4 @@
-class CreateBuildScripts < ActiveRecord::Migration
+class CreateBuildScripts < ActiveRecord::Migration[8.1]
   def change
     create_table :build_scripts do |t|
       t.integer :project_id,  null: false

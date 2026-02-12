@@ -7,6 +7,6 @@ class CloseArConnectionsMiddleware
   def call(env)
     @app.call(env)
   ensure
-    ActiveRecord::Base.clear_active_connections! unless env.key?('rack.test')
+#    ActiveRecord::Base.clear_active_connections! unless env.key?('rack.test') # FIXME upgrade
   end
 end

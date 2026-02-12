@@ -10,7 +10,7 @@ class Projects::HooksController < Projects::BaseController
   end
 
   def new
-    @hook = @project.hooks.build
+    @hook = @project.hooks.build(hook_params)
   end
 
   def edit
@@ -28,7 +28,7 @@ class Projects::HooksController < Projects::BaseController
   end
 
   def update
-    if @hook.update_attributes(hook_params)
+    if @hook.update(hook_params)
       redirect_to project_hooks_path(@project, name: @hook.name), notice: t('flash.hook.updated')
     else
       flash[:error] = t('flash.hook.save_error')

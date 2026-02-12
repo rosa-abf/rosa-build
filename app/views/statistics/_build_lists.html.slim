@@ -16,7 +16,7 @@
         span.graph-key-color4>
         = t('.build_published_title')
       .text-center.graph-loading ng-show='loading'
-        = image_tag 'loading-large.gif'
+        = image_pack_tag 'loading-large.gif'
       .text-center.no-data ng-hide='loading || statistics.build_lists'
         = t('.no_data')
       canvas#build_lists_chart ng-show='statistics.build_lists'
@@ -26,7 +26,7 @@
       b
         = t('.total_build_started')
       .panel-data
-        = image_tag 'loading-small.gif', ng_show: 'loading'
+        = image_pack_tag 'loading-small.gif', ng_show: 'loading'
         .no-data ng-hide='loading || statistics.build_lists.build_started_count >= 0'
           = t('.no_data')
         | {{ statistics.build_lists.build_started_count | number }}
@@ -35,7 +35,7 @@
       b
         = t('.total_success')
       .panel-data
-        = image_tag 'loading-small.gif', ng_show: 'loading'
+        = image_pack_tag 'loading-small.gif', ng_show: 'loading'
         .no-data ng-hide='loading || statistics.build_lists.success_count >= 0'
           = t('.no_data')
         | {{ statistics.build_lists.success_count | number }}
@@ -44,7 +44,7 @@
       b
         = t('.total_build_error')
       .panel-data
-        = image_tag 'loading-small.gif', ng_show: 'loading'
+        = image_pack_tag 'loading-small.gif', ng_show: 'loading'
         .no-data ng-hide='loading || statistics.build_lists.build_error_count >= 0'
           = t('.no_data')
         | {{ statistics.build_lists.build_error_count | number }}
@@ -53,7 +53,7 @@
       b
         = t('.total_build_published')
       .panel-data
-        = image_tag 'loading-small.gif', ng_show: 'loading'
+        = image_pack_tag 'loading-small.gif', ng_show: 'loading'
         .no-data ng-hide='loading || statistics.build_lists.build_published_count >= 0'
           = t('.no_data')
         | {{ statistics.build_lists.build_published_count | number }}

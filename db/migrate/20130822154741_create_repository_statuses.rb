@@ -1,4 +1,4 @@
-class CreateRepositoryStatuses < ActiveRecord::Migration
+class CreateRepositoryStatuses < ActiveRecord::Migration[8.1]
   def change
     create_table :repository_statuses do |t|
       t.integer :repository_id, null: false

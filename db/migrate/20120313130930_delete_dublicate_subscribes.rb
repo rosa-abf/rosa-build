@@ -1,4 +1,4 @@
-class DeleteDublicateSubscribes < ActiveRecord::Migration
+class DeleteDublicateSubscribes < ActiveRecord::Migration[8.1]
   def up
     execute <<-SQL
       DELETE FROM subscribes s

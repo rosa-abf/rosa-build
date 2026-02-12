@@ -1,4 +1,4 @@
-class CreateBuildListItems < ActiveRecord::Migration
+class CreateBuildListItems < ActiveRecord::Migration[8.1]
   def self.up
     create_table :build_list_items, force: true do |t|
       t.string :name

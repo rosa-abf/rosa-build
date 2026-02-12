@@ -1,4 +1,4 @@
-class AddUseCachedChrootToMassBuild < ActiveRecord::Migration
+class AddUseCachedChrootToMassBuild < ActiveRecord::Migration[8.1]
   def up
     # Make existing mass_builds 'false', but default to 'true' in the future.
     add_column    :mass_builds, :use_cached_chroot, :boolean, null: false, default: false

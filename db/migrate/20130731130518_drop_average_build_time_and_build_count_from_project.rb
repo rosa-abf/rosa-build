@@ -1,4 +1,4 @@
-class DropAverageBuildTimeAndBuildCountFromProject < ActiveRecord::Migration
+class DropAverageBuildTimeAndBuildCountFromProject < ActiveRecord::Migration[8.1]
   def up
     remove_column :projects, :average_build_time
     remove_column :projects, :build_count

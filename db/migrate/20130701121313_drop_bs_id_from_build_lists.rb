@@ -1,4 +1,4 @@
-class DropBsIdFromBuildLists < ActiveRecord::Migration
+class DropBsIdFromBuildLists < ActiveRecord::Migration[8.1]
 
   class BuildList < ActiveRecord::Base
   end

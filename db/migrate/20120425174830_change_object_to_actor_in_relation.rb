@@ -1,4 +1,4 @@
-class ChangeObjectToActorInRelation < ActiveRecord::Migration
+class ChangeObjectToActorInRelation < ActiveRecord::Migration[8.1]
   def up
     change_table :relations do |t|
       t.rename :object_id, :actor_id

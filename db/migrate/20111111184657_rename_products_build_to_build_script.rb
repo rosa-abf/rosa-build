@@ -1,4 +1,4 @@
-class RenameProductsBuildToBuildScript < ActiveRecord::Migration
+class RenameProductsBuildToBuildScript < ActiveRecord::Migration[8.1]
   def self.up
     rename_column :products, :build, :build_script
   end

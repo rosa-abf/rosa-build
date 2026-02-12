@@ -1,4 +1,4 @@
-class AddSettingsToSettingsNotifiers < ActiveRecord::Migration
+class AddSettingsToSettingsNotifiers < ActiveRecord::Migration[8.1]
   def self.up
     add_column :settings_notifiers, :new_comment_commit_owner, :boolean, default: true
     add_column :settings_notifiers, :new_comment_commit_repo_owner, :boolean, default: true

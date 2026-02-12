@@ -1,4 +1,4 @@
-class CreateProductBuildLists < ActiveRecord::Migration
+class CreateProductBuildLists < ActiveRecord::Migration[8.1]
   def self.up
     create_table :product_build_lists do |t|
       t.references :product
@@ -7,7 +7,7 @@ class CreateProductBuildLists < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :product_build_lists, :product_id
+    add_index :product_build_lists, :product_id, if_not_exists: true
   end
 
   def self.down

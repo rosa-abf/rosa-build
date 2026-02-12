@@ -1,11 +1,11 @@
-class CreateProjectTagsTable < ActiveRecord::Migration
+class CreateProjectTagsTable < ActiveRecord::Migration[8.1]
   def change
     create_table :project_tags do |t|
       t.integer :project_id
-      t.string  :commit_id, references: nil
+      t.string  :commit_id #, references: nil
       t.string  :sha1
       t.string  :tag_name
-      t.integer :format_id, references: nil
+      t.integer :format_id #, references: nil
       t.timestamps
     end
   end

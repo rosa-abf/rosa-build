@@ -1,4 +1,4 @@
-class AddExtraFieldsToUsers < ActiveRecord::Migration
+class AddExtraFieldsToUsers < ActiveRecord::Migration[8.1]
   def self.up
     add_column :users, :nickname, :string
     add_column :users, :ssh_key, :text

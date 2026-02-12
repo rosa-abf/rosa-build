@@ -7,21 +7,28 @@
 = hidden_field_tag 'product[project_id]', @product.project_id, id: 'src_project_id'
 
 - content_for :additional_scripts do
-  coffee:
-    product_projects = []
+  javascript:
+    var product_projects = [];
 
-    $('#product_project_id').typeahead
-      val:          'data'
-      ajax:
-        url:        $('#product_project_id').data('ajax')
-        preProcess: (data) ->
-          product_projects = data
-      onSelect:     (i) ->
-        $('#src_project_id').val i.value
-        project = _.find product_projects, (p) ->
-          p.id.toString() == i.value
-        if project
-          $('#product_project_version').html project.project_versions
+    $('#product_project_id').typeahead({
+      val: 'data',
+      ajax: {
+        url: $('#product_project_id').data('ajax'),
+        preProcess: function(data) {
+          product_projects = data;
+          return data;
+        }
+      },
+      onSelect: function(i) {
+        $('#src_project_id').val(i.value);
+        var project = _.find(product_projects, function(p) {
+          return p.id.toString() === i.value;
+        });
+        if (project) {
+          $('#product_project_version').html(project.project_versions);
+        }
+      }
+    });
 
 = f.input :project_version,
   as:             :grouped_select,

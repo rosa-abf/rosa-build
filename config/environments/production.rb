@@ -23,7 +23,9 @@ Rails.application.configure do
   config.serve_static_files = false
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = :uglifier
+#  config.assets.js_compressor = :uglifier # FIXME upgrade
+#  config.assets.js_compressor = Uglifier.new(harmony: true, compress: { unused: false }) # FIXME upgrade
+  config.assets.js_compressor = :terser
   config.assets.css_compressor = :sass
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
@@ -52,7 +54,7 @@ Rails.application.configure do
 
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
-  config.cache_store = :redis_store, ENV['REDIS_CACHE_URL'], { expires_in: 10.minutes }
+  config.cache_store = :redis_cache_store, { url: ENV['REDIS_CACHE_URL'], expires_in: 10.minutes } # FIXME upgrade
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server.
   # config.action_controller.asset_host = "http://assets.example.com"
@@ -91,4 +93,8 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.assets.logger = Logger.new $stdout
+
+  config.log_level = :debug
+  config.active_record.verbose_query_logs = true
+  config.log_formatter = ::Logger::Formatter.new
 end

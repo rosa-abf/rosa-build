@@ -1,6 +1,6 @@
-class ChangeCommentableId < ActiveRecord::Migration
+class ChangeCommentableId < ActiveRecord::Migration[8.1]
   def self.up
-    change_column :comments, :commentable_id, :string, references: nil
+    change_column :comments, :commentable_id, :string #, references: nil
   end
 
   def self.down

@@ -1,4 +1,4 @@
-class DisableNullValueForKeyPairs < ActiveRecord::Migration
+class DisableNullValueForKeyPairs < ActiveRecord::Migration[8.1]
   def up
   	change_column_null :key_pairs, :repository_id,  false
   	change_column_null :key_pairs, :user_id,  		false

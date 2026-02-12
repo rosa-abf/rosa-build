@@ -1,4 +1,4 @@
-class AddAutoPublishStatusToBuildList < ActiveRecord::Migration
+class AddAutoPublishStatusToBuildList < ActiveRecord::Migration[8.1]
 
   class BuildList < ActiveRecord::Base
   end

@@ -1,8 +1,8 @@
-class CreateGroups < ActiveRecord::Migration
+class CreateGroups < ActiveRecord::Migration[8.1]
   def self.up
     create_table :groups do |t|
       t.string :name
-      t.integer :owner_id, references: nil
+      t.integer :owner_id #, references: nil
 
       t.timestamps
     end

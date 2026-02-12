@@ -1,4 +1,4 @@
-class AddLevelToBuildLists < ActiveRecord::Migration
+class AddLevelToBuildLists < ActiveRecord::Migration[8.1]
   def change
     add_column :build_lists, :level, :integer, default: 0
     add_column :build_lists, :first_in_chain, :boolean, default: false

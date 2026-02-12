@@ -1,4 +1,4 @@
-class CreateProjectImports < ActiveRecord::Migration
+class CreateProjectImports < ActiveRecord::Migration[8.1]
   def self.up
     create_table :project_imports do |t|
       t.references :project

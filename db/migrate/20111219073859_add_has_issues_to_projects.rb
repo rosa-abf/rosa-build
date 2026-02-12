@@ -1,4 +1,4 @@
-class AddHasIssuesToProjects < ActiveRecord::Migration
+class AddHasIssuesToProjects < ActiveRecord::Migration[8.1]
   def self.up
     add_column :projects, :has_issues, :boolean, default: true
   end

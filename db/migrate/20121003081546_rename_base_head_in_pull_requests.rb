@@ -1,4 +1,4 @@
-class RenameBaseHeadInPullRequests < ActiveRecord::Migration
+class RenameBaseHeadInPullRequests < ActiveRecord::Migration[8.1]
   def change
     rename_column :pull_requests, :base_project_id, :to_project_id
     rename_column :pull_requests, :base_ref, :to_ref

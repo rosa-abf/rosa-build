@@ -138,7 +138,7 @@ module BuildListsHelper
     if bl.commit_hash.present?
       if bl.last_published_commit_hash.present? && bl.last_published_commit_hash != bl.commit_hash
         text = "#{shortest_hash_id bl.last_published_commit_hash, hash_size}...#{shortest_hash_id bl.commit_hash, hash_size}"
-        href = diff_path(bl.project, bl.last_published_commit_hash) + "...#{bl.commit_hash}"
+        href = (diff_path(bl.project, bl.last_published_commit_hash) rescue "") + "...#{bl.commit_hash}"
       else
         text = shortest_hash_id(bl.commit_hash, hash_size)
         href = commit_path(bl.project, bl.commit_hash)

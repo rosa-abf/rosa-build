@@ -1,4 +1,4 @@
-class AddSettingsNotifierToAllUsers < ActiveRecord::Migration
+class AddSettingsNotifierToAllUsers < ActiveRecord::Migration[8.1]
   def self.up
     User.all.each do |user|
       user.create_notifier

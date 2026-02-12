@@ -73,6 +73,72 @@ class User < Avatar
   after_create -> { self.create_notifier unless self.system? }
   before_create :ensure_authentication_token
 
+  def self.ransackable_associations(auth_object = nil)
+    [
+      "activity_feeds",
+      "assigned_issues",
+      "build_lists",
+      "builds_setting",
+      "comments",
+      "groups",
+      "invitation",
+      "invites",
+      "issues",
+      "key_pairs",
+      "notifier",
+      "own_groups",
+      "own_platforms",
+      "own_projects",
+      "platforms",
+      "projects",
+      "relations",
+      "repositories",
+      "ssh_keys",
+      "subscribes",
+      "targets"
+    ]
+  end
+
+  def self.ransackable_attributes(auth_object = nil)
+    [
+      "access_to_advisories_api",
+      "access_to_token_api",
+      "authentication_token",
+      "avatar_content_type",
+      "avatar_file_name",
+      "avatar_file_size",
+      "avatar_updated_at",
+      "build_priority",
+      "company",
+      "confirmation_sent_at",
+      "confirmation_token",
+      "confirmed_at",
+      "created_at",
+      "email",
+      "encrypted_password",
+      "failed_attempts",
+      "hide_email",
+      "id",
+      "id_value",
+      "language",
+      "location",
+      "locked_at",
+      "name",
+      "own_projects_count",
+      "professional_experience",
+      "remember_created_at",
+      "reset_password_sent_at",
+      "reset_password_token",
+      "role",
+      "site",
+      "sound_notifications",
+      "ssh_key",
+      "uname",
+      "unlock_token",
+      "updated_at"
+    ]
+  end
+
   def admin?
     role == 'admin'
   end
@@ -110,8 +176,8 @@ class User < Avatar
       conditions = warden_conditions.dup
       login = conditions.delete(:login)
       where(conditions)
-      .where(["lower(uname) = :value OR lower(email) = :value OR authentication_token = :orig_value",
-             { value: login.downcase, orig_value: login }]).first
+        .where(["lower(uname) = :value OR lower(email) = :value OR authentication_token = :orig_value",
+                { value: login.downcase, orig_value: login }]).first
     end
 
     def auth_by_token_or_login_pass(user, pass)
@@ -127,7 +193,7 @@ class User < Avatar
   #     params.delete(:password)
   #     params.delete(:password_confirmation) if params[:password_confirmation].blank?
   #   end
-  #   result = update_attributes(params)
+  #   result = update(params)
   #   clean_up_passwords
   #   result
   # end
@@ -183,7 +249,7 @@ class User < Avatar
     if target.class == Group
       roles += target.actors.where(actor_id: self.id, actor_type: 'User') # user is member of a target group
     else
-      roles += rel.where(actor_id: gr.pluck('DISTINCT groups.id'), actor_type: 'Group') # user group is member
+      roles += rel.where(actor_id: gr.pluck(Arel.sql('DISTINCT groups.id')), actor_type: 'Group') # user group is member
     end
     roles += rel.where(actor_id: self.id, actor_type: 'User') # user is member
     roles.map(&:role).uniq

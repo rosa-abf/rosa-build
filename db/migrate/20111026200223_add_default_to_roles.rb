@@ -1,4 +1,4 @@
-class AddDefaultToRoles < ActiveRecord::Migration
+class AddDefaultToRoles < ActiveRecord::Migration[8.1]
   def self.up
     add_column :roles, :use_default, :boolean, default: false
     add_column :roles, :use_default_for_owner, :boolean, default: false

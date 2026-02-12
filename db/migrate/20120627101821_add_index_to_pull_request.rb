@@ -1,4 +1,4 @@
-class AddIndexToPullRequest < ActiveRecord::Migration
+class AddIndexToPullRequest < ActiveRecord::Migration[8.1]
   def change
     add_index :pull_requests, :base_project_id
     add_index :pull_requests, :head_project_id

@@ -271,7 +271,7 @@ module Git
             project.owner = owner
             if project.save
               repository.projects << project rescue nil
-              project.update_attributes(is_package: true)
+              project.update(is_package: true)
               project.import_srpm srpm_file, platform.name
             end
           end

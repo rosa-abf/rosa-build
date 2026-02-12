@@ -9,7 +9,7 @@ class Hook < ActiveRecord::Base
   validates :project, :data, presence: true
   validates :name, presence: true, inclusion: {in: NAMES}
 
-  serialize :data,  Hash
+  serialize :data, class_name: Hash
 
   scope :for_name, ->(name) { where(name: name) if name.present? }
 

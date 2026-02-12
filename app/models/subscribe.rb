@@ -35,7 +35,7 @@ class Subscribe < ActiveRecord::Base
 
   def self.set_subscribe_to_commit(options, status)
     if subscribe = Subscribe.where(options).first
-      subscribe.update_attributes(status: status)
+      subscribe.update(status: status)
     else
       Subscribe.create options.merge(status: status)
     end

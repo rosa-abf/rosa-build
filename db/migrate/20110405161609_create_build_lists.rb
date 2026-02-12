@@ -1,7 +1,7 @@
-class CreateBuildLists < ActiveRecord::Migration
+class CreateBuildLists < ActiveRecord::Migration[8.1]
   def self.up
     create_table :build_lists, force: true do |t|
-      t.integer :bs_id, references: nil
+      t.integer :bs_id #, references: nil
       t.string :container_path
       t.integer :status
 

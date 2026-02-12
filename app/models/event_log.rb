@@ -14,6 +14,33 @@ class EventLog < ActiveRecord::Base
   # after_create { self.class.current_controller = nil }
 
   class << self
+    def ransackable_associations(auth_object = nil)
+      [
+        "eventable",
+        "user"
+      ]
+    end
+
+    def ransackable_attributes(auth_object = nil)
+      [
+        "action",
+        "controller",
+        "created_at",
+        "eventable_id",
+        "eventable_name",
+        "eventable_type",
+        "id",
+        "id_value",
+        "ip",
+        "kind",
+        "message",
+        "protocol",
+        "updated_at",
+        "user_id",
+        "user_name"
+      ]
+    end
+
     def create_with_current_controller(attributes)
       create(attributes) do |el|
         el.user = current_controller.current_user

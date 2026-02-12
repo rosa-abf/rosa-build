@@ -1,4 +1,4 @@
-class RemoveCountersFromMassBuild < ActiveRecord::Migration
+class RemoveCountersFromMassBuild < ActiveRecord::Migration[8.1]
   def up
     remove_columns :mass_builds, :build_published_count,
                                  :build_pending_count,

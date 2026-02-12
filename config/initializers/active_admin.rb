@@ -6,7 +6,7 @@ ActiveAdmin.setup do |config|
   # for each of the active admin pages.
   #
   config.site_title = "ABF"
-  config.site_title_link = "/"
+#  config.site_title_link = "/" # FIXME upgrade removed in new versions
 
   # == Default Namespace
   #
@@ -63,7 +63,7 @@ ActiveAdmin.setup do |config|
   # Active Admin resources from here.
   #
   # config.before_filter :do_something_awesome
-  config.before_filter :check_admin_role
+  config.before_action :check_admin_role # FIXME upgrade was before_filter
 
 
   # == Register Stylesheets & Javascripts
@@ -79,10 +79,11 @@ ActiveAdmin.setup do |config|
   #   config.register_javascript 'my_javascript.js'
 
   config.logout_link_path   = :destroy_user_session_path
-  config.logout_link_method = :delete
+#  config.logout_link_method = :delete # FIXME upgrade removed in new versions
 end
 
 # Block admin access to non-admin-users.
+=begin FIXME upgrade перенесено в environment.rb
 ActiveAdmin::BaseController.class_eval do
   skip_after_action :verify_authorized
 
@@ -92,3 +93,4 @@ ActiveAdmin::BaseController.class_eval do
     raise ActiveRecord::RecordNotFound unless current_user.admin?
   end
 end
+=end

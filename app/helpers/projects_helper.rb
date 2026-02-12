@@ -82,7 +82,21 @@ module ProjectsHelper
   def fa_visibility_icon(project)
     return nil unless project
     image, color = project.public? ? ['unlock-alt', 'text-success fa-fw'] : ['lock', 'text-danger fa-fw']
-    fa_icon(image, class: color)
+    fa_icon(image, { color: color })
+  end
+
+  def fa_icon(names = "flag", original_options = {})
+    options = original_options.deep_dup
+    classes = ["fa"]
+    classes.concat (names.is_a?(Array) ? names : names.to_s.split(/\s+/)).map { |n| "fa-#{n}" }
+    classes.concat Array(options.delete(:class))
+    text = options.delete(:text)
+    right_icon = options.delete(:right)
+    icon = content_tag(:i, nil, options.merge(:class => classes))
+    return icon if text.blank?
+    elements = [icon, ERB::Util.html_escape(text)]
+    elements.reverse! if right_icon
+    safe_join(elements, " ")
   end
 
   def project_ownership_options

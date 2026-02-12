@@ -31,7 +31,7 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def update
-    if @product.update_attributes(product_params)
+    if @product.update(product_params)
       flash[:notice] = t('flash.product.saved')
       redirect_to platform_product_path(@platform, @product)
     else

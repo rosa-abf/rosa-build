@@ -87,4 +87,5 @@
           data: {'disable-with' => t('layout.processing')}
 
 - content_for :additional_scripts do
-  = render 'init_service.js.erb'
+  = render partial: 'init_service', formats: :js
+

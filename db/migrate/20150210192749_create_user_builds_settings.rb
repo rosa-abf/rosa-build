@@ -1,4 +1,4 @@
-class CreateUserBuildsSettings < ActiveRecord::Migration
+class CreateUserBuildsSettings < ActiveRecord::Migration[8.1]
   def change
     create_table :user_builds_settings do |t|
       t.integer :user_id,         null: false

@@ -1,4 +1,4 @@
-class UpgradeDevise < ActiveRecord::Migration
+class UpgradeDevise < ActiveRecord::Migration[8.1]
   def up
     remove_column :users, :remember_token if User.column_names.include?('remember_token')
     add_column :users, :reset_password_sent_at, :datetime unless User.column_names.include?('reset_password_sent_at')

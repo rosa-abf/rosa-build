@@ -1,9 +1,9 @@
-class CreatePlatforms < ActiveRecord::Migration
+class CreatePlatforms < ActiveRecord::Migration[8.1]
   def self.up
     create_table :platforms do |t|
       t.string :name
       t.string :unixname
-      t.integer :parent_platform_id, references: nil
+      t.integer :parent_platform_id # #, references: nil
 
       t.timestamps
     end

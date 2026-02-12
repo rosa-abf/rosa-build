@@ -24,7 +24,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
   def update
     authorize @repository
-    if @repository.update_attributes(repository_params)
+    if @repository.update(repository_params)
       flash[:notice] = I18n.t("flash.repository.updated")
       redirect_to platform_repository_path(@platform, @repository)
     else

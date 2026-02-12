@@ -1,4 +1,4 @@
-class AddStatusToMassBuilds < ActiveRecord::Migration
+class AddStatusToMassBuilds < ActiveRecord::Migration[8.1]
 
   def up
     # Sets SUCCESS for all current builds

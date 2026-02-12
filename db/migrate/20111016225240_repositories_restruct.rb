@@ -1,4 +1,4 @@
-class RepositoriesRestruct < ActiveRecord::Migration
+class RepositoriesRestruct < ActiveRecord::Migration[8.1]
   def self.up
     change_table :repositories do |t|
       t.references :owner, polymorphic: true

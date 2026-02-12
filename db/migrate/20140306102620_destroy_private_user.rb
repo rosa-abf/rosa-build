@@ -1,4 +1,4 @@
-class DestroyPrivateUser < ActiveRecord::Migration
+class DestroyPrivateUser < ActiveRecord::Migration[8.1]
   def self.up
     drop_table :private_users
   end

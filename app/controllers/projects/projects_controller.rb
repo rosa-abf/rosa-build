@@ -72,7 +72,7 @@ class Projects::ProjectsController < Projects::BaseController
     params[:project].delete(:maintainer_id) if params[:project][:maintainer_id].blank?
     respond_to do |format|
       format.html do
-        if @project.update_attributes(project_params)
+        if @project.update(project_params)
           flash[:notice] = t('flash.project.saved')
           redirect_to @project
         else
@@ -82,7 +82,7 @@ class Projects::ProjectsController < Projects::BaseController
         end
       end
       format.json do
-        if @project.update_attributes(project_params)
+        if @project.update(project_params)
           render json: { notice: I18n.t('flash.project.saved') }
         else
           render json: { error: I18n.t('flash.project.save_error') }, status: 422
@@ -141,7 +141,7 @@ class Projects::ProjectsController < Projects::BaseController
   def sections
     authorize @project, :update?
     if request.patch?
-      if @project.update_attributes(project_params)
+      if @project.update(project_params)
         flash[:notice] = t('flash.project.saved')
         redirect_to sections_project_path(@project)
       else

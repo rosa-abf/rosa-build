@@ -1,4 +1,4 @@
-class CreateEventLogs < ActiveRecord::Migration
+class CreateEventLogs < ActiveRecord::Migration[8.1]
   def self.up
     create_table :event_logs do |t|
       t.references :user, foreign_key: false, index: true

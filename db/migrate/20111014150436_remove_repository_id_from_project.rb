@@ -1,4 +1,4 @@
-class RemoveRepositoryIdFromProject < ActiveRecord::Migration
+class RemoveRepositoryIdFromProject < ActiveRecord::Migration[8.1]
   def self.up
     remove_column :projects, :repository_id
   end

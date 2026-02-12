@@ -1,0 +1,46 @@
+import audio from '../../audios/garbage_shattering.wav'
+
+var RosaABF = angular.module('RosaABF', ['ui.bootstrap', 'angularMoment', 'angular-i18n',
+                                         'ngSanitize', 'templates', 'chieffancypants.loadingBar',
+                                         'ui.codemirror', 'ngResource', 'ng-rails-csrf', 'ngCookies']);
+
+RosaABF.factory('LocalesHelper', ['$locale', function($locale) {
+  var locales = {
+    'ru' : 'ru-ru',
+    'en' : 'en-us'
+  }
+  return {
+    setLocale: function(locale) {
+      $locale.id = locales[locale];
+    }
+  }
+}]);
+
+/* FIXME upgrade
+RosaABF.config(function(cfpLoadingBarProvider) {
+  cfpLoadingBarProvider.includeSpinner = false;
+});
+*/
+RosaABF.config(['$compileProvider', function ($compileProvider) {
+  $compileProvider.debugInfoEnabled(false);
+}]);
+
+var SoundNotificationsHelper = function() {
+  var isOn = true;
+  var statusChangedSound = document.createElement('AUDIO');
+  statusChangedSound.src = audio;
+  return {
+    buildStatusChanged: function() {
+      if (isOn && statusChangedSound)
+        statusChangedSound.play();
+    },
+    enabled: function(status) {
+      isOn = status;
+    }
+  }
+}
+RosaABF.factory('SoundNotificationsHelper', SoundNotificationsHelper);
+window.RosaABF = RosaABF;
+
+export { RosaABF };
+

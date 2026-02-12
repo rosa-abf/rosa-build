@@ -88,7 +88,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     end
 
     class_name = @pull.class.name
-    if @pull.issue.update_attributes(attrs)
+    if @pull.issue.update(attrs)
       @pull.send(action) if action.present?
       @pull.check if need_check
       render_json_response @pull, "#{class_name} has been updated successfully"

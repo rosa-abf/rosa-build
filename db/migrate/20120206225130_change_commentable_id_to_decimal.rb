@@ -1,4 +1,4 @@
-class ChangeCommentableIdToDecimal < ActiveRecord::Migration
+class ChangeCommentableIdToDecimal < ActiveRecord::Migration[8.1]
   def up
     add_column :comments, :commentable_id_tmp, :decimal, precision: 50, scale: 0
     Comment.reset_column_information

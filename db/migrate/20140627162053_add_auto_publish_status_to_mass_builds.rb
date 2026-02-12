@@ -1,4 +1,4 @@
-class AddAutoPublishStatusToMassBuilds < ActiveRecord::Migration
+class AddAutoPublishStatusToMassBuilds < ActiveRecord::Migration[8.1]
   class MassBuild < ActiveRecord::Base
   end
 

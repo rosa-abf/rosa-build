@@ -16,5 +16,9 @@ Mime::Type.register "text/plain", 'patch'
  ["text/x-markdown",      ['md'],        '8bit'],
  ["application/x-rpm",    ['rpm'],       '8bit']
 ].each do |type|
-  MIME::Types.add MIME::Type.from_array(type)
+  MIME::Types.add MIME::Type.new({ # FIXME upgrade
+    "content-type" => type[0],
+    "extensions" => type[1],
+    "encoding" => type[2]
+  })
 end

@@ -1,4 +1,4 @@
-class RemoveDownloads < ActiveRecord::Migration
+class RemoveDownloads < ActiveRecord::Migration[8.1]
   def up
     drop_table :downloads
   end

@@ -39,7 +39,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   protected
 
   def update_sanitized_params
-    devise_parameter_sanitizer.for(:sign_up) do |u|
+    devise_parameter_sanitizer.permit(:sign_up) do |u|
       u.permit(:invite_key, :uname, :name, :email, :password, :password_confirmation)
     end
   end

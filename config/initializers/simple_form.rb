@@ -165,11 +165,16 @@ SimpleForm.setup do |config|
 end
 
 # See: http://www.railsonmaui.com/blog/2014/02/23/simple-form-and-disable-processing-by-default
-SimpleForm::FormBuilder.class_eval do
-  def submit_with_override(field, options = {})
-    data_disable_with = { disable_with: I18n.t('layout.processing') }
-    options[:data] = data_disable_with.merge(options[:data] || {})
-    submit_without_override(field, options)
+module SimpleForm # FIXME upgrade
+  module OverrideSubmit
+    def submit(field, options = {})
+      data_disable_with = { disable_with: I18n.t('layout.processing') }
+      options[:data] = data_disable_with.merge(options[:data] || {})
+      super field, options
+    end
   end
-  alias_method_chain :submit, :override
 end
+SimpleForm::FormBuilder.class_eval do
+  prepend SimpleForm::OverrideSubmit
+end
+

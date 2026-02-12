@@ -1,7 +1,7 @@
 require 'resque/server'
 require 'resque/status_server'
-require 'resque_scheduler'
-require 'resque_scheduler/server'
+require 'resque-scheduler' # FIXME upgrade resque_scheduler
+require 'resque/scheduler/server' # FIXME upgrade resque_scheduler
 
 ::ResqueServer = ::Resque::Server # need for CanCan
 
@@ -13,3 +13,4 @@ unless Rails.env.test?
 end
 
 Resque::Plugins::Status::Hash.expire_in = (24 * 60 * 60) # 24hrs in seconds
+

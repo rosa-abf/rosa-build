@@ -1,4 +1,4 @@
-class AddCommitHashToBuildLists < ActiveRecord::Migration
+class AddCommitHashToBuildLists < ActiveRecord::Migration[8.1]
   def self.up
     add_column :build_lists, :commit_hash, :string
   end

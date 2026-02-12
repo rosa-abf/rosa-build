@@ -1,4 +1,4 @@
-class CreateRepositories < ActiveRecord::Migration
+class CreateRepositories < ActiveRecord::Migration[8.1]
   def self.up
     create_table :repositories do |t|
       t.string :name, null: false

@@ -6,9 +6,10 @@ module UsersHelper
 
   def avatar_url(subject, size = :small)
     if subject.try('avatar?')
-      subject.avatar.url(size)
+      #subject.avatar.url(size) # FIXME upgrade нужно переделать на ActiveStorage иначе здесь выдаёт ошибку
+      "/images/emoji/neckbeard1.png"
     elsif subject.kind_of? Group
-      'ava-big.png'
+      "/images/emoji/neckbeard1.png"
     else
       gravatar_url(subject.email, User::AVATAR_SIZES[size])
     end

@@ -1,4 +1,4 @@
-class RemoveContainersAndRpms < ActiveRecord::Migration
+class RemoveContainersAndRpms < ActiveRecord::Migration[8.1]
   def up
     drop_table :containers
     drop_table :rpms
@@ -8,7 +8,7 @@ class RemoveContainersAndRpms < ActiveRecord::Migration
     create_table "containers" do |t|
       t.string   "name",       null: false
       t.integer  "project_id", null: false
-      t.integer  "owner_id",   null: false, references: nil
+      t.integer  "owner_id",   null: false #, references: nil
       t.datetime "created_at"
       t.datetime "updated_at"
     end

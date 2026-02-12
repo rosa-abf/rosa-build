@@ -1,4 +1,4 @@
-class CreateArches < ActiveRecord::Migration
+class CreateArches < ActiveRecord::Migration[8.1]
   def self.up
     create_table :arches do |t|
       t.string :name, null: false

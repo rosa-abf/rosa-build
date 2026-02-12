@@ -1,4 +1,4 @@
-class ChangeBuildListsBuildRequiresDefaultValue < ActiveRecord::Migration
+class ChangeBuildListsBuildRequiresDefaultValue < ActiveRecord::Migration[8.1]
   def self.up
     change_column_default :build_lists, :build_requires, false
   end

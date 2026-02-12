@@ -1,7 +1,8 @@
-class AddSrpmColumnsToProjects < ActiveRecord::Migration
+class AddSrpmColumnsToProjects < ActiveRecord::Migration[8.1]
   def self.up
     change_table :projects do |t|
-      t.has_attached_file :srpm
+#      t.has_attached_file :srpm
+      t.attachment
     end
   end
 

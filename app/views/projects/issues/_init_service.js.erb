@@ -3,7 +3,7 @@
     angular.module('RosaABF').service('IssuesInitializer', function(){
       return {
         project: '<%= @project.name_with_owner %>',
-        filter: <%= render('filter.json', all_issues: @all_issues, params: params).html_safe %>
+        filter: <%= render(partial: 'projects/issues/filter', formats: :json, locals: { all_issues: @all_issues, params: params }).html_safe %>
       };
     });
   <% elsif action_name.in? %w(new create show) %>
@@ -11,10 +11,10 @@
       return {
         project:   '<%= @project.name_with_owner %>',
         serial_id:  <%= @issue.serial_id || 0 %>,
-        labels:     <%= render('projects/issues/labels.json', project: @project, issue: @issue).html_safe %>,
+        labels:     <%= render(partial: 'projects/issues/labels', formats: :json, locals: { project: @project, issue: @issue }).html_safe %>,
         action:    '<%= action_name %>',
-        status:    <%= render('projects/issues/status.json', issue: @issue).html_safe %>,
-        assignee:   <%= render('projects/issues/user.json', user: @issue.assignee).html_safe %>
+        status:    <%= render(partial: 'projects/issues/status', formats: :json, locals: { issue: @issue }).html_safe %>,
+        assignee:   <%= render(partial: 'projects/issues/user', formats: :json, locals: { user: @issue.assignee }).html_safe %>
       };
     });
   <% end %>
@@ -22,7 +22,7 @@
     angular.module('RosaABF').service('LabelsInitializer', function(){
       return {
         project: '<%= @project.name_with_owner %>',
-        labels: <%= render('projects/issues/labels.json', project: @project).html_safe %>
+        labels: <%= render(partial: 'projects/issues/labels', formats: :json, locals: { project: @project }).html_safe %>
       };
     });
   <% end %>

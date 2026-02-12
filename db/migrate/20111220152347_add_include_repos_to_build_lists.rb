@@ -1,4 +1,4 @@
-class AddIncludeReposToBuildLists < ActiveRecord::Migration
+class AddIncludeReposToBuildLists < ActiveRecord::Migration[8.1]
   def self.up
     add_column :build_lists, :include_repos, :text
   end

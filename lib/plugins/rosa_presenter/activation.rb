@@ -2,7 +2,7 @@
 module RosaPresenter
   module Activation
     def self.included(klass) # :nodoc:
-      klass.prepend_before_filter :activate_rosa_presenter
+      klass.prepend_before_action :activate_rosa_presenter # FIXME upgrade was before_filter
     end
 
     private

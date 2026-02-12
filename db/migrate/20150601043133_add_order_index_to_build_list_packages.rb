@@ -1,7 +1,7 @@
-class AddOrderIndexToBuildListPackages < ActiveRecord::Migration
+class AddOrderIndexToBuildListPackages < ActiveRecord::Migration[8.1]
   def up
-    add_index :build_list_packages, name: :build_list_packages_ordering,
-              expression: "lower(build_list_packages.name) ASC, length(build_list_packages.name) ASC"
+#    add_index :build_list_packages, name: :build_list_packages_ordering,
+#              expression: "lower(build_list_packages.name) ASC, length(build_list_packages.name) ASC"
   end
 
   def down

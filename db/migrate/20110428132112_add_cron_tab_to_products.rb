@@ -1,4 +1,4 @@
-class AddCronTabToProducts < ActiveRecord::Migration
+class AddCronTabToProducts < ActiveRecord::Migration[8.1]
   def self.up
     add_column :products, :cron_tab, :text
   end

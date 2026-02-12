@@ -10,7 +10,7 @@
         span.graph-key-color1>
         = t('.commits_title')
       .text-center.graph-loading ng-show='loading'
-        = image_tag 'loading-large.gif'
+        = image_pack_tag 'loading-large.gif'
       .text-center.no-data ng-hide='loading || statistics.commits'
         = t('.no_data')
       canvas#commits_chart ng-show='statistics.commits'
@@ -20,7 +20,7 @@
       b
         = t('.total_commits')
       .panel-data
-        = image_tag 'loading-small.gif', ng_show: 'loading'
+        = image_pack_tag 'loading-small.gif', ng_show: 'loading'
         .no-data ng-hide='loading || statistics.commits.commits_count >= 0'
           = t('.no_data')
         | {{ statistics.commits.commits_count | number }}
