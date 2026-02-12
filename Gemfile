@@ -13,8 +13,8 @@ gem 'ffi'
 gem 'friendly_id'
 gem 'gemoji'
 gem 'github-linguist', require: 'linguist'
-gem 'grack', path: '../grack' #git: 'https://github.com/rosa-abf/grack.git' FIXME upgrade были пропатчены версии зависимостей внутри гема gfack
-gem 'grit', path: '../grit' #git: 'https://github.com/rosa-abf/grit.git', branch: 'rosa' FIXME upgrade были пропатчены версии зависимостей внутри гема grit
+gem 'grack', path: 'vendor/gems/grack' #git: 'https://github.com/rosa-abf/grack.git' FIXME upgrade были пропатчены версии зависимостей внутри гема gfack
+gem 'grit', path: 'vendor/gems/grit' #git: 'https://github.com/rosa-abf/grit.git', branch: 'rosa' FIXME upgrade были пропатчены версии зависимостей внутри гема grit
 gem 'haml-rails'
 gem 'image_processing'
 gem 'importmap-rails'
@@ -26,7 +26,7 @@ gem 'mutex_m'
 gem 'oj'
 gem 'ostruct'
 gem 'paperclip' #FIXME нужно избавиться
-gem 'perform_later', path: '../perform_later'
+gem 'perform_later', path: 'vendor/gems/perform_later'
 gem 'pg'
 gem 'puma'
 gem 'pundit'
